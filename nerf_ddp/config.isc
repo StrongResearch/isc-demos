@@ -1,0 +1,6 @@
+experiment_name="nerf_ddp"
+gpu_type="24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/nerf_ddp"
+command = "nerf_ddp.py"

@@ -1,0 +1,8 @@
+
+experiment_name="cls-tv-effnetv2l"
+gpu_type="24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_tv"
+api_key = "password"
+command = "train.py --model efficientnet_v2_l --batch-size 16 --lr 0.5 --lr-scheduler cosineannealinglr --lr-warmup-epochs 5 --lr-warmup-method linear --auto-augment ta_wide --epochs 600 --random-erase 0.1 --label-smoothing 0.1 --mixup-alpha 0.2 --cutmix-alpha 1.0 --weight-decay 0.00002 --norm-weight-decay 0.0 --train-crop-size 384 --model-ema --val-crop-size 480 --val-resize-size 480 --ra-sampler --ra-reps 4 --data-path /workspace/datasets/imagenet/ILSVRC/Data/CLS-LOC/"

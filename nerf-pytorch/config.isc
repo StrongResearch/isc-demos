@@ -1,0 +1,6 @@
+experiment_name="nerf-lego"
+gpu_type="24GB VRAM GPU"
+nnodes = 1
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_nerf_lego"
+command = "run_nerf.py --config configs/lego.txt"

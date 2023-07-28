@@ -1,0 +1,7 @@
+
+experiment_name="bert-squad-qa"
+gpu_type="24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_bert_squad_qa"
+command = "run_qa_no_trainer.py   --model_name_or_path bert-base-uncased   --dataset_name squad   --max_seq_length 384   --doc_stride 128   --output_dir ~/tmp/debug_squad"

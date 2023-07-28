@@ -1,0 +1,7 @@
+
+experiment_name="cls-resnet50"
+gpu_type="24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_tv"
+command = "train.py  --data-path /workspace/datasets/imagenet/ILSVRC/Data/CLS-LOC/   --model resnet50 -b 42 --output-dir runs/`date +%s` --epochs=1"
