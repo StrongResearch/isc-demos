@@ -31,7 +31,7 @@ cd ~/isc-demos/tiny_training
 isc train config.isc
 
 # maskrcnn detection
-cd ~/isc-demos/tv-detection
+cd ~/isc-demos/tv-segmentation
 isc train config.isc
 
 # for nerf
