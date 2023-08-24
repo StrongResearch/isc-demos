@@ -1,0 +1,8 @@
+
+experiment_name="ta-tacotron"
+gpu_type="24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_tacotron"
+command = "train.py --epochs=1 --checkpoint-path ~/checkpoints/ta-tacotron/"
+
