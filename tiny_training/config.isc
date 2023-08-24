@@ -1,6 +1,0 @@
-experiment_name="tiny_training"
-gpu_type="24GB VRAM GPU"
-nnodes = 3
-venv_path = "~/.venv/bin/activate"
-output_path = "~/output_tiny"
-command = "train.py"
