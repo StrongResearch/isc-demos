@@ -2,5 +2,5 @@ experiment_name = "fashion_mnist"
 gpu_type = "24GB VRAM GPU"
 nnodes = 10
 venv_path = "~/.venv/bin/activate"
-output_path = "/mnt/Client/strongcompute_chris/fashion_mnist/output_fashion_mnist"
-command = "isc_optimization_tutorial.py --save-dir checkpoints --epochs 100000"
+output_path = "~/output_fashion_mnist"
+command = "train.py --save-dir checkpoints --epochs 100000"
