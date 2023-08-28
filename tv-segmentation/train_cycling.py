@@ -12,6 +12,7 @@ from coco_utils import get_coco
 from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
 from torchvision.transforms import functional as F, InterpolationMode
+from interruptable_sampler import InterruptableDistributedSampler
 
 
 def get_dataset(dir_path, name, image_set, transform):
@@ -94,12 +95,13 @@ def evaluate(model, data_loader, device, num_classes):
     return confmat
 
 
-def train_one_epoch(model, criterion, optimizer, data_loader, lr_scheduler, device, epoch, print_freq, scaler=None):
+def train_one_epoch(model, criterion, optimizer, data_loader, sampler: InterruptableDistributedSampler, lr_scheduler, device, epoch, print_freq, scaler=None):
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
     header = f"Epoch: [{epoch}]"
     for image, target in metric_logger.log_every(data_loader, print_freq, header):
+        sampler.step(len(image))
         image, target = image.to(device), target.to(device)
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             output = model(image)
@@ -118,8 +120,26 @@ def train_one_epoch(model, criterion, optimizer, data_loader, lr_scheduler, devi
 
         metric_logger.update(loss=loss.item(), lr=optimizer.param_groups[0]["lr"])
 
+        if sampler._step % 100 == 0:
+            print(f"Saving checkpoint at step {sampler._step}")
+            checkpoint = {
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "lr_scheduler": lr_scheduler.state_dict(),
+                "epoch": epoch,
+                "args": args,
+                "scaler": scaler.state_dict(),
+                "sampler": sampler.state_dict(),
+            }
+            if utils.is_main_process():
+                torch.save(checkpoint, args.resume + ".tmp")
+                # atomic operation to prevent corruption of checkpoints
+                os.replace(args.resume + ".tmp", args.replace)
+
 
 def main(args):
+    assert args.distributed # don't support cycling when not distributed for simplicity
+
     if args.output_dir:
         utils.mkdir(args.output_dir)
 
@@ -137,12 +157,12 @@ def main(args):
     dataset, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
     dataset_test, _ = get_dataset(args.data_path, args.dataset, "val", get_transform(False, args))
 
-    if args.distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
-        test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
-    else:
-        train_sampler = torch.utils.data.RandomSampler(dataset)
-        test_sampler = torch.utils.data.SequentialSampler(dataset_test)
+    # if args.distributed:
+    train_sampler = InterruptableDistributedSampler(dataset)
+    test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
+    # else:
+    #     train_sampler = torch.utils.data.RandomSampler(dataset)
+    #     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
 
     data_loader = torch.utils.data.DataLoader(
         dataset,
@@ -210,15 +230,16 @@ def main(args):
     else:
         lr_scheduler = main_lr_scheduler
 
-    if args.resume:
+    if args.resume and os.path.isfile(args.resume):
         checkpoint = torch.load(args.resume, map_location="cpu")
         model_without_ddp.load_state_dict(checkpoint["model"], strict=not args.test_only)
         if not args.test_only:
             optimizer.load_state_dict(checkpoint["optimizer"])
             lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-            args.start_epoch = checkpoint["epoch"] + 1
+            args.start_epoch = checkpoint["epoch"] #+ 1
             if args.amp:
                 scaler.load_state_dict(checkpoint["scaler"])
+            train_sampler.load_state_dict(checkpoint["sampler"])
 
     if args.test_only:
         # We disable the cudnn benchmarking because it can noticeably affect the accuracy
@@ -230,22 +251,23 @@ def main(args):
 
     start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
-        if args.distributed:
-            train_sampler.set_epoch(epoch)
-        train_one_epoch(model, criterion, optimizer, data_loader, lr_scheduler, device, epoch, args.print_freq, scaler)
+        # if args.distributed:
+        train_sampler.set_epoch(epoch)
+        train_one_epoch(model, criterion, optimizer, data_loader, train_sampler, lr_scheduler, device, epoch, args.print_freq, scaler)
         confmat = evaluate(model, data_loader_test, device=device, num_classes=num_classes)
         print(confmat)
-        checkpoint = {
-            "model": model_without_ddp.state_dict(),
-            "optimizer": optimizer.state_dict(),
-            "lr_scheduler": lr_scheduler.state_dict(),
-            "epoch": epoch,
-            "args": args,
-        }
-        if args.amp:
-            checkpoint["scaler"] = scaler.state_dict()
-        utils.save_on_master(checkpoint, os.path.join(args.output_dir, f"model_{epoch}.pth"))
-        utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
+        train_sampler.reset_step()
+        # checkpoint = {
+        #     "model": model_without_ddp.state_dict(),
+        #     "optimizer": optimizer.state_dict(),
+        #     "lr_scheduler": lr_scheduler.state_dict(),
+        #     "epoch": epoch,
+        #     "args": args,
+        # }
+        # if args.amp:
+        #     checkpoint["scaler"] = scaler.state_dict()
+        # utils.save_on_master(checkpoint, os.path.join(args.output_dir, f"model_{epoch}.pth"))
+        # utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
