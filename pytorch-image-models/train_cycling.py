@@ -897,7 +897,7 @@ def train_one_epoch(
     assert args.distributed and hasattr(loader.sampler, 'set_epoch')
     for (input, target) in (loader):
         batch_idx = loader.sampler.step(len(input))
-        print(f"EPOCH: {epoch}, BATCH: {batch_idx}")
+        # print(f"EPOCH: {epoch}, BATCH: {batch_idx}")
         last_batch = batch_idx == last_batch_idx
         need_update = last_batch or (batch_idx + 1) % accum_steps == 0
         update_idx = batch_idx // accum_steps
@@ -1012,11 +1012,10 @@ def train_one_epoch(
         # TODO do more periodically
 
         # only on rank 0
-        if utils.is_primary(args) and (last_batch or batch_idx % 10 == 0):
-            print(f'Step finished, saving checkpoint')
+        if utils.is_primary(args) and (last_batch or batch_idx % 500 == 0):
+            _logger.info(f'Step finished, saving checkpoint')
             saver._save(ISC_TEMP_CHECKPOINT_PATH, epoch)
             os.replace(ISC_TEMP_CHECKPOINT_PATH, ISC_CHECKPOINT_PATH)
-            print(f"sampler state: {loader.sampler.state_dict()}")
 
         # end for
 
