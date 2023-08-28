@@ -206,12 +206,6 @@ def main(args):
         utils.mkdir(args.output_dir)
 
     utils.init_distributed_mode(args)
-    if utils.is_main_process():
-        wandb_project = os.environ.get("WANDB_PROJECT", "strong-image-models")
-        wandb_run_name = os.environ.get("WANDB_RUN_NAME", None)
-        wandb.init(project=wandb_project, config=args, name=wandb_run_name) 
-
-        print(args)
 
     device = torch.device(args.device)
 
