@@ -355,6 +355,9 @@ group.add_argument('--use-multi-epochs-loader', action='store_true', default=Fal
 group.add_argument('--log-wandb', action='store_true', default=False,
                    help='log training and validation metrics to wandb')
 
+ISC_CHECKPOINT_PATH = 'isc_checkpoint.pt'
+ISC_TEMP_CHECKPOINT_PATH = 'isc_checkpoint.temp.pt'
+
 
 def _parse_args():
     # Do we have a config file to parse?
@@ -539,7 +542,7 @@ def main():
 
     # optionally resume from a checkpoint
     resume_epoch = None
-    if args.resume:
+    if args.resume and os.path.isfile(args.resume):
         resume_epoch = resume_checkpoint(
             model,
             args.resume,
@@ -554,7 +557,7 @@ def main():
         # Important to create EMA model after cuda(), DP wrapper, and AMP but before DDP wrapper
         model_ema = utils.ModelEmaV2(
             model, decay=args.model_ema_decay, device='cpu' if args.model_ema_force_cpu else None)
-        if args.resume:
+        if args.resume and os.path.isfile(args.resume):
             load_checkpoint(model_ema.module, args.resume, use_ema=True)
 
     # setup distributed training
@@ -659,6 +662,12 @@ def main():
         use_multi_epochs_loader=args.use_multi_epochs_loader,
         worker_seeding=args.worker_seeding,
     )
+    assert args.distributed and hasattr(loader_train.sampler, 'set_epoch')
+
+    if args.resume and os.path.isfile(args.resume):
+        checkpoint = torch.load(args.resume, map_location='cpu')
+        loader_train.sampler.load_state_dict(checkpoint['sampler'])
+        print(f"Sample state: {loader_train.sampler.state_dict()}")
 
     eval_workers = args.workers
     if args.distributed and ('tfds' in args.dataset or 'wds' in args.dataset):
@@ -718,6 +727,7 @@ def main():
         output_dir = utils.get_outdir(args.output if args.output else './output/train', exp_name)
         decreasing = True if eval_metric == 'loss' else False
         saver = utils.CheckpointSaver(
+            sampler=loader_train.sampler,
             model=model,
             optimizer=optimizer,
             args=args,
@@ -763,6 +773,7 @@ def main():
             f'Scheduled epochs: {num_epochs}. LR stepped per {"epoch" if lr_scheduler.t_in_epochs else "update"}.')
 
     try:
+        print(f"looping from {start_epoch} to {num_epochs}")
         for epoch in range(start_epoch, num_epochs):
             if hasattr(dataset_train, 'set_epoch'):
                 dataset_train.set_epoch(epoch)
@@ -833,6 +844,9 @@ def main():
                 # step LR for next epoch
                 lr_scheduler.step(epoch + 1, eval_metrics[eval_metric])
 
+            elif args.distributed and hasattr(loader_train.sampler, 'set_epoch'):
+                loader_train.sampler.reset_step()
+
     except KeyboardInterrupt:
         pass
 
@@ -880,7 +894,10 @@ def train_one_epoch(
     data_start_time = update_start_time = time.time()
     optimizer.zero_grad()
     update_sample_count = 0
-    for batch_idx, (input, target) in enumerate(loader):
+    assert args.distributed and hasattr(loader.sampler, 'set_epoch')
+    for (input, target) in (loader):
+        batch_idx = loader.sampler.step(len(input))
+        # print(f"EPOCH: {epoch}, BATCH: {batch_idx}")
         last_batch = batch_idx == last_batch_idx
         need_update = last_batch or (batch_idx + 1) % accum_steps == 0
         update_idx = batch_idx // accum_steps
@@ -982,15 +999,24 @@ def train_one_epoch(
                         normalize=True
                     )
 
-        if saver is not None and args.recovery_interval and (
-                (update_idx + 1) % args.recovery_interval == 0):
-            saver.save_recovery(epoch, batch_idx=update_idx)
+        # if saver is not None and args.recovery_interval and (
+        #         (update_idx + 1) % args.recovery_interval == 0):
+        #     saver.save_recovery(epoch, batch_idx=update_idx)
 
         if lr_scheduler is not None:
             lr_scheduler.step_update(num_updates=num_updates, metric=losses_m.avg)
 
         update_sample_count = 0
         data_start_time = time.time()
+
+        # TODO do more periodically
+
+        # only on rank 0
+        if utils.is_primary(args) and (last_batch or batch_idx % 500 == 0):
+            _logger.info(f'Step finished, saving checkpoint')
+            saver._save(ISC_TEMP_CHECKPOINT_PATH, epoch)
+            os.replace(ISC_TEMP_CHECKPOINT_PATH, ISC_CHECKPOINT_PATH)
+
         # end for
 
     if hasattr(optimizer, 'sync_lookahead'):
