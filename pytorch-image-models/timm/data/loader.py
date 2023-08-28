@@ -265,7 +265,6 @@ def create_loader(
                 sampler = InterruptableDistributedSampler(dataset)
                 # sampler = torch.utils.data.distributed.DistributedSampler(dataset)
         else:
-            raise NotImplementedError
             # This will add extra duplicate entries to result in equal num
             # of samples per-process, will slightly alter validation results
             sampler = OrderedDistributedSampler(dataset)
