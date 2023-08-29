@@ -20,9 +20,8 @@ class InterruptableDistributedSampler(DistributedSampler):
         sampler. The epoch is the number of times the sampler has been iterated
         over.
 
-        The progress is reset to 0 at the beginning of each epoch. The epoch
-        is incremented at the start of each epoch. The epoch is set to 0 at
-        initialization.
+        The epoch is incremented at the start of each epoch. The epoch is set
+        to 0 at initialization.
 
         The progress is incremented by the number of samples returned by the
         sampler. The progress is reset to 0 at the beginning of each epoch.
