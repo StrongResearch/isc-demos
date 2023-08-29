@@ -26,17 +26,16 @@ git clone https://github.com/StrongResearch/isc-demos.git
 cd ~/isc-demos
 pip install -r requirements.txt
 
-# hello world
-cd ~/isc-demos/tiny_training
-isc train config.isc
+# fashion mnist
+cd ~/isc-demos/fashion_mnist
+isc train fashion_mnist.isc
 
-# maskrcnn detection
+# cifar100 + ResNet50
+cd ~/isc-demos/cifar100-resnet50
+isc train cifar100-resnet50.isc
+
+# torchvision segmentation
 cd ~/isc-demos/tv-segmentation
-isc train config.isc
-
-# for nerf
-cd ~/isc-demos/nerf_ddp
-wget http://cseweb.ucsd.edu/~viscomp/projects/LF/papers/ECCV20/nerf/tiny_nerf_data.npz
 isc train config.isc
 ```
 
