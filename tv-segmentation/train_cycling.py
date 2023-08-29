@@ -12,7 +12,8 @@ from coco_utils import get_coco
 from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
 from torchvision.transforms import functional as F, InterpolationMode
-from interruptable_sampler import InterruptableDistributedSampler
+# from interruptable_sampler import InterruptableDistributedSampler
+from cycling_utils import InterruptableDistributedSampler
 
 
 def get_dataset(dir_path, name, image_set, transform):
@@ -100,8 +101,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
     header = f"Epoch: [{epoch}]"
-    for image, target in metric_logger.log_every(data_loader, sampler._step, print_freq, header):
-        sampler.step(len(image))
+    for image, target in metric_logger.log_every(data_loader, sampler.progress // data_loader.batch_size, print_freq, header):
         image, target = image.to(device), target.to(device)
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             output = model(image)
@@ -120,8 +120,10 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
 
         metric_logger.update(loss=loss.item(), lr=optimizer.param_groups[0]["lr"])
 
-        if sampler._step % 100 == 0:
-            print(f"Saving checkpoint at step {sampler._step}")
+        sampler.advance(len(image))
+
+        if sampler.progress % 100 == 0:
+            print(f"Saving checkpoint at step {sampler.progress}")
             checkpoint = {
                 "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),
@@ -257,7 +259,7 @@ def main(args):
         train_one_epoch(model, criterion, optimizer, data_loader, train_sampler, lr_scheduler, device, epoch, args.print_freq, scaler)
         confmat = evaluate(model, data_loader_test, device=device, num_classes=num_classes)
         print(confmat)
-        train_sampler.reset_step()
+        train_sampler.reset_progress()
         # checkpoint = {
         #     "model": model_without_ddp.state_dict(),
         #     "optimizer": optimizer.state_dict(),
