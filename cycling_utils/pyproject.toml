@@ -1,0 +1,9 @@
+[project]
+name = "cycling_utils"
+version = "0.0.1"
+description = "A collection of utilities for pytorch job cycling"
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
