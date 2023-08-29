@@ -100,7 +100,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
     header = f"Epoch: [{epoch}]"
-    for image, target in metric_logger.log_every(data_loader, print_freq, header):
+    for image, target in metric_logger.log_every(data_loader, sampler._step, print_freq, header):
         sampler.step(len(image))
         image, target = image.to(device), target.to(device)
         with torch.cuda.amp.autocast(enabled=scaler is not None):
@@ -123,28 +123,29 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
         if sampler._step % 100 == 0:
             print(f"Saving checkpoint at step {sampler._step}")
             checkpoint = {
-                "model": model.state_dict(),
+                "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "lr_scheduler": lr_scheduler.state_dict(),
                 "epoch": epoch,
                 "args": args,
-                "scaler": scaler.state_dict(),
                 "sampler": sampler.state_dict(),
             }
+            if args.amp:
+                checkpoint["scaler"] = scaler.state_dict()
             if utils.is_main_process():
                 torch.save(checkpoint, args.resume + ".tmp")
                 # atomic operation to prevent corruption of checkpoints
-                os.replace(args.resume + ".tmp", args.replace)
+                os.replace(args.resume + ".tmp", args.resume)
 
 
 def main(args):
-    assert args.distributed # don't support cycling when not distributed for simplicity
-
     if args.output_dir:
         utils.mkdir(args.output_dir)
 
     utils.init_distributed_mode(args)
     print(args)
+
+    assert args.distributed # don't support cycling when not distributed for simplicity
 
     device = torch.device(args.device)
 
@@ -308,7 +309,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--lr-warmup-decay", default=0.01, type=float, help="the decay for lr")
     parser.add_argument("--print-freq", default=10, type=int, help="print frequency")
     parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
-    parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
+    parser.add_argument("--resume", type=str, help="path of checkpoint", required=True)
     parser.add_argument("--start-epoch", default=0, type=int, metavar="N", help="start epoch")
     parser.add_argument(
         "--test-only",
