@@ -3,6 +3,7 @@ import os
 import time
 import warnings
 
+from pathlib import Path
 import presets
 import torch
 import torch.utils.data
@@ -12,8 +13,7 @@ from coco_utils import get_coco
 from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
 from torchvision.transforms import functional as F, InterpolationMode
-# from interruptable_sampler import InterruptableDistributedSampler
-from cycling_utils import InterruptableDistributedSampler
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 
 
 def get_dataset(dir_path, name, image_set, transform):
@@ -122,8 +122,9 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
 
         sampler.advance(len(image))
 
-        if sampler.progress % 100 == 0:
-            print(f"Saving checkpoint at step {sampler.progress}")
+        step = sampler.progress // data_loader.batch_size
+        if utils.is_main_process() and step % 5 == 0:
+            print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),
@@ -134,10 +135,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
-            if utils.is_main_process():
-                torch.save(checkpoint, args.resume + ".tmp")
-                # atomic operation to prevent corruption of checkpoints
-                os.replace(args.resume + ".tmp", args.resume)
+            atomic_torch_save(checkpoint, args.resume)
 
 
 def main(args):
@@ -233,6 +231,7 @@ def main(args):
     else:
         lr_scheduler = main_lr_scheduler
 
+    Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     if args.resume and os.path.isfile(args.resume):
         checkpoint = torch.load(args.resume, map_location="cpu")
         model_without_ddp.load_state_dict(checkpoint["model"], strict=not args.test_only)
@@ -255,22 +254,22 @@ def main(args):
     start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
         # if args.distributed:
-        train_sampler.set_epoch(epoch)
-        train_one_epoch(model, criterion, optimizer, data_loader, train_sampler, lr_scheduler, device, epoch, args.print_freq, scaler)
-        confmat = evaluate(model, data_loader_test, device=device, num_classes=num_classes)
-        print(confmat)
-        train_sampler.reset_progress()
-        # checkpoint = {
-        #     "model": model_without_ddp.state_dict(),
-        #     "optimizer": optimizer.state_dict(),
-        #     "lr_scheduler": lr_scheduler.state_dict(),
-        #     "epoch": epoch,
-        #     "args": args,
-        # }
-        # if args.amp:
-        #     checkpoint["scaler"] = scaler.state_dict()
-        # utils.save_on_master(checkpoint, os.path.join(args.output_dir, f"model_{epoch}.pth"))
-        # utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
+        with train_sampler.in_epoch(epoch):
+            train_one_epoch(model, criterion, optimizer, data_loader, train_sampler, lr_scheduler, device, epoch, args.print_freq, scaler)
+            confmat = evaluate(model, data_loader_test, device=device, num_classes=num_classes)
+            print(confmat)
+            if utils.is_main_process():
+                checkpoint = {
+                    "model": model.module.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "lr_scheduler": lr_scheduler.state_dict(),
+                    "epoch": epoch,
+                    "args": args,
+                    "sampler": train_sampler.state_dict(),
+                }
+                if args.amp:
+                    checkpoint["scaler"] = scaler.state_dict()
+                atomic_torch_save(checkpoint, args.resume)
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
