@@ -14,6 +14,7 @@ NVIDIA CUDA specific speedups adopted from NVIDIA Apex examples
 
 Hacked together by / Copyright 2020 Ross Wightman (https://github.com/rwightman)
 """
+from pathlib import Path
 import argparse
 import logging
 import os
@@ -105,8 +106,8 @@ group.add_argument('--pretrained', action='store_true', default=False,
                    help='Start with pretrained version of specified network (if avail)')
 group.add_argument('--initial-checkpoint', default='', type=str, metavar='PATH',
                    help='Initialize model from this checkpoint (default: none)')
-group.add_argument('--resume', default='', type=str, metavar='PATH',
-                   help='Resume full model and optimizer state from checkpoint (default: none)')
+group.add_argument('--resume', type=str, metavar='PATH',
+                   help='Resume full model and optimizer state from checkpoint (default: none)', required=True)
 group.add_argument('--no-resume-opt', action='store_true', default=False,
                    help='prevent resume of optimizer state when resuming model')
 group.add_argument('--num-classes', type=int, default=None, metavar='N',
@@ -355,8 +356,6 @@ group.add_argument('--use-multi-epochs-loader', action='store_true', default=Fal
 group.add_argument('--log-wandb', action='store_true', default=False,
                    help='log training and validation metrics to wandb')
 
-ISC_CHECKPOINT_PATH = 'isc_checkpoint.pt'
-ISC_TEMP_CHECKPOINT_PATH = 'isc_checkpoint.temp.pt'
 
 
 def _parse_args():
@@ -541,6 +540,7 @@ def main():
             _logger.info('AMP not enabled. Training in float32.')
 
     # optionally resume from a checkpoint
+    Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     resume_epoch = None
     if args.resume and os.path.isfile(args.resume):
         resume_epoch = resume_checkpoint(
@@ -775,77 +775,74 @@ def main():
     try:
         print(f"looping from {start_epoch} to {num_epochs}")
         for epoch in range(start_epoch, num_epochs):
-            if hasattr(dataset_train, 'set_epoch'):
-                dataset_train.set_epoch(epoch)
-            elif args.distributed and hasattr(loader_train.sampler, 'set_epoch'):
-                loader_train.sampler.set_epoch(epoch)
+            with loader_train.sampler.in_epoch(epoch):
+                if hasattr(dataset_train, 'set_epoch'):
+                    dataset_train.set_epoch(epoch)
 
-            train_metrics = train_one_epoch(
-                epoch,
-                model,
-                loader_train,
-                optimizer,
-                train_loss_fn,
-                args,
-                lr_scheduler=lr_scheduler,
-                saver=saver,
-                output_dir=output_dir,
-                amp_autocast=amp_autocast,
-                loss_scaler=loss_scaler,
-                model_ema=model_ema,
-                mixup_fn=mixup_fn,
-            )
+                train_metrics = train_one_epoch(
+                    epoch,
+                    model,
+                    loader_train,
+                    optimizer,
+                    train_loss_fn,
+                    args,
+                    lr_scheduler=lr_scheduler,
+                    saver=saver,
+                    output_dir=output_dir,
+                    amp_autocast=amp_autocast,
+                    loss_scaler=loss_scaler,
+                    model_ema=model_ema,
+                    mixup_fn=mixup_fn,
+                )
 
-            if args.distributed and args.dist_bn in ('broadcast', 'reduce'):
-                if utils.is_primary(args):
-                    _logger.info("Distributing BatchNorm running means and vars")
-                utils.distribute_bn(model, args.world_size, args.dist_bn == 'reduce')
-
-            eval_metrics = validate(
-                model,
-                loader_eval,
-                validate_loss_fn,
-                args,
-                amp_autocast=amp_autocast,
-            )
-
-            if model_ema is not None and not args.model_ema_force_cpu:
                 if args.distributed and args.dist_bn in ('broadcast', 'reduce'):
-                    utils.distribute_bn(model_ema, args.world_size, args.dist_bn == 'reduce')
+                    if utils.is_primary(args):
+                        _logger.info("Distributing BatchNorm running means and vars")
+                    utils.distribute_bn(model, args.world_size, args.dist_bn == 'reduce')
 
-                ema_eval_metrics = validate(
-                    model_ema.module,
+                eval_metrics = validate(
+                    model,
                     loader_eval,
                     validate_loss_fn,
                     args,
                     amp_autocast=amp_autocast,
-                    log_suffix=' (EMA)',
-                )
-                eval_metrics = ema_eval_metrics
-
-            if output_dir is not None:
-                lrs = [param_group['lr'] for param_group in optimizer.param_groups]
-                utils.update_summary(
-                    epoch,
-                    train_metrics,
-                    eval_metrics,
-                    filename=os.path.join(output_dir, 'summary.csv'),
-                    lr=sum(lrs) / len(lrs),
-                    write_header=best_metric is None,
-                    log_wandb=args.log_wandb and has_wandb,
                 )
 
-            if saver is not None:
-                # save proper checkpoint with eval metric
-                save_metric = eval_metrics[eval_metric]
-                best_metric, best_epoch = saver.save_checkpoint(epoch, metric=save_metric)
+                if model_ema is not None and not args.model_ema_force_cpu:
+                    if args.distributed and args.dist_bn in ('broadcast', 'reduce'):
+                        utils.distribute_bn(model_ema, args.world_size, args.dist_bn == 'reduce')
 
-            if lr_scheduler is not None:
-                # step LR for next epoch
-                lr_scheduler.step(epoch + 1, eval_metrics[eval_metric])
+                    ema_eval_metrics = validate(
+                        model_ema.module,
+                        loader_eval,
+                        validate_loss_fn,
+                        args,
+                        amp_autocast=amp_autocast,
+                        log_suffix=' (EMA)',
+                    )
+                    eval_metrics = ema_eval_metrics
 
-            elif args.distributed and hasattr(loader_train.sampler, 'set_epoch'):
-                loader_train.sampler.reset_step()
+                if output_dir is not None:
+                    lrs = [param_group['lr'] for param_group in optimizer.param_groups]
+                    utils.update_summary(
+                        epoch,
+                        train_metrics,
+                        eval_metrics,
+                        filename=os.path.join(output_dir, 'summary.csv'),
+                        lr=sum(lrs) / len(lrs),
+                        write_header=best_metric is None,
+                        log_wandb=args.log_wandb and has_wandb,
+                    )
+
+                if saver is not None:
+                    # save proper checkpoint with eval metric
+                    save_metric = eval_metrics[eval_metric]
+                    best_metric, best_epoch = saver.save_checkpoint(epoch, metric=save_metric)
+
+                if lr_scheduler is not None:
+                    # step LR for next epoch
+                    lr_scheduler.step(epoch + 1, eval_metrics[eval_metric])
+
 
     except KeyboardInterrupt:
         pass
@@ -896,8 +893,9 @@ def train_one_epoch(
     update_sample_count = 0
     assert args.distributed and hasattr(loader.sampler, 'set_epoch')
     for (input, target) in (loader):
-        batch_idx = loader.sampler.step(len(input))
-        # print(f"EPOCH: {epoch}, BATCH: {batch_idx}")
+        batch_idx = loader.sampler.progress // loader.loader.batch_size
+        print(f"EPOCH: {epoch}, BATCH: {batch_idx}")
+
         last_batch = batch_idx == last_batch_idx
         need_update = last_batch or (batch_idx + 1) % accum_steps == 0
         update_idx = batch_idx // accum_steps
@@ -920,6 +918,7 @@ def train_one_epoch(
                 loss = loss_fn(output, target)
             if accum_steps > 1:
                 loss /= accum_steps
+            loader.sampler.advance(len(input))
             return loss
 
         def _backward(_loss):
@@ -944,6 +943,8 @@ def train_one_epoch(
                         )
                     optimizer.step()
 
+
+
         if has_no_sync and not need_update:
             with model.no_sync():
                 loss = _forward()
@@ -951,6 +952,7 @@ def train_one_epoch(
         else:
             loss = _forward()
             _backward(loss)
+
 
         if not args.distributed:
             losses_m.update(loss.item() * accum_steps, input.size(0))
@@ -999,23 +1001,16 @@ def train_one_epoch(
                         normalize=True
                     )
 
-        # if saver is not None and args.recovery_interval and (
-        #         (update_idx + 1) % args.recovery_interval == 0):
-        #     saver.save_recovery(epoch, batch_idx=update_idx)
-
         if lr_scheduler is not None:
             lr_scheduler.step_update(num_updates=num_updates, metric=losses_m.avg)
 
         update_sample_count = 0
         data_start_time = time.time()
 
-        # TODO do more periodically
 
-        # only on rank 0
-        if utils.is_primary(args) and (last_batch or batch_idx % 500 == 0):
+        if need_update and utils.is_primary(args) and (batch_idx % 25 == 0):
             _logger.info(f'Step finished, saving checkpoint')
-            saver._save(ISC_TEMP_CHECKPOINT_PATH, epoch)
-            os.replace(ISC_TEMP_CHECKPOINT_PATH, ISC_CHECKPOINT_PATH)
+            saver._save(args.resume, epoch)
 
         # end for
 

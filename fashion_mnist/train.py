@@ -24,6 +24,7 @@ We load the code from the previous sections on `Datasets & DataLoaders <data_tut
 and `Build Model  <buildmodel_tutorial.html>`_.
 """
 
+import time
 from pathlib import Path
 import os
 import torch
@@ -31,10 +32,11 @@ import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch import nn
 from torch.utils.data import DataLoader
-from torch.utils.data.distributed import DistributedSampler
+# from torch.utils.data.distributed import DistributedSampler
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 import argparse
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 
 parser = argparse.ArgumentParser()
 # get lr and batch size from command line
@@ -46,7 +48,8 @@ args = parser.parse_args()
 print(args)
 
 checkpoint_latest = args.save_dir / "latest.pt"
-checkpoint_latest_temp = args.save_dir / "latest.temp.pt"
+checkpoint_latest.parent.mkdir(parents=True, exist_ok=True)
+
 
 dist.init_process_group("nccl")
 world_size = dist.get_world_size()
@@ -68,8 +71,8 @@ test_data = datasets.FashionMNIST(
     transform=ToTensor()
 )
 
-train_sampler = DistributedSampler(training_data)
-train_dataloader = DataLoader(training_data, batch_size=64, sampler=train_sampler)
+train_sampler = InterruptableDistributedSampler(training_data)
+train_dataloader = DataLoader(training_data, batch_size=64, sampler=train_sampler, num_workers=3)
 test_dataloader = DataLoader(test_data, batch_size=64)
 
 class NeuralNetwork(nn.Module):
@@ -130,12 +133,13 @@ print(f"learning_rate: {learning_rate}, batch_size: {batch_size}, epochs: {epoch
 # We define ``train_loop`` that loops over our optimization code, and ``test_loop`` that
 # evaluates the model's performance against our test data.
 
-def train_loop(dataloader, model, loss_fn, optimizer):
+def train_loop(epoch, dataloader, train_sampler, model, loss_fn, optimizer):
     size = len(dataloader)
     # Set the model to training mode - important for batch normalization and dropout layers
     # Unnecessary in this situation but added for best practices
     model.train()
-    for batch, (X, y) in enumerate(dataloader):
+    for (X, y) in dataloader:
+        batch = train_sampler.progress // dataloader.batch_size
         X = X.to(device_id)
         y = y.to(device_id)
         # Compute prediction and loss
@@ -147,9 +151,21 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
+        train_sampler.advance(len(X))
+
         if is_master and batch % 1 == 0:
             loss, current = loss.item(), (batch) #* len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            print(f"{epoch} | loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+        if is_master and batch % 100 == 0:
+            atomic_torch_save({
+                "epoch": train_sampler.epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "sampler_state_dict": train_sampler.state_dict(),
+            }, checkpoint_latest)
+            print(f"Saved checkpoint to {checkpoint_latest}")
+
 
 
 def test_loop(dataloader, model, loss_fn):
@@ -188,22 +204,23 @@ if os.path.exists(checkpoint_latest):
     checkpoint = torch.load(checkpoint_latest)
     model.load_state_dict(checkpoint["model_state_dict"])
     optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-    completed_epochs = checkpoint["epoch"]
+    train_sampler.load_state_dict(checkpoint["sampler_state_dict"])
     print(f"Loaded checkpoint from {checkpoint_latest}")
 
-for t in range(completed_epochs, epochs):
+for t in range(train_sampler.epoch, epochs):
     print(f"Epoch {t+1}\n-------------------------------")
-    train_sampler.set_epoch(t)
-    train_loop(train_dataloader, model, loss_fn, optimizer)
-    if is_master: # TODO distributed validation
-        test_loop(test_dataloader, model, loss_fn)
-        torch.save({
-            "epoch": t + 1,
-            "model_state_dict": model.state_dict(),
-            "optimizer_state_dict": optimizer.state_dict(),
-        }, checkpoint_latest_temp)
-        os.replace(checkpoint_latest_temp, checkpoint_latest)
-        print(f"Saved checkpoint to {checkpoint_latest}")
+    with train_sampler.in_epoch(t):
+        train_loop(t, train_dataloader, train_sampler, model, loss_fn, optimizer)
+        if is_master: # TODO distributed validation
+            test_loop(test_dataloader, model, loss_fn)
+
+            atomic_torch_save({
+                "epoch": train_sampler.epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "sampler_state_dict": train_sampler.state_dict(),
+            }, checkpoint_latest)
+            print(f"Saved checkpoint to {checkpoint_latest}")
 print("Done!")
 
 

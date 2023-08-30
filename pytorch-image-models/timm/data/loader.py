@@ -16,9 +16,11 @@ import torch
 import torch.utils.data
 import numpy as np
 
+from cycling_utils import InterruptableDistributedSampler
+
 from .constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from .dataset import IterableImageDataset
-from .distributed_sampler import OrderedDistributedSampler, RepeatAugSampler, InterruptableDistributedSampler
+from .distributed_sampler import OrderedDistributedSampler, RepeatAugSampler
 from .random_erasing import RandomErasing
 from .mixup import FastCollateMixup
 from .transforms_factory import create_transform
