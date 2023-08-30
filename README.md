@@ -25,6 +25,7 @@ source ~/.venv/bin/activate
 git clone https://github.com/StrongResearch/isc-demos.git
 cd ~/isc-demos
 pip install -r requirements.txt
+pip install -e cycling_utils
 
 # fashion mnist
 cd ~/isc-demos/fashion_mnist
