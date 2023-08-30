@@ -72,7 +72,7 @@ test_data = datasets.FashionMNIST(
 )
 
 train_sampler = InterruptableDistributedSampler(training_data)
-train_dataloader = DataLoader(training_data, batch_size=64, sampler=train_sampler)
+train_dataloader = DataLoader(training_data, batch_size=64, sampler=train_sampler, num_workers=3)
 test_dataloader = DataLoader(test_data, batch_size=64)
 
 class NeuralNetwork(nn.Module):
@@ -133,7 +133,7 @@ print(f"learning_rate: {learning_rate}, batch_size: {batch_size}, epochs: {epoch
 # We define ``train_loop`` that loops over our optimization code, and ``test_loop`` that
 # evaluates the model's performance against our test data.
 
-def train_loop(dataloader, train_sampler, model, loss_fn, optimizer):
+def train_loop(epoch, dataloader, train_sampler, model, loss_fn, optimizer):
     size = len(dataloader)
     # Set the model to training mode - important for batch normalization and dropout layers
     # Unnecessary in this situation but added for best practices
@@ -151,9 +151,11 @@ def train_loop(dataloader, train_sampler, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
+        train_sampler.advance(len(X))
+
         if is_master and batch % 1 == 0:
             loss, current = loss.item(), (batch) #* len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            print(f"{epoch} | loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
         if is_master and batch % 100 == 0:
             atomic_torch_save({
@@ -208,7 +210,7 @@ if os.path.exists(checkpoint_latest):
 for t in range(train_sampler.epoch, epochs):
     print(f"Epoch {t+1}\n-------------------------------")
     with train_sampler.in_epoch(t):
-        train_loop(train_dataloader, train_sampler, model, loss_fn, optimizer)
+        train_loop(t, train_dataloader, train_sampler, model, loss_fn, optimizer)
         if is_master: # TODO distributed validation
             test_loop(test_dataloader, model, loss_fn)
 
