@@ -94,7 +94,8 @@ def train_eval_ddp(device_id, rank, world_size, model_parameters, nepochs, batch
                     print(f"Epoch {epoch+1}, Batch {i+1}/{n_train_batches}")
                 X_train, y_train = X_train.to(device_id), y_train.to(device_id)
 
-                n_accums = 0
+                train_sampler.advance(len(X_train))
+
                 if (i + 1) % accumulate == 0 or (i + 1) == n_train_batches: # Final loop in accumulation cycle, or last batch in dataset
                     z_train = ddp_model(X_train)
                     loss = loss_function(z_train, y_train)
@@ -104,8 +105,8 @@ def train_eval_ddp(device_id, rank, world_size, model_parameters, nepochs, batch
                     optimizer.step() # Weight update
                     optimizer.zero_grad() # Zero grad
 
-                    if rank == 0 and i % 100 == 0:
-                        print("saving checkpoint")
+                    if rank == 0 and i % 50 == 0:
+                        print("saving checkpoint", train_sampler.state_dict())
                         atomic_torch_save({
                             "epoch": epoch,
                             "model_state_dict": ddp_model.state_dict(),
@@ -114,7 +115,6 @@ def train_eval_ddp(device_id, rank, world_size, model_parameters, nepochs, batch
                             "sampler_state_dict": train_sampler.state_dict(),
                         }, checkpoint_latest)
 
-                    n_accums += 1
 
                 else: # Otherwise only accumulate gradients locally to save time.
                     with ddp_model.no_sync():
