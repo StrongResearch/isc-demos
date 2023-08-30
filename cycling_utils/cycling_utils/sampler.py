@@ -58,6 +58,12 @@ class InterruptableDistributedSampler(DistributedSampler):
         self.progress = state_dict["progress"]
         self.epoch = state_dict["epoch"]
 
+    def advance(self, n: int):
+        """
+        Record that n samples have been consumed.
+        """
+        self.progress += n
+
     def __iter__(self):
         if self.shuffle:
             # deterministically shuffle based on epoch and seed
@@ -86,7 +92,6 @@ class InterruptableDistributedSampler(DistributedSampler):
         # slice from progress to pick up where we left off
     
         for idx in indices[self.progress :]:
-            self.progress += 1
             yield idx
 
     @contextmanager

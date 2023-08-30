@@ -27,8 +27,9 @@ def test_constructor():
     sampler = InterruptableDistributedSampler(dataset)
     assert sampler.progress == 0
 
+@pytest.mark.parametrize("num_workers,", [0, 3])
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
-def test_dataloader_equal_to_torch(batch_size):
+def test_dataloader_equal_to_torch(batch_size, num_workers):
     n = 10
     t = torch.arange(n)
     dataset = TensorDataset(t)
@@ -36,48 +37,54 @@ def test_dataloader_equal_to_torch(batch_size):
     torch_sampler = DistributedSampler(dataset, seed=SEED)
 
     interruptable_dataloader = DataLoader(
-        dataset, sampler=interruptable_sampler, batch_size=batch_size
+        dataset, sampler=interruptable_sampler, batch_size=batch_size, num_workers=num_workers
     )
-    torch_dataloader = DataLoader(dataset, sampler=torch_sampler, batch_size=batch_size)
+    torch_dataloader = DataLoader(dataset, sampler=torch_sampler, batch_size=batch_size, num_workers=num_workers)
 
     for epoch in range(0, 10):
         torch_sampler.set_epoch(epoch)
         with interruptable_sampler.in_epoch(epoch):
             for step, (x_i, x_t) in enumerate(zip(interruptable_dataloader, torch_dataloader)):
+                # work would be done here...
                 assert torch.all(x_i[0] == x_t[0])
+                interruptable_sampler.advance(len(x_i[0]))
 
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
-def test_advance(batch_size):
+@pytest.mark.parametrize("num_workers,", [0, 3])
+def test_advance(batch_size, num_workers):
     n = 10
     t = torch.arange(n)
     dataset = TensorDataset(t)
     # shuffle false so that we can predict the order of the samples
     sampler = InterruptableDistributedSampler(dataset, seed=SEED, shuffle=False)
-    data_loader = DataLoader(dataset, sampler=sampler, batch_size=batch_size)
+    data_loader = DataLoader(dataset, sampler=sampler, batch_size=batch_size, num_workers=num_workers)
 
     with sampler.in_epoch(0):
         for step, (x, ) in enumerate(data_loader):
             # work would be done here...
             # plus one because of 0 indexing
+            sampler.advance(len(x))
             assert sampler.progress == x[-1].item() + 1, "progress should be equal to the number of samples seen so far"
 
         assert sampler.progress == n, "progress should be equal to the number of samples"
     assert sampler.progress == 0, "progress should be reset to 0"
 
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
-def test_advance_epochs(batch_size):
+@pytest.mark.parametrize("num_workers,", [0, 3])
+def test_advance_epochs(batch_size, num_workers):
     n = 10
     t = torch.arange(n)
     dataset = TensorDataset(t)
     # shuffle false so that we can predict the order of the samples
     sampler = InterruptableDistributedSampler(dataset, seed=SEED, shuffle=False)
-    data_loader = DataLoader(dataset, sampler=sampler, batch_size=batch_size)
+    data_loader = DataLoader(dataset, sampler=sampler, batch_size=batch_size, num_workers=num_workers)
 
     for epoch in range(0, 10):
         with sampler.in_epoch(epoch):
             for step, (x, ) in enumerate(data_loader):
                 # work would be done here...
                 # plus one because of 0 indexing
+                sampler.advance(len(x))
                 assert sampler.progress == x[-1].item() + 1, "progress should be equal to the number of samples seen so far"
 
             assert sampler.progress == n, "progress should be equal to the number of samples"
@@ -89,8 +96,8 @@ class TrainingInterrupt(Exception):
     pass
 
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
-# @pytest.mark.parametrize("batch_size,", [4])
-def test_dataloader_suspend_resume(batch_size, tmp_path):
+@pytest.mark.parametrize("num_workers,", [0, 3])
+def test_dataloader_suspend_resume(batch_size, tmp_path, num_workers):
     interrupt_epoch = 4
     interrupt_step = 7
 
@@ -102,7 +109,7 @@ def test_dataloader_suspend_resume(batch_size, tmp_path):
         interruptable_sampler = InterruptableDistributedSampler(dataset, seed=SEED, shuffle=False)
 
         interruptable_dataloader = DataLoader(
-            dataset, sampler=interruptable_sampler, batch_size=batch_size
+            dataset, sampler=interruptable_sampler, batch_size=batch_size, num_workers=num_workers
         )
 
         # run for a bit
@@ -111,6 +118,7 @@ def test_dataloader_suspend_resume(batch_size, tmp_path):
                 with interruptable_sampler.in_epoch(epoch):
                     for step, (x, ) in enumerate(interruptable_dataloader):
                         # work would be done here...
+                        interruptable_sampler.advance(len(x))
                         if epoch == interrupt_epoch and step == interrupt_step:
                             raise TrainingInterrupt # simulate interrupt
         except TrainingInterrupt:
@@ -145,6 +153,7 @@ def test_dataloader_suspend_resume(batch_size, tmp_path):
             with interruptable_sampler.in_epoch(epoch):
                 for step, (x, ) in enumerate(interruptable_dataloader, start=interruptable_sampler.progress//batch_size):
                     # work would be done here...
+                    interruptable_sampler.advance(len(x))
                     if first_step:
                         print("resume:", x)
                         assert last_item+1 == x[0].item(), "should be the same as the last item from the previous run"
