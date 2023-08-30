@@ -1,6 +1,10 @@
 import math
 import torch
 from torch.utils.data import Dataset, DistributedSampler
+from contextlib import contextmanager
+
+class HasNotResetProgressError(Exception):
+    pass
 
 class InterruptableDistributedSampler(DistributedSampler):
     def __init__(
@@ -24,7 +28,7 @@ class InterruptableDistributedSampler(DistributedSampler):
         to 0 at initialization.
 
         The progress is incremented by the number of samples returned by the
-        sampler. The progress is reset to 0 at the beginning of each epoch.
+        sampler. The progress is reset to 0 at the end of each epoch.
 
         Suspending and resuming the sampler is done by saving and loading the
         state dict. The state dict contains the epoch and progress. This works
@@ -33,15 +37,18 @@ class InterruptableDistributedSampler(DistributedSampler):
         """
         super().__init__(dataset, num_replicas, rank, shuffle, seed, drop_last)
         self.progress = 0
+        self._has_reset_progress = True
 
-    def advance(self, n):
-        self.progress += n
-        return self.progress
-
-    def reset_progress(self):
+    def _reset_progress(self):
         self.progress = 0
+        self._has_reset_progress = True
 
-    def set_epoch(self, epoch):
+    def set_epoch(self, epoch: int) -> None:
+        raise NotImplementedError("Use `with sampler.in_epoch(epoch)` instead of `sampler.set_epoch(epoch)`")
+
+    def _set_epoch(self, epoch):
+        if not self._has_reset_progress:
+            raise HasNotResetProgressError("You must reset progress before setting epoch e.g. `sampler.reset_progress()`\nor use `with sampler.in_epoch(epoch)` instead of `sampler.set_epoch(epoch)`")
         self.epoch = epoch
 
     def state_dict(self):
@@ -77,7 +84,23 @@ class InterruptableDistributedSampler(DistributedSampler):
         assert len(indices) == self.num_samples
 
         # slice from progress to pick up where we left off
-        return iter(indices[self.progress :])
     
-        # for idx in indices[self.progress :]:
-            # yield idx
+        for idx in indices[self.progress :]:
+            self.progress += 1
+            yield idx
+
+    @contextmanager
+    def in_epoch(self, epoch):
+        """
+        This context manager is used to set the epoch. It is used like this:
+
+        ```
+        for epoch in range(0, 10):
+            with sampler.in_epoch(epoch):
+                for step, (x, ) in enumerate(dataloader):
+                    # work would be done here...
+        ```
+        """
+        self._set_epoch(epoch)
+        yield
+        self._reset_progress()

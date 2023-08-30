@@ -41,12 +41,10 @@ def test_dataloader_equal_to_torch(batch_size):
     torch_dataloader = DataLoader(dataset, sampler=torch_sampler, batch_size=batch_size)
 
     for epoch in range(0, 10):
-        interruptable_sampler.set_epoch(epoch)
         torch_sampler.set_epoch(epoch)
-        for step, (x_i, x_t) in enumerate(zip(interruptable_dataloader, torch_dataloader)):
-            assert torch.all(x_i[0] == x_t[0])
-            interruptable_sampler.advance(len(x_i[0]))
-        interruptable_sampler.reset_progress()
+        with interruptable_sampler.in_epoch(epoch):
+            for step, (x_i, x_t) in enumerate(zip(interruptable_dataloader, torch_dataloader)):
+                assert torch.all(x_i[0] == x_t[0])
 
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
 def test_advance(batch_size):
@@ -57,18 +55,16 @@ def test_advance(batch_size):
     sampler = InterruptableDistributedSampler(dataset, seed=SEED, shuffle=False)
     data_loader = DataLoader(dataset, sampler=sampler, batch_size=batch_size)
 
-    for step, (x, ) in enumerate(data_loader):
-        # work would be done here...
-        sampler.advance(len(x))
-        # plus one because of 0 indexing
-        assert sampler.progress == x[-1].item() + 1, "progress should be equal to the number of samples seen so far"
+    with sampler.in_epoch(0):
+        for step, (x, ) in enumerate(data_loader):
+            # work would be done here...
+            # plus one because of 0 indexing
+            assert sampler.progress == x[-1].item() + 1, "progress should be equal to the number of samples seen so far"
 
-    assert sampler.progress == n, "progress should be equal to the number of samples"
-    sampler.reset_progress()
+        assert sampler.progress == n, "progress should be equal to the number of samples"
     assert sampler.progress == 0, "progress should be reset to 0"
 
-# @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
-@pytest.mark.parametrize("batch_size,", [4])
+@pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
 def test_advance_epochs(batch_size):
     n = 10
     t = torch.arange(n)
@@ -78,14 +74,13 @@ def test_advance_epochs(batch_size):
     data_loader = DataLoader(dataset, sampler=sampler, batch_size=batch_size)
 
     for epoch in range(0, 10):
-        for step, (x, ) in enumerate(data_loader):
-            # work would be done here...
-            sampler.advance(len(x))
-            # plus one because of 0 indexing
-            assert sampler.progress == x[-1].item() + 1, "progress should be equal to the number of samples seen so far"
+        with sampler.in_epoch(epoch):
+            for step, (x, ) in enumerate(data_loader):
+                # work would be done here...
+                # plus one because of 0 indexing
+                assert sampler.progress == x[-1].item() + 1, "progress should be equal to the number of samples seen so far"
 
-        assert sampler.progress == n, "progress should be equal to the number of samples"
-        sampler.reset_progress()
+            assert sampler.progress == n, "progress should be equal to the number of samples"
         assert sampler.progress == 0, "progress should be reset to 0"
 
 
@@ -113,13 +108,11 @@ def test_dataloader_suspend_resume(batch_size, tmp_path):
         # run for a bit
         try:
             for epoch in range(0, 10):
-                interruptable_sampler.set_epoch(epoch)
-                for step, (x, ) in enumerate(interruptable_dataloader):
-                    # work would be done here...
-                    interruptable_sampler.advance(len(x))
-                    if epoch == interrupt_epoch and step == interrupt_step:
-                        raise TrainingInterrupt # simulate interrupt
-                interruptable_sampler.reset_progress()
+                with interruptable_sampler.in_epoch(epoch):
+                    for step, (x, ) in enumerate(interruptable_dataloader):
+                        # work would be done here...
+                        if epoch == interrupt_epoch and step == interrupt_step:
+                            raise TrainingInterrupt # simulate interrupt
         except TrainingInterrupt:
             pass
 
@@ -149,14 +142,12 @@ def test_dataloader_suspend_resume(batch_size, tmp_path):
 
         first_step = True
         for epoch in range(interruptable_sampler.epoch, 10):
-            interruptable_sampler.set_epoch(epoch)
-            for step, (x, ) in enumerate(interruptable_dataloader, start=interruptable_sampler.progress//batch_size):
-                # work would be done here...
-                if first_step:
-                    print("resume:", x)
-                    assert last_item+1 == x[0].item(), "should be the same as the last item from the previous run"
-                    first_step = False
-                interruptable_sampler.advance(len(x))
-            interruptable_sampler.reset_progress()
+            with interruptable_sampler.in_epoch(epoch):
+                for step, (x, ) in enumerate(interruptable_dataloader, start=interruptable_sampler.progress//batch_size):
+                    # work would be done here...
+                    if first_step:
+                        print("resume:", x)
+                        assert last_item+1 == x[0].item(), "should be the same as the last item from the previous run"
+                        first_step = False
 
     resume_section()
