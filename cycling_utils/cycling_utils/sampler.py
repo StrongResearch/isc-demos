@@ -59,6 +59,8 @@ class InterruptableDistributedSampler(DistributedSampler):
 
     def load_state_dict(self, state_dict):
         self.progress = state_dict["progress"]
+        if not self.progress <= self.num_samples:
+            raise AdvancedTooFarError(f"progress should be less than or equal to the number of samples. progress: {self.progress}, num_samples: {self.num_samples}")
         self.epoch = state_dict["epoch"]
 
     def advance(self, n: int):
