@@ -3,7 +3,7 @@ import pytest
 import torch
 import torch.distributed as dist
 from torch.utils.data import TensorDataset, DistributedSampler, DataLoader
-from cycling_utils.sampler import InterruptableDistributedSampler
+from cycling_utils.sampler import InterruptableDistributedSampler, AdvancedTooFarError, ResetProgressTooEarlyError
 
 SEED = 13006555
 
@@ -26,6 +26,21 @@ def test_constructor():
     dataset = TensorDataset(t)
     sampler = InterruptableDistributedSampler(dataset)
     assert sampler.progress == 0
+
+def test_cannot_advance_too_much():
+    t = torch.arange(10)
+    dataset = TensorDataset(t)
+    sampler = InterruptableDistributedSampler(dataset)
+    with pytest.raises(AdvancedTooFarError):
+        sampler.advance(11)
+
+def test_cannot_reset_progress_early():
+    t = torch.arange(10)
+    dataset = TensorDataset(t)
+    sampler = InterruptableDistributedSampler(dataset)
+    with pytest.raises(ResetProgressTooEarlyError):
+        with sampler.in_epoch(0):
+            pass
 
 @pytest.mark.parametrize("num_workers,", [0, 3])
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])

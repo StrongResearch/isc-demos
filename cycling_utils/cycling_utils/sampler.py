@@ -6,6 +6,12 @@ from contextlib import contextmanager
 class HasNotResetProgressError(Exception):
     pass
 
+class AdvancedTooFarError(Exception):
+    pass
+
+class ResetProgressTooEarlyError(Exception):
+    pass
+
 class InterruptableDistributedSampler(DistributedSampler):
     def __init__(
         self,
@@ -40,6 +46,8 @@ class InterruptableDistributedSampler(DistributedSampler):
         self._has_reset_progress = True
 
     def _reset_progress(self):
+        if self.progress != self.num_samples:
+            raise ResetProgressTooEarlyError("You can only reset progress at the end of an epoch.")
         self.progress = 0
         self._has_reset_progress = True
 
@@ -63,6 +71,8 @@ class InterruptableDistributedSampler(DistributedSampler):
         Record that n samples have been consumed.
         """
         self.progress += n
+        if self.progress > self.num_samples:
+            raise AdvancedTooFarError("You have advanced too far. You can only advance up to the total size of the dataset.")
 
     def __iter__(self):
         if self.shuffle:
