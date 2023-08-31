@@ -33,6 +33,7 @@ isc train fashion_mnist.isc
 
 # cifar100 + ResNet50
 cd ~/isc-demos/cifar100-resnet50
+python3 prepare_cifar_data.py 
 isc train cifar100-resnet50.isc
 
 # torchvision segmentation
