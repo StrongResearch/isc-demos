@@ -4,5 +4,4 @@ gpu_type="24GB VRAM GPU"
 nnodes = 9
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_tv"
-command="train_cycling.py --lr 0.0002 --dataset coco -b 8 --model fcn_resnet101 --aux-loss --weights-backbone ResNet101_Weights.IMAGENET1K_V1 --data-path=/workspace/datasets/coco --epochs=1 --resume $OUTPUT_PATH/checkpoint.isc"
 command="train_cycling.py --dataset coco -b 4 --model deeplabv3_mobilenet_v3_large --aux-loss --wd 0.000001 --weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1 --data-path=/workspace/datasets/coco --resume $OUTPUT_PATH/checkpoint.isc"
