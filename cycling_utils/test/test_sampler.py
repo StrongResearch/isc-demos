@@ -3,7 +3,9 @@ import pytest
 import torch
 import torch.distributed as dist
 from torch.utils.data import TensorDataset, DistributedSampler, DataLoader
-from cycling_utils.sampler import InterruptableDistributedSampler, AdvancedTooFarError, ResetProgressTooEarlyError
+from hypothesis import given, assume
+from hypothesis import strategies as st
+from cycling_utils.sampler import InterruptableDistributedSampler, AdvancedTooFarError
 
 SEED = 13006555
 
@@ -21,8 +23,9 @@ def setup_teardown():
     yield
     dist.destroy_process_group()
 
-def test_constructor():
-    t = torch.arange(10)
+@given(st.integers(min_value=0, max_value=1000))
+def test_constructor(n):
+    t = torch.arange(n)
     dataset = TensorDataset(t)
     sampler = InterruptableDistributedSampler(dataset)
     assert sampler.progress == 0
@@ -33,14 +36,6 @@ def test_cannot_advance_too_much():
     sampler = InterruptableDistributedSampler(dataset)
     with pytest.raises(AdvancedTooFarError):
         sampler.advance(11)
-
-def test_cannot_reset_progress_early():
-    t = torch.arange(10)
-    dataset = TensorDataset(t)
-    sampler = InterruptableDistributedSampler(dataset)
-    with pytest.raises(ResetProgressTooEarlyError):
-        with sampler.in_epoch(0):
-            pass
 
 @pytest.mark.parametrize("num_workers,", [0, 3])
 @pytest.mark.parametrize("batch_size,", [1, 2, 3, 4, 5, 6])
@@ -57,6 +52,28 @@ def test_dataloader_equal_to_torch(batch_size, num_workers):
     torch_dataloader = DataLoader(dataset, sampler=torch_sampler, batch_size=batch_size, num_workers=num_workers)
 
     for epoch in range(0, 10):
+        torch_sampler.set_epoch(epoch)
+        with interruptable_sampler.in_epoch(epoch):
+            for step, (x_i, x_t) in enumerate(zip(interruptable_dataloader, torch_dataloader)):
+                # work would be done here...
+                assert torch.all(x_i[0] == x_t[0])
+                interruptable_sampler.advance(len(x_i[0]))
+
+@given(st.integers(1, 200), st.integers(min_value=1, max_value=100), st.booleans(), st.booleans(), st.integers(1, 7))
+def test_dataloader_equal_to_torch_hypo(n, batch_size, drop_last, shuffle, epoch_end):
+    assume(n > batch_size)
+    num_workers = 0
+    t = torch.arange(n)
+    dataset = TensorDataset(t)
+    interruptable_sampler = InterruptableDistributedSampler(dataset, seed=SEED, shuffle=shuffle)
+    torch_sampler = DistributedSampler(dataset, seed=SEED, shuffle=shuffle)
+
+    interruptable_dataloader = DataLoader(
+        dataset, sampler=interruptable_sampler, batch_size=batch_size, num_workers=num_workers, drop_last=drop_last
+    )
+    torch_dataloader = DataLoader(dataset, sampler=torch_sampler, batch_size=batch_size, num_workers=num_workers, drop_last=drop_last)
+
+    for epoch in range(0, epoch_end):
         torch_sampler.set_epoch(epoch)
         with interruptable_sampler.in_epoch(epoch):
             for step, (x_i, x_t) in enumerate(zip(interruptable_dataloader, torch_dataloader)):

@@ -9,9 +9,6 @@ class HasNotResetProgressError(Exception):
 class AdvancedTooFarError(Exception):
     pass
 
-class ResetProgressTooEarlyError(Exception):
-    pass
-
 class InterruptableDistributedSampler(DistributedSampler):
     def __init__(
         self,
@@ -46,8 +43,6 @@ class InterruptableDistributedSampler(DistributedSampler):
         self._has_reset_progress = True
 
     def _reset_progress(self):
-        if self.progress != self.num_samples:
-            raise ResetProgressTooEarlyError("You can only reset progress at the end of an epoch.")
         self.progress = 0
         self._has_reset_progress = True
 
