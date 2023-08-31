@@ -125,7 +125,7 @@ def train_eval_ddp(device_id, rank, world_size, model_parameters, nepochs, batch
                         loss.backward()
 
             # Average training loss per batch and training time
-            tloss = cumulative_train_loss / train_examples_seen
+            tloss = cumulative_train_loss / (train_examples_seen if train_examples_seen > 0 else 1)
             epoch_duration = time.perf_counter() - start
 
             # Evaluation

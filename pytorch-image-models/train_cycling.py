@@ -1007,7 +1007,7 @@ def train_one_epoch(
         data_start_time = time.time()
 
 
-        if need_update and utils.is_primary(args) and (batch_idx % 5 == 0):
+        if need_update and utils.is_primary(args) and (batch_idx % 2 == 0):
             _logger.info(f'Step finished, saving checkpoint')
             saver._save(args.resume, epoch)
 
