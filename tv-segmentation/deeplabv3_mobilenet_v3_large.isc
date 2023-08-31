@@ -1,5 +1,5 @@
 
-experiment_name="seg-fcn_resnet50"
+experiment_name="deeplabv3_mobilenet_v3_large"
 gpu_type="24GB VRAM GPU"
 nnodes = 9
 venv_path = "~/.venv/bin/activate"
