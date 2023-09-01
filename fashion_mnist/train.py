@@ -201,7 +201,9 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 completed_epochs = 0
 if os.path.exists(checkpoint_latest):
+    print(f"Loading checkpoint from {checkpoint_latest}")
     checkpoint = torch.load(checkpoint_latest)
+    print(f"{checkpoint.keys()=}")
     model.load_state_dict(checkpoint["model_state_dict"])
     optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
     train_sampler.load_state_dict(checkpoint["sampler_state_dict"])

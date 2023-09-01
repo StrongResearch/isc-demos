@@ -1,7 +1,0 @@
-
-experiment_name="seg-fcn_resnet50"
-gpu_type="24GB VRAM GPU"
-nnodes = 9
-venv_path = "~/.venv/bin/activate"
-output_path = "~/output_tv"
-command="train_cycling.py --lr 0.0002 --dataset coco -b 8 --model fcn_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1 --data-path=/workspace/datasets/coco --epochs=1 --resume $OUTPUT_PATH/checkpoint.isc"
