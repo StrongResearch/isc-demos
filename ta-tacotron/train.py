@@ -478,19 +478,24 @@ def train(rank, world_size, args):
 
 
 def main(args):
+    
+    dist.init_process_group(backend="nccl") 
+
     logger.info("Start time: {}".format(str(datetime.now())))
 
     torch.manual_seed(0)
     random.seed(0)
+    
+    world_size = dist.get_world_size() 
 
-    logger.info(f"# available GPUs: {device_counts}")
+    logger.info(f"# available GPUs: {world_size}")
 
     # download dataset is not already downloaded
     if args.dataset == "ljspeech":
+        logger.info(f"# using downloaded dataset") 
         LJSPEECH(root=args.dataset_path, download=False)
 
     global_rank = dist.get_rank()
-    world_size = dist.get_world_size()
 
     train(global_rank, world_size, args)
     
