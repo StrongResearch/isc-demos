@@ -1,6 +1,5 @@
 This is an example pipeline for text-to-speech using Tacotron2 configured for the ISC.
 
-Before submitting a job, run `pre_process_data.py` to cache training data.
 
 ## Install required packages
 
@@ -17,8 +16,10 @@ First you will need to run a job to preprocess the raw training data.
 ```bash
 isc train pre-train-ta-tacotron.isc
 ```
+This should generate a cached version of the training set which has been pre-processed.
 
 
+Then you can use the generated pre processed data
 ```bash 
 isc train ta-tacotron.isc
 ```
