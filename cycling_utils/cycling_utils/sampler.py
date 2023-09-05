@@ -46,10 +46,7 @@ class InterruptableDistributedSampler(DistributedSampler):
         self.progress = 0
         self._has_reset_progress = True
 
-    def set_epoch(self, epoch: int) -> None:
-        raise NotImplementedError("Use `with sampler.in_epoch(epoch)` instead of `sampler.set_epoch(epoch)`")
-
-    def _set_epoch(self, epoch):
+    def set_epoch(self, epoch):
         if not self._has_reset_progress:
             raise HasNotResetProgressError("You must reset progress before setting epoch e.g. `sampler.reset_progress()`\nor use `with sampler.in_epoch(epoch)` instead of `sampler.set_epoch(epoch)`")
         self.epoch = epoch
@@ -113,6 +110,6 @@ class InterruptableDistributedSampler(DistributedSampler):
                     # work would be done here...
         ```
         """
-        self._set_epoch(epoch)
+        self.set_epoch(epoch)
         yield
         self._reset_progress()
