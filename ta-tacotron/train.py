@@ -26,7 +26,12 @@
 # *****************************************************************************
 """
 Modified from
-https://github.com/NVIDIA/DeepLearningExamples/blob/master/PyTorch/SpeechSynthesis/Tacotron2/train.py
+https://github.com/pytorch/audio/blob/main/examples/pipeline_tacotron2/train.py
+for Strong Compute ISC
+
+Changes: 
+- Assumes that processed dataset is found in a safetensors file
+- Removed mp.spawn and replaced with torchrun
 """
 
 import argparse
@@ -40,23 +45,25 @@ from time import time
 import matplotlib.pyplot as plt
 import torch
 import torch.distributed as dist
-import torch.multiprocessing as mp
 import torchaudio
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchaudio.models import Tacotron2
-from torchaudio.datasets import LJSPEECH 
 
 from tqdm import tqdm
 
 plt.switch_backend("agg")
 
-from datasets import SpectralNormalization, split_process_dataset, text_mel_collate_fn
+from safetensors.torch import load_model, save_model
+
+from datasets import SpectralNormalization, process_dataset, text_mel_collate_fn
 from loss import Tacotron2Loss
 from text.text_preprocessing import available_phonemizers, available_symbol_set, get_symbol_list, text_to_sequence
-from utils import save_checkpoint
 
+from utils import get_datasets
+
+from pathlib import Path
 
 logging.basicConfig(format="%(asctime)s %(levelname)-8s %(message)s", level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger(os.path.basename(__file__))
@@ -76,10 +83,6 @@ def parse_args(parser):
     parser.add_argument(
         "--anneal-factor", type=float, choices=[0.1, 0.3], default=0.1, help="factor for annealing learning rate"
     )
-
-    parser.add_argument("--master-addr", default=None, type=str, help="the address to use for distributed training")
-    parser.add_argument("--master-port", default=None, type=str, help="the port to use for distributed training")
-
     preprocessor = parser.add_argument_group("text preprocessor setup")
     preprocessor.add_argument(
         "--text-preprocessor",
@@ -107,20 +110,32 @@ def parse_args(parser):
     # training
     training = parser.add_argument_group("training setup")
     training.add_argument("--epochs", type=int, required=True, help="number of total epochs to run")
+
     training.add_argument(
-        "--checkpoint-path",
+        "--checkpoint-dir",
         type=str,
         default="",
-        help="checkpoint path. If a file exists, " "the program will load it and resume training.",
+        help="Directory to save model and training state checkpoints"
     )
+    
     training.add_argument("--workers", default=8, type=int, help="number of data loading workers")
+    
     training.add_argument(
-        "--validate-and-checkpoint-freq",
+        "--validate-freq",
         default=10,
         type=int,
         metavar="N",
-        help="validation and saving checkpoint frequency in epochs",
+        help="validation frequency in epochs"
     )
+
+    training.add_argument(
+        "--checkpoint-freq",
+        default=10,
+        type=int,
+        metavar="N",
+        help="checkpoint frequency in iterations"
+    )
+
     training.add_argument("--logging-freq", default=10, type=int, metavar="N", help="logging frequency in epochs")
 
     optimization = parser.add_argument_group("optimization setup")
@@ -274,39 +289,7 @@ def log_additional_info(writer, model, loader, epoch):
     writer.add_image("trn/alignment", alignment[0], epoch, dataformats="HW")
 
 
-def get_datasets(args):
-    text_preprocessor = partial(
-        text_to_sequence,
-        symbol_list=args.text_preprocessor,
-        phonemizer=args.phonemizer,
-        checkpoint=args.phonemizer_checkpoint,
-        cmudict_root=args.cmudict_root,
-    )
-
-    transforms = torch.nn.Sequential(
-        torchaudio.transforms.MelSpectrogram(
-            sample_rate=args.sample_rate,
-            n_fft=args.n_fft,
-            win_length=args.win_length,
-            hop_length=args.hop_length,
-            f_min=args.mel_fmin,
-            f_max=args.mel_fmax,
-            n_mels=args.n_mels,
-            mel_scale="slaney",
-            normalized=False,
-            power=1,
-            norm="slaney",
-        ),
-        SpectralNormalization(),
-    )
-    trainset, valset = split_process_dataset(
-        args.dataset, args.dataset_path, args.val_ratio, transforms, text_preprocessor
-    )
-    return trainset, valset
-
-
 def train(rank, world_size, args):
-    dist.init_process_group("nccl", rank=rank, world_size=world_size)
 
     if rank == 0 and args.logging_dir:
         if not os.path.isdir(args.logging_dir):
@@ -349,26 +332,27 @@ def train(rank, world_size, args):
         postnet_embedding_dim=args.postnet_embedding_dim,
         gate_threshold=args.gate_threshold,
     ).cuda(rank)
+
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
 
     optimizer = Adam(model.parameters(), lr=args.learning_rate)
 
-    best_loss = float("inf")
     start_epoch = 0
 
-    if args.checkpoint_path and os.path.isfile(args.checkpoint_path):
-        logger.info(f"Checkpoint: loading '{args.checkpoint_path}'")
-        map_location = {"cuda:%d" % 0: "cuda:%d" % rank}
-        checkpoint = torch.load(args.checkpoint_path, map_location=map_location)
+    checkpoint_dir_path = Path(args.checkpoint_dir)
+    model_checkpoint_path = checkpoint_dir_path / "model.sf"
+    train_state_checkpoint_path = checkpoint_dir_path / "train_state.pt"
+    temp_checkpoint_dir_path = Path(args.checkpoint_dir + "_temp")
 
-        start_epoch = checkpoint["epoch"]
-        best_loss = checkpoint["best_loss"]
-
-        model.load_state_dict(checkpoint["state_dict"])
-        optimizer.load_state_dict(checkpoint["optimizer"])
-
-        logger.info(f"Checkpoint: loaded '{args.checkpoint_path}' at epoch {checkpoint['epoch']}")
+    if checkpoint_dir_path.is_dir():
+        if model_checkpoint_path.is_file() and train_state_checkpoint_path.is_file():
+            logger.info("Loading the model checkpoint")
+            load_model(model, str(model_checkpoint_path))
+            logger.info(f"Loading train state checkpoint data")        
+            train_state_checkpoint = torch.load(train_state_checkpoint_path)
+            start_epoch = train_state_checkpoint["epoch"]
+            optimizer.load_state_dict(train_state_checkpoint["optimizer"])
 
     trainset, valset = get_datasets(args)
 
@@ -414,24 +398,31 @@ def train(rank, world_size, args):
 
         for i, batch in iterator:
             adjust_learning_rate(epoch, optimizer, args.learning_rate, args.anneal_steps, args.anneal_factor)
-
             model.zero_grad()
-
             loss, losses = training_step(model, batch, i)
-
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
-
             optimizer.step()
-
             if rank == 0 and writer:
                 global_iters = epoch * len(train_loader)
                 writer.add_scalar("trn/mel_loss", losses[0], global_iters)
                 writer.add_scalar("trn/mel_postnet_loss", losses[1], global_iters)
                 writer.add_scalar("trn/gate_loss", losses[2], global_iters)
-
+            
             trn_loss += loss * len(batch[0])
             counts += len(batch[0])
+            
+            if rank == 0 and (global_iters % args.checkpoint_freq + 1) == 0:
+                logger.info("saving checkpoint")                
+                save_model(model, str(temp_checkpoint_dir_path / "model.sf"))
+                torch.save({
+                            "epoch":epoch, 
+                            "optimizer":optimizer.state_dict(), 
+                        },
+                        temp_checkpoint_dir_path / "train_state.pt"
+                        )
+                os.replace(temp_checkpoint_dir_path, checkpoint_dir_path)
+                logger.info("saved checkpoint")
 
         trn_loss = trn_loss / counts
 
@@ -441,7 +432,8 @@ def train(rank, world_size, args):
             if writer:
                 writer.add_scalar("trn_loss", trn_loss, epoch)
 
-        if ((epoch + 1) % args.validate_and_checkpoint_freq == 0) or (epoch == args.epochs - 1):
+
+        if ((epoch + 1) % args.validate_freq == 0) or (epoch == args.epochs - 1):
 
             val_start_time = time()
             model.eval()
@@ -459,23 +451,7 @@ def train(rank, world_size, args):
             if rank == 0 and writer:
                 writer.add_scalar("val_loss", val_loss, epoch)
                 log_additional_info(writer, model, val_loader, epoch)
-
-            if rank == 0:
-                is_best = val_loss < best_loss
-                best_loss = min(val_loss, best_loss)
-                logger.info(f"[Rank: {rank}, Epoch: {epoch}; Eval] time: {time()-val_start_time}; val_loss: {val_loss}")
-                logger.info(f"[Epoch: {epoch}] Saving checkpoint to {args.checkpoint_path}")
-                save_checkpoint(
-                    {
-                        "epoch": epoch + 1,
-                        "state_dict": model.state_dict(),
-                        "best_loss": best_loss,
-                        "optimizer": optimizer.state_dict(),
-                    },
-                    is_best,
-                    args.checkpoint_path,
-                )
-
+            
     dist.destroy_process_group()
 
 
@@ -489,14 +465,8 @@ def main(args):
     random.seed(0)
     
     world_size = dist.get_world_size() 
-
     logger.info(f"# available GPUs: {world_size}")
-
-    # download dataset is not already downloaded
-    if args.dataset == "ljspeech":
-        logger.info(f"# using downloaded dataset") 
-        LJSPEECH(root=args.dataset_path, download=False)
-
+    
     global_rank = dist.get_rank()
 
     train(global_rank, world_size, args)

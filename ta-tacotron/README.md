@@ -1,21 +1,30 @@
-This is an example pipeline for text-to-speech using Tacotron2.
+This is an example pipeline for text-to-speech using Tacotron2 configured for the ISC.
 
-Here is a [colab example](https://colab.research.google.com/drive/1MPcn1_G5lKozxZ7v8b9yucOD5X5cLK4j?usp=sharing)
-that shows how the text-to-speech pipeline is used during inference with the built-in pretrained models.
+Before submitting a job, run `pre_process_data.py` to cache training data.
 
 ## Install required packages
 
-Required packages
+Assuming you are in a virtualenv:
+
 ```bash
-pip install librosa tqdm inflect joblib
+pip install -r requirements.txt
 ```
 
-To use tensorboard
+## Training Tacotron2 on the isc with character as input
+
+First you will need to run a job to preprocess the raw training data.
+
 ```bash
-pip install tensorboard pillow
+isc train pre-train-ta-tacotron.isc
+```
+
+
+```bash 
+isc train ta-tacotron.isc
 ```
 
 ## Training Tacotron2 with character as input
+
 
 The training of Tacotron2 can be invoked with the following command.
 

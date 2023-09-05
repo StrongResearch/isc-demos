@@ -36,19 +36,41 @@ from typing import Callable, List, Tuple
 import torch
 from torch import Tensor
 
+from datasets import SpectralNormalization, process_dataset, text_mel_collate_fn
+from text.text_preprocessing import available_phonemizers, available_symbol_set, get_symbol_list, text_to_sequence
+from functools import partial 
 
-def save_checkpoint(state, is_best, filename):
-    r"""Save the model to a temporary file first, then copy it to filename,
-    in case signals interrupt the torch.save() process.
-    """
-    torch.save(state, filename)
-    logging.info(f"Checkpoint saved to {filename}")
+import torchaudio
 
-    if is_best:
-        path, best_filename = os.path.split(filename)
-        best_filename = os.path.join(path, "best_" + best_filename)
-        shutil.copyfile(filename, best_filename)
-        logging.info(f"Current best checkpoint saved to {best_filename}")
+def get_datasets(args):
+    text_preprocessor = partial(
+        text_to_sequence,
+        symbol_list=args.text_preprocessor,
+        phonemizer=args.phonemizer,
+        checkpoint=args.phonemizer_checkpoint,
+        cmudict_root=args.cmudict_root,
+    )
+
+    transforms = torch.nn.Sequential(
+        torchaudio.transforms.MelSpectrogram(
+            sample_rate=args.sample_rate,
+            n_fft=args.n_fft,
+            win_length=args.win_length,
+            hop_length=args.hop_length,
+            f_min=args.mel_fmin,
+            f_max=args.mel_fmax,
+            n_mels=args.n_mels,
+            mel_scale="slaney",
+            normalized=False,
+            power=1,
+            norm="slaney",
+        ),
+        SpectralNormalization(),
+    )
+    trainset = process_dataset(
+        args.dataset, args.dataset_path, args.val_ratio, transforms, text_preprocessor
+    )
+    return trainset, []
 
 
 def pad_sequences(batch: List[Tensor]) -> Tuple[Tensor, Tensor]:

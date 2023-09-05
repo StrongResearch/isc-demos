@@ -1,0 +1,6 @@
+experiment_name="pre-train-ta-tacotron"
+gpu_type="24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_tacotron/pre_train"
+command = "process_data.py  --text-preprocessor english_characters --dataset ljspeech --dataset-path /workspace/datasets/ljspeech/"

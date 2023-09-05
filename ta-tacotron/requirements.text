@@ -8,3 +8,4 @@ tensorboard
 unidecode
 pillow
 tqdm
+safetensors

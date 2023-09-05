@@ -24,6 +24,16 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # *****************************************************************************
+"""
+Modified from
+https://github.com/pytorch/audio/blob/main/examples/pipeline_tacotron2/datasets.py
+for Strong Compute ISC
+
+Changes: 
+- Dataset no longer is cached to memory
+- Users are expected to use this code to cache the processed dataset
+  so this is not done at startup
+"""
 
 from typing import Callable, List, Tuple
 
@@ -41,26 +51,6 @@ class SpectralNormalization(torch.nn.Module):
 class InverseSpectralNormalization(torch.nn.Module):
     def forward(self, input):
         return torch.exp(input)
-
-
-class MapMemoryCache(torch.utils.data.Dataset):
-    r"""Wrap a dataset so that, whenever a new item is returned, it is saved to memory."""
-
-    def __init__(self, dataset):
-        self.dataset = dataset
-        self._cache = [None] * len(dataset)
-
-    def __getitem__(self, n):
-        if self._cache[n] is not None:
-            return self._cache[n]
-
-        item = self.dataset[n]
-        self._cache[n] = item
-
-        return item
-
-    def __len__(self):
-        return len(self.dataset)
 
 
 class Processed(torch.utils.data.Dataset):
@@ -82,44 +72,22 @@ class Processed(torch.utils.data.Dataset):
         return text_norm, torch.squeeze(melspec, 0)
 
 
-def split_process_dataset(
+def process_dataset(
     dataset: str,
     file_path: str,
-    val_ratio: float,
     transforms: Callable,
-    text_preprocessor: Callable[[str], List[int]],
-) -> Tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
-    """Returns the Training and validation datasets.
-
-    Args:
-        dataset (str): The dataset to use. Available options: [`'ljspeech'`]
-        file_path (str): Path to the data.
-        val_ratio (float): Path to the data.
-        transforms (callable): A function/transform that takes in a waveform and
-            returns a transformed waveform (mel spectrogram in this example).
-        text_preprocess (callable): A function that takes in a string and
-            returns a list of integers representing each of the symbol in the string.
-
-    Returns:
-        train_dataset (`torch.utils.data.Dataset`): The training set.
-        val_dataset (`torch.utils.data.Dataset`): The validation set.
+    text_preprocessor: Callable[[str], List[int]]
+) -> torch.utils.data.Dataset:
+    """Returns the processed dataset 
     """
     if dataset == "ljspeech":
         data = LJSPEECH(root=file_path, download=False)
-
-        val_length = int(len(data) * val_ratio)
-        lengths = [len(data) - val_length, val_length]
-        train_dataset, val_dataset = random_split(data, lengths)
     else:
         raise ValueError(f"Expected datasets: `ljspeech`, but found {dataset}")
+    
+    dataset = Processed(data, transforms,text_preprocessor)
 
-    train_dataset = Processed(train_dataset, transforms, text_preprocessor)
-    val_dataset = Processed(val_dataset, transforms, text_preprocessor)
-
-    train_dataset = MapMemoryCache(train_dataset)
-    val_dataset = MapMemoryCache(val_dataset)
-
-    return train_dataset, val_dataset
+    return dataset 
 
 
 def text_mel_collate_fn(
