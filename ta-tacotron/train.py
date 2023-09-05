@@ -46,6 +46,8 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchaudio.models import Tacotron2
+from torchaudio.datasets import LJSPEECH 
+
 from tqdm import tqdm
 
 plt.switch_backend("agg")
