@@ -1,7 +1,10 @@
 torch==2.0.1
 librosa
-tqdm
 inflect
 joblib
 torchaudio
 matplotlib
+tensorboard
+unidecode
+pillow
+tqdm
