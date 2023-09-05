@@ -483,40 +483,17 @@ def main(args):
     torch.manual_seed(0)
     random.seed(0)
 
-    if args.master_addr is not None:
-        os.environ["MASTER_ADDR"] = args.master_addr
-    elif "MASTER_ADDR" not in os.environ:
-        os.environ["MASTER_ADDR"] = "localhost"
-
-    if args.master_port is not None:
-        os.environ["MASTER_PORT"] = args.master_port
-    elif "MASTER_PORT" not in os.environ:
-        os.environ["MASTER_PORT"] = "17778"
-
-    device_counts = torch.cuda.device_count()
-
     logger.info(f"# available GPUs: {device_counts}")
 
     # download dataset is not already downloaded
     if args.dataset == "ljspeech":
-        if not os.path.exists(os.path.join(args.dataset_path, "LJSpeech-1.1")):
-            from torchaudio.datasets import LJSPEECH
+        LJSPEECH(root=args.dataset_path, download=False)
 
-            LJSPEECH(root=args.dataset_path, download=True)
+    global_rank = dist.get_rank()
+    world_size = dist.get_world_size()
 
-    if device_counts == 1:
-        train(0, 1, args)
-    else:
-        mp.spawn(
-            train,
-            args=(
-                device_counts,
-                args,
-            ),
-            nprocs=device_counts,
-            join=True,
-        )
-
+    train(global_rank, world_size, args)
+    
     logger.info(f"End time: {datetime.now()}")
 
 
