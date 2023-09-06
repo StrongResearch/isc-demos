@@ -123,7 +123,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
         sampler.advance(len(image))
 
         step = sampler.progress // data_loader.batch_size
-        if utils.is_main_process() and step % 5 == 0:
+        if utils.is_main_process() and step % 1 == 0:
             print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),
@@ -251,6 +251,7 @@ def main(args):
         print(confmat)
         return
 
+    print("Starting training...")
     start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
         # if args.distributed:
@@ -287,7 +288,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--aux-loss", action="store_true", help="auxiliary loss")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
     parser.add_argument(
-        "-b", "--batch-size", default=8, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
+        "-b", "--batch-size", default=2, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
     )
     parser.add_argument("--epochs", default=30, type=int, metavar="N", help="number of total epochs to run")
 

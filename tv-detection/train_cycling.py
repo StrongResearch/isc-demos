@@ -17,6 +17,7 @@ Also, if you train Keypoint R-CNN, the default hyperparameters are
 Because the number of images is smaller in the person keypoint subset of COCO,
 the number of epochs should be adapted so that we have the same number of iterations.
 """
+
 import datetime
 import os
 import time
@@ -105,7 +106,7 @@ def main(args):
     train_sampler = InterruptableDistributedSampler(dataset)
     test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
 
-    if args.aspect_ratio_group_factor >= 0:
+    if args.aspect_ratio_group_factor >= 0: # default == 3
         group_ids = create_aspect_ratio_groups(dataset, k=args.aspect_ratio_group_factor)
         train_batch_sampler = GroupedBatchSampler(train_sampler, group_ids, args.batch_size)
     else:
@@ -115,6 +116,7 @@ def main(args):
     if args.use_copypaste:
         if args.data_augmentation != "lsj":
             raise RuntimeError("SimpleCopyPaste algorithm currently only supports the 'lsj' data augmentation policies")
+        print("Using copypaste_collate_fn for train_collate_fn")
         train_collate_fn = copypaste_collate_fn
 
     data_loader = torch.utils.data.DataLoader(
@@ -135,8 +137,8 @@ def main(args):
     model = torchvision.models.get_model(
         args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, **kwargs
     )
-    
     model.to(device)
+
     if args.distributed and args.sync_bn:
         model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
 
@@ -168,6 +170,7 @@ def main(args):
 
     scaler = torch.cuda.amp.GradScaler() if args.amp else None
 
+    ## OUTER LR_SCHEDULER
     args.lr_scheduler = args.lr_scheduler.lower()
     if args.lr_scheduler == "multisteplr":
         lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.lr_steps, gamma=args.lr_gamma)
@@ -177,20 +180,29 @@ def main(args):
         raise RuntimeError(
             f"Invalid lr scheduler '{args.lr_scheduler}'. Only MultiStepLR and CosineAnnealingLR are supported."
         )
+    
+    ## WARMUP LR_SCHEDULER
+    warmup_factor = 1.0 / 1000
+    warmup_iters = min(1000, len(data_loader) - 1)
+    warmup_lr_scheduler = torch.optim.lr_scheduler.LinearLR(
+            optimizer, start_factor=warmup_factor, total_iters=warmup_iters
+        )
 
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)   ### ADDED THIS
     if args.resume and os.path.isfile(args.resume): ## EDITED THIS
         checkpoint = torch.load(args.resume, map_location="cpu")
         model_without_ddp.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
-        if "lr_scheduler" in checkpoint: ## EDITED THIS
-            lr_scheduler.load_state_dict(checkpoint["lr_scheduler"]) ## EDITED THIS
+        lr_scheduler.load_state_dict(checkpoint["lr_scheduler"]) ## EDITED THIS
+        warmup_lr_scheduler.load_state_dict(checkpoint["warmup_lr_scheduler"]) ## ADDED THIS
         args.start_epoch = checkpoint["epoch"] # + 1
         if args.amp:
             scaler.load_state_dict(checkpoint["scaler"])
-        train_sampler.load_state_dict(checkpoint["sampler"])
+        train_batch_sampler.sampler.load_state_dict(checkpoint["sampler"]) # INTERRUPTABLE SAMPLER IS MEMBER OF GROUPED BATCH SAMPLER
 
     if args.test_only:
+        # We disable the cudnn benchmarking because it can noticeably affect the accuracy
+        torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
         evaluate(model, data_loader_test, device=device)
         return
@@ -200,16 +212,18 @@ def main(args):
     for epoch in range(args.start_epoch, args.epochs):
         # if args.distributed:
             # train_sampler.set_epoch(epoch)
-        with train_sampler.in_epoch(epoch):
-            train_one_epoch(model, optimizer, data_loader, train_sampler, args, device, epoch, args.print_freq, scaler)
-            lr_scheduler.step()
+        with train_batch_sampler.sampler.in_epoch(epoch):
+            train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_scheduler, warmup_lr_scheduler, args, device, epoch, args.print_freq, scaler)
+            lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
             if args.output_dir:
                 checkpoint = {
                     "model": model_without_ddp.state_dict(),
                     "optimizer": optimizer.state_dict(),
                     "lr_scheduler": lr_scheduler.state_dict(),
+                    "warmup_lr_scheduler": warmup_lr_scheduler.state_dict(),
                     "args": args,
                     "epoch": epoch,
+                    "sampler": train_batch_sampler.sampler.state_dict(),
                 }
                 if args.amp:
                     checkpoint["scaler"] = scaler.state_dict()

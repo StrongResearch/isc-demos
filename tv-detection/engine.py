@@ -9,23 +9,22 @@ from coco_eval import CocoEvaluator
 from coco_utils import get_coco_api_from_dataset
 from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 
-
-def train_one_epoch(model, optimizer, data_loader, sampler: InterruptableDistributedSampler, args, device, epoch, print_freq, scaler=None):
+def train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_scheduler, warmup_lr_scheduler, args, device, epoch, print_freq, scaler=None):
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
     header = f"Epoch: [{epoch}]"
 
-    lr_scheduler = None
-    if epoch == 0:
-        warmup_factor = 1.0 / 1000
-        warmup_iters = min(1000, len(data_loader) - 1)
+    # # warmup_lr_scheduler will either be None if (starting from scratch or after epoch 0) or not None, in which case run with that. 
+    # warmup_lr_scheduler = warmup_lr_scheduler if warmup_lr_scheduler else None
+    # if warmup_lr_scheduler is None and epoch == 0:
+    #     warmup_factor = 1.0 / 1000
+    #     warmup_iters = min(1000, len(data_loader) - 1)
+    #     warmup_lr_scheduler = torch.optim.lr_scheduler.LinearLR(
+    #         optimizer, start_factor=warmup_factor, total_iters=warmup_iters
+    #     )
 
-        lr_scheduler = torch.optim.lr_scheduler.LinearLR(
-            optimizer, start_factor=warmup_factor, total_iters=warmup_iters
-        )
-
-    for images, targets in metric_logger.log_every(data_loader, sampler.progress // args.batch_size, print_freq, header): ## EDITED THIS - ARGS.BATCH_SIZE == DATALOADER.BATCH_SIZE? GROUPEDBATCHSAMPLER AT PLAY
+    for images, targets in metric_logger.log_every(data_loader, train_batch_sampler.sampler.progress // args.batch_size, print_freq, header): ## EDITED THIS - ARGS.BATCH_SIZE == DATALOADER.BATCH_SIZE? GROUPEDBATCHSAMPLER AT PLAY
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in t.items()} for t in targets]
         with torch.cuda.amp.autocast(enabled=scaler is not None):
@@ -52,27 +51,26 @@ def train_one_epoch(model, optimizer, data_loader, sampler: InterruptableDistrib
             losses.backward()
             optimizer.step()
 
-        if lr_scheduler is not None:
-            lr_scheduler.step()
+        ## Always update warmup_lr_scheduler - once progressed past epoch 0, this will make no difference.
+        warmup_lr_scheduler.step()
 
         metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
 
         # ADDED THE FOLLOWING - INC NECESSARY ARGS TO TRAIN
-        sampler.advance(len(images))
-        step = sampler.progress // args.batch_size
+        train_batch_sampler.sampler.advance(len(images))
+        step = train_batch_sampler.sampler.progress // args.batch_size
         if utils.is_main_process() and step % 5 == 0:
             print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),
-                # "lr_scheduler": lr_scheduler.state_dict(), # EDITED DUE TO SCHEDULER APPLIED ONLY IN EPOCH 0
+                "lr_scheduler": lr_scheduler.state_dict(),
+                "warmup_lr_scheduler": warmup_lr_scheduler.state_dict(),
                 "epoch": epoch,
                 "args": args,
-                "sampler": sampler.state_dict(),
+                "sampler": train_batch_sampler.sampler.state_dict(),
             }
-            if epoch == 0:
-                checkpoint["lr_scheduler"] = lr_scheduler.state_dict()
                 
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
