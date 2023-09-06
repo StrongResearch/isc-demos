@@ -246,9 +246,6 @@ def train(rank, world_size, args):
         gate_threshold=args.gate_threshold,
     ).cuda(rank)
 
-    if rank == 0:
-        logger.info("converting batchnorm in model")
-
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
 
     if rank == 0:
