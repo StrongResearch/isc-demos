@@ -123,7 +123,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
         sampler.advance(len(image))
 
         step = sampler.progress // data_loader.batch_size
-        if utils.is_main_process() and step % 1 == 0:
+        if utils.is_main_process() and step % 5 == 0:
             print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),
@@ -251,7 +251,7 @@ def main(args):
         print(confmat)
         return
 
-    print("Starting training...")
+    print("Starting training")
     start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
         # if args.distributed:
@@ -287,14 +287,9 @@ def get_args_parser(add_help=True):
     parser.add_argument("--model", default="fcn_resnet101", type=str, help="model name")
     parser.add_argument("--aux-loss", action="store_true", help="auxiliary loss")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
-    parser.add_argument(
-        "-b", "--batch-size", default=2, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
-    )
+    parser.add_argument("-b", "--batch-size", default=8, type=int, help="images per gpu, the total batch size is $NGPU x batch_size", dest="batch_size")
     parser.add_argument("--epochs", default=30, type=int, metavar="N", help="number of total epochs to run")
-
-    parser.add_argument(
-        "-j", "--workers", default=16, type=int, metavar="N", help="number of data loading workers (default: 16)"
-    )
+    parser.add_argument("-j", "--workers", default=16, type=int, metavar="N", help="number of data loading workers (default: 16)")
     parser.add_argument("--lr", default=0.01, type=float, help="initial learning rate")
     parser.add_argument("--momentum", default=0.9, type=float, metavar="M", help="momentum")
     parser.add_argument(
@@ -323,7 +318,7 @@ def get_args_parser(add_help=True):
         "--use-deterministic-algorithms", action="store_true", help="Forces the use of deterministic algorithms only."
     )
     # distributed training parameters
-    parser.add_argument("--world-size", default=1, type=int, help="number of distributed processes")
+    parser.add_argument("--world-size", default=9, type=int, help="number of distributed processes")
     parser.add_argument("--dist-url", default="env://", type=str, help="url used to set up distributed training")
 
     parser.add_argument("--weights", default=None, type=str, help="the weights enum name to load")

@@ -3,5 +3,5 @@ experiment_name="deeplabv3_mobilenet_v3_large"
 gpu_type="24GB VRAM GPU"
 nnodes = 9
 venv_path = "~/.venv/bin/activate"
-output_path = "~/output_tv"
-command="train_cycling.py --dataset coco -b 4 --model deeplabv3_mobilenet_v3_large --aux-loss --wd 0.000001 --weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1 --data-path=/workspace/datasets/coco --resume $OUTPUT_PATH/checkpoint.isc"
+output_path = "~/output_deeplabv3_mobilenet_v3_large"
+command="train_cycling.py --dataset coco -b 1 --model deeplabv3_mobilenet_v3_large --aux-loss --wd 0.000001 --weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1 --data-path=/workspace/datasets/coco --resume $OUTPUT_PATH/checkpoint.isc"
