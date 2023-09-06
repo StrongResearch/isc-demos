@@ -4,6 +4,8 @@ strong_launcher/
 *.pth
 *.checkpoint
 *.pt
+*.safetensors
+*.sf
 wandb/
 
 # Byte-compiled / optimized / DLL files

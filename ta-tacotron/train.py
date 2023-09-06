@@ -249,7 +249,6 @@ def train(rank, world_size, args):
     if rank == 0:
         logger.info("converting batchnorm in model")
 
-    model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
 
     if rank == 0:
