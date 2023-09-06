@@ -55,7 +55,7 @@ plt.switch_backend("agg")
 
 from pathlib import Path
 
-from cycling_utils import InterruptableSampler
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 from safetensors.torch import load_model, save_model, load_file 
 
 
@@ -217,7 +217,10 @@ def train(rank, world_size, args):
     torch.cuda.set_device(rank)
 
     symbols = get_symbol_list(args.text_preprocessor)
-
+    
+    if rank == 0:
+        logger.info("Initialising model")
+    
     model = Tacotron2(
         mask_padding=args.mask_padding,
         n_mels=args.n_mels,
@@ -243,17 +246,23 @@ def train(rank, world_size, args):
         gate_threshold=args.gate_threshold,
     ).cuda(rank)
 
+
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
+
+    if rank == 0:
+        logger.info("Finished initialising model")
 
     optimizer = Adam(model.parameters(), lr=args.learning_rate)
 
     start_epoch = 0
 
     checkpoint_dir_path = Path(args.checkpoint_dir)
+    checkpoint_dir_path = checkpoint_dir_path.expanduser()
+
     model_checkpoint_path = checkpoint_dir_path / "model.sf"
     train_state_checkpoint_path = checkpoint_dir_path / "train_state.pt"
-    temp_checkpoint_dir_path = Path(args.checkpoint_dir + "_temp")
+    temp_checkpoint_dir_path = Path(args.checkpoint_dir + "_temp",  )
 
     loader_params = {
         "batch_size": 1, # batch sized is determined by the pre train script 
@@ -266,7 +275,7 @@ def train(rank, world_size, args):
     }
 
     batched_train_set =  SafetensorsLJSPEECH("ljspeech_batches")
-    batched_train_sampler = InterruptableSampler(batched_train_set)
+    batched_train_sampler = InterruptableDistributedSampler(batched_train_set)
     batched_train_loader = DataLoader(batched_train_set, sampler=batched_train_sampler, **loader_params)
 
     if checkpoint_dir_path.is_dir():
@@ -282,6 +291,8 @@ def train(rank, world_size, args):
             batched_train_sampler.load_state_dict(train_state_checkpoint["sampler"])
         else: 
             raise Exception("Not found both a model and a checkpoint file!")
+    else:
+        checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
 
     dist.barrier()
     model.train()
@@ -328,8 +339,10 @@ def train(rank, world_size, args):
 
             if rank == 0 and (global_iters % args.checkpoint_freq + 1) == 0:
                 logger.info("saving checkpoint")
+                
+                temp_checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
                 save_model(model, str(temp_checkpoint_dir_path / "model.sf"))
-                torch.save(
+                atomic_torch_save(
                     {
                         "epoch": epoch,
                         "optimizer": optimizer.state_dict(),
@@ -355,20 +368,20 @@ def train(rank, world_size, args):
 
 def main(args):
     dist.init_process_group(backend="nccl")
+    world_size = dist.get_world_size()
+    global_rank = dist.get_rank()
 
-    logger.info("Start time: {}".format(str(datetime.now())))
+    if global_rank == 0:
+        logger.info("Start time: {}".format(str(datetime.now())))
+        logger.info(f"# available GPUs: {world_size}")
 
     torch.manual_seed(0)
     random.seed(0)
-
-    world_size = dist.get_world_size()
-    logger.info(f"# available GPUs: {world_size}")
-
-    global_rank = dist.get_rank()
-
+    
     train(global_rank, world_size, args)
-
-    logger.info(f"End time: {datetime.now()}")
+    
+    if global_rank == 0:
+        logger.info(f"End time: {datetime.now()}")
 
 
 if __name__ == "__main__":
