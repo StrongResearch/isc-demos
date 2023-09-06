@@ -246,7 +246,7 @@ def train(rank, world_size, args):
         gate_threshold=args.gate_threshold,
     ).cuda(rank)
 
-    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
+    model = torch.nn.parallel.DistributedDataParallel(model)
 
     if rank == 0:
         logger.info("Finished initialising model")
