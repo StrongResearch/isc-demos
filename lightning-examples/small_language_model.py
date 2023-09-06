@@ -10,7 +10,7 @@ import lightning as L
 from lightning.pytorch.demos import Transformer, WikiText2
 import torch.distributed as dist
 from lightning.pytorch.callbacks import ModelCheckpoint
-from cycling_utils import InterruptableDistributedSampler, atomic_torch_save, EpochHandler
+from cycling_utils import InterruptableDistributedSampler, EpochHandler
 from lightning.pytorch.strategies import DDPStrategy
 
 
