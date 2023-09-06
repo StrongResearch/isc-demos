@@ -1,4 +1,5 @@
 import lightning as L
+import torch.distributed as dist
 
 
 class EpochHandler(L.Callback):
