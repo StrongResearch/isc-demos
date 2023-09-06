@@ -1,0 +1,6 @@
+experiment_name = "lightning_example"
+gpu_type = "24GB VRAM GPU"
+nnodes = 10
+venv_path = "/mnt/Client/strongcompute_calvin/.local/share/virtualenvs/isc-demos-2lB_Rdg8/bin/activate"
+output_path = "/mnt/Client/strongcompute_calvin/isc-demos/lightning-examples/output_lightning_example"
+command = "small_language_model.py --save-dir /mnt/Client/strongcompute_calvin/isc-demos/lightning-examples/checkpoints --epochs 50"
