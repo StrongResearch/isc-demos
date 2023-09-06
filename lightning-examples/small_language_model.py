@@ -16,10 +16,11 @@ from lightning.pytorch.strategies import DDPStrategy
 
 class EpochHandler(L.Callback):
 
-    def __init__(self, sampler, checkpoint_dir):
+    def __init__(self, sampler, checkpoint_dir, save_freq):
         super().__init__()
         self.sampler = sampler
         self.checkpoint_dir = checkpoint_dir
+        self.save_freq = save_freq
 
     def on_train_epoch_end(self, trainer, pl_module):
         self.sampler._reset_progress()
@@ -31,7 +32,7 @@ class EpochHandler(L.Callback):
 
         self.sampler.advance(len(batch))
         
-        if batch_idx % 5 == 0 and dist.get_rank() == 0:
+        if batch_idx % self.save_freq == 0 and dist.get_rank() == 0:
 
             atomic_torch_save({
                 "sampler_state_dict": self.sampler.state_dict(),
@@ -74,6 +75,7 @@ def main():
     parser.add_argument("--lr", type=float, default=0.1)
     parser.add_argument("--batch-size", type=int, default=20)
     parser.add_argument("--save-dir", type=Path, required=True)
+    parser.add_argument("--save-freq", type=int, default=5)
     parser.add_argument("--epochs", type=int, default=5)
 
     args = parser.parse_args()
@@ -93,13 +95,13 @@ def main():
     train_dataset, val_dataset, test_dataset = random_split(dataset, [n - 4000, 2000, 2000])
 
     # Create ModelCheckpoint - training run will atomically overwrite args.save_dir / 'checkpoint_latest.pt' every 50 training steps
-    checkpoint_callback = ModelCheckpoint(dirpath=args.save_dir, every_n_train_steps=5, save_last=True)
+    checkpoint_callback = ModelCheckpoint(dirpath=args.save_dir, every_n_train_steps=args.save_freq, save_last=True)
 
     # Instantiate the InterruptibleDistributedSampler that will save your data sampler state
     train_sampler = InterruptableDistributedSampler(train_dataset)
 
     # Create Sampler callback - it will handle all pre-emption for the ISC
-    sampler_callback = EpochHandler(sampler=train_sampler, checkpoint_dir=args.save_dir)
+    sampler_callback = EpochHandler(sampler=train_sampler, checkpoint_dir=args.save_dir, save_freq=args.save_freq)
 
     # Load previous run state if it exists
     if os.path.exists(checkpoint_latest / 'sampler_last.pt'):
@@ -114,7 +116,10 @@ def main():
     # Model
     model = LanguageModel(vocab_size=dataset.vocab_size)
 
-    trainer = L.Trainer(callbacks=[checkpoint_callback, sampler_callback], log_every_n_steps=1, gradient_clip_val=0.25, max_epochs=args.epochs, use_distributed_sampler=False, strategy='ddp', accelerator='gpu', devices=6, num_nodes=10)
+    num_gpus = torch.cuda.device_count()
+    num_nodes = dist.get_world_size() / num_gpus
+
+    trainer = L.Trainer(callbacks=[checkpoint_callback, sampler_callback], log_every_n_steps=1, gradient_clip_val=0.25, max_epochs=args.epochs, use_distributed_sampler=False, strategy='ddp', accelerator='gpu', devices=num_gpus, num_nodes=num_nodes)
 
     # Trainer
     # Set checkpoint callback and ensure that the InterruptableDistributedSampler by setting replace_sampler_ddp=False
