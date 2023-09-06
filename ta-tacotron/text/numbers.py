@@ -28,7 +28,6 @@ import re
 
 import inflect
 
-
 _inflect = inflect.engine()
 _comma_number_re = re.compile(r"([0-9][0-9\,]+[0-9])")
 _pounds_re = re.compile(r"£([0-9\,]*[0-9]+)")
@@ -80,7 +79,9 @@ def _expand_dollars(text: str) -> str:
 
 
 def _expand_decimal_point(text: str) -> str:
-    return re.sub(_decimal_number_re, lambda m: m.group(1).replace(".", " point "), text)
+    return re.sub(
+        _decimal_number_re, lambda m: m.group(1).replace(".", " point "), text
+    )
 
 
 def _expand_ordinal(text: str) -> str:
@@ -98,7 +99,9 @@ def _expand_number_repl_fn(m):
         elif num % 100 == 0:
             return _inflect.number_to_words(num // 100) + " hundred"
         else:
-            return _inflect.number_to_words(num, andword="", zero="oh", group=2).replace(", ", " ")
+            return _inflect.number_to_words(
+                num, andword="", zero="oh", group=2
+            ).replace(", ", " ")
     else:
         return _inflect.number_to_words(num, andword="")
 

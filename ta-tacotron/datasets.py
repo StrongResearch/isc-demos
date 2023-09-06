@@ -76,18 +76,17 @@ def process_dataset(
     dataset: str,
     file_path: str,
     transforms: Callable,
-    text_preprocessor: Callable[[str], List[int]]
+    text_preprocessor: Callable[[str], List[int]],
 ) -> torch.utils.data.Dataset:
-    """Returns the processed dataset 
-    """
+    """Returns the processed dataset"""
     if dataset == "ljspeech":
         data = LJSPEECH(root=file_path, download=False)
     else:
         raise ValueError(f"Expected datasets: `ljspeech`, but found {dataset}")
-    
-    dataset = Processed(data, transforms,text_preprocessor)
 
-    return dataset 
+    dataset = Processed(data, transforms, text_preprocessor)
+
+    return dataset
 
 
 def text_mel_collate_fn(
@@ -128,7 +127,9 @@ def text_mel_collate_fn(
         assert max_target_len % n_frames_per_step == 0
 
     # include mel padded and gate padded
-    mel_specgram_padded = torch.zeros((len(batch), num_mels, max_target_len), dtype=torch.float32)
+    mel_specgram_padded = torch.zeros(
+        (len(batch), num_mels, max_target_len), dtype=torch.float32
+    )
     gate_padded = torch.zeros((len(batch), max_target_len), dtype=torch.float32)
     mel_specgram_lengths = torch.LongTensor(len(batch))
     for i in range(len(ids_sorted_decreasing)):
@@ -137,4 +138,10 @@ def text_mel_collate_fn(
         mel_specgram_lengths[i] = mel.size(1)
         gate_padded[i, mel.size(1) - 1 :] = 1
 
-    return text_padded, text_lengths, mel_specgram_padded, mel_specgram_lengths, gate_padded
+    return (
+        text_padded,
+        text_lengths,
+        mel_specgram_padded,
+        mel_specgram_lengths,
+        gate_padded,
+    )

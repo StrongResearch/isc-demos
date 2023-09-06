@@ -27,7 +27,7 @@
 
 from typing import Tuple
 
-from torch import nn, Tensor
+from torch import Tensor, nn
 
 
 class Tacotron2Loss(nn.Module):

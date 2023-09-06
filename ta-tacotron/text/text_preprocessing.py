@@ -32,7 +32,6 @@ from unidecode import unidecode
 
 from .numbers import normalize_numbers
 
-
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r"\s+")
 
@@ -74,11 +73,15 @@ available_symbol_set = {"english_characters", "english_phonemes"}
 available_phonemizers = {"DeepPhonemizer"}
 
 
-def get_symbol_list(symbol_list: str = "english_characters", cmudict_root: Optional[str] = "./") -> List[str]:
+def get_symbol_list(
+    symbol_list: str = "english_characters", cmudict_root: Optional[str] = "./"
+) -> List[str]:
     if symbol_list == "english_characters":
         return [_pad] + list(_special) + list(_punctuation) + list(_letters)
     elif symbol_list == "english_phonemes":
-        return [_pad] + list(_special) + list(_punctuation) + CMUDict(cmudict_root).symbols
+        return (
+            [_pad] + list(_special) + list(_punctuation) + CMUDict(cmudict_root).symbols
+        )
     else:
         raise ValueError(
             f"The `symbol_list` {symbol_list} is not supported."
@@ -92,7 +95,9 @@ def word_to_phonemes(sent: str, phonemizer: str, checkpoint: str) -> List[str]:
 
         global _phonemizer
         _other_symbols = "".join(list(_special) + list(_punctuation))
-        _phone_symbols_re = r"(\[[A-Z]+?\]|" + "[" + _other_symbols + "])"  # [\[([A-Z]+?)\]|[-!'(),.:;? ]]
+        _phone_symbols_re = (
+            r"(\[[A-Z]+?\]|" + "[" + _other_symbols + "])"
+        )  # [\[([A-Z]+?)\]|[-!'(),.:;? ]]
 
         if _phonemizer is None:
             # using a global variable so that we don't have to relode checkpoint
@@ -113,7 +118,8 @@ def word_to_phonemes(sent: str, phonemizer: str, checkpoint: str) -> List[str]:
         return ret
     else:
         raise ValueError(
-            f"The `phonemizer` {phonemizer} is not supported. " "Supported `symbol_list` includes `'DeepPhonemizer'`."
+            f"The `phonemizer` {phonemizer} is not supported. "
+            "Supported `symbol_list` includes `'DeepPhonemizer'`."
         )
 
 

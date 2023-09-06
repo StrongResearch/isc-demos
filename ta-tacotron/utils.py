@@ -31,46 +31,12 @@
 import logging
 import os
 import shutil
+from functools import partial
 from typing import Callable, List, Tuple
 
 import torch
-from torch import Tensor
-
-from datasets import SpectralNormalization, process_dataset, text_mel_collate_fn
-from text.text_preprocessing import available_phonemizers, available_symbol_set, get_symbol_list, text_to_sequence
-from functools import partial 
-
 import torchaudio
-
-def get_datasets(args):
-    text_preprocessor = partial(
-        text_to_sequence,
-        symbol_list=args.text_preprocessor,
-        phonemizer=args.phonemizer,
-        checkpoint=args.phonemizer_checkpoint,
-        cmudict_root=args.cmudict_root,
-    )
-
-    transforms = torch.nn.Sequential(
-        torchaudio.transforms.MelSpectrogram(
-            sample_rate=args.sample_rate,
-            n_fft=args.n_fft,
-            win_length=args.win_length,
-            hop_length=args.hop_length,
-            f_min=args.mel_fmin,
-            f_max=args.mel_fmax,
-            n_mels=args.n_mels,
-            mel_scale="slaney",
-            normalized=False,
-            power=1,
-            norm="slaney",
-        ),
-        SpectralNormalization(),
-    )
-    trainset = process_dataset(
-        args.dataset, args.dataset_path, args.val_ratio, transforms, text_preprocessor
-    )
-    return trainset, []
+from torch import Tensor
 
 
 def pad_sequences(batch: List[Tensor]) -> Tuple[Tensor, Tensor]:
@@ -78,7 +44,9 @@ def pad_sequences(batch: List[Tensor]) -> Tuple[Tensor, Tensor]:
 
     Modified from https://github.com/NVIDIA/DeepLearningExamples.
     """
-    input_lengths, ids_sorted_decreasing = torch.sort(torch.LongTensor([len(x) for x in batch]), dim=0, descending=True)
+    input_lengths, ids_sorted_decreasing = torch.sort(
+        torch.LongTensor([len(x) for x in batch]), dim=0, descending=True
+    )
     max_input_len = input_lengths[0]
 
     text_padded = torch.LongTensor(len(batch), max_input_len)
@@ -90,7 +58,9 @@ def pad_sequences(batch: List[Tensor]) -> Tuple[Tensor, Tensor]:
     return text_padded, input_lengths
 
 
-def prepare_input_sequence(texts: List[str], text_processor: Callable[[str], List[int]]) -> Tuple[Tensor, Tensor]:
+def prepare_input_sequence(
+    texts: List[str], text_processor: Callable[[str], List[int]]
+) -> Tuple[Tensor, Tensor]:
     d = []
     for text in texts:
         d.append(torch.IntTensor(text_processor(text)[:]))
