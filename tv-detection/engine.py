@@ -60,7 +60,7 @@ def train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_sched
         # ADDED THE FOLLOWING - INC NECESSARY ARGS TO TRAIN
         train_batch_sampler.sampler.advance(len(images))
         step = train_batch_sampler.sampler.progress // args.batch_size
-        if utils.is_main_process() and step % 5 == 0:
+        if utils.is_main_process() and step % 1 == 0:
             print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),

@@ -123,7 +123,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
         sampler.advance(len(image))
 
         step = sampler.progress // data_loader.batch_size
-        if utils.is_main_process() and step % 5 == 0:
+        if utils.is_main_process() and step % 1 == 0:
             print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),
