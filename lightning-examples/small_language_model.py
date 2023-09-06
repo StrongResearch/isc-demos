@@ -116,14 +116,6 @@ def main():
 
     trainer = L.Trainer(callbacks=[checkpoint_callback, sampler_callback], log_every_n_steps=1, gradient_clip_val=0.25, max_epochs=args.epochs, use_distributed_sampler=False, strategy='ddp', accelerator='gpu', devices=6, num_nodes=10)
 
-
-
-
-
-
-    
-    
-
     # Trainer
     # Set checkpoint callback and ensure that the InterruptableDistributedSampler by setting replace_sampler_ddp=False
     if os.path.exists(checkpoint_latest / 'last.ckpt'):
