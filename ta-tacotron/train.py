@@ -299,8 +299,8 @@ def train(global_rank, world_size, args):
         logger.info("Extracting zip")
 
         with zipfile.ZipFile(checkpoint_zipfile, 'r') as zipf:
-            zipf.extract("model.sf", path=model_checkpoint_file)   # Extract the model file
-            zipf.extract("state_checkpoint.pt", path=train_state_checkpoint_file)  # Extract the state checkpoint file
+            zipf.extract("model.sf", path=checkpoint_dir_path)   # Extract the model file
+            zipf.extract("state_checkpoint.pt", path=checkpoint_dir_path)  # Extract the state checkpoint file
 
         logger.info("Loading the model checkpoint")
         #load_model(model, str(model_checkpoint_file))
@@ -372,7 +372,7 @@ def train(global_rank, world_size, args):
                     # None is covering the entire storage.Refusing to save/load the model since you could be storing much more memory than needed. 
                     # Please refer to https://huggingface.co/docs/safetensors/torch_shared_tensors 
                     # save_model(model, str(model_checkpoint_path))
-                    
+
                     atomic_torch_save(
                         { 
                             "model": model.state_dict() 
