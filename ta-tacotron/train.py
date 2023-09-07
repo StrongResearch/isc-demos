@@ -33,20 +33,36 @@ Changes:
 - Assumes that processed dataset is found in a safetensors file
 - Removed mp.spawn and replaced with torchrun
 """
+from time import time
+from datetime import datetime
 
-import argparse
+print("Start: {}".format(str(datetime.now())))
+
 import logging
 import os
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(os.path.basename(__file__))
+print(logger.info("Start logging: {}".format(str(datetime.now()))))
+
+import argparse
 import random
-from datetime import datetime
-from functools import partial
-from time import time
 
 import matplotlib.pyplot as plt
-import torch
+from torch import no_grad, tile, manual_seed, load
+
+from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
+import torch.cuda as cuda
+
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset
+from torch.nn.utils import clip_grad_norm_
+
 from torch.utils.tensorboard import SummaryWriter
 from model.tacotron2 import SyncedTacotron2
 from tqdm import tqdm
@@ -58,16 +74,8 @@ from pathlib import Path
 from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 from safetensors.torch import load_model, save_model, load_file 
 
-
 from loss import Tacotron2Loss
 from text.text_preprocessing import get_symbol_list
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-logger = logging.getLogger(os.path.basename(__file__))
 
 from parser_utils import parse_args
 
@@ -112,7 +120,7 @@ def adjust_learning_rate(epoch, optimizer, learning_rate, anneal_steps, anneal_f
 
 def to_gpu(x):
     x = x.contiguous()
-    if torch.cuda.is_available():
+    if cuda.is_available():
         x = x.cuda(non_blocking=True)
     return x
 
@@ -174,7 +182,7 @@ def reduce_tensor(tensor, world_size):
 def log_additional_info(writer, model, loader, epoch):
     model.eval()
     data = next(iter(loader))
-    with torch.no_grad():
+    with no_grad():
         (
             text_padded,
             text_lengths,
@@ -195,13 +203,13 @@ def log_additional_info(writer, model, loader, epoch):
     ax.imshow(mel_out_postnet[0].cpu().numpy())
     writer.add_figure("trn/mel_out_postnet", fig, epoch)
     writer.add_image(
-        "trn/gate_out", torch.tile(gate_out[:1], (10, 1)), epoch, dataformats="HW"
+        "trn/gate_out", tile(gate_out[:1], (10, 1)), epoch, dataformats="HW"
     )
     writer.add_image("trn/alignment", alignment[0], epoch, dataformats="HW")
 
 
-def train(rank, world_size, args):
-    if rank == 0 and args.logging_dir:
+def train(global_rank, world_size, args):
+    if global_rank == 0 and args.logging_dir:
         if not os.path.isdir(args.logging_dir):
             os.makedirs(args.logging_dir)
         filehandler = logging.FileHandler(os.path.join(args.logging_dir, "train.log"))
@@ -212,13 +220,15 @@ def train(rank, world_size, args):
     else:
         writer = None
 
-    torch.manual_seed(0)
+    manual_seed(0)
+    
+    local_rank = global_rank % world_size
 
-    torch.cuda.set_device(rank)
+    cuda.set_device(local_rank)
 
     symbols = get_symbol_list(args.text_preprocessor)
     
-    if rank == 0:
+    if global_rank == 0:
         logger.info("Initialising model")
     
     model = SyncedTacotron2(
@@ -244,12 +254,16 @@ def train(rank, world_size, args):
         postnet_kernel_size=args.postnet_kernel_size,
         postnet_embedding_dim=args.postnet_embedding_dim,
         gate_threshold=args.gate_threshold,
-    ).cuda(rank)
+    ).cuda(local_rank)
 
-    model = torch.nn.parallel.DistributedDataParallel(model)
 
-    if rank == 0:
+    if global_rank == 0:
         logger.info("Finished initialising model")
+
+    model = DDP(model)
+
+    if global_rank == 0:
+        logger.info("Finished DDP wrapper")
 
     optimizer = Adam(model.parameters(), lr=args.learning_rate)
 
@@ -265,7 +279,7 @@ def train(rank, world_size, args):
     loader_params = {
         "batch_size": 1, # batch sized is determined by the pre train script 
         "num_workers": args.workers,
-        "prefetch_factor": 1024,
+        "prefetch_factor": 32,
         "persistent_workers": True,
         "shuffle": False,
         "pin_memory": True,
@@ -283,12 +297,12 @@ def train(rank, world_size, args):
             load_model(model, str(model_checkpoint_path))
             
             logger.info(f"Loading train state checkpoint data")
-            train_state_checkpoint = torch.load(train_state_checkpoint_path)
+            train_state_checkpoint = load(train_state_checkpoint_path)
             start_epoch = train_state_checkpoint["epoch"]
             optimizer.load_state_dict(train_state_checkpoint["optimizer"])
             batched_train_sampler.load_state_dict(train_state_checkpoint["sampler"])
         else: 
-            raise Exception("Not found both a model and a checkpoint file!")
+            raise Exception("Training requires both a model and a checkpoint file!")
     else:
         checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
 
@@ -300,7 +314,7 @@ def train(rank, world_size, args):
 
         trn_loss, counts = 0, 0
 
-        if rank == 0:
+        if global_rank == 0:
             batch_iterator = tqdm(
                 enumerate(batched_train_loader), desc=f"Epoch {epoch}", total=len(batched_train_loader)
             )
@@ -318,11 +332,11 @@ def train(rank, world_size, args):
             model.zero_grad()
             loss, losses = training_step(model, batch, i)
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
+            clip_grad_norm_(model.parameters(), args.grad_clip)
             optimizer.step()
             batched_train_sampler.advance(1)
 
-            if rank == 0 and writer:
+            if global_rank == 0 and writer:
                 
                 print({"loss":loss}) 
 
@@ -335,7 +349,7 @@ def train(rank, world_size, args):
             trn_loss += loss * len(batch[0])
             counts += len(batch[0])
 
-            if rank == 0 and (global_iters % args.checkpoint_freq + 1) == 0:
+            if global_rank == 0 and (global_iters % args.checkpoint_freq + 1) == 0:
                 logger.info("saving checkpoint")
                 
                 temp_checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
@@ -354,7 +368,7 @@ def train(rank, world_size, args):
         trn_loss = trn_loss / counts
 
         trn_loss = reduce_tensor(trn_loss, world_size)
-        if rank == 0:
+        if global_rank == 0:
             logger.info(f"[Epoch: {epoch}] time: {time()-start}; trn_loss: {trn_loss}")
             if writer:
                 writer.add_scalar("trn_loss", trn_loss, epoch)
@@ -370,10 +384,10 @@ def main(args):
     global_rank = dist.get_rank()
 
     if global_rank == 0:
-        logger.info("Start time: {}".format(str(datetime.now())))
+        logger.info("Finished init process group at: {}".format(str(datetime.now())))
         logger.info(f"# available GPUs: {world_size}")
 
-    torch.manual_seed(0)
+    manual_seed(0)
     random.seed(0)
 
     train(global_rank, world_size, args)
