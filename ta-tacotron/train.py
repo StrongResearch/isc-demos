@@ -94,12 +94,13 @@ class SafetensorsLJSPEECH(Dataset):
         # unpack the safetensors dict
         batch = (
             sf["text_padded"],
-            sf["batch_text_lengths"],
+            sf["text_lengths"],
             sf["mel_specgram_padded"],
             sf["mel_specgram_lengths"],
             sf["gate_padded"]
         ) 
         return batch
+
 
 def adjust_learning_rate(epoch, optimizer, learning_rate, anneal_steps, anneal_factor):
     """Adjust learning rate base on the initial setting."""
@@ -221,8 +222,9 @@ def train(global_rank, world_size, args):
         writer = None
 
     manual_seed(0)
-    
-    local_rank = global_rank % world_size
+
+    device_count = cuda.device_count()
+    local_rank = global_rank % device_count
 
     cuda.set_device(local_rank)
 
@@ -301,8 +303,6 @@ def train(global_rank, world_size, args):
             start_epoch = train_state_checkpoint["epoch"]
             optimizer.load_state_dict(train_state_checkpoint["optimizer"])
             batched_train_sampler.load_state_dict(train_state_checkpoint["sampler"])
-        else: 
-            raise Exception("Training requires both a model and a checkpoint file!")
     else:
         checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
 
@@ -330,7 +330,11 @@ def train(global_rank, world_size, args):
                 args.anneal_factor,
             )
             model.zero_grad()
-            loss, losses = training_step(model, batch, i)
+
+            # note, must take batch[0] to get the batched sample because 
+            # of the sampler which adds a dimension 
+            
+            loss, losses = training_step(model, batch[0], i)
             loss.backward()
             clip_grad_norm_(model.parameters(), args.grad_clip)
             optimizer.step()
@@ -346,8 +350,9 @@ def train(global_rank, world_size, args):
                 writer.add_scalar("trn/mel_postnet_loss", losses[1], global_iters)
                 writer.add_scalar("trn/gate_loss", losses[2], global_iters)
 
-            trn_loss += loss * len(batch[0])
-            counts += len(batch[0])
+            # these must be batch[0,0] to get the actual first element
+            trn_loss += loss * len(batch[0,0])
+            counts += len(batch[0,0])
 
             if global_rank == 0 and (global_iters % args.checkpoint_freq + 1) == 0:
                 logger.info("saving checkpoint")
