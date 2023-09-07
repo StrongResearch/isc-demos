@@ -185,9 +185,9 @@ def _quantize(x, bins):
 
 
 def create_aspect_ratio_groups(dataset, k=0):
-    aspect_ratios = compute_aspect_ratios(dataset)
+    aspect_ratios = compute_aspect_ratios(dataset) # list of aspect ratios for each image in the dataset
     bins = (2 ** np.linspace(-1, 1, 2 * k + 1)).tolist() if k > 0 else [1.0]
-    groups = _quantize(aspect_ratios, bins)
+    groups = _quantize(aspect_ratios, bins) # list of bin indexes to which each image belongs
     # count number of elements per group
     counts = np.unique(groups, return_counts=True)[1]
     fbins = [0] + bins + [np.inf]

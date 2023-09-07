@@ -69,8 +69,22 @@ def get_transform(is_train, args):
         return lambda img, target: (trans(img), target)
     else:
         return presets.DetectionPresetEval(backend=args.backend, use_v2=args.use_v2)
+    
+class Timer:
+    def __init__(self, start_time=None, running=0):
+        self.start_time = start_time if start_time is not None else time.time()
+        self.running = running
+    def report(self, annot):
+        now = time.time()
+        duration = now - self.start_time
+        self.running += duration
+        print("Completed {:<70}{:>12} milliseconds, {:>12} seconds total".format(annot, f'{1000*duration:,.3f}', f'{self.running:,.2f}'))
+        self.start_time = now
 
 def main(args):
+
+    timer = Timer()
+
     if args.backend.lower() == "tv_tensor" and not args.use_v2:
         raise ValueError("Use --use-v2 if you want to use the tv_tensor backend.")
     if args.dataset not in ("coco", "coco_kp"):
@@ -91,12 +105,14 @@ def main(args):
     if args.use_deterministic_algorithms:
         torch.use_deterministic_algorithms(True)
 
+    timer.report('preliminaries')
+
     # Data loading code
-    print("Loading data")
     dataset, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    print("Creating data loaders")
+    timer.report('loading data')
+
     # if args.distributed:
     #     train_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
     #     test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
@@ -106,11 +122,15 @@ def main(args):
     train_sampler = InterruptableDistributedSampler(dataset)
     test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
 
+    timer.report('creating data loaders')
+
     if args.aspect_ratio_group_factor >= 0: # default == 3
         group_ids = create_aspect_ratio_groups(dataset, k=args.aspect_ratio_group_factor)
         train_batch_sampler = GroupedBatchSampler(train_sampler, group_ids, args.batch_size)
     else:
         train_batch_sampler = torch.utils.data.BatchSampler(train_sampler, args.batch_size, drop_last=True)
+
+    timer.report('GroupedBatchSampler (data loaders 1)')
 
     train_collate_fn = utils.collate_fn
     if args.use_copypaste:
@@ -126,7 +146,8 @@ def main(args):
         dataset_test, batch_size=1, sampler=test_sampler, num_workers=args.workers, collate_fn=utils.collate_fn
     )
 
-    print("Creating model")
+    timer.report('data_loader, data_loader_test (data loaders 2)')
+
     kwargs = {"trainable_backbone_layers": args.trainable_backbone_layers}
     if args.data_augmentation in ["multiscale", "lsj"]:
         kwargs["_skip_resize"] = True
@@ -138,6 +159,8 @@ def main(args):
         args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, **kwargs
     )
     model.to(device)
+
+    timer.report('creating model and .to(device)')
 
     if args.distributed and args.sync_bn:
         model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
@@ -154,6 +177,8 @@ def main(args):
         wd_groups = [args.norm_weight_decay, args.weight_decay]
         parameters = [{"params": p, "weight_decay": w} for p, w in zip(param_groups, wd_groups) if p]
 
+    timer.report('preparing model for distributed training')
+
     opt_name = args.opt.lower()
     if opt_name.startswith("sgd"):
         optimizer = torch.optim.SGD(
@@ -169,6 +194,8 @@ def main(args):
         raise RuntimeError(f"Invalid optimizer {args.opt}. Only SGD and AdamW are supported.")
 
     scaler = torch.cuda.amp.GradScaler() if args.amp else None
+
+    timer.report('optimizer and scaler')
 
     ## OUTER LR_SCHEDULER
     args.lr_scheduler = args.lr_scheduler.lower()
@@ -188,6 +215,8 @@ def main(args):
             optimizer, start_factor=warmup_factor, total_iters=warmup_iters
         )
 
+    timer.report('learning rate schedulers')
+
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)   ### ADDED THIS
     if args.resume and os.path.isfile(args.resume): ## EDITED THIS
         checkpoint = torch.load(args.resume, map_location="cpu")
@@ -200,45 +229,57 @@ def main(args):
             scaler.load_state_dict(checkpoint["scaler"])
         train_batch_sampler.sampler.load_state_dict(checkpoint["sampler"]) # INTERRUPTABLE SAMPLER IS MEMBER OF GROUPED BATCH SAMPLER
 
+    timer.report('retrieving checkpoint')
+
+    # KILL THIS FOR NOW
     if args.test_only:
         # We disable the cudnn benchmarking because it can noticeably affect the accuracy
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
-        evaluate(model, data_loader_test, device=device)
+        coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
         return
 
-    print("Start training")
-    start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
         # if args.distributed:
             # train_sampler.set_epoch(epoch)
         with train_batch_sampler.sampler.in_epoch(epoch):
-            train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_scheduler, warmup_lr_scheduler, args, device, epoch, args.print_freq, scaler)
-            lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
-            if args.output_dir:
-                checkpoint = {
-                    "model": model_without_ddp.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "warmup_lr_scheduler": warmup_lr_scheduler.state_dict(),
-                    "args": args,
-                    "epoch": epoch,
-                    "sampler": train_batch_sampler.sampler.state_dict(),
-                }
-                if args.amp:
-                    checkpoint["scaler"] = scaler.state_dict()
-                # utils.save_on_master(checkpoint, os.path.join(args.output_dir, f"model_{epoch}.pth"))
-                # utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
-                atomic_torch_save(checkpoint, args.resume)
 
-            # # KILL THIS FOR NOW
-            # # evaluate after every epoch
-            # evaluate(model, data_loader_test, device=device)
+            print('\n')
+            timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            timer.report(f'launching epoch {epoch}')
+            metric_logger, timer = train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_scheduler, warmup_lr_scheduler, args, device, epoch, args.print_freq, scaler, timer)
+        
+        timer.report(f'incrementing sampler epoch to {train_batch_sampler.sampler.epoch}')
+        lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
 
-    total_time = time.time() - start_time
-    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print(f"Training time {total_time_str}")
+        timer.report(f'training for epoch {epoch}')
 
+        if utils.is_main_process():
+            checkpoint = {
+                "model": model_without_ddp.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "lr_scheduler": lr_scheduler.state_dict(),
+                "warmup_lr_scheduler": warmup_lr_scheduler.state_dict(),
+                "args": args,
+                "epoch": epoch,
+                "sampler": train_batch_sampler.sampler.state_dict(),
+            }
+            
+            if args.amp:
+                checkpoint["scaler"] = scaler.state_dict()
+
+            timer.report(f'defining epoch {epoch} checkpoint')
+            
+            # utils.save_on_master(checkpoint, os.path.join(args.output_dir, f"model_{epoch}.pth"))
+            # utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
+            timer = atomic_torch_save(checkpoint, args.resume, timer)
+
+            # KILL THIS FOR NOW
+            # evaluate after every epoch
+            coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
+
+        # Restart the timer
+        timer = Timer()
 
 def get_args_parser(add_help=True):
     import argparse
@@ -261,7 +302,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--lr-step-size", default=8, type=int, help="decrease lr every step-size epochs (multisteplr scheduler only)")
     parser.add_argument("--lr-steps",default=[16, 22],nargs="+",type=int,help="decrease lr every step-size epochs (multisteplr scheduler only)")
     parser.add_argument("--lr-gamma", default=0.1, type=float, help="decrease lr by a factor of lr-gamma (multisteplr scheduler only)")
-    parser.add_argument("--print-freq", default=20, type=int, help="print frequency")
+    parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
     parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
     parser.add_argument("--start_epoch", default=0, type=int, help="start epoch")
