@@ -35,9 +35,6 @@ Changes:
 """
 from time import time
 from datetime import datetime
-
-print("Start: {}".format(str(datetime.now())))
-
 import logging
 import os
 
@@ -51,9 +48,10 @@ print(logger.info("Start logging: {}".format(str(datetime.now()))))
 
 import argparse
 import random
+import zipfile 
 
 import matplotlib.pyplot as plt
-from torch import no_grad, tile, manual_seed, load
+from torch import no_grad, tile, manual_seed, load, compile
 
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
@@ -271,15 +269,19 @@ def train(global_rank, world_size, args):
 
     start_epoch = 0
 
-    checkpoint_dir_path = Path(args.checkpoint_dir)
+    checkpoint_dir_path = Path(args.checkpoint_dir) 
     checkpoint_dir_path = checkpoint_dir_path.expanduser()
+    checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
 
-    model_checkpoint_path = checkpoint_dir_path / "model.sf"
-    train_state_checkpoint_path = checkpoint_dir_path / "train_state.pt"
-    temp_checkpoint_dir_path = Path(args.checkpoint_dir + "_temp",  )
+
+    checkpoint_zipfile = checkpoint_dir_path / "latest.zip"
+    tmp_checkpoint_zipfile = Path(str(checkpoint_zipfile) + ".tmp")
+
+    model_checkpoint_file =  checkpoint_dir_path / "model.sf"
+    train_state_checkpoint_file  = checkpoint_dir_path / "train_state.pt"
 
     loader_params = {
-        "batch_size": 1, # batch sized is determined by the pre train script 
+        "batch_size": None, # batch sized is determined by the pre train script 
         "num_workers": args.workers,
         "prefetch_factor": 32,
         "persistent_workers": True,
@@ -292,93 +294,115 @@ def train(global_rank, world_size, args):
     batched_train_sampler = InterruptableDistributedSampler(batched_train_set)
     batched_train_loader = DataLoader(batched_train_set, sampler=batched_train_sampler, **loader_params)
 
-    if checkpoint_dir_path.is_dir():
-        if model_checkpoint_path.is_file() and train_state_checkpoint_path.is_file():
-            
-            logger.info("Loading the model checkpoint")
-            load_model(model, str(model_checkpoint_path))
-            
-            logger.info(f"Loading train state checkpoint data")
-            train_state_checkpoint = load(train_state_checkpoint_path)
-            start_epoch = train_state_checkpoint["epoch"]
-            optimizer.load_state_dict(train_state_checkpoint["optimizer"])
-            batched_train_sampler.load_state_dict(train_state_checkpoint["sampler"])
-    else:
-        checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
+    if checkpoint_zipfile.is_file():
+
+        logger.info("Extracting zip")
+
+        with zipfile.ZipFile(checkpoint_zipfile, 'r') as zipf:
+            zipf.extract("model.sf", path=model_checkpoint_file)   # Extract the model file
+            zipf.extract("state_checkpoint.pt", path=train_state_checkpoint_file)  # Extract the state checkpoint file
+
+        logger.info("Loading the model checkpoint")
+        #load_model(model, str(model_checkpoint_file))
+        model_checkpoint = load(model_checkpoint_file)
+        model.load_state_dict(model_checkpoint["model"])
+
+        logger.info(f"Loading train state checkpoint data")
+        train_state_checkpoint = load(train_state_checkpoint_file)
+        start_epoch = train_state_checkpoint["epoch"]
+        optimizer.load_state_dict(train_state_checkpoint["optimizer"])
+        batched_train_sampler.load_state_dict(train_state_checkpoint["sampler"])
 
     dist.barrier()
     model.train()
 
     for epoch in range(start_epoch, args.epochs):
-        start = time()
-
-        trn_loss, counts = 0, 0
-
-        if global_rank == 0:
-            batch_iterator = tqdm(
-                enumerate(batched_train_loader), desc=f"Epoch {epoch}", total=len(batched_train_loader)
-            )
-        else:
-            batch_iterator = enumerate(batched_train_loader)
-
-        for i, batch in batch_iterator:
-            adjust_learning_rate(
-                epoch,
-                optimizer,
-                args.learning_rate,
-                args.anneal_steps,
-                args.anneal_factor,
-            )
-            model.zero_grad()
-
-            # note, must take batch[0] to get the batched sample because 
-            # of the sampler which adds a dimension 
-            
-            loss, losses = training_step(model, batch[0], i)
-            loss.backward()
-            clip_grad_norm_(model.parameters(), args.grad_clip)
-            optimizer.step()
-            batched_train_sampler.advance(1)
-
-            if global_rank == 0 and writer:
-                
-                print({"loss":loss}) 
-
-                global_iters = epoch * len(batched_train_loader)
-
-                writer.add_scalar("trn/mel_loss", losses[0], global_iters)
-                writer.add_scalar("trn/mel_postnet_loss", losses[1], global_iters)
-                writer.add_scalar("trn/gate_loss", losses[2], global_iters)
-
-            # these must be batch[0,0] to get the actual first element
-            trn_loss += loss * len(batch[0,0])
-            counts += len(batch[0,0])
-
-            if global_rank == 0 and (global_iters % args.checkpoint_freq + 1) == 0:
-                logger.info("saving checkpoint")
-                
-                temp_checkpoint_dir_path.mkdir(parents=True, exist_ok=True)
-                save_model(model, str(temp_checkpoint_dir_path / "model.sf"))
-                atomic_torch_save(
-                    {
-                        "epoch": epoch,
-                        "optimizer": optimizer.state_dict(),
-                        "sampler": batched_train_sampler.state_dict()
-                    },
-                    temp_checkpoint_dir_path / "train_state.pt",
+        # added to set/advance the sampler
+        with batched_train_sampler.in_epoch(epoch):
+            start = time()
+            trn_loss, counts = 0, 0
+            if global_rank == 0:
+                batch_iterator = tqdm(
+                    enumerate(batched_train_loader), desc=f"Epoch {epoch}", total=len(batched_train_loader)
                 )
-                os.replace(temp_checkpoint_dir_path, checkpoint_dir_path)
-                logger.info("saved checkpoint")
-            
-        trn_loss = trn_loss / counts
+            else:
+                batch_iterator = enumerate(batched_train_loader)
 
-        trn_loss = reduce_tensor(trn_loss, world_size)
-        if global_rank == 0:
-            logger.info(f"[Epoch: {epoch}] time: {time()-start}; trn_loss: {trn_loss}")
-            if writer:
-                writer.add_scalar("trn_loss", trn_loss, epoch)
+            iters = 0 
 
-        # to do - add validation 
+            for i, batch in batch_iterator:
+                adjust_learning_rate(
+                    epoch,
+                    optimizer,
+                    args.learning_rate,
+                    args.anneal_steps,
+                    args.anneal_factor,
+                )
+                model.zero_grad()
+
+                # dataloader turns tuple into list
+                batch = tuple(batch)      
+                
+                loss, losses = training_step(model, batch, i)
+                loss.backward()
+                clip_grad_norm_(model.parameters(), args.grad_clip)
+                optimizer.step()
+                batched_train_sampler.advance(1)
+                
+                iters += 1
+
+                if global_rank == 0 and writer:
+                    global_iters = epoch * len(batched_train_loader)
+                    writer.add_scalar("trn/mel_loss", losses[0], global_iters)
+                    writer.add_scalar("trn/mel_postnet_loss", losses[1], global_iters)
+                    writer.add_scalar("trn/gate_loss", losses[2], global_iters)
+
+                # these must be batch[0,0] to get the actual first element
+                trn_loss += loss * len(batch[0])
+                counts += len(batch[0])
+
+                if global_rank == 0 and (iters % args.checkpoint_freq) == 0:
+                    logger.info("saving checkpoint")
+                    
+                    # [TODO] add safetensors support 
+                    # seems like tacotron has shared LSTM states
+                    # safetensors doesnt seem to support 
+                    # RuntimeError: Error while trying to find names to remove to save state dict, but found no suitable name to 
+                    # keep for saving amongst: {'module.encoder.lstm.weight_ih_l0'}. 
+                    # None is covering the entire storage.Refusing to save/load the model since you could be storing much more memory than needed. 
+                    # Please refer to https://huggingface.co/docs/safetensors/torch_shared_tensors 
+                    # save_model(model, str(model_checkpoint_path))
+                    
+                    atomic_torch_save(
+                        { 
+                            "model": model.state_dict() 
+                        }, 
+                        model_checkpoint_file
+                    )
+                    
+                    atomic_torch_save(
+                        {
+                            "epoch": epoch,
+                            "optimizer": optimizer.state_dict(),
+                            "sampler": batched_train_sampler.state_dict()
+                        },
+                        train_state_checkpoint_file,
+                    )
+                    with zipfile.ZipFile(tmp_checkpoint_zipfile, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                        zipf.write(model_checkpoint_file, "model.sf")
+                        zipf.write(train_state_checkpoint_file, "train_state.pt")
+                    
+                    os.replace(tmp_checkpoint_zipfile, checkpoint_zipfile)
+
+            trn_loss = trn_loss / counts
+
+            trn_loss = reduce_tensor(trn_loss, world_size)
+            if global_rank == 0:
+                logger.info(f"[Epoch: {epoch}] time: {time()-start}; trn_loss: {trn_loss}")
+                if writer:
+                    writer.add_scalar("trn_loss", trn_loss, epoch)
+
+            # to do - add validation 
 
     dist.destroy_process_group()
 
