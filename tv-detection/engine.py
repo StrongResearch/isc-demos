@@ -152,6 +152,8 @@ def evaluate(model, data_loader, device, timer):
         metric_logger.update(model_time=model_time, evaluator_time=evaluator_time)
         timer.report(f'eval batch: {eval_batch} update evaluator')
 
+        eval_batch += 1
+
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)

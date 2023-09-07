@@ -122,7 +122,7 @@ def main(args):
     train_sampler = InterruptableDistributedSampler(dataset)
     test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
 
-    timer.report('creating data loaders')
+    timer.report('creating data samplers')
 
     if args.aspect_ratio_group_factor >= 0: # default == 3
         group_ids = create_aspect_ratio_groups(dataset, k=args.aspect_ratio_group_factor)
@@ -130,7 +130,7 @@ def main(args):
     else:
         train_batch_sampler = torch.utils.data.BatchSampler(train_sampler, args.batch_size, drop_last=True)
 
-    timer.report('GroupedBatchSampler (data loaders 1)')
+    timer.report('creating GroupedBatchSampler')
 
     train_collate_fn = utils.collate_fn
     if args.use_copypaste:
@@ -146,7 +146,7 @@ def main(args):
         dataset_test, batch_size=1, sampler=test_sampler, num_workers=args.workers, collate_fn=utils.collate_fn
     )
 
-    timer.report('data_loader, data_loader_test (data loaders 2)')
+    timer.report('creating data loaders')
 
     kwargs = {"trainable_backbone_layers": args.trainable_backbone_layers}
     if args.data_augmentation in ["multiscale", "lsj"]:
@@ -248,8 +248,7 @@ def main(args):
             timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
             timer.report(f'launching epoch {epoch}')
             metric_logger, timer = train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_scheduler, warmup_lr_scheduler, args, device, epoch, args.print_freq, scaler, timer)
-        
-        timer.report(f'incrementing sampler epoch to {train_batch_sampler.sampler.epoch}')
+
         lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
 
         timer.report(f'training for epoch {epoch}')
@@ -274,12 +273,8 @@ def main(args):
             # utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-            # KILL THIS FOR NOW
-            # evaluate after every epoch
-            coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
-
-        # Restart the timer
-        timer = Timer()
+        # KILL THIS FOR NOW
+        coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
 
 def get_args_parser(add_help=True):
     import argparse
