@@ -8,4 +8,4 @@ pycocotools==2.0.6
 matplotlib==3.7.2
 diffusers==0.18.2
 wandb==0.15.7
-torchaudio==2.0.2 
+lightning==2.1.0rc0
