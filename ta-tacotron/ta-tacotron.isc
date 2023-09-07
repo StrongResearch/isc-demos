@@ -3,4 +3,4 @@ gpu_type="24GB VRAM GPU"
 nnodes = 10
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_tacotron"
-command = "train.py --learning-rate 1e-3 --epochs 1501 --anneal-steps 500 1000 1500 --anneal-factor 0.1 --weight-decay 1e-6 --grad-clip 1.0 --text-preprocessor english_characters --logging-dir ~/output_tacotron/logs --checkpoint-freq 2 --checkpoint-dir ~/checkpoints/ta-tacotron/"
+command = "train.py --learning-rate 1e-3 --epochs 1501 --anneal-steps 500 1000 1500 --anneal-factor 0.1 --weight-decay 1e-6 --grad-clip 1.0 --text-preprocessor english_characters --logging-dir ~/output_tacotron/logs --checkpoint-freq 1 --checkpoint-dir ~/checkpoints/ta-tacotron/"
