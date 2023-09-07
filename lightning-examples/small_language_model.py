@@ -67,7 +67,7 @@ def main():
 
     # Split data in to train, val, test
     n = len(dataset)
-    train_dataset, val_dataset, test_dataset = random_split(dataset, [n - 4000, 2000, 2000])
+    train_dataset, val_dataset = random_split(dataset, [n - 2000, 2000])
 
     # Create ModelCheckpoint - training run will atomically overwrite args.save_dir / 'checkpoint_latest.pt' every 50 training steps
     checkpoint_callback = ModelCheckpoint(dirpath=args.save_dir, every_n_train_steps=args.save_freq, save_last=True)
@@ -86,7 +86,6 @@ def main():
     train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size, sampler=train_sampler, num_workers=32)
 
     val_dataloader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=32)
-    test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False, num_workers=32)
 
     # Model
     model = LanguageModel(vocab_size=dataset.vocab_size)
@@ -103,10 +102,8 @@ def main():
         trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader, ckpt_path=checkpoint_latest / 'last.ckpt')
     else:
         trainer.fit(model=model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
-    trainer.test(model, test_dataloader)
 
-    raise Exception
-
+    exit()
 
 if __name__ == "__main__":
 
