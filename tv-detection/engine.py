@@ -71,7 +71,7 @@ def train_one_epoch(model, optimizer, data_loader, train_batch_sampler, lr_sched
 
         timer.report(f'Epoch: {epoch} Step {step}: advancing sampler and computing step')
 
-        if utils.is_main_process() and step % 5 == 0:
+        if utils.is_main_process() and step % 5 == 0: # Checkpointing every 5 batches?
             checkpoint = {
                 "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),

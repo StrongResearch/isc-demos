@@ -133,7 +133,10 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
 
     timer.report('training preliminaries')
 
-    for image, target in metric_logger.log_every(data_loader, sampler.progress // data_loader.batch_size, print_freq, header):
+    # Running this before starting the training loop assists reporting on progress after resuming - step == batch count
+    step = sampler.progress // data_loader.batch_size
+
+    for image, target in metric_logger.log_every(data_loader, step, print_freq, header):
         image, target = image.to(device), target.to(device)
 
         timer.report(f'Epoch: {epoch} Step {step}: moving batch data to device')
@@ -162,7 +165,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
         timer.report(f'Epoch: {epoch} Step {step}: updating metric logger')
 
         step = sampler.progress // data_loader.batch_size
-        if utils.is_main_process() and step % 5 == 0:
+        if utils.is_main_process() and step % 5 == 0: # Checkpointing every 5 batches?
             print(f"Saving checkpoint at step {step}")
             checkpoint = {
                 "model": model.module.state_dict(),
@@ -345,7 +348,7 @@ def main(args):
 
             confmat, timer = evaluate(model, data_loader_test, device=device, num_classes=num_classes, timer=timer)
             print(confmat)
-            
+
 
 def get_args_parser(add_help=True):
     import argparse
