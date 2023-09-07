@@ -5,6 +5,7 @@ strong_launcher/
 *.checkpoint
 *.pt
 wandb/
+lightning-examples/data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
