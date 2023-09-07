@@ -1,4 +1,4 @@
-from .saving import atomic_torch_save
+from .saving import atomic_torch_save, Timer
 from .sampler import InterruptableDistributedSampler
 
-__all__ = ["InterruptableDistributedSampler", "atomic_torch_save"]
+__all__ = ["InterruptableDistributedSampler", "atomic_torch_save", "Timer"]
