@@ -1,6 +1,0 @@
-experiment_name="cuda-test"
-gpu_type="24GB VRAM GPU"
-nnodes = 10
-venv_path = "~/.venv/bin/activate"
-output_path = "~/output_cuda_test"
-command = "cuda_test.py"
