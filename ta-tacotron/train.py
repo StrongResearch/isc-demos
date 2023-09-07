@@ -402,7 +402,7 @@ def train(global_rank, world_size, args):
                 if writer:
                     writer.add_scalar("trn_loss", trn_loss, epoch)
 
-            # to do - add validation 
+            #[TODO] - add validation, need a lazy_splitter
 
     dist.destroy_process_group()
 
