@@ -1,6 +1,6 @@
 import math
 import torch
-from torch.utils.data import Sampler
+from torch.utils.data import Sampler, DistributedSampler, Dataset
 import torch.distributed as dist
 
 

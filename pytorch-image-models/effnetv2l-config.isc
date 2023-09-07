@@ -1,8 +1,0 @@
-
-experiment_name="cls-timm-effnetv2l"
-gpu_type="24GB VRAM GPU"
-nnodes = 10
-venv_path = "~/.venv/bin/activate"
-output_path = "~/output_timm"
-api_key = "password"
-command = "train.py /workspace/datasets/imagenet/ILSVRC/Data/CLS-LOC --model=efficientnetv2_l --batch-size=16 --amp"

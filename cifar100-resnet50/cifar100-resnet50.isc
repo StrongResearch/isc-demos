@@ -3,4 +3,4 @@ gpu_type = "24GB VRAM GPU"
 nnodes = 10
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_cifar100-resnet50"
-command = "train.py"
+command = "train.py --save-dir $OUTPUT_PATH"

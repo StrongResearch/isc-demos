@@ -16,6 +16,8 @@ import torch
 import torch.utils.data
 import numpy as np
 
+from cycling_utils import InterruptableDistributedSampler
+
 from .constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from .dataset import IterableImageDataset
 from .distributed_sampler import OrderedDistributedSampler, RepeatAugSampler
@@ -259,9 +261,11 @@ def create_loader(
     if distributed and not isinstance(dataset, torch.utils.data.IterableDataset):
         if is_training:
             if num_aug_repeats:
+                raise NotImplementedError
                 sampler = RepeatAugSampler(dataset, num_repeats=num_aug_repeats)
             else:
-                sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+                sampler = InterruptableDistributedSampler(dataset)
+                # sampler = torch.utils.data.distributed.DistributedSampler(dataset)
         else:
             # This will add extra duplicate entries to result in equal num
             # of samples per-process, will slightly alter validation results

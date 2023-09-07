@@ -7,6 +7,7 @@ strong_launcher/
 *.safetensors
 *.sf
 wandb/
+lightning-examples/data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

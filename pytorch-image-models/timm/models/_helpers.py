@@ -133,8 +133,8 @@ def resume_checkpoint(
 
             if 'epoch' in checkpoint:
                 resume_epoch = checkpoint['epoch']
-                if 'version' in checkpoint and checkpoint['version'] > 1:
-                    resume_epoch += 1  # start at the next epoch, old checkpoints incremented before save
+                # if 'version' in checkpoint and checkpoint['version'] > 1:
+                #     resume_epoch += 1  # start at the next epoch, old checkpoints incremented before save
 
             if log_info:
                 _logger.info("Loaded checkpoint '{}' (epoch {})".format(checkpoint_path, checkpoint['epoch']))
