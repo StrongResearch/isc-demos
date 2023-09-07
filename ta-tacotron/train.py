@@ -300,7 +300,7 @@ def train(global_rank, world_size, args):
 
         with zipfile.ZipFile(checkpoint_zipfile, 'r') as zipf:
             zipf.extract("model.sf", path=checkpoint_dir_path)   # Extract the model file
-            zipf.extract("state_checkpoint.pt", path=checkpoint_dir_path)  # Extract the state checkpoint file
+            zipf.extract("train_state.pt", path=checkpoint_dir_path)  # Extract the state checkpoint file
 
         logger.info("Loading the model checkpoint")
         #load_model(model, str(model_checkpoint_file))
