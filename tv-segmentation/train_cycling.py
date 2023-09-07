@@ -1,3 +1,8 @@
+from cycling_utils import Timer
+
+timer = Timer()
+timer.report('importing Timer')
+
 import datetime
 import os
 import time
@@ -14,6 +19,8 @@ from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
 from torchvision.transforms import functional as F, InterpolationMode
 from cycling_utils import InterruptableDistributedSampler, atomic_torch_save, Timer
+
+timer.report('importing everything else')
 
 def get_dataset(dir_path, name, image_set, transform):
     def sbd(*args, **kwargs):
@@ -170,10 +177,9 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
 
     return metric_logger, timer
 
+timer.report('defined other functions')
 
 def main(args):
-
-    timer = Timer()
 
     if args.output_dir:
         utils.mkdir(args.output_dir)

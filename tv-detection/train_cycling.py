@@ -17,6 +17,10 @@ Also, if you train Keypoint R-CNN, the default hyperparameters are
 Because the number of images is smaller in the person keypoint subset of COCO,
 the number of epochs should be adapted so that we have the same number of iterations.
 """
+from cycling_utils import Timer
+
+timer = Timer()
+timer.report('importing Timer')
 
 import datetime
 import os
@@ -38,7 +42,9 @@ from group_by_aspect_ratio import create_aspect_ratio_groups, GroupedBatchSample
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
 
-from cycling_utils import InterruptableDistributedSampler, atomic_torch_save, Timer
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
+
+timer.report('importing everything else')
 
 def copypaste_collate_fn(batch):
     copypaste = SimpleCopyPaste(blending=True, resize_interpolation=InterpolationMode.BILINEAR)
@@ -69,10 +75,10 @@ def get_transform(is_train, args):
         return lambda img, target: (trans(img), target)
     else:
         return presets.DetectionPresetEval(backend=args.backend, use_v2=args.use_v2)
+    
+timer.report('defined other functions')
 
 def main(args):
-
-    timer = Timer()
 
     if args.backend.lower() == "tv_tensor" and not args.use_v2:
         raise ValueError("Use --use-v2 if you want to use the tv_tensor backend.")
@@ -94,7 +100,7 @@ def main(args):
     if args.use_deterministic_algorithms:
         torch.use_deterministic_algorithms(True)
 
-    timer.report('preliminaries')
+    timer.report('main preliminaries')
 
     # Data loading code
     dataset, num_classes = get_dataset(is_train=True, args=args)
