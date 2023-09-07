@@ -78,7 +78,7 @@ def get_transform(is_train, args):
     
 timer.report('defined other functions')
 
-def main(args):
+def main(args, timer):
 
     if args.backend.lower() == "tv_tensor" and not args.use_v2:
         raise ValueError("Use --use-v2 if you want to use the tv_tensor backend.")
@@ -324,4 +324,4 @@ def get_args_parser(add_help=True):
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
-    main(args)
+    main(args, timer)

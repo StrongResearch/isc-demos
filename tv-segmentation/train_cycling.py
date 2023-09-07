@@ -179,7 +179,7 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
 
 timer.report('defined other functions')
 
-def main(args):
+def main(args, timer):
 
     if args.output_dir:
         utils.mkdir(args.output_dir)
@@ -400,4 +400,4 @@ def get_args_parser(add_help=True):
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
-    main(args)
+    main(args, timer)
