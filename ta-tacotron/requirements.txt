@@ -9,4 +9,3 @@ unidecode
 pillow
 tqdm
 safetensors
-git+https://github.com/StrongResearch/isc-demos.git#subdirectory=cycling_utils
