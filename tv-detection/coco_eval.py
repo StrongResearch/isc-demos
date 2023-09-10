@@ -26,11 +26,18 @@ class CocoEvaluator:
         self.eval_imgs = {k: [] for k in iou_types}
 
     def update(self, predictions):
-        img_ids = list(np.unique(list(predictions.keys())))
-        self.img_ids.extend(img_ids)
+        '''
+        predictions = {
+            image_id: {"boxes": tensor(n x 4), "labels": tensor(n,), "scores": tensor(n,), "masks": tensor(n x 1 x H x W)}, # for n < N detections
+            ... for image_id in batch
+        }
+        '''
+        img_ids = list(np.unique(list(predictions.keys()))) # images seen this batch
+        self.img_ids.extend(img_ids) # catalogue of all images seen
 
-        for iou_type in self.iou_types:
+        for iou_type in self.iou_types: # either ["bbox"] or ["bbox", "segm"] or ["bbox", "keypoints"]
             results = self.prepare(predictions, iou_type)
+
             with redirect_stdout(io.StringIO()):
                 coco_dt = COCO.loadRes(self.coco_gt, results) if results else COCO()
             coco_eval = self.coco_eval[iou_type]
@@ -69,7 +76,6 @@ class CocoEvaluator:
         for original_id, prediction in predictions.items():
             if len(prediction) == 0:
                 continue
-
             boxes = prediction["boxes"]
             boxes = convert_to_xywh(boxes).tolist()
             scores = prediction["scores"].tolist()

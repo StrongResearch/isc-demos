@@ -66,8 +66,10 @@ class SmoothedValue:
 class ConfusionMatrix:
     def __init__(self, num_classes):
         self.num_classes = num_classes
-        # self.mat = None
-        self.mat = torch.zeros((num_classes, num_classes), dtype=torch.int64, device='cpu')
+        # temp_mat will accumulate results from images seen on this node
+        self.temp_mat = torch.zeros((num_classes, num_classes), dtype=torch.int64, device='cpu', requires_grad=False)
+        # mat will then store the accumulation of all temp_mats, avoiding multiple-counting
+        self.mat = torch.zeros((num_classes, num_classes), dtype=torch.int64, device='cpu', requires_grad=False)
 
     def update(self, a, b):
         n = self.num_classes
@@ -76,9 +78,10 @@ class ConfusionMatrix:
         with torch.inference_mode():
             k = (a >= 0) & (a < n)
             inds = n * a[k].to(torch.int64) + b[k]
-            self.mat += torch.bincount(inds, minlength=n**2).reshape(n, n)
+            self.temp_mat += torch.bincount(inds, minlength=n**2).reshape(n, n)
 
     def reset(self):
+        self.temp_mat.zero_()
         self.mat.zero_()
 
     def compute(self):
@@ -89,7 +92,11 @@ class ConfusionMatrix:
         return acc_global, acc, iu
 
     def reduce_from_all_processes(self):
-        reduce_across_processes(self.mat)
+        reduce_across_processes(self.temp_mat)
+        # add the accumulated results from all nodes
+        self.mat += self.temp_mat.clone()
+        # reset temp_mat
+        self.temp_mat.zero_()
 
     def __str__(self):
         acc_global, acc, iu = self.compute()
@@ -297,5 +304,5 @@ def reduce_across_processes(val):
 
     t = torch.tensor(val, device="cuda")
     dist.barrier()
-    dist.all_reduce(t)
+    dist.all_reduce(t) # default all_reduce op is SUM
     return t

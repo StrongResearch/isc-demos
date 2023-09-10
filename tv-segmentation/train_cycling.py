@@ -86,10 +86,8 @@ def evaluate(
             output = output["out"]
             timer.report(f'Epoch {epoch} batch: {test_step} forward through model')
 
-            confmat_temp = utils.ConfusionMatrix(num_classes)
-            confmat_temp.update(target.flatten().detach().cpu(), output.argmax(1).flatten().detach().cpu())
-            confmat_temp.reduce_from_all_processes()
-            confmat.mat += confmat_temp.mat # Add to the running eval matrix
+            confmat.update(target.flatten().detach().cpu(), output.argmax(1).flatten().detach().cpu())
+            confmat.reduce_from_all_processes()
 
             # FIXME need to take into account that the datasets
             # could have been padded in distributed setup
@@ -110,13 +108,16 @@ def evaluate(
                     "lr_scheduler": lr_scheduler.state_dict(),
                     "train_sampler": train_sampler.state_dict(),
                     "test_sampler": test_sampler.state_dict(),
+
                     "confmat": confmat.mat, # For storing eval metric
+                    "confmat_temp": confmat.temp_mat, # For storing eval metric
                 }
                 if args.amp:
                     checkpoint["scaler"] = scaler.state_dict()
                 timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     print(confmat)
+    confmat.reset()
     num_processed_samples = utils.reduce_across_processes(num_processed_samples)
 
     if (
@@ -190,7 +191,9 @@ def train_one_epoch(
                 "lr_scheduler": lr_scheduler.state_dict(),
                 "train_sampler": train_sampler.state_dict(),
                 "test_sampler": test_sampler.state_dict(),
+
                 "confmat": confmat.mat, # For storing eval metric
+                "confmat_temp": confmat.temp_mat, # For storing eval metric
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
@@ -223,9 +226,9 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
     dataset_test, _ = get_dataset(args.data_path, args.dataset, "val", get_transform(False, args))
 
-    # ## SUBSET FOR TESTING EPOCH ROLLOVER
-    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(1000))
-    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(500))
+    ## SUBSET FOR TESTING EPOCH ROLLOVER
+    dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
+    dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
 
     timer.report('loading data')
 
@@ -326,6 +329,7 @@ def main(args, timer):
 
         test_sampler.load_state_dict(checkpoint["test_sampler"])
         confmat.mat = checkpoint["confmat"]
+        confmat.temp_mat = checkpoint["confmat_temp"]
             
     timer.report('retrieving checkpoint')
 
@@ -352,7 +356,6 @@ def main(args, timer):
             with test_sampler.in_epoch(epoch):
                 timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
                 confmat, timer = evaluate(model, data_loader_test, num_classes, confmat, optimizer, lr_scheduler, train_sampler, test_sampler, device, epoch, args.print_freq, scaler, timer)
-                confmat = utils.ConfusionMatrix(num_classes) # reset the evaluation
                 timer.report(f'evaluation for epoch {epoch}')
 
 

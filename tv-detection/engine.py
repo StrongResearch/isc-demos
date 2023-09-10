@@ -11,7 +11,7 @@ from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 
 def train_one_epoch(
         model, optimizer, data_loader_train, train_sampler, test_sampler,
-        lr_scheduler, warmup_lr_scheduler, args, device,
+        lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator,
         epoch, scaler=None, timer=None
     ):
 
@@ -78,12 +78,13 @@ def train_one_epoch(
                 "train_sampler": train_sampler.state_dict(),
                 "test_sampler": test_sampler.state_dict(),
                 
-                # # Evaluator state variables
-                # "coco_gt": coco_evaluator.coco_gt,
-                # "iou_types": coco_evaluator.iou_types,
-                # "coco_eval": coco_evaluator.coco_eval,
-                # "img_ids": coco_evaluator.img_ids,
-                # "eval_imgs": coco_evaluator.eval_imgs,
+                # Evaluator state variables
+                "img_ids": coco_evaluator.img_ids, # catalogue of images seen already
+                "eval_imgs": coco_evaluator.eval_imgs, # image evaluations
+
+                # "coco_gt": coco_evaluator.coco_gt, # passed in at init
+                # "iou_types": coco_evaluator.iou_types, # passed in at init
+                # "coco_eval": coco_evaluator.coco_eval, # generated at init
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
@@ -124,10 +125,6 @@ def evaluate(
 
     timer.report(f'evaluation preliminaries')
 
-    # coco = get_coco_api_from_dataset(data_loader_test.dataset)
-    # iou_types = _get_iou_types(model)
-    # coco_evaluator = CocoEvaluator(coco, iou_types)
-
     test_step = test_sampler.progress // data_loader_test.batch_size
     print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
     timer.report('launch evaluation routine')
@@ -148,7 +145,7 @@ def evaluate(
         timer.report(f'Epoch {epoch} batch: {test_step} outputs back to cpu')
 
         res = {target["image_id"]: output for target, output in zip(targets, outputs)}
-        # res = {img_id: dict['boxes', 'labels', 'scores', 'masks'], ...}
+        # res = {img_id: {'boxes': T, 'labels': T, 'scores': T, 'masks': T}, ...}
         evaluator_time = time.time()
         coco_evaluator.update(res)
         evaluator_time = time.time() - evaluator_time
@@ -171,11 +168,13 @@ def evaluate(
                 "test_sampler": test_sampler.state_dict(),
 
                 # Evaluator state variables
-                "coco_gt": coco_evaluator.coco_gt,
-                "iou_types": coco_evaluator.iou_types,
-                "coco_eval": coco_evaluator.coco_eval,
-                "img_ids": coco_evaluator.img_ids,
-                "eval_imgs": coco_evaluator.eval_imgs,
+                "img_ids": coco_evaluator.img_ids, # catalogue of images seen already
+                "eval_imgs": coco_evaluator.eval_imgs, # image evaluations
+
+                # "coco_gt": coco_evaluator.coco_gt, # passed in at init
+                # "iou_types": coco_evaluator.iou_types, # passed in at init
+                # "coco_eval": coco_evaluator.coco_eval, # generated at init
+
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
@@ -191,6 +190,10 @@ def evaluate(
     coco_evaluator.summarize()
     torch.set_num_threads(n_threads)
 
-    timer.report(f'evaluator accumulation and summarization')
+    coco = get_coco_api_from_dataset(data_loader_test.dataset)
+    iou_types = _get_iou_types(model)
+    coco_evaluator = CocoEvaluator(coco, iou_types)
+
+    timer.report(f'evaluator accumulation, summarization, and reset')
 
     return coco_evaluator, timer
