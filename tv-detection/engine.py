@@ -148,6 +148,7 @@ def evaluate(
         timer.report(f'Epoch {epoch} batch: {test_step} outputs back to cpu')
 
         res = {target["image_id"]: output for target, output in zip(targets, outputs)}
+        # res = {img_id: dict['boxes', 'labels', 'scores', 'masks'], ...}
         evaluator_time = time.time()
         coco_evaluator.update(res)
         evaluator_time = time.time() - evaluator_time
