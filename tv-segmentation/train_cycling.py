@@ -226,9 +226,9 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
     dataset_test, _ = get_dataset(args.data_path, args.dataset, "val", get_transform(False, args))
 
-    ## SUBSET FOR TESTING EPOCH ROLLOVER
-    dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
-    dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
+    # ## SUBSET FOR TESTING
+    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
+    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
 
     timer.report('loading data')
 

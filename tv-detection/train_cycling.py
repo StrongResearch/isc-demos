@@ -117,9 +117,9 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    ## SUBSET FOR TESTING EPOCH ROLLOVER
-    dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
-    dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
+    # ## SUBSET FOR TESTING
+    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
+    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
 
     timer.report('loading data')
 
@@ -252,15 +252,11 @@ def main(args, timer):
         test_sampler.load_state_dict(checkpoint["test_sampler"])
 
         # Evaluator state variables
-        # coco_evaluator.coco_gt = checkpoint["coco_gt"] # passed in at init
-        # coco_evaluator.iou_types = checkpoint["iou_types"] # passed in at init
-        # coco_evaluator.coco_eval = checkpoint["coco_eval"] # generated at init
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
 
     timer.report('retrieving checkpoint')
 
-    # KILL THIS FOR NOW
     if args.test_only:
         # We disable the cudnn benchmarking because it can noticeably affect the accuracy
         torch.backends.cudnn.benchmark = False
