@@ -89,7 +89,7 @@ def evaluate(
             confmat_temp = utils.ConfusionMatrix(num_classes)
             confmat_temp.update(target.flatten().detach().cpu(), output.argmax(1).flatten().detach().cpu())
             confmat_temp.reduce_from_all_processes()
-            confmat.mat += confmat_temp.mat.cpu() # Add to the running eval matrix
+            confmat.mat += confmat_temp.mat # Add to the running eval matrix
 
             # FIXME need to take into account that the datasets
             # could have been padded in distributed setup
@@ -131,19 +131,6 @@ def evaluate(
             "Try adjusting the batch size and / or the world size. "
             "Setting the world size to 1 is always a safe bet."
         )
-
-    # # Save final checkpoint once all eval ops have completed - MIGHT BE ABLE TO OMIT THIS ALTOGETHER
-    # if utils.is_main_process():
-    #     print(f"Saving checkpoint at end of epoch {epoch} evaluation")
-    #     checkpoint = {
-    #         "mode": "train",
-    #         "model": model.module.state_dict(),
-    #         "epoch": epoch,
-    #         "args": args,
-    #         "test_sampler": test_sampler.state_dict(),
-    #         "conf_mat": confmat, # For storing eval metric
-    #     }
-    #     timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     return confmat, timer
 
@@ -203,27 +190,11 @@ def train_one_epoch(
                 "lr_scheduler": lr_scheduler.state_dict(),
                 "train_sampler": train_sampler.state_dict(),
                 "test_sampler": test_sampler.state_dict(),
-                "confmat": confmat, # For storing eval metric
+                "confmat": confmat.mat, # For storing eval metric
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
-
-    # # Saving checkpoint at the end of training epoch - MIGHT BE ABLE TO OMIT THIS ALTOGETHER
-    # if utils.is_main_process(): # Checkpointing every batch?
-    #     print(f"Saving checkpoint at end of epoch {epoch} training")
-    #     checkpoint = {
-    #         "mode": "evaluate",
-    #         "model": model.module.state_dict(),
-    #         "optimizer": optimizer.state_dict(),
-    #         "lr_scheduler": lr_scheduler.state_dict(),
-    #         "epoch": epoch,
-    #         "args": args,
-    #         "train_sampler": train_sampler.state_dict(),
-    #     }
-    #     if args.amp:
-    #         checkpoint["scaler"] = scaler.state_dict()
-    #     timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     return metric_logger, timer
 
@@ -252,19 +223,19 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
     dataset_test, _ = get_dataset(args.data_path, args.dataset, "val", get_transform(False, args))
 
-    ## SUBSET FOR TESTING EPOCH ROLLOVER
-    dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(450))
-    dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(108))
+    # ## SUBSET FOR TESTING EPOCH ROLLOVER
+    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(1000))
+    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(500))
 
     timer.report('loading data')
 
     # if args.distributed:
-    train_sampler = InterruptableDistributedSampler(dataset_train)
-    test_sampler = InterruptableDistributedSampler(dataset_test)
-    # test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
+        # test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
     # else:
     #     train_sampler = torch.utils.data.RandomSampler(dataset)
     #     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
+    train_sampler = InterruptableDistributedSampler(dataset_train)
+    test_sampler = InterruptableDistributedSampler(dataset_test)
 
     timer.report('creating data samplers')
 
@@ -377,10 +348,12 @@ def main(args, timer):
             metric_logger, timer = train_one_epoch(model, criterion, optimizer, data_loader_train, train_sampler, test_sampler, confmat, lr_scheduler, device, epoch, args.print_freq, scaler, timer)
             timer.report(f'training for epoch {epoch}')
 
-        with test_sampler.in_epoch(epoch):
-            timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            confmat, timer = evaluate(model, data_loader_test, num_classes, confmat, optimizer, lr_scheduler, train_sampler, test_sampler, device, epoch, args.print_freq, scaler, timer)
-            timer.report(f'evaluation for epoch {epoch}')
+            # NEST TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
+            with test_sampler.in_epoch(epoch):
+                timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+                confmat, timer = evaluate(model, data_loader_test, num_classes, confmat, optimizer, lr_scheduler, train_sampler, test_sampler, device, epoch, args.print_freq, scaler, timer)
+                confmat = utils.ConfusionMatrix(num_classes) # reset the evaluation
+                timer.report(f'evaluation for epoch {epoch}')
 
 
 def get_args_parser(add_help=True):

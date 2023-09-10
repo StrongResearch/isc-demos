@@ -11,8 +11,8 @@ from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 
 def train_one_epoch(
         model, optimizer, data_loader_train, train_sampler, test_sampler,
-        lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator,
-        epoch, print_freq, scaler=None, timer=None
+        lr_scheduler, warmup_lr_scheduler, args, device,
+        epoch, scaler=None, timer=None
     ):
 
     model.train()
@@ -26,7 +26,7 @@ def train_one_epoch(
     # train_step = train_sampler.progress // args.batch_size
     print(f'\nTraining / resuming epoch {epoch} from training step {train_sampler.progress}\n')
 
-    for images, targets in metric_logger.log_every(data_loader_train, train_sampler.progress, print_freq, header): ## EDITED THIS - ARGS.BATCH_SIZE == DATALOADER.BATCH_SIZE? GROUPEDBATCHSAMPLER AT PLAY
+    for images, targets in metric_logger.log_every(data_loader_train, train_sampler.progress, args.print_freq, header): ## EDITED THIS - ARGS.BATCH_SIZE == DATALOADER.BATCH_SIZE? GROUPEDBATCHSAMPLER AT PLAY
 
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in t.items()} for t in targets]
@@ -78,12 +78,12 @@ def train_one_epoch(
                 "train_sampler": train_sampler.state_dict(),
                 "test_sampler": test_sampler.state_dict(),
                 
-                # Evaluator state variables
-                "coco_gt": coco_evaluator.coco_gt,
-                "iou_types": coco_evaluator.iou_types,
-                "coco_eval": coco_evaluator.coco_eval,
-                "img_ids": coco_evaluator.img_ids,
-                "eval_imgs": coco_evaluator.eval_imgs,
+                # # Evaluator state variables
+                # "coco_gt": coco_evaluator.coco_gt,
+                # "iou_types": coco_evaluator.iou_types,
+                # "coco_eval": coco_evaluator.coco_eval,
+                # "img_ids": coco_evaluator.img_ids,
+                # "eval_imgs": coco_evaluator.eval_imgs,
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
@@ -132,7 +132,7 @@ def evaluate(
     print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
     timer.report('launch evaluation routine')
 
-    for images, targets in metric_logger.log_every(data_loader, 100, header):
+    for images, targets in metric_logger.log_every(data_loader_test, test_sampler.progress, args.print_freq, header):
 
         images = list(img.to(device) for img in images)
         timer.report(f'Epoch {epoch} batch: {test_step} moving to device')

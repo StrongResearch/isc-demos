@@ -76,16 +76,16 @@ def get_transform(is_train, args):
     else:
         return presets.DetectionPresetEval(backend=args.backend, use_v2=args.use_v2)
     
-def _get_iou_types(model):
-    model_without_ddp = model
-    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
-        model_without_ddp = model.module
-    iou_types = ["bbox"]
-    if isinstance(model_without_ddp, torchvision.models.detection.MaskRCNN):
-        iou_types.append("segm")
-    if isinstance(model_without_ddp, torchvision.models.detection.KeypointRCNN):
-        iou_types.append("keypoints")
-    return iou_types
+# def _get_iou_types(model):
+#     model_without_ddp = model
+#     if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+#         model_without_ddp = model.module
+#     iou_types = ["bbox"]
+#     if isinstance(model_without_ddp, torchvision.models.detection.MaskRCNN):
+#         iou_types.append("segm")
+#     if isinstance(model_without_ddp, torchvision.models.detection.KeypointRCNN):
+#         iou_types.append("keypoints")
+#     return iou_types
 
 timer.report('defined other functions')
 
@@ -117,9 +117,9 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    ## SUBSET FOR TESTING EPOCH ROLLOVER
-    dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(450))
-    dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(108))
+    # ## SUBSET FOR TESTING EPOCH ROLLOVER
+    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(1000))
+    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(500))
 
     timer.report('loading data')
 
@@ -137,7 +137,6 @@ def main(args, timer):
     #     train_batch_sampler = torch.utils.data.BatchSampler(train_sampler, args.batch_size, drop_last=True)
 
     group_ids = create_aspect_ratio_groups(dataset_train, k=args.aspect_ratio_group_factor)
-
     train_sampler = InterruptableDistributedGroupedBatchSampler(dataset_train, group_ids, args.batch_size)
     test_sampler = InterruptableDistributedSampler(dataset_test)
 
@@ -228,13 +227,13 @@ def main(args, timer):
 
     timer.report('learning rate schedulers')
 
-    from coco_eval import CocoEvaluator
-    from coco_utils import get_coco_api_from_dataset
-    coco = get_coco_api_from_dataset(data_loader_test.dataset)
-    iou_types = _get_iou_types(model)
-    coco_evaluator = CocoEvaluator(coco, iou_types)
+    # from coco_eval import CocoEvaluator
+    # from coco_utils import get_coco_api_from_dataset
+    # coco = get_coco_api_from_dataset(data_loader_test.dataset)
+    # iou_types = _get_iou_types(model)
+    # coco_evaluator = CocoEvaluator(coco, iou_types)
 
-    timer.report('init coco evaluator')
+    # timer.report('init coco evaluator')
 
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     if args.resume and os.path.isfile(args.resume):
@@ -252,15 +251,14 @@ def main(args, timer):
 
         test_sampler.load_state_dict(checkpoint["test_sampler"])
 
-        # Evaluator state variables
-        coco_evaluator.coco_gt = checkpoint["coco_gt"]
-        coco_evaluator.iou_types = checkpoint["iou_types"]
-        coco_evaluator.coco_eval = checkpoint["coco_eval"]
-        coco_evaluator.img_ids = checkpoint["img_ids"]
-        coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
+        # # Evaluator state variables
+        # coco_evaluator.coco_gt = checkpoint["coco_gt"]
+        # coco_evaluator.iou_types = checkpoint["iou_types"]
+        # coco_evaluator.coco_eval = checkpoint["coco_eval"]
+        # coco_evaluator.img_ids = checkpoint["img_ids"]
+        # coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
 
     timer.report('retrieving checkpoint')
-
 
     # KILL THIS FOR NOW
     if args.test_only:
@@ -278,11 +276,12 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            metric_logger, timer = train_one_epoch(model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator, epoch, args.print_freq, scaler, timer)
+            metric_logger, timer = train_one_epoch(model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, args, device, epoch, scaler, timer)
 
-        with test_sampler.in_epoch(epoch):
-            timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            coco_evaluator, timer = evaluate(model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer)
+            # # NEST THE TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
+            # with test_sampler.in_epoch(epoch):
+            #     timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            #     coco_evaluator, timer = evaluate(model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer)
 
 def get_args_parser(add_help=True):
     import argparse
