@@ -66,12 +66,13 @@ class SmoothedValue:
 class ConfusionMatrix:
     def __init__(self, num_classes):
         self.num_classes = num_classes
-        self.mat = None
+        # self.mat = None
+        self.mat = torch.zeros((num_classes, num_classes), dtype=torch.int64, device='cpu')
 
     def update(self, a, b):
         n = self.num_classes
-        if self.mat is None:
-            self.mat = torch.zeros((n, n), dtype=torch.int64, device=a.device)
+        # if self.mat is None:
+        #     self.mat = torch.zeros((n, n), dtype=torch.int64, device=a.device)
         with torch.inference_mode():
             k = (a >= 0) & (a < n)
             inds = n * a[k].to(torch.int64) + b[k]

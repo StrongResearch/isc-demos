@@ -25,17 +25,14 @@ timer.report('importing everything else')
 def get_dataset(dir_path, name, image_set, transform):
     def sbd(*args, **kwargs):
         return torchvision.datasets.SBDataset(*args, mode="segmentation", **kwargs)
-
     paths = {
         "voc": (dir_path, torchvision.datasets.VOCSegmentation, 21),
         "voc_aug": (dir_path, sbd, 21),
         "coco": (dir_path, get_coco, 21),
     }
     p, ds_fn, num_classes = paths[name]
-
     ds = ds_fn(p, image_set=image_set, transforms=transform)
     return ds, num_classes
-
 
 def get_transform(train, args):
     if train:
@@ -43,84 +40,120 @@ def get_transform(train, args):
     elif args.weights and args.test_only:
         weights = torchvision.models.get_weight(args.weights)
         trans = weights.transforms()
-
         def preprocessing(img, target):
             img = trans(img)
             size = F.get_dimensions(img)[1:]
             target = F.resize(target, size, interpolation=InterpolationMode.NEAREST)
             return img, F.pil_to_tensor(target)
-
         return preprocessing
     else:
         return presets.SegmentationPresetEval(base_size=520)
-
 
 def criterion(inputs, target):
     losses = {}
     for name, x in inputs.items():
         losses[name] = nn.functional.cross_entropy(x, target, ignore_index=255)
-
     if len(losses) == 1:
         return losses["out"]
-
     return losses["out"] + 0.5 * losses["aux"]
 
-
-def evaluate(model, data_loader, device, num_classes, timer):
-
-    timer.report('starting evaluation routine')
+def evaluate(
+        model, data_loader_test, num_classes, confmat,
+        optimizer, lr_scheduler,
+        train_sampler: InterruptableDistributedSampler,
+        test_sampler: InterruptableDistributedSampler, 
+        device, epoch, print_freq, scaler=None, timer=None
+    ):
 
     model.eval()
-    confmat = utils.ConfusionMatrix(num_classes)
     metric_logger = utils.MetricLogger(delimiter="  ")
     header = "Test:"
     num_processed_samples = 0
+    timer.report(f'evaluation preliminaries')
 
-    timer.report(f'preliminaries')
+    test_step = test_sampler.progress // data_loader_test.batch_size
+    print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
+    timer.report('launch evaluation routine')
 
     with torch.inference_mode():
-        eval_batch = 1
-        for image, target in metric_logger.log_every(data_loader, 100, header):
-            image, target = image.to(device), target.to(device)
 
-            timer.report(f'eval batch: {eval_batch} moving to device')
+        for image, target in metric_logger.log_every(data_loader_test, test_step, print_freq, header):
+
+            image, target = image.to(device), target.to(device)
+            timer.report(f'Epoch {epoch} batch: {test_step} moving to device')
 
             output = model(image)
             output = output["out"]
+            timer.report(f'Epoch {epoch} batch: {test_step} forward through model')
 
-            timer.report(f'eval batch: {eval_batch} forward through model')
+            confmat_temp = utils.ConfusionMatrix(num_classes)
+            confmat_temp.update(target.flatten().detach().cpu(), output.argmax(1).flatten().detach().cpu())
+            confmat_temp.reduce_from_all_processes()
+            confmat.mat += confmat_temp.mat.cpu() # Add to the running eval matrix
 
-            confmat.update(target.flatten(), output.argmax(1).flatten())
             # FIXME need to take into account that the datasets
             # could have been padded in distributed setup
             num_processed_samples += image.shape[0]
+            timer.report(f'Epoch {epoch} batch: {test_step} confmat update')
 
-            timer.report(f'eval batch: {eval_batch} confmat update')
+            test_sampler.advance(len(image))
 
-            eval_batch += 1
+            test_step = test_sampler.progress // data_loader_test.batch_size
+            if utils.is_main_process() and test_step % 1 == 0: # Checkpointing every batch
 
-        confmat.reduce_from_all_processes()
+                print(f"Saving checkpoint at epoch {epoch} eval batch {test_step}")
+                checkpoint = {
+                    "args": args,
+                    "epoch": epoch,
+                    "model": model.module.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "lr_scheduler": lr_scheduler.state_dict(),
+                    "train_sampler": train_sampler.state_dict(),
+                    "test_sampler": test_sampler.state_dict(),
+                    "confmat": confmat.mat, # For storing eval metric
+                }
+                if args.amp:
+                    checkpoint["scaler"] = scaler.state_dict()
+                timer = atomic_torch_save(checkpoint, args.resume, timer)
 
+    print(confmat)
     num_processed_samples = utils.reduce_across_processes(num_processed_samples)
 
-    timer.report(f'confmat reduction accross processes')
     if (
-        hasattr(data_loader.dataset, "__len__")
-        and len(data_loader.dataset) != num_processed_samples
+        hasattr(data_loader_test.dataset, "__len__")
+        and len(data_loader_test.dataset) != num_processed_samples
         and torch.distributed.get_rank() == 0
     ):
         # See FIXME above
         warnings.warn(
-            f"It looks like the dataset has {len(data_loader.dataset)} samples, but {num_processed_samples} "
+            f"It looks like the dataset has {len(data_loader_test.dataset)} samples, but {num_processed_samples} "
             "samples were used for the validation, which might bias the results. "
             "Try adjusting the batch size and / or the world size. "
             "Setting the world size to 1 is always a safe bet."
         )
 
+    # # Save final checkpoint once all eval ops have completed - MIGHT BE ABLE TO OMIT THIS ALTOGETHER
+    # if utils.is_main_process():
+    #     print(f"Saving checkpoint at end of epoch {epoch} evaluation")
+    #     checkpoint = {
+    #         "mode": "train",
+    #         "model": model.module.state_dict(),
+    #         "epoch": epoch,
+    #         "args": args,
+    #         "test_sampler": test_sampler.state_dict(),
+    #         "conf_mat": confmat, # For storing eval metric
+    #     }
+    #     timer = atomic_torch_save(checkpoint, args.resume, timer)
+
     return confmat, timer
 
 
-def train_one_epoch(model, criterion, optimizer, data_loader, sampler: InterruptableDistributedSampler, lr_scheduler, device, epoch, print_freq, scaler=None, timer=None):
+def train_one_epoch(
+        model, criterion, optimizer, data_loader_train,
+        train_sampler: InterruptableDistributedSampler, 
+        test_sampler: InterruptableDistributedSampler, confmat,
+        lr_scheduler, device, epoch, print_freq, scaler=None, timer=None
+    ):
 
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -129,19 +162,20 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
 
     timer.report('training preliminaries')
 
-    # Running this before starting the training loop assists reporting on progress after resuming - step == batch count
-    step = sampler.progress // data_loader.batch_size
+    # Running this before starting the training loop assists reporting on progress after resuming - train_step == batch count
+    # Also means when resuming during evaluation, the training phase is skipped as train_sampler progress == 100%.
+    train_step = train_sampler.progress // data_loader_train.batch_size
+    print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
 
-    for image, target in metric_logger.log_every(data_loader, step, print_freq, header):
+    for image, target in metric_logger.log_every(data_loader_train, train_step, print_freq, header):
+
         image, target = image.to(device), target.to(device)
-
-        timer.report(f'Epoch: {epoch} Step {step}: moving batch data to device')
+        timer.report(f'Epoch: {epoch} batch {train_step}: moving batch data to device')
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             output = model(image)
             loss = criterion(output, target)
-
-        timer.report(f'Epoch: {epoch} Step {step}: forward pass')
+        timer.report(f'Epoch: {epoch} batch {train_step}: forward pass')
 
         optimizer.zero_grad()
         if scaler is not None:
@@ -151,29 +185,45 @@ def train_one_epoch(model, criterion, optimizer, data_loader, sampler: Interrupt
         else:
             loss.backward()
             optimizer.step()
-
-        timer.report(f'Epoch: {epoch} Step {step}: backward pass')
+        timer.report(f'Epoch: {epoch} batch {train_step}: backward pass')
 
         lr_scheduler.step()
         metric_logger.update(loss=loss.item(), lr=optimizer.param_groups[0]["lr"])
-        sampler.advance(len(image))
+        train_sampler.advance(len(image))
+        timer.report(f'Epoch: {epoch} batch {train_step}: updating metric logger')
 
-        timer.report(f'Epoch: {epoch} Step {step}: updating metric logger')
-
-        step = sampler.progress // data_loader.batch_size
-        if utils.is_main_process() and step % 5 == 0: # Checkpointing every 5 batches?
-            print(f"Saving checkpoint at step {step}")
+        train_step = train_sampler.progress // data_loader_train.batch_size
+        if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
+            print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
             checkpoint = {
+                "args": args,
+                "epoch": epoch,
                 "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "lr_scheduler": lr_scheduler.state_dict(),
-                "epoch": epoch,
-                "args": args,
-                "sampler": sampler.state_dict(),
+                "train_sampler": train_sampler.state_dict(),
+                "test_sampler": test_sampler.state_dict(),
+                "confmat": confmat, # For storing eval metric
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
+
+    # # Saving checkpoint at the end of training epoch - MIGHT BE ABLE TO OMIT THIS ALTOGETHER
+    # if utils.is_main_process(): # Checkpointing every batch?
+    #     print(f"Saving checkpoint at end of epoch {epoch} training")
+    #     checkpoint = {
+    #         "mode": "evaluate",
+    #         "model": model.module.state_dict(),
+    #         "optimizer": optimizer.state_dict(),
+    #         "lr_scheduler": lr_scheduler.state_dict(),
+    #         "epoch": epoch,
+    #         "args": args,
+    #         "train_sampler": train_sampler.state_dict(),
+    #     }
+    #     if args.amp:
+    #         checkpoint["scaler"] = scaler.state_dict()
+    #     timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     return metric_logger, timer
 
@@ -197,31 +247,30 @@ def main(args, timer):
     else:
         torch.backends.cudnn.benchmark = True
 
-    timer.report('preliminaries')
+    timer.report('main preliminaries')
 
-    dataset, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
+    dataset_train, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
     dataset_test, _ = get_dataset(args.data_path, args.dataset, "val", get_transform(False, args))
+
+    ## SUBSET FOR TESTING EPOCH ROLLOVER
+    dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(450))
+    dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(108))
 
     timer.report('loading data')
 
     # if args.distributed:
-    train_sampler = InterruptableDistributedSampler(dataset)
-    test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
+    train_sampler = InterruptableDistributedSampler(dataset_train)
+    test_sampler = InterruptableDistributedSampler(dataset_test)
+    # test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
     # else:
     #     train_sampler = torch.utils.data.RandomSampler(dataset)
     #     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
 
     timer.report('creating data samplers')
 
-    data_loader = torch.utils.data.DataLoader(
-        dataset,
-        batch_size=args.batch_size,
-        sampler=train_sampler,
-        num_workers=args.workers,
-        collate_fn=utils.collate_fn,
-        drop_last=True,
+    data_loader_train = torch.utils.data.DataLoader(
+        dataset_train, batch_size=args.batch_size, sampler=train_sampler, num_workers=args.workers, collate_fn=utils.collate_fn, drop_last=True,
     )
-
     data_loader_test = torch.utils.data.DataLoader(
         dataset_test, batch_size=1, sampler=test_sampler, num_workers=args.workers, collate_fn=utils.collate_fn
     )
@@ -229,11 +278,7 @@ def main(args, timer):
     timer.report('creating data loaders')
 
     model = torchvision.models.get_model(
-        args.model,
-        weights=args.weights,
-        weights_backbone=args.weights_backbone,
-        num_classes=num_classes,
-        aux_loss=args.aux_loss,
+        args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, aux_loss=args.aux_loss,
     )
     model.to(device)
 
@@ -247,12 +292,12 @@ def main(args, timer):
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
         model_without_ddp = model.module
 
+    timer.report('preparing model for distributed training')
+
     params_to_optimize = [
         {"params": [p for p in model_without_ddp.backbone.parameters() if p.requires_grad]},
         {"params": [p for p in model_without_ddp.classifier.parameters() if p.requires_grad]},
     ]
-
-    timer.report('preparing model for distributed training')
 
     if args.aux_loss:
         params = [p for p in model_without_ddp.aux_classifier.parameters() if p.requires_grad]
@@ -263,7 +308,7 @@ def main(args, timer):
 
     timer.report('optimizer and scaler')
 
-    iters_per_epoch = len(data_loader)
+    iters_per_epoch = len(data_loader_train)
     main_lr_scheduler = PolynomialLR(
         optimizer, total_iters=iters_per_epoch * (args.epochs - args.lr_warmup_epochs), power=0.9
     )
@@ -291,58 +336,51 @@ def main(args, timer):
 
     timer.report('learning rate schedulers')
 
+    # Init global confmat for eval - eval accumulator
+    confmat = utils.ConfusionMatrix(num_classes)
+    timer.report('init confmat')
+
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
-    if args.resume and os.path.isfile(args.resume):
+    if args.resume and os.path.isfile(args.resume): # If we're resuming...
+
         checkpoint = torch.load(args.resume, map_location="cpu")
         model_without_ddp.load_state_dict(checkpoint["model"], strict=not args.test_only)
-        if not args.test_only:
-            optimizer.load_state_dict(checkpoint["optimizer"])
-            lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-            args.start_epoch = checkpoint["epoch"] #+ 1
-            if args.amp:
-                scaler.load_state_dict(checkpoint["scaler"])
-            train_sampler.load_state_dict(checkpoint["sampler"])
+        args.start_epoch = checkpoint["epoch"]
+ 
+        optimizer.load_state_dict(checkpoint["optimizer"])
+        lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
+        train_sampler.load_state_dict(checkpoint["train_sampler"])
+        if args.amp: # Could align this syntactically...
+            scaler.load_state_dict(checkpoint["scaler"])
 
+        test_sampler.load_state_dict(checkpoint["test_sampler"])
+        confmat.mat = checkpoint["confmat"]
+            
     timer.report('retrieving checkpoint')
 
     if args.test_only:
         # We disable the cudnn benchmarking because it can noticeably affect the accuracy
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
-        confmat, timer = evaluate(model, data_loader_test, device=device, num_classes=num_classes, timer=timer)
+        confmat, timer = evaluate(model, data_loader_test, num_classes, confmat, test_sampler, device, 0, args.print_freq, timer)
         print(confmat)
         return
 
     for epoch in range(args.start_epoch, args.epochs):
-        # if args.distributed:
+
+        print('\n')
+        print(f"EPOCH :: {epoch}")
+        print('\n')
+
         with train_sampler.in_epoch(epoch):
-
-            print('\n')
             timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            timer.report(f'launching epoch {epoch}')
-
-            metric_logger, timer = train_one_epoch(model, criterion, optimizer, data_loader, train_sampler, lr_scheduler, device, epoch, args.print_freq, scaler, timer)
-
+            metric_logger, timer = train_one_epoch(model, criterion, optimizer, data_loader_train, train_sampler, test_sampler, confmat, lr_scheduler, device, epoch, args.print_freq, scaler, timer)
             timer.report(f'training for epoch {epoch}')
-            
-            if utils.is_main_process():
-                checkpoint = {
-                    "model": model.module.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "epoch": epoch,
-                    "args": args,
-                    "sampler": train_sampler.state_dict(),
-                }
-                if args.amp:
-                    checkpoint["scaler"] = scaler.state_dict()
 
-                timer.report(f'defining epoch {epoch} checkpoint')
-
-                timer = atomic_torch_save(checkpoint, args.resume, timer)
-
-            confmat, timer = evaluate(model, data_loader_test, device=device, num_classes=num_classes, timer=timer)
-            print(confmat)
+        with test_sampler.in_epoch(epoch):
+            timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            confmat, timer = evaluate(model, data_loader_test, num_classes, confmat, optimizer, lr_scheduler, train_sampler, test_sampler, device, epoch, args.print_freq, scaler, timer)
+            timer.report(f'evaluation for epoch {epoch}')
 
 
 def get_args_parser(add_help=True):

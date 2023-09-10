@@ -2,6 +2,8 @@ import math
 import torch
 from torch.utils.data import Dataset, DistributedSampler
 from contextlib import contextmanager
+from collections import defaultdict
+from itertools import chain, repeat
 
 class HasNotResetProgressError(Exception):
     pass
@@ -106,6 +108,168 @@ class InterruptableDistributedSampler(DistributedSampler):
         """
         This context manager is used to set the epoch. It is used like this:
 
+        ```
+        for epoch in range(0, 10):
+            with sampler.in_epoch(epoch):
+                for step, (x, ) in enumerate(dataloader):
+                    # work would be done here...
+        ```
+        """
+        self._set_epoch(epoch)
+        yield
+        self._reset_progress()
+
+
+
+## FOR tv-detection, require grouped batches
+
+def _repeat_to_at_least(iterable, n):
+    repeat_times = math.ceil(n / len(iterable))
+    repeated = chain.from_iterable(repeat(iterable, repeat_times))
+    return list(repeated)
+        
+class InterruptableDistributedGroupedBatchSampler(DistributedSampler):
+    def __init__(
+        self,
+        dataset: Dataset,
+        group_ids: list, 
+        batch_size: int,
+        num_replicas: int | None = None,
+        rank: int | None = None,
+        shuffle: bool = True,
+        seed: int = 0,
+        drop_last: bool = False,
+    ) -> None:
+        """
+        This is a DistributedSampler that can be suspended and resumed.
+
+        This works by keeping track of the epoch and progress within the epoch.
+        The progress is the number of samples that have been returned by the
+        sampler. The epoch is the number of times the sampler has been iterated
+        over.
+
+        The epoch is incremented at the start of each epoch. The epoch is set
+        to 0 at initialization.
+
+        The progress is incremented by the number of samples returned by the
+        sampler. The progress is reset to 0 at the end of each epoch.
+
+        Suspending and resuming the sampler is done by saving and loading the
+        state dict. The state dict contains the epoch and progress. This works
+        because the permutation of the dataset is deterministic given the seed
+        and epoch.
+        """
+        super().__init__(dataset, num_replicas, rank, shuffle, seed, drop_last)
+
+        # OVERALL STATUS INDICATOR
+        self.progress = 0
+        self._has_reset_progress = True
+
+        # PRE-PROCESS DATASET
+        if shuffle:
+            # deterministically shuffle based on seed
+            g = torch.Generator()
+            g.manual_seed(seed)
+            indices = torch.randperm(len(dataset), generator=g).tolist()  # type: ignore[arg-type]
+        else:
+            indices = list(range(len(dataset)))  # type: ignore[arg-type]
+
+        if not self.drop_last:
+            # add extra samples to make dataset evenly divisible accross ranks
+            padding_size = self.total_size - len(indices)
+            if padding_size <= len(indices):
+                indices += indices[:padding_size]
+            else:
+                indices += (indices * math.ceil(padding_size / len(indices)))[:padding_size]
+        else:
+            # remove tail of data to make dataset evenly divisible accross ranks
+            indices = indices[: self.total_size]
+        assert len(indices) == self.total_size
+
+        # subsample indices to use on this rank
+        indices = indices[self.rank : self.total_size : self.num_replicas]
+        # num_samples is the number of samples to be processed each rank
+        assert len(indices) == self.num_samples
+
+        # PRE-COMPUTE GROUPED BATCHES
+
+        buffer_per_group = defaultdict(list)
+        samples_per_group = defaultdict(list)
+        self.num_batches = math.ceil(len(indices)/ batch_size) # why not?
+
+        self.batches = [] # pre-computed so progress refers to batches, not samples.
+        for idx in indices:
+            group_id = group_ids[idx]
+            buffer_per_group[group_id].append(idx)
+            samples_per_group[group_id].append(idx)
+            if len(buffer_per_group[group_id]) == batch_size:
+                self.batches.append(buffer_per_group[group_id])
+                del buffer_per_group[group_id]
+            assert len(buffer_per_group[group_id]) < batch_size
+
+        # now we have run out of elements that satisfy
+        # the group criteria, let's return the remaining
+        # elements so that the size of the sampler is
+        # deterministic
+        num_remaining = self.num_batches - len(self.batches)
+        if num_remaining > 0:
+            # for the remaining batches, take first the buffers with the largest number
+            # of elements
+            for group_id, _ in sorted(buffer_per_group.items(), key=lambda x: len(x[1]), reverse=True):
+                remaining = batch_size - len(buffer_per_group[group_id])
+                samples_from_group_id = _repeat_to_at_least(samples_per_group[group_id], remaining)
+                buffer_per_group[group_id].extend(samples_from_group_id[:remaining])
+                assert len(buffer_per_group[group_id]) == batch_size
+                self.batches.append(buffer_per_group[group_id])
+                num_remaining -= 1
+                if num_remaining == 0:
+                    break
+
+        assert len(self.batches) == self.num_batches
+
+
+    def _reset_progress(self):
+        self.progress = 0
+        self._has_reset_progress = True
+
+    def set_epoch(self, epoch: int) -> None:
+        raise NotImplementedError("Use `with sampler.in_epoch(epoch)` instead of `sampler.set_epoch(epoch)`")
+
+    def _set_epoch(self, epoch):
+        if not self._has_reset_progress:
+            raise HasNotResetProgressError("You must reset progress before setting epoch e.g. `sampler.reset_progress()`\nor use `with sampler.in_epoch(epoch)` instead of `sampler.set_epoch(epoch)`")
+        self.epoch = epoch
+
+    def state_dict(self):
+        return {"progress": self.progress, "epoch": self.epoch}
+
+    def load_state_dict(self, state_dict):
+        self.progress = state_dict["progress"]
+        if not self.progress <= self.num_batches:
+            raise AdvancedTooFarError(f"progress should be less than or equal to the number of batches. progress: {self.progress}, num_batches: {self.num_batches}")
+        self.epoch = state_dict["epoch"]
+
+    def advance(self):
+        """
+        Record that n samples have been consumed.
+        """
+        self.progress += 1
+        if self.progress > self.num_batches:
+            raise AdvancedTooFarError(f"You have advanced too far. You can only advance up to the total number of batches: {self.num_batches}.")
+
+    def __iter__(self):
+
+        # slice from progress to pick up where we left off
+        for batch in self.batches[self.progress:]:
+            yield batch
+
+    def __len__(self):
+        return self.num_batches
+
+    @contextmanager
+    def in_epoch(self, epoch):
+        """
+        This context manager is used to set the epoch. It is used like this:
         ```
         for epoch in range(0, 10):
             with sampler.in_epoch(epoch):
