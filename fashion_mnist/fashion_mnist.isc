@@ -1,6 +1,6 @@
 experiment_name = "fashion_mnist"
 gpu_type = "24GB VRAM GPU"
-nnodes = 10
+nnodes = 12
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_fashion_mnist"
 command = "train.py --save-dir $OUTPUT_PATH --epochs 1000"
