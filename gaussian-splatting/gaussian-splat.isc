@@ -1,0 +1,6 @@
+experiment_name="gaussian-splat"
+gpu_type="24GB VRAM GPU"
+nnodes = 1
+venv_path = "~/gaussian-splatting/.venv/bin/activate"
+output_path = "~/output_gauss_splat"
+command="train.py -s 360_v2/bicycle --checkpoint_iterations 1"

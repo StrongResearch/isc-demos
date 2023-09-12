@@ -1,0 +1,8 @@
+torch==2.0.1
+torchaudio
+torchvision
+tqdm
+plyfile
+git+https://github.com/graphdeco-inria/diff-gaussian-rasterization.git
+git+https://gitlab.inria.fr/bkerbl/simple-knn.git
+git+https://github.com/StrongResearch/isc-demos.git#subdirectory=cycling_utils
