@@ -210,7 +210,7 @@ def main(args, timer):
 
     timer.report('checkpoint retrieval')
 
-    torch.autograd.set_detect_anomaly(mode=True, check_nan=False)
+    # torch.autograd.set_detect_anomaly(mode=True, check_nan=False)
 
     ## -- TRAINING THE AUTO-ENCODER - ##
 
