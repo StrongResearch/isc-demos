@@ -104,7 +104,7 @@ def main(args, timer):
 
     train_loader = DataLoader(train_ds, batch_size=2, sampler=train_sampler, num_workers=args.workers)
     val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=args.workers)
-    # check_data = first(train_loader) # Used later
+    check_data = first(train_loader) # Used later
 
     timer.report('build dataloaders')
 

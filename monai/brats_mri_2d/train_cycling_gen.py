@@ -91,9 +91,9 @@ def main(args, timer):
         num_workers=4, download=False, seed=0, transform=train_transforms,
     )
 
-    ## SUBSET FOR TESTING
-    train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
-    val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
+    # ## SUBSET FOR TESTING
+    # train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
+    # val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
 
     timer.report('build datasets')
 
@@ -145,6 +145,10 @@ def main(args, timer):
     timer.report('loss functions')
 
     # Prepare for distributed training
+    generator = torch.nn.SyncBatchNorm.convert_sync_batchnorm(generator)
+    discriminator = torch.nn.SyncBatchNorm.convert_sync_batchnorm(generator)
+    # unet =  = torch.nn.SyncBatchNorm.convert_sync_batchnorm(unet)
+
     generator_without_ddp = generator
     discriminator_without_ddp = discriminator
     # unet_without_ddp = unet
@@ -205,6 +209,8 @@ def main(args, timer):
         val_loss = checkpoint["val_loss"]
 
     timer.report('checkpoint retrieval')
+
+    torch.autograd.set_detect_anomaly(mode=True, check_nan=False)
 
     ## -- TRAINING THE AUTO-ENCODER - ##
 

@@ -7,7 +7,7 @@ class Timer:
         self.running = running
         if str(os.environ["RANK"]) == "0":
             report = report if report else "Start"
-            print("{:<70}{:>12} ms, {:>12} s total".format(report, f'{0.0:,.3f}', f'{0.0:,.2f}'))
+            print("{:<80}{:>12} ms, {:>12} s total".format(report, f'{0.0:,.3f}', f'{0.0:,.2f}'))
     def report(self, annot):
         if str(os.environ["RANK"]) == "0":
             now = time.time()

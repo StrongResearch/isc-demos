@@ -67,9 +67,9 @@ def train_generator_one_epoch(
 
         if epoch > generator_warm_up_n_epochs:  # Train generator for n epochs before starting discriminator training
 
-            with autocast(enabled=True):
+            optimizer_d.zero_grad(set_to_none=True)
 
-                optimizer_d.zero_grad(set_to_none=True)
+            with autocast(enabled=True):
 
                 logits_fake = discriminator(reconstruction.contiguous().detach())[-1]
                 timer.report(f'train batch {train_step} discriminator forward (fake)')
