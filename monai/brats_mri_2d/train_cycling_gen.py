@@ -16,7 +16,7 @@ from monai.data import DataLoader# , Dataset
 from monai.utils import first, set_determinism
 from torch.cuda.amp import GradScaler# , autocast
 from pathlib import Path
-from tqdm import tqdm
+# from tqdm import tqdm
 
 # from generative.inferers import LatentDiffusionInferer
 from generative.losses.adversarial_loss import PatchAdversarialLoss
