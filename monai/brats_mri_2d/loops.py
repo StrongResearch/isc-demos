@@ -23,7 +23,7 @@ def train_generator_one_epoch(
     discriminator.train()
 
     train_step = train_sampler.progress // train_loader.batch_size
-    total_steps = int((len(train_loader.dataset) / 11) / train_loader.batch_size)
+    total_steps = int(len(train_sampler) / train_loader.batch_size)
     print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
 
     for step, batch in enumerate(train_loader):
@@ -99,11 +99,12 @@ def train_generator_one_epoch(
         recons_loss = epoch_loss / train_images_seen
         gen_loss = gen_epoch_loss / train_images_seen
         disc_loss = disc_epoch_loss / train_images_seen
-        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}, gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss, gen_loss, disc_loss))
+        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}, gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, train_step+1, total_steps, recons_loss, gen_loss, disc_loss))
 
         ## Checkpointing
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
         train_sampler.advance(len(images))
+        train_step = train_sampler.progress // train_loader.batch_size
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
             checkpoint = {
                 # Universals

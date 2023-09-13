@@ -43,33 +43,17 @@ def get_args_parser(add_help=True):
     # parser.add_argument("--epochs", default=30, type=int, metavar="N", help="number of total epochs to run")
     # parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     parser.add_argument("--dist-url", default="env://", type=str, help="url used to set up distributed training")
+    parser.add_argument("-j", "--workers", default=16, type=int, metavar="N", help="number of data loading workers (default: 16)")
  
     return parser
 
-channel = 0  # 0 = Flair
-assert channel in [0, 1, 2, 3], "Choose a valid channel"
-train_transforms = transforms.Compose([
-        transforms.LoadImaged(keys=["image", "label"]),
-        transforms.EnsureChannelFirstd(keys=["image", "label"]),
-        transforms.Lambdad(keys=["image"], func=lambda x: x[channel, None, :, :, :]),
-        transforms.EnsureTyped(keys=["image", "label"]),
-        transforms.Orientationd(keys=["image", "label"], axcodes="RAS"),
-        transforms.Spacingd(keys=["image", "label"], pixdim=(3.0, 3.0, 2.0), mode=("bilinear", "nearest")),
-        transforms.CenterSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 44)),
-        transforms.ScaleIntensityRangePercentilesd(keys="image", lower=0, upper=99.5, b_min=0, b_max=1),
-        transforms.RandSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 1), random_size=False),
-        transforms.Lambdad(keys=["image", "label"], func=lambda x: x.squeeze(-1)),
-        transforms.CopyItemsd(keys=["label"], times=1, names=["slice_label"]),
-        transforms.Lambdad(keys=["slice_label"], func=lambda x: 1.0 if x.sum() > 0 else 0.0),
-])
-
-timer.report('importing everything else and prepping transforms')
+timer.report('importing everything else')
 
 def main(args, timer):
 
-    ## Distributed training prelims
-    if args.output_dir:
-        utils.mkdir(args.output_dir)
+    # ## Distributed training prelims
+    # if args.output_dir:
+    #     utils.mkdir(args.output_dir)
 
     utils.init_distributed_mode(args) # Sets args.distributed among other things
     assert args.distributed # don't support cycling when not distributed for simplicity
@@ -81,14 +65,35 @@ def main(args, timer):
     # Maybe this will work?
     set_determinism(42)
 
+    channel = 0  # 0 = Flair
+    assert channel in [0, 1, 2, 3], "Choose a valid channel"
+    train_transforms = transforms.Compose([
+            transforms.LoadImaged(keys=["image", "label"], image_only=False), # image_only current default will change soon, so including explicitly
+            transforms.EnsureChannelFirstd(keys=["image", "label"]),
+            transforms.Lambdad(keys=["image"], func=lambda x: x[channel, None, :, :, :]),
+            transforms.EnsureTyped(keys=["image", "label"]),
+            transforms.Orientationd(keys=["image", "label"], axcodes="RAS"),
+            transforms.Spacingd(keys=["image", "label"], pixdim=(3.0, 3.0, 2.0), mode=("bilinear", "nearest")),
+            transforms.CenterSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 44)),
+            transforms.ScaleIntensityRangePercentilesd(keys="image", lower=0, upper=99.5, b_min=0, b_max=1),
+            transforms.RandSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 1), random_size=False),
+            transforms.Lambdad(keys=["image", "label"], func=lambda x: x.squeeze(-1)),
+            transforms.CopyItemsd(keys=["label"], times=1, names=["slice_label"]),
+            transforms.Lambdad(keys=["slice_label"], func=lambda x: 1.0 if x.sum() > 0 else 0.0),
+    ])
+
     train_ds = DecathlonDataset(
-        root_dir=args.data_path, task="Task01_BrainTumour", section="training", cache_rate=1.0,
+        root_dir=args.data_path, task="Task01_BrainTumour", section="training", cache_rate=0.0,
         num_workers=4, download=False, seed=0, transform=train_transforms,
     )
     val_ds = DecathlonDataset(
-        root_dir=args.data_path, task="Task01_BrainTumour", section="validation", cache_rate=1.0,
+        root_dir=args.data_path, task="Task01_BrainTumour", section="validation", cache_rate=0.0,
         num_workers=4, download=False, seed=0, transform=train_transforms,
     )
+
+    # ## SUBSET FOR TESTING
+    # train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
+    # val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
 
     timer.report('build datasets')
 
@@ -97,9 +102,9 @@ def main(args, timer):
 
     timer.report('build samplers')
 
-    train_loader = DataLoader(train_ds, batch_size=64, sampler=train_sampler, shuffle=True, num_workers=4, persistent_workers=True)
-    val_loader = DataLoader(val_ds, batch_size=64, sampler=val_sampler, shuffle=True, num_workers=4, persistent_workers=True)
-    check_data = first(train_loader) # Used later
+    train_loader = DataLoader(train_ds, batch_size=2, sampler=train_sampler, num_workers=args.workers)
+    val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=args.workers)
+    # check_data = first(train_loader) # Used later
 
     timer.report('build dataloaders')
 
@@ -154,7 +159,7 @@ def main(args, timer):
         unet_without_ddp = unet.module
         # perceptual_loss_without_ddp = perceptual_loss.module
 
-    timer.report('models prepped for distribution')
+    timer.report('unet prepped for distribution')
 
     # Optimizers
     # optimizer_g = torch.optim.Adam(generator_without_ddp.parameters(), lr=1e-4)
@@ -170,26 +175,23 @@ def main(args, timer):
 
     timer.report('grad scalers')
 
+    # Init tracking metrics
+    # ???
+
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
-
         checkpoint = torch.load(args.resume, map_location="cpu")
-        # generator_without_ddp.load_state_dict(checkpoint["generator"], strict=not args.test_only)
-        # discriminator_without_ddp.load_state_dict(checkpoint["discriminator"], strict=not args.test_only)
-        unet_without_ddp.load_state_dict(checkpoint["unet"], strict=not args.test_only)
-
         args.start_epoch = checkpoint["epoch"]
- 
-        # optimizer.load_state_dict(checkpoint["optimizer"])
-        # lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-        # train_sampler.load_state_dict(checkpoint["train_sampler"])
-        # if args.amp: # Could align this syntactically...
-        #     scaler.load_state_dict(checkpoint["scaler"])
-
-        # test_sampler.load_state_dict(checkpoint["test_sampler"])
-        # confmat.mat = checkpoint["confmat"]
-        # confmat.temp_mat = checkpoint["confmat_temp"]
+        unet_without_ddp.load_state_dict(checkpoint["unet"], strict=not args.test_only)
+        optimizer_u.load_state_dict(checkpoint["optimizer_u"])
+        scaler_u.load_state_dict(checkpoint["scaler_u"])
+        train_sampler.load_state_dict(checkpoint["train_sampler"])
+        val_sampler.load_state_dict(checkpoint["val_sampler"])
+        train_images_seen = checkpoint["train_images_seen"]
+        val_images_seen = checkpoint["val_images_seen"]
+        # Metrics
+        # ???
 
     timer.report('checkpoint retrieval')
 

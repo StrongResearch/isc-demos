@@ -68,7 +68,7 @@ def main(args, timer):
     channel = 0  # 0 = Flair
     assert channel in [0, 1, 2, 3], "Choose a valid channel"
     train_transforms = transforms.Compose([
-            transforms.LoadImaged(keys=["image", "label"]),
+            transforms.LoadImaged(keys=["image", "label"], image_only=False), # image_only current default will change soon, so including explicitly
             transforms.EnsureChannelFirstd(keys=["image", "label"]),
             transforms.Lambdad(keys=["image"], func=lambda x: x[channel, None, :, :, :]),
             transforms.EnsureTyped(keys=["image", "label"]),
@@ -150,7 +150,6 @@ def main(args, timer):
     # unet_without_ddp = unet
     # perceptual_loss_without_ddp = perceptual_loss
     if args.distributed:
-        print('Confirm distributed training.')
         generator = torch.nn.parallel.DistributedDataParallel(generator, device_ids=[args.gpu])
         discriminator = torch.nn.parallel.DistributedDataParallel(discriminator, device_ids=[args.gpu])
         # unet = torch.nn.parallel.DistributedDataParallel(unet, device_ids=[args.gpu])
@@ -185,7 +184,6 @@ def main(args, timer):
     val_loss = 0
 
     # RETRIEVE CHECKPOINT
-    
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
         checkpoint = torch.load(args.resume, map_location="cpu")
@@ -200,6 +198,7 @@ def main(args, timer):
         val_sampler.load_state_dict(checkpoint["val_sampler"])
         train_images_seen = checkpoint["train_images_seen"]
         val_images_seen = checkpoint["val_images_seen"]
+        # Metrics
         epoch_loss = checkpoint["epoch_loss"]
         gen_epoch_loss = checkpoint["gen_epoch_loss"]
         disc_epoch_loss = checkpoint["disc_epoch_loss"]
@@ -215,7 +214,7 @@ def main(args, timer):
     for epoch in range(args.start_epoch, n_gen_epochs):
 
         print('\n')
-        print(f"EPOCH (gen) :: {epoch}")
+        print(f"EPOCH :: {epoch}")
         print('\n')
 
         with train_sampler.in_epoch(epoch):
@@ -256,7 +255,7 @@ def main(args, timer):
     # for epoch in range(n_diff_epochs):
 
     #     print('\n')
-    #     print(f"EPOCH (diff) :: {epoch}")
+    #     print(f"EPOCH :: {epoch}")
     #     print('\n')
 
     #     with train_sampler.in_epoch(epoch):
