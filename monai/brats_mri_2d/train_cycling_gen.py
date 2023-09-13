@@ -91,9 +91,9 @@ def main(args, timer):
         num_workers=4, download=False, seed=0, transform=train_transforms,
     )
 
-    # ## SUBSET FOR TESTING
-    # train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
-    # val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
+    ## SUBSET FOR TESTING
+    train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
+    val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
 
     timer.report('build datasets')
 
@@ -196,9 +196,9 @@ def main(args, timer):
         scaler_d.load_state_dict(checkpoint["scaler_d"])
         train_sampler.load_state_dict(checkpoint["train_sampler"])
         val_sampler.load_state_dict(checkpoint["val_sampler"])
+        # Metrics
         train_images_seen = checkpoint["train_images_seen"]
         val_images_seen = checkpoint["val_images_seen"]
-        # Metrics
         epoch_loss = checkpoint["epoch_loss"]
         gen_epoch_loss = checkpoint["gen_epoch_loss"]
         disc_epoch_loss = checkpoint["disc_epoch_loss"]

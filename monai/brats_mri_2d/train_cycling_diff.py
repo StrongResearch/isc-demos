@@ -108,15 +108,15 @@ def main(args, timer):
 
     timer.report('build dataloaders')
 
-    # # Auto-encoder definition
-    # generator = AutoencoderKL(
-    #     spatial_dims=2, in_channels=1, out_channels=1, num_channels=(128, 128, 256), latent_channels=3,
-    #     num_res_blocks=2, attention_levels=(False, False, False),with_encoder_nonlocal_attn=False,
-    #     with_decoder_nonlocal_attn=False,
-    # )
-    # generator = generator.to(device)
+    # Auto-encoder definition
+    generator = AutoencoderKL(
+        spatial_dims=2, in_channels=1, out_channels=1, num_channels=(128, 128, 256), latent_channels=3,
+        num_res_blocks=2, attention_levels=(False, False, False),with_encoder_nonlocal_attn=False,
+        with_decoder_nonlocal_attn=False,
+    )
+    generator = generator.to(device)
 
-    # timer.report('generator to device')
+    timer.report('generator to device')
 
     # # Discriminator definition
     # discriminator = PatchDiscriminator(
@@ -176,8 +176,13 @@ def main(args, timer):
     timer.report('grad scalers')
 
     # Init tracking metrics
-    # ???
+    train_images_seen = 0
+    val_images_seen = 0
+    epoch_loss = 0
+    val_loss = 0
 
+    # RETRIEVE GENERATOR CHECKPOINT FROM PREVIOUS JOB
+    
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
@@ -191,7 +196,10 @@ def main(args, timer):
         train_images_seen = checkpoint["train_images_seen"]
         val_images_seen = checkpoint["val_images_seen"]
         # Metrics
-        # ???
+        train_images_seen = checkpoint["train_images_seen"]
+        val_images_seen = checkpoint["val_images_seen"]
+        epoch_loss = checkpoint["epoch_loss"]
+        val_loss = checkpoint["val_loss"]
 
     timer.report('checkpoint retrieval')
 
@@ -200,24 +208,29 @@ def main(args, timer):
     # n_gen_epochs = 100
     # gen_val_interval = 1
 
-    # for epoch in range(n_gen_epochs):
+    # for epoch in range(args.start_epoch, n_gen_epochs):
 
     #     print('\n')
-    #     print(f"EPOCH (gen) :: {epoch}")
+    #     print(f"EPOCH :: {epoch}")
     #     print('\n')
 
     #     with train_sampler.in_epoch(epoch):
-    #         timer = Timer()
-    #         generator, timer, _, _, _ = train_generator_one_epoch(
-    #             epoch, generator, discriminator, optimizer_g, optimizer_d, 
-    #             scaler_g, scaler_d, train_loader, perceptual_loss, adv_loss, device, timer
+    #         timer = Timer("Start training")
+    #         generator, timer = train_generator_one_epoch(
+    #             args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
+    #             scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer,
+    #             train_images_seen, val_images_seen, epoch_loss, gen_epoch_loss, disc_epoch_loss, val_loss
     #         )
     #         timer.report(f'training generator for epoch {epoch}')
 
     #         if epoch % gen_val_interval == 0: # Eval every epoch
     #             with val_sampler.in_epoch(epoch):
-    #                 timer = Timer()
-    #                 timer, _ = evaluate_generator(epoch, generator, val_loader, device, timer)
+    #                 timer = Timer("Start evaluation")
+    #                 timer = evaluate_generator(
+    #                     args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
+    #                     scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer,
+    #                     train_images_seen, val_images_seen, epoch_loss, gen_epoch_loss, disc_epoch_loss, val_loss
+    #                 )
     #                 timer.report(f'evaluating generator for epoch {epoch}')
 
 
@@ -236,24 +249,28 @@ def main(args, timer):
 
     timer.report('building inferer')
 
-    for epoch in range(n_diff_epochs):
+    for epoch in range(args.start_epoch, n_diff_epochs):
 
         print('\n')
         print(f"EPOCH (diff) :: {epoch}")
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = Timer()
+            timer = Timer("Start training")
             unet, timer, _ = train_diffusion_one_epoch(
-                epoch, unet, generator, optimizer_u, 
-                inferer, scaler_u, train_loader, device, timer
+                args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
+                train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
             )
             timer.report(f'training unet for epoch {epoch}')
 
             if epoch % diff_val_interval == 0:
                 with val_sampler.in_epoch(epoch):
+                    timer = Timer("Start evaluation")
                     timer = Timer()
-                    _ = evaluate_diffusion(epoch, unet, generator, inferer, val_loader, device)
+                    _ = evaluate_diffusion(
+                        args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
+                        train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
+                    )
                     timer.report(f'evaluating unet for epoch {epoch}')
 
 

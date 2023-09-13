@@ -195,87 +195,145 @@ def evaluate_generator(
     val_loss /= val_images_seen
     print(f"Epoch {epoch} val loss: {val_loss:.4f}")
 
-    return timer # ??
+    return timer
 
 
 
 ## -- DIFFUSION MODEL - ##
 
 def train_diffusion_one_epoch(
-        epoch, unet, generator, optimizer, inferer, scaler, train_loader, device
+        args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
+        train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
     ):
 
     unet.train()
     generator.eval()
 
-    epoch_loss = 0
-    train_images_seen = 0
-
     train_step = train_sampler.progress // train_loader.batch_size
     total_steps = int(len(train_sampler) / train_loader.batch_size)
     print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
 
-    for step, batch in progress_bar:
+    for step, batch in enumerate(train_loader):
 
         images = batch["image"].to(device)
-        optimizer.zero_grad(set_to_none=True)
+        timer.report(f'train batch {train_step} to device')
+
+        optimizer_u.zero_grad(set_to_none=True)
 
         with autocast(enabled=True):
 
             z_mu, z_sigma = generator.encode(images)
+            timer.report(f'train batch {train_step} generator encoded')
             z = generator.sampling(z_mu, z_sigma)
+            timer.report(f'train batch {train_step} generator sampling')
             noise = torch.randn_like(z).to(device)
+            timer.report(f'train batch {train_step} noise')
             timesteps = torch.randint(0, inferer.scheduler.num_train_timesteps, (z.shape[0],), device=z.device).long()
+            timer.report(f'train batch {train_step} timesteps')
             noise_pred = inferer(inputs=images, diffusion_model=unet, noise=noise, timesteps=timesteps, autoencoder_model=generator)
+            timer.report(f'train batch {train_step} noise_pred')
             loss = F.mse_loss(noise_pred.float(), noise.float())
+            timer.report(f'train batch {train_step} loss')
 
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
+        scaler_u.scale(loss).backward()
+        scaler_u.step(optimizer_u)
+        scaler_u.update()
+        timer.report(f'train batch {train_step} unet backward')
 
         epoch_loss += loss.item()
         train_images_seen += len(images)
+        recons_loss = epoch_loss / train_images_seen
+        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}".format(epoch, train_step+1, total_steps, recons_loss))
 
-        progress_bar.set_postfix({"loss": epoch_loss / train_images_seen})
+        ## Checkpointing
+        print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
+        train_sampler.advance(len(images))
+        train_step = train_sampler.progress // train_loader.batch_size
+        if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
+            checkpoint = {
+                # Universals
+                "args": args,
+                "epoch": epoch,
+  
+                # State variables
+                "unet": unet.module.state_dict(),
+                "optimizer_u": optimizer_u.state_dict(),
+                "scaler_u": scaler_u.state_dict(),
+                "train_sampler": train_sampler.state_dict(),
+                "val_sampler": val_sampler.state_dict(),
 
-    epoch_losses.append(epoch_loss / train_images_seen)
+                # Evaluation metrics
+                "train_images_seen": train_images_seen,
+                "val_images_seen": val_images_seen,
+                "epoch_loss": epoch_loss,
+                "val_loss": val_loss,
+            }
+            timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-    return unet, epoch_losses
+    return unet, timer
 
 
-# def evaluate_diffusion(epoch, unet, generator, inferer, val_loader, device):
+def evaluate_diffusion(
+        args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
+        train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
+    ):
 
-#         unet.eval()
+        unet.eval()
 
-#         val_losses = []
+        val_step = val_sampler.progress // val_loader.batch_size
+        print(f'\nEvaluating / resuming epoch {epoch} from training step {val_step}\n')
 
-#         val_loss = 0
-#         val_images_seen = 0
+        with torch.no_grad():
+            for step, batch in enumerate(val_loader):
 
-#         progress_bar = tqdm(enumerate(val_loader), total=len(val_loader), ncols=110)
-#         progress_bar.set_description(f"Epoch (eval diff) {epoch}")
+                images = batch["image"].to(device)
+                timer.report(f'eval batch {val_step} to device')
 
-#         with torch.no_grad():
-#             for val_step, batch in enumerate(val_loader, start=1):
-#                 images = batch["image"].to(device)
+                with autocast(enabled=True):
 
-#                 with autocast(enabled=True):
-#                     z_mu, z_sigma = generator.encode(images)
-#                     z = generator.sampling(z_mu, z_sigma)
+                    z_mu, z_sigma = generator.encode(images)
+                    timer.report(f'eval batch {val_step} generator encoded')
+                    z = generator.sampling(z_mu, z_sigma)
+                    timer.report(f'eval batch {val_step} generator sampling')
+                    noise = torch.randn_like(z).to(device)
+                    timer.report(f'eval batch {val_step} noise')
+                    timesteps = torch.randint(0, inferer.scheduler.num_train_timesteps, (z.shape[0],), device=z.device).long()
+                    timer.report(f'eval batch {val_step} timesteps')
+                    noise_pred = inferer(inputs=images,diffusion_model=unet,noise=noise,timesteps=timesteps,autoencoder_model=generator)
+                    timer.report(f'eval batch {val_step} noise_pred')
+                    loss = F.mse_loss(noise_pred.float(), noise.float())
+                    timer.report(f'eval batch {val_step} loss')
 
-#                     noise = torch.randn_like(z).to(device)
-#                     timesteps = torch.randint(0, inferer.scheduler.num_train_timesteps, (z.shape[0],), device=z.device).long()
-#                     noise_pred = inferer(inputs=images,diffusion_model=unet,noise=noise,timesteps=timesteps,autoencoder_model=generator)
+                val_loss += loss.item()
+                val_images_seen += len(images)
+                timer.report(f'eval batch {val_step} metrics update')
 
-#                     loss = F.mse_loss(noise_pred.float(), noise.float())
+                ## Checkpointing
+                print(f"Saving checkpoint at epoch {epoch} val batch {val_step}")
+                val_sampler.advance(len(images))
+                if utils.is_main_process() and val_step % 1 == 0: # Checkpointing every batch
+                    print(f"Saving checkpoint at epoch {epoch} train batch {val_step}")
+                    checkpoint = {
+                        # Universals
+                        "args": args,
+                        "epoch": epoch,
+        
+                        # State variables
+                        "unet": unet.module.state_dict(),
+                        "optimizer_u": optimizer_u.state_dict(),
+                        "scaler_u": scaler_u.state_dict(),
+                        "train_sampler": train_sampler.state_dict(),
+                        "val_sampler": val_sampler.state_dict(),
 
-#                 val_loss += loss.item()
-#                 val_images_seen += len(images)
+                        # Evaluation metrics
+                        "train_images_seen": train_images_seen,
+                        "val_images_seen": val_images_seen,
+                        "epoch_loss": epoch_loss,
+                        "val_loss": val_loss,
+                    }
+                    timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-#         val_loss /= val_images_seen
-#         val_losses.append(val_loss)
-#         print(f"Epoch {epoch} diff val loss: {val_loss:.4f}")
+        val_loss /= val_images_seen
+        print(f"Epoch {epoch} diff val loss: {val_loss:.4f}")
 
-#         progress_bar.close()
-
-#         return val_losses # ??
+        return timer
