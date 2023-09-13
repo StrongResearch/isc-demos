@@ -199,50 +199,48 @@ def evaluate_generator(
 
 
 
+## -- DIFFUSION MODEL - ##
 
+def train_diffusion_one_epoch(
+        epoch, unet, generator, optimizer, inferer, scaler, train_loader, device
+    ):
 
+    unet.train()
+    generator.eval()
 
-# ## -- DIFFUSION MODEL - ##
+    epoch_loss = 0
+    train_images_seen = 0
 
-# def train_diffusion_one_epoch(epoch, unet, generator, optimizer, inferer, scaler, train_loader, device):
+    train_step = train_sampler.progress // train_loader.batch_size
+    total_steps = int(len(train_sampler) / train_loader.batch_size)
+    print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
 
-#     unet.train()
-#     generator.eval()
+    for step, batch in progress_bar:
 
-#     epoch_losses = []
+        images = batch["image"].to(device)
+        optimizer.zero_grad(set_to_none=True)
 
-#     epoch_loss = 0
-#     train_images_seen = 0
+        with autocast(enabled=True):
 
-#     progress_bar = tqdm(enumerate(train_loader), total=len(train_loader), ncols=70)
-#     progress_bar.set_description(f"Epoch (train diff) {epoch}")
+            z_mu, z_sigma = generator.encode(images)
+            z = generator.sampling(z_mu, z_sigma)
+            noise = torch.randn_like(z).to(device)
+            timesteps = torch.randint(0, inferer.scheduler.num_train_timesteps, (z.shape[0],), device=z.device).long()
+            noise_pred = inferer(inputs=images, diffusion_model=unet, noise=noise, timesteps=timesteps, autoencoder_model=generator)
+            loss = F.mse_loss(noise_pred.float(), noise.float())
 
-#     for step, batch in progress_bar:
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
 
-#         images = batch["image"].to(device)
-#         optimizer.zero_grad(set_to_none=True)
+        epoch_loss += loss.item()
+        train_images_seen += len(images)
 
-#         with autocast(enabled=True):
+        progress_bar.set_postfix({"loss": epoch_loss / train_images_seen})
 
-#             z_mu, z_sigma = generator.encode(images)
-#             z = generator.sampling(z_mu, z_sigma)
-#             noise = torch.randn_like(z).to(device)
-#             timesteps = torch.randint(0, inferer.scheduler.num_train_timesteps, (z.shape[0],), device=z.device).long()
-#             noise_pred = inferer(inputs=images, diffusion_model=unet, noise=noise, timesteps=timesteps, autoencoder_model=generator)
-#             loss = F.mse_loss(noise_pred.float(), noise.float())
+    epoch_losses.append(epoch_loss / train_images_seen)
 
-#         scaler.scale(loss).backward()
-#         scaler.step(optimizer)
-#         scaler.update()
-
-#         epoch_loss += loss.item()
-#         train_images_seen += len(images)
-
-#         progress_bar.set_postfix({"loss": epoch_loss / train_images_seen})
-
-#     epoch_losses.append(epoch_loss / train_images_seen)
-
-#     return unet, epoch_losses
+    return unet, epoch_losses
 
 
 # def evaluate_diffusion(epoch, unet, generator, inferer, val_loader, device):
