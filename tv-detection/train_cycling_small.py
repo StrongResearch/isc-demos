@@ -38,7 +38,7 @@ from coco_utils import get_coco
 import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
 from engine import evaluate, train_one_epoch
-from group_by_aspect_ratio_SC import create_aspect_ratio_groups, GroupedBatchSampler
+from group_by_aspect_ratio import create_aspect_ratio_groups, GroupedBatchSampler
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
 

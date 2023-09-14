@@ -84,16 +84,12 @@ def main(args, timer):
 
     train_ds = DecathlonDataset(
         root_dir=args.data_path, task="Task01_BrainTumour", section="training", cache_rate=0.0,
-        num_workers=4, download=False, seed=0, transform=train_transforms,
+        num_workers=1, download=False, seed=0, transform=train_transforms,
     )
     val_ds = DecathlonDataset(
         root_dir=args.data_path, task="Task01_BrainTumour", section="validation", cache_rate=0.0,
-        num_workers=4, download=False, seed=0, transform=train_transforms,
+        num_workers=1, download=False, seed=0, transform=train_transforms,
     )
-
-    # ## SUBSET FOR TESTING
-    # train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
-    # val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
 
     timer.report('build datasets')
 
@@ -102,8 +98,8 @@ def main(args, timer):
 
     timer.report('build samplers')
 
-    train_loader = DataLoader(train_ds, batch_size=2, sampler=train_sampler, num_workers=args.workers)
-    val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=args.workers)
+    train_loader = DataLoader(train_ds, batch_size=2, sampler=train_sampler, num_workers=1)
+    val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=1)
     # check_data = first(train_loader) # Used later
 
     timer.report('build dataloaders')
@@ -154,8 +150,8 @@ def main(args, timer):
     # unet_without_ddp = unet
     # perceptual_loss_without_ddp = perceptual_loss
     if args.distributed:
-        generator = torch.nn.parallel.DistributedDataParallel(generator, device_ids=[args.gpu])
-        discriminator = torch.nn.parallel.DistributedDataParallel(discriminator, device_ids=[args.gpu])
+        generator = torch.nn.parallel.DistributedDataParallel(generator, device_ids=[args.gpu], find_unused_parameters=True) # find_unused_parameters necessary for monai training
+        discriminator = torch.nn.parallel.DistributedDataParallel(discriminator, device_ids=[args.gpu], find_unused_parameters=True) # find_unused_parameters necessary for monai training
         # unet = torch.nn.parallel.DistributedDataParallel(unet, device_ids=[args.gpu])
         # perceptual_loss = torch.nn.parallel.DistributedDataParallel(perceptual_loss, device_ids=[args.gpu])
         generator_without_ddp = generator.module

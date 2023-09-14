@@ -15,7 +15,7 @@ def train_generator_one_epoch(
 
     # Maybe pull these out into args later
     kl_weight = 1e-6
-    generator_warm_up_n_epochs = 10
+    generator_warm_up_n_epochs = 3
     perceptual_weight = 0.001
     adv_weight = 0.01
 
