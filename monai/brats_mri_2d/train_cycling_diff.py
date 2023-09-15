@@ -35,6 +35,8 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="Latent Diffusion Model Training", add_help=add_help)
 
     parser.add_argument("--resume", type=str, help="path of checkpoint", required=True) # for checkpointing
+    parser.add_argument("--gen-load-path", type=str, help="path of checkpoint", dest="gen_load_path") # for checkpointing
+    parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
     # parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
     parser.add_argument("--data-path", default="/mnt/Datasets/Open-Datasets/MONAI", type=str, help="dataset path", dest="data_path")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
@@ -91,10 +93,6 @@ def main(args, timer):
         num_workers=4, download=False, seed=0, transform=train_transforms,
     )
 
-    # ## SUBSET FOR TESTING
-    # train_ds = torch.utils.data.Subset(train_ds, torch.arange(2*9*3)) # batch_size x nodes x iterations
-    # val_ds = torch.utils.data.Subset(val_ds, torch.arange(1*9*2)) # batch_size x nodes x iterations
-
     timer.report('build datasets')
 
     train_sampler = InterruptableDistributedSampler(train_ds)
@@ -114,6 +112,9 @@ def main(args, timer):
         num_res_blocks=2, attention_levels=(False, False, False),with_encoder_nonlocal_attn=False,
         with_decoder_nonlocal_attn=False,
     )
+    # saved_generator_checkpoint = torch.load("/output_brats_mri_2d_gen/exp_1645/checkpoint.isc", map_location="cpu")
+    saved_generator_checkpoint = torch.load(args.gen_load_path, map_location="cpu")
+    generator.load_state_dict(saved_generator_checkpoint["generator"])
     generator = generator.to(device)
 
     timer.report('generator to device')
@@ -145,19 +146,20 @@ def main(args, timer):
     # timer.report('loss functions')
 
     # Prepare for distributed training
+    # generator = torch.nn.SyncBatchNorm.convert_sync_batchnorm(generator)
+    # discriminator = torch.nn.SyncBatchNorm.convert_sync_batchnorm(generator)
+    unet = torch.nn.SyncBatchNorm.convert_sync_batchnorm(unet)
+
     # generator_without_ddp = generator
     # discriminator_without_ddp = discriminator
     unet_without_ddp = unet
-    # perceptual_loss_without_ddp = perceptual_loss
     if args.distributed:
-        # generator = torch.nn.parallel.DistributedDataParallel(generator, device_ids=[args.gpu])
-        # discriminator = torch.nn.parallel.DistributedDataParallel(discriminator, device_ids=[args.gpu])
-        unet = torch.nn.parallel.DistributedDataParallel(unet, device_ids=[args.gpu])
-        # perceptual_loss = torch.nn.parallel.DistributedDataParallel(perceptual_loss, device_ids=[args.gpu])
+        # generator = torch.nn.parallel.DistributedDataParallel(generator, device_ids=[args.gpu], find_unused_parameters=True)
+        # discriminator = torch.nn.parallel.DistributedDataParallel(discriminator, device_ids=[args.gpu], find_unused_parameters=True)
+        unet = torch.nn.parallel.DistributedDataParallel(unet, device_ids=[args.gpu], find_unused_parameters=True)
         # generator_without_ddp = generator.module
         # discriminator_without_ddp = discriminator.module
         unet_without_ddp = unet.module
-        # perceptual_loss_without_ddp = perceptual_loss.module
 
     timer.report('unet prepped for distribution')
 
@@ -185,8 +187,12 @@ def main(args, timer):
     
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
+    checkpoint = None
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
         checkpoint = torch.load(args.resume, map_location="cpu")
+    elif args.prev_resume and os.path.isfile(args.prev_resume):
+        checkpoint = torch.load(args.prev_resume, map_location="cpu")
+    if checkpoint is not None:
         args.start_epoch = checkpoint["epoch"]
         unet_without_ddp.load_state_dict(checkpoint["unet"], strict=not args.test_only)
         optimizer_u.load_state_dict(checkpoint["optimizer_u"])
@@ -257,7 +263,7 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             timer = Timer("Start training")
-            unet, timer, _ = train_diffusion_one_epoch(
+            unet, timer = train_diffusion_one_epoch(
                 args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
                 train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
             )
@@ -267,7 +273,7 @@ def main(args, timer):
                 with val_sampler.in_epoch(epoch):
                     timer = Timer("Start evaluation")
                     timer = Timer()
-                    _ = evaluate_diffusion(
+                    timer = evaluate_diffusion(
                         args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
                         train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
                     )

@@ -1,7 +1,9 @@
-# # Download the toy dataset from MONAI
-# print("Downloadning BraTS2016/17")
-# from monai.apps import DecathlonDataset
+# Download the toy dataset from MONAI
+print("Downloadning BraTS2016/17")
+from monai.apps import DecathlonDataset
+
 # _ = DecathlonDataset(root_dir="/mnt/Datasets/Open-Datasets/MONAI", task="Task01_BrainTumour", section="training", download=True)
+_ = DecathlonDataset(root_dir="/workspace/datasets/MONAI", task="Task01_BrainTumour", section="training", download=True)
 
 # # Download the bigger dataset from Synapse
 # print("Downloadning BraTS2023")

@@ -14,3 +14,4 @@ def atomic_torch_save(obj, f: str | Path, timer=None, **kwargs):
         return timer
     else:
         return
+    

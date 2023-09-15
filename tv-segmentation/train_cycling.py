@@ -314,10 +314,17 @@ def main(args, timer):
     confmat = utils.ConfusionMatrix(num_classes)
     timer.report('init confmat')
 
+    # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
+    checkpoint = None
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
-
         checkpoint = torch.load(args.resume, map_location="cpu")
+        print("RESUMING FROM CURRENT JOB")
+    elif args.prev_resume and os.path.isfile(args.prev_resume):
+        print(f"RESUMING FROM PREVIOUS JOB {args.prev_resume}")
+        checkpoint = torch.load(args.prev_resume, map_location="cpu")
+    if checkpoint is not None:
+
         model_without_ddp.load_state_dict(checkpoint["model"], strict=not args.test_only)
         args.start_epoch = checkpoint["epoch"]
  
@@ -389,6 +396,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
     parser.add_argument("--resume", type=str, help="path of checkpoint", required=True)
+    parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
     parser.add_argument("--start-epoch", default=0, type=int, metavar="N", help="start epoch")
     parser.add_argument(
         "--test-only",

@@ -235,10 +235,15 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
+    # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
-    if args.resume and os.path.isfile(args.resume):
-
+    checkpoint = None
+    if args.resume and os.path.isfile(args.resume): # If we're resuming...
         checkpoint = torch.load(args.resume, map_location="cpu")
+    elif args.prev_resume and os.path.isfile(args.prev_resume):
+        checkpoint = torch.load(args.prev_resume, map_location="cpu")
+    if checkpoint is not None:
+        
         model_without_ddp.load_state_dict(checkpoint["model"])
         args.start_epoch = checkpoint["epoch"]
 
@@ -303,6 +308,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
     parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
+    parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
     parser.add_argument("--start_epoch", default=0, type=int, help="start epoch")
     parser.add_argument("--aspect-ratio-group-factor", default=3, type=int)
     parser.add_argument("--rpn-score-thresh", default=None, type=float, help="rpn score threshold for faster-rcnn")

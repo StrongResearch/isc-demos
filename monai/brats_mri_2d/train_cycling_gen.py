@@ -35,6 +35,7 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="Latent Diffusion Model Training", add_help=add_help)
 
     parser.add_argument("--resume", type=str, help="path of checkpoint", required=True) # for checkpointing
+    parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
     # parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
     parser.add_argument("--data-path", default="/mnt/Datasets/Open-Datasets/MONAI", type=str, help="dataset path", dest="data_path")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
@@ -143,21 +144,18 @@ def main(args, timer):
     # Prepare for distributed training
     generator = torch.nn.SyncBatchNorm.convert_sync_batchnorm(generator)
     discriminator = torch.nn.SyncBatchNorm.convert_sync_batchnorm(generator)
-    # unet =  = torch.nn.SyncBatchNorm.convert_sync_batchnorm(unet)
+    # unet = torch.nn.SyncBatchNorm.convert_sync_batchnorm(unet)
 
     generator_without_ddp = generator
     discriminator_without_ddp = discriminator
     # unet_without_ddp = unet
-    # perceptual_loss_without_ddp = perceptual_loss
     if args.distributed:
         generator = torch.nn.parallel.DistributedDataParallel(generator, device_ids=[args.gpu], find_unused_parameters=True) # find_unused_parameters necessary for monai training
         discriminator = torch.nn.parallel.DistributedDataParallel(discriminator, device_ids=[args.gpu], find_unused_parameters=True) # find_unused_parameters necessary for monai training
-        # unet = torch.nn.parallel.DistributedDataParallel(unet, device_ids=[args.gpu])
-        # perceptual_loss = torch.nn.parallel.DistributedDataParallel(perceptual_loss, device_ids=[args.gpu])
+        # unet = torch.nn.parallel.DistributedDataParallel(unet, device_ids=[args.gpu], find_unused_parameters=True)
         generator_without_ddp = generator.module
         discriminator_without_ddp = discriminator.module
         # unet_without_ddp = unet.module
-        # perceptual_loss_without_ddp = perceptual_loss.module
 
     timer.report('models prepped for distribution')
 
@@ -185,8 +183,12 @@ def main(args, timer):
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
+    checkpoint = None
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
         checkpoint = torch.load(args.resume, map_location="cpu")
+    elif args.prev_resume and os.path.isfile(args.prev_resume):
+        checkpoint = torch.load(args.prev_resume, map_location="cpu")
+    if checkpoint is not None:
         args.start_epoch = checkpoint["epoch"]
         generator_without_ddp.load_state_dict(checkpoint["generator"])
         discriminator_without_ddp.load_state_dict(checkpoint["discriminator"])
