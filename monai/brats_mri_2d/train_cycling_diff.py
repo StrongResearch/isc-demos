@@ -194,7 +194,7 @@ def main(args, timer):
         checkpoint = torch.load(args.prev_resume, map_location="cpu")
     if checkpoint is not None:
         args.start_epoch = checkpoint["epoch"]
-        unet_without_ddp.load_state_dict(checkpoint["unet"], strict=not args.test_only)
+        unet_without_ddp.load_state_dict(checkpoint["unet"])
         optimizer_u.load_state_dict(checkpoint["optimizer_u"])
         scaler_u.load_state_dict(checkpoint["scaler_u"])
         train_sampler.load_state_dict(checkpoint["train_sampler"])
@@ -258,7 +258,7 @@ def main(args, timer):
     for epoch in range(args.start_epoch, n_diff_epochs):
 
         print('\n')
-        print(f"EPOCH (diff) :: {epoch}")
+        print(f"EPOCH :: {epoch}")
         print('\n')
 
         with train_sampler.in_epoch(epoch):
