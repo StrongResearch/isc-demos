@@ -3,7 +3,11 @@ print("Downloadning BraTS2016/17")
 from monai.apps import DecathlonDataset
 
 # _ = DecathlonDataset(root_dir="/mnt/Datasets/Open-Datasets/MONAI", task="Task01_BrainTumour", section="training", download=True)
-_ = DecathlonDataset(root_dir="/workspace/datasets/MONAI", task="Task01_BrainTumour", section="training", download=True)
+_ = DecathlonDataset(root_dir="/mnt/.node1/Open-Datsets/MONAI", task="Task01_BrainTumour", section="training", download=True)
+
+perceptual_loss = PerceptualLoss(
+    spatial_dims=2, network_type="resnet50", pretrained=True, #ImageNet pretrained weights used
+)
 
 # # Download the bigger dataset from Synapse
 # print("Downloadning BraTS2023")

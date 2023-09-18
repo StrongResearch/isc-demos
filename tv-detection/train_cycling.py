@@ -239,8 +239,10 @@ def main(args, timer):
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     checkpoint = None
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
+        print("RESUMING FROM CURRENT JOB")
         checkpoint = torch.load(args.resume, map_location="cpu")
     elif args.prev_resume and os.path.isfile(args.prev_resume):
+        print(f"RESUMING FROM PREVIOUS JOB {args.prev_resume}")
         checkpoint = torch.load(args.prev_resume, map_location="cpu")
     if checkpoint is not None:
         

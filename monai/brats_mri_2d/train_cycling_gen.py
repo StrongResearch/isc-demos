@@ -52,10 +52,6 @@ timer.report('importing everything else')
 
 def main(args, timer):
 
-    # ## Distributed training prelims
-    # if args.output_dir:
-    #     utils.mkdir(args.output_dir)
-
     utils.init_distributed_mode(args) # Sets args.distributed among other things
     assert args.distributed # don't support cycling when not distributed for simplicity
 
@@ -68,6 +64,7 @@ def main(args, timer):
 
     channel = 0  # 0 = Flair
     assert channel in [0, 1, 2, 3], "Choose a valid channel"
+    ## NEED TO COME BACK AND ALIGN WITH BRATS CONFIG
     train_transforms = transforms.Compose([
             transforms.LoadImaged(keys=["image", "label"], image_only=False), # image_only current default will change soon, so including explicitly
             transforms.EnsureChannelFirstd(keys=["image", "label"]),
@@ -77,7 +74,7 @@ def main(args, timer):
             transforms.Spacingd(keys=["image", "label"], pixdim=(3.0, 3.0, 2.0), mode=("bilinear", "nearest")),
             transforms.CenterSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 44)),
             transforms.ScaleIntensityRangePercentilesd(keys="image", lower=0, upper=99.5, b_min=0, b_max=1),
-            transforms.RandSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 1), random_size=False),
+            transforms.RandSpatialCropd(keys=["image", "label"], roi_size=(64, 64, 1), random_size=False), # Each of the 44 slices will be randomly sampled.
             transforms.Lambdad(keys=["image", "label"], func=lambda x: x.squeeze(-1)),
             transforms.CopyItemsd(keys=["label"], times=1, names=["slice_label"]),
             transforms.Lambdad(keys=["slice_label"], func=lambda x: 1.0 if x.sum() > 0 else 0.0),
@@ -207,8 +204,6 @@ def main(args, timer):
         val_loss = checkpoint["val_loss"]
 
     timer.report('checkpoint retrieval')
-
-    # torch.autograd.set_detect_anomaly(mode=True, check_nan=False)
 
     ## -- TRAINING THE AUTO-ENCODER - ##
 
