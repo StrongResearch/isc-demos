@@ -3,8 +3,7 @@ from cycling_utils import Timer
 timer = Timer()
 timer.report('importing Timer')
 
-import os, warnings
-
+import os
 from pathlib import Path
 import presets
 import torch
@@ -63,19 +62,13 @@ def train_one_epoch(
     ):
 
     model.train()
-    # metric_logger = utils.MetricLogger(delimiter="  ")
-    # metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
-    # header = f"Epoch: [{epoch}]"
 
-    # Running this before starting the training loop assists reporting on progress after resuming - train_step == batch count
-    # Also means when resuming during evaluation, the training phase is skipped as train_sampler progress == 100%.
     train_step = train_sampler.progress // data_loader_train.batch_size
     total_steps = len(train_sampler) // data_loader_train.batch_size
     print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
     timer.report('launch training routine')
 
     for images, target in data_loader_train:
-    # for image, target in metric_logger.log_every(data_loader_train, train_step, print_freq, header):
 
         images, target = images.to(device), target.to(device)
         timer.report(f'Epoch: {epoch} batch {train_step}: moving batch data to device')
@@ -100,12 +93,10 @@ def train_one_epoch(
 
         train_metrics.update({"images_seen": len(images), "loss": loss.item()})
         train_metrics.reduce() # Reduce to sync metrics between nodes for this batch
-        # batch_loss = train_metrics.local[train_metrics.map["loss"]] / train_metrics.local[train_metrics.map["images_seen"]]
         batch_loss = train_metrics.local["loss"] / train_metrics.local["images_seen"]
         print(f"EPOCH: [{epoch}], BATCH: [{train_step}/{total_steps}], loss: {batch_loss}")
         train_metrics.reset_local()
 
-        # metric_logger.update(loss=loss.item(), lr=optimizer.param_groups[0]["lr"])
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
         train_sampler.advance(len(images))
 
@@ -136,7 +127,6 @@ def train_one_epoch(
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-    # return metric_logger, timer
     return model, timer, train_metrics
 
 def evaluate(
@@ -146,9 +136,6 @@ def evaluate(
     ):
 
     model.eval()
-    # metric_logger = utils.MetricLogger(delimiter="  ")
-    # header = "Test:"
-    # num_processed_samples = 0
 
     test_step = test_sampler.progress // data_loader_test.batch_size
     total_steps = len(test_sampler) // data_loader_test.batch_size
@@ -158,7 +145,6 @@ def evaluate(
     with torch.inference_mode():
 
         for images, target in data_loader_test:
-        # for images, target in metric_logger.log_every(data_loader_test, test_step, print_freq, header):
 
             images, target = images.to(device), target.to(device)
             timer.report(f'Epoch {epoch} batch: {test_step} moving to device')
@@ -233,9 +219,6 @@ timer.report('defined other functions')
 
 def main(args, timer):
 
-    # if args.output_dir:
-    #     utils.mkdir(args.output_dir)
-
     utils.init_distributed_mode(args)
     print(args)
 
@@ -265,6 +248,7 @@ def main(args, timer):
     # else:
     #     train_sampler = torch.utils.data.RandomSampler(dataset)
     #     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
+
     train_sampler = InterruptableDistributedSampler(dataset_train)
     test_sampler = InterruptableDistributedSampler(dataset_test)
 
@@ -343,7 +327,6 @@ def main(args, timer):
     timer.report('init confmat')
 
     # Init general purpose metrics tracker
-    # train_metrics = MetricsTracker(["images_seen", "loss"])
     train_metrics = MetricsTracker()
 
     # RETRIEVE CHECKPOINT
@@ -369,7 +352,6 @@ def main(args, timer):
         confmat.mat = checkpoint["confmat"]
         confmat.temp_mat = checkpoint["confmat_temp"]
         train_metrics = checkpoint["train_metrics"]
-        # train_metrics.to(device)
             
     timer.report('retrieving checkpoint')
 

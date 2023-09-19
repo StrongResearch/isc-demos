@@ -9,17 +9,46 @@ tb_path = "/mnt/Client/StrongUniversity/USYD-04/usyd04_adam/output_brats_mri_2d_
 
 ## -- AUTO-ENCODER - ##
 
+# def compute_kl_loss(z_mu, z_sigma):
+#     kl_loss = 0.5 * torch.sum(
+#         z_mu.pow(2) + z_sigma.pow(2) - torch.log(z_sigma.pow(2)) - 1, dim=list(range(1, len(z_sigma.shape)))
+#     )
+#     return torch.sum(kl_loss) / kl_loss.shape[0]
+
+# def generator_loss(gen_images, real_images, z_mu, z_sigma, disc_net, loss_perceptual):
+#     recons_loss = intensity_loss(gen_images, real_images)
+#     kl_loss = compute_kl_loss(z_mu, z_sigma)
+#     p_loss = loss_perceptual(gen_images.float(), real_images.float())
+#     loss_g = recons_loss + kl_weight * kl_loss + perceptual_weight * p_loss
+
+#     logits_fake = disc_net(gen_images)[-1]
+#     generator_loss = adv_loss(logits_fake, target_is_real=True, for_discriminator=False)
+#     loss_g = loss_g + adv_weight * generator_loss
+
+#     return loss_g
+
+# def discriminator_loss(gen_images, real_images, disc_net):
+#     logits_fake = disc_net(gen_images.contiguous().detach())[-1]
+#     loss_d_fake = adv_loss(logits_fake, target_is_real=False, for_discriminator=True)
+#     logits_real = disc_net(real_images.contiguous().detach())[-1]
+#     loss_d_real = adv_loss(logits_real, target_is_real=True, for_discriminator=True)
+#     discriminator_loss = (loss_d_fake + loss_d_real) * 0.5
+#     loss_d = adv_weight * discriminator_loss
+#     return loss_d
+
+
 def train_generator_one_epoch(
         args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
         scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer,
         metrics
     ):
 
-    # Maybe pull these out into args later
+    # Obtained from scripts.losses.generator_loss
     kl_weight = 1e-6
+    perceptual_weight = 1.0
+    adv_weight = 0.5
+    # Retained from tutorial
     generator_warm_up_n_epochs = 10
-    perceptual_weight = 0.001
-    adv_weight = 0.01
 
     generator.train()
     discriminator.train()

@@ -18,19 +18,12 @@ def train_one_epoch(
     ):
 
     model.train()
-    # metric_logger = utils.MetricLogger(delimiter="  ")
-    # metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
-    # header = f"Epoch: [{epoch}]"
 
     timer.report('training preliminaries')
 
-    # Running this before starting the training loop assists reporting on progress after resuming - step == batch count
-    # train_step = train_sampler.progress // args.batch_size
     print(f'\nTraining / resuming epoch {epoch} from training step {train_sampler.progress}\n')
 
     for images, targets in data_loader_train:
-
-    # for images, targets in metric_logger.log_every(data_loader_train, train_sampler.progress, args.print_freq, header): ## EDITED THIS - ARGS.BATCH_SIZE == DATALOADER.BATCH_SIZE? GROUPEDBATCHSAMPLER AT PLAY
 
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in t.items()} for t in targets]
@@ -70,22 +63,12 @@ def train_one_epoch(
         train_metrics.reduce() # Gather results from all nodes
         
         report_metrics = ["loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg", "bbox_regression"]
-        # norm = train_metrics.local[train_metrics.map["images_seen"]]
         norm = train_metrics.local["images_seen"]
-        # vals = [train_metrics.local[train_metrics.map[k]]/norm for k in report_metrics]
         vals = [train_metrics.local[k]/norm for k in report_metrics]
         rpt = ", ".join([f"{k}: {v:,.3f}" for k,v in zip(report_metrics, vals)])
         print(f"EPOCH: [{epoch}], BATCH: [{train_sampler.progress}/{len(train_sampler)}], "+rpt)
 
         train_metrics.reset_local()
-
-        # metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
-        # metric_logger.update(lr=optimizer.param_groups[0]["lr"])
-        # timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: updating metric logger')
-
-        # print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
-        # train_sampler.advance() # counted in batches, no args to pass
-        # train_step = train_sampler.progress // data_loader_train.batch_size
 
         print(f"Saving checkpoint at epoch {epoch} train batch {train_sampler.progress}")
         train_sampler.advance()
@@ -120,7 +103,6 @@ def train_one_epoch(
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
-    # return metric_logger, timer
     return model, timer, train_metrics
 
 def _get_iou_types(model):
@@ -148,38 +130,33 @@ def evaluate(
     torch.set_num_threads(1)
     cpu_device = torch.device("cpu")
     model.eval()
-    # metric_logger = utils.MetricLogger(delimiter="  ")
-    # header = "Test:"
 
     timer.report(f'evaluation preliminaries')
 
     test_step = test_sampler.progress // data_loader_test.batch_size
     total_steps = len(test_sampler) // data_loader_test.batch_size
     print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
-    # timer.report('launch evaluation routine')
 
     for images, targets in data_loader_test:
-    # for images, targets in metric_logger.log_every(data_loader_test, test_sampler.progress, args.print_freq, header):
 
         images = list(img.to(device) for img in images)
         timer.report(f'Epoch {epoch} batch: {test_step} moving to device')
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
-        # model_time = time.time()
+
         outputs = model(images)
         timer.report(f'Epoch {epoch} batch: {test_step} forward through model')
 
         outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
-        # model_time = time.time() - model_time
+
         timer.report(f'Epoch {epoch} batch: {test_step} outputs back to cpu')
 
         res = {target["image_id"]: output for target, output in zip(targets, outputs)}
         # res = {img_id: {'boxes': T, 'labels': T, 'scores': T, 'masks': T}, ...}
-        # evaluator_time = time.time()
+
         coco_evaluator.update(res)
-        # evaluator_time = time.time() - evaluator_time
-        # metric_logger.update(model_time=model_time, evaluator_time=evaluator_time)
+
         timer.report(f'Epoch {epoch} batch: {test_step} update evaluator')
 
         print(f"Saving checkpoint at epoch {epoch} eval batch {test_step}")
@@ -206,8 +183,6 @@ def evaluate(
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     # gather the stats from all processes
-    # metric_logger.synchronize_between_processes()
-    # print("Averaged stats:", metric_logger)
     coco_evaluator.synchronize_between_processes()
 
     # accumulate predictions from all images

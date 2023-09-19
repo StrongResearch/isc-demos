@@ -23,7 +23,6 @@ timer = Timer()
 timer.report('importing Timer')
 
 import os
-
 from pathlib import Path
 import presets
 import torch
@@ -96,9 +95,6 @@ def main(args, timer):
         raise ValueError("Oops, if you want Keypoint detection, set --dataset coco_kp")
     if args.dataset == "coco_kp" and args.use_v2:
         raise ValueError("KeyPoint detection doesn't support V2 transforms yet")
-
-    # if args.output_dir:
-    #     utils.mkdir(args.output_dir)
 
     utils.init_distributed_mode(args)
     print(args)
@@ -232,7 +228,6 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
-    # train_metrics = MetricsTracker(["images_seen", "loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg", "bbox_regression"])
     train_metrics = MetricsTracker()
 
     # RETRIEVE CHECKPOINT
@@ -258,7 +253,6 @@ def main(args, timer):
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
         train_metrics = checkpoint["train_metrics"]
-        # train_metrics.to(device)
 
     timer.report('retrieving checkpoint')
 

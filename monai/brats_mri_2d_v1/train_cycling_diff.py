@@ -40,6 +40,13 @@ def get_args_parser(add_help=True):
     parser.add_argument("-j", "--workers", default=16, type=int, metavar="N", help="number of data loading workers (default: 16)")
     return parser
 
+def compute_scale_factor(autoencoder, train_loader, device):
+    with torch.no_grad():
+        check_data = first(train_loader)
+        z = autoencoder.encode_stage_2_inputs(check_data["image"].to(device))
+    scale_factor = 1 / torch.std(z)
+    return scale_factor.item()
+
 timer.report('importing everything else')
 
 def main(args, timer):
@@ -96,7 +103,7 @@ def main(args, timer):
     # Original trainer had batch size = 2 * 50. Using 10 nodes x batch size 10 => eff batch size = 100
     train_loader = DataLoader(train_ds, batch_size=10, sampler=train_sampler, num_workers=1)
     val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=1)
-    check_data = first(train_loader) # Used later
+    # check_data = first(train_loader) # Used later
 
     timer.report('build dataloaders')
 
@@ -177,11 +184,15 @@ def main(args, timer):
     diff_val_interval = 1
 
     # Prepare LatentDiffusionInferer
+    
+    # with torch.no_grad():
+    #     with autocast(enabled=True):
+    #         z = generator.encode_stage_2_inputs(check_data["image"].to(device))
+    # scale_factor = 1 / torch.std(z)
+
+    scale_factor = compute_scale_factor(generator, train_loader, device)
+
     scheduler = DDPMScheduler(num_train_timesteps=1000, schedule="scaled_linear_beta", beta_start=0.0015, beta_end=0.0195)
-    with torch.no_grad():
-        with autocast(enabled=True):
-            z = generator.encode_stage_2_inputs(check_data["image"].to(device))
-    scale_factor = 1 / torch.std(z)
     inferer = LatentDiffusionInferer(scheduler, scale_factor=scale_factor)
 
     timer.report('building inferer')
