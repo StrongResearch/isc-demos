@@ -251,7 +251,7 @@ class InterruptableDistributedGroupedBatchSampler(DistributedSampler):
 
     def advance(self):
         """
-        Record that n samples have been consumed.
+        Record that one batch has been consumed.
         """
         self.progress += 1
         if self.progress > self.num_batches:

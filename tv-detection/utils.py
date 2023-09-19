@@ -5,38 +5,7 @@ import time
 from collections import defaultdict, deque
 
 import torch
-import torch.distributed as dist
-
-class MetricsTracker:
-    def __init__(self, metric_names):
-        self.metric_names = metric_names
-        self.map = {n:i for i,n in enumerate(metric_names)}
-        self.local = torch.zeros(len(metric_names), dtype=torch.float16, requires_grad=False, device='cuda')
-        self.agg = torch.zeros(len(metric_names), dtype=torch.float16, requires_grad=False, device='cuda')
-        self.epoch_reports = []
-
-    def update(self, metrics: dict):
-        for n,v in metrics.items():
-            self.local[self.map[n]] += v
-        
-    def reduce_and_reset_local(self):
-        # Reduce over all nodes, add that to local store, and reset local
-        dist.all_reduce(self.local, op=dist.ReduceOp.SUM)
-        self.agg += self.local
-        self.local = torch.zeros(len(self.local), dtype=torch.float16, requires_grad=False, device='cuda')
-    
-    def end_epoch(self):
-        self.epoch_reports.append(self.agg)
-        self.local = torch.zeros(len(self.local), dtype=torch.float16, requires_grad=False, device='cuda')
-        self.agg = torch.zeros(len(self.local), dtype=torch.float16, requires_grad=False, device='cuda')
-
-    def to(self, device):
-        self.local = self.local.to(device)
-        self.agg = self.agg.to(device)
-    
-    # def report(self):
-    #     return ", ".join([f"{k}: {v:,.3f}" for k,v in zip(self.metric_names, self.agg)])
-
+import torch.distributed as dist  
 
 class SmoothedValue:
     """Track a series of values and provide access to smoothed values over a

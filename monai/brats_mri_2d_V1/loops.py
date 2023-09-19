@@ -1,10 +1,9 @@
-from tqdm import tqdm
-import torch
-from torch.cuda.amp import GradScaler, autocast
+import torch, os
+from torch.cuda.amp import autocast
 import torch.nn.functional as F
-import torch.distributed as dist
 import utils
 from cycling_utils import atomic_torch_save
+
 from torch.utils.tensorboard import SummaryWriter
 tb_path = "/mnt/Client/StrongUniversity/USYD-04/usyd04_adam/output_brats_mri_2d_gen/tb"
 
@@ -18,7 +17,7 @@ def train_generator_one_epoch(
 
     # Maybe pull these out into args later
     kl_weight = 1e-6
-    generator_warm_up_n_epochs = 3
+    generator_warm_up_n_epochs = 10
     perceptual_weight = 0.001
     adv_weight = 0.01
 
@@ -96,14 +95,16 @@ def train_generator_one_epoch(
         metrics["train"].update({"train_images_seen":len(images), "epoch_loss":recons_loss.item()})
         if epoch > generator_warm_up_n_epochs:
             metrics["train"].update({"gen_epoch_loss":generator_loss.item(), "disc_epoch_loss":discriminator_loss.item()})
-        metrics["train"].reduce_and_reset_local()
+        metrics["train"].reduce()
 
         timer.report(f'train batch {train_step} metrics update')
 
-        recons_loss = metrics["train"].agg[metrics["train"].map["epoch_loss"]] / metrics["train"].agg[metrics["train"].map["train_images_seen"]]
-        gen_loss = metrics["train"].agg[metrics["train"].map["gen_epoch_loss"]] / metrics["train"].agg[metrics["train"].map["train_images_seen"]]
-        disc_loss = metrics["train"].agg[metrics["train"].map["disc_epoch_loss"]] / metrics["train"].agg[metrics["train"].map["train_images_seen"]]
-        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}, gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, train_step+1, total_steps, recons_loss, gen_loss, disc_loss))
+        recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        gen_loss = metrics["train"].local[metrics["train"].map["gen_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        disc_loss = metrics["train"].local[metrics["train"].map["disc_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}, gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss, gen_loss, disc_loss))
+
+        metrics["train"].reset_local()
 
         ## Checkpointing
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
@@ -114,10 +115,10 @@ def train_generator_one_epoch(
             metrics["train"].end_epoch()
 
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
-            writer = SummaryWriter(log_dir=tb_path)
-            writer.add_scalar("recons_loss", recons_loss, step)
-            writer.add_scalar("gen_loss", recons_loss, step)
-            writer.add_scalar("disc_loss", recons_loss, step)
+            writer = SummaryWriter(log_dir=args.tboard_path)
+            writer.add_scalar("Train/recons_loss", recons_loss, train_step + epoch * total_steps)
+            writer.add_scalar("Train/gen_loss", gen_loss, train_step + epoch * total_steps)
+            writer.add_scalar("Train/disc_loss", disc_loss, train_step + epoch * total_steps)
             writer.flush()
             writer.close()
             checkpoint = {
@@ -167,7 +168,8 @@ def evaluate_generator(
                 timer.report(f'eval batch {val_step} recons_loss')
 
             metrics["val"].update({"val_images_seen": len(images), "val_loss": recons_loss.item()})
-            metrics["val"].reduce_and_reset_local()
+            metrics["val"].reduce()
+            metrics["val"].reset_local()
 
             timer.report(f'eval batch {val_step} metrics update')
 
@@ -180,7 +182,6 @@ def evaluate_generator(
                  metrics["val"].end_epoch()
 
             if utils.is_main_process() and val_step % 1 == 0: # Checkpointing every batch
-                print(f"Saving checkpoint at epoch {epoch} train batch {val_step}")
                 checkpoint = {
                     # Universals
                     "args": args,
@@ -201,8 +202,8 @@ def evaluate_generator(
 
     val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
     if utils.is_main_process():
-        writer = SummaryWriter(log_dir=tb_path)
-        writer.add_scalar("val", val_loss, epoch)
+        writer = SummaryWriter(log_dir=args.tboard_path)
+        writer.add_scalar("Val/loss", val_loss, epoch)
         writer.flush()
         writer.close()
     print(f"Epoch {epoch} val loss: {val_loss:.4f}")
@@ -210,12 +211,11 @@ def evaluate_generator(
     return timer, metrics
 
 
-
 ## -- DIFFUSION MODEL - ##
 
 def train_diffusion_one_epoch(
         args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
-        train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
+        train_sampler, val_sampler, lr_scheduler, device, timer, metrics
     ):
 
     unet.train()
@@ -250,50 +250,64 @@ def train_diffusion_one_epoch(
         scaler_u.scale(loss).backward()
         scaler_u.step(optimizer_u)
         scaler_u.update()
+        lr_scheduler.step()
         timer.report(f'train batch {train_step} unet backward')
 
-        epoch_loss += loss.item()
-        train_images_seen += len(images)
-        recons_loss = epoch_loss / train_images_seen
-        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}".format(epoch, train_step+1, total_steps, recons_loss))
+        # Reduce metrics accross nodes
+        metrics["train"].update({"train_images_seen":len(images), "epoch_loss":loss.item()})
+        metrics["train"].reduce()
+
+        recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss))
+
+        metrics["train"].reset_local()
+
+        timer.report(f'train batch {train_step} metrics update')
 
         ## Checkpointing
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
         train_sampler.advance(len(images))
         train_step = train_sampler.progress // train_loader.batch_size
+
+        if train_step == total_steps:
+            metrics["train"].end_epoch()
+
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
+
+            writer = SummaryWriter(log_dir=args.tboard_path)
+            writer.add_scalar("Train/recons_loss", recons_loss, train_step + epoch * total_steps)
+            writer.flush()
+            writer.close()
+
             checkpoint = {
                 # Universals
                 "args": args,
                 "epoch": epoch,
-  
                 # State variables
                 "unet": unet.module.state_dict(),
                 "optimizer_u": optimizer_u.state_dict(),
                 "scaler_u": scaler_u.state_dict(),
                 "train_sampler": train_sampler.state_dict(),
                 "val_sampler": val_sampler.state_dict(),
-
-                # Evaluation metrics
-                "train_images_seen": train_images_seen,
-                "val_images_seen": val_images_seen,
-                "epoch_loss": epoch_loss,
-                "val_loss": val_loss,
+                "lr_scheduler": lr_scheduler.state_dict(),
+                # Metrics
+                "metrics": metrics,
             }
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-    return unet, timer
+    return unet, timer, metrics
 
 
 def evaluate_diffusion(
         args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
-        train_sampler, val_sampler, train_images_seen, val_images_seen, epoch_loss, val_loss, device, timer
+        train_sampler, val_sampler, lr_scheduler, device, timer, metrics
     ):
 
         unet.eval()
 
         val_step = val_sampler.progress // val_loader.batch_size
-        print(f'\nEvaluating / resuming epoch {epoch} from training step {val_step}\n')
+        total_steps = int(len(val_sampler) / val_loader.batch_size)
+        print(f'\nEvaluating / resuming epoch {epoch} from eval step {val_step}\n')
 
         with torch.no_grad():
             for step, batch in enumerate(val_loader):
@@ -316,36 +330,43 @@ def evaluate_diffusion(
                     loss = F.mse_loss(noise_pred.float(), noise.float())
                     timer.report(f'eval batch {val_step} loss')
 
-                val_loss += loss.item()
-                val_images_seen += len(images)
+                metrics["val"].update({"val_images_seen": len(images), "val_loss": loss.item()})
+                metrics["val"].reduce()
+                metrics["val"].reset_local()
+
                 timer.report(f'eval batch {val_step} metrics update')
 
                 ## Checkpointing
                 print(f"Saving checkpoint at epoch {epoch} val batch {val_step}")
                 val_sampler.advance(len(images))
+
+                if val_step == total_steps:
+                    metrics["val"].end_epoch()
+
                 if utils.is_main_process() and val_step % 1 == 0: # Checkpointing every batch
                     print(f"Saving checkpoint at epoch {epoch} train batch {val_step}")
                     checkpoint = {
                         # Universals
                         "args": args,
                         "epoch": epoch,
-        
                         # State variables
                         "unet": unet.module.state_dict(),
                         "optimizer_u": optimizer_u.state_dict(),
                         "scaler_u": scaler_u.state_dict(),
                         "train_sampler": train_sampler.state_dict(),
                         "val_sampler": val_sampler.state_dict(),
-
-                        # Evaluation metrics
-                        "train_images_seen": train_images_seen,
-                        "val_images_seen": val_images_seen,
-                        "epoch_loss": epoch_loss,
-                        "val_loss": val_loss,
+                        "lr_scheduler": lr_scheduler.state_dict(),
+                        # Metrics
+                        "metrics": metrics,
                     }
                     timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-        val_loss /= val_images_seen
+        val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
+        if utils.is_main_process():
+            writer = SummaryWriter(log_dir=args.tboard_path)
+            writer.add_scalar("Val/loss", val_loss, epoch)
+            writer.flush()
+            writer.close()
         print(f"Epoch {epoch} diff val loss: {val_loss:.4f}")
 
-        return timer
+        return timer, metrics

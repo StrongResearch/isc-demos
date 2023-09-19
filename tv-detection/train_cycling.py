@@ -39,7 +39,7 @@ from group_by_aspect_ratio import create_aspect_ratio_groups
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
 
-from cycling_utils import InterruptableDistributedSampler, InterruptableDistributedGroupedBatchSampler
+from cycling_utils import InterruptableDistributedSampler, InterruptableDistributedGroupedBatchSampler, MetricsTracker
 
 timer.report('importing everything else')
 
@@ -97,8 +97,8 @@ def main(args, timer):
     if args.dataset == "coco_kp" and args.use_v2:
         raise ValueError("KeyPoint detection doesn't support V2 transforms yet")
 
-    if args.output_dir:
-        utils.mkdir(args.output_dir)
+    # if args.output_dir:
+    #     utils.mkdir(args.output_dir)
 
     utils.init_distributed_mode(args)
     print(args)
@@ -232,7 +232,7 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
-    train_metrics = utils.MetricsTracker(["images_seen", "loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg"])
+    train_metrics = MetricsTracker(["images_seen", "loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg"])
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -283,6 +283,7 @@ def main(args, timer):
                 timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
                 coco_evaluator, timer, train_metrics = evaluate(model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer, train_metrics)
 
+
 def get_args_parser(add_help=True):
     import argparse
 
@@ -306,8 +307,12 @@ def get_args_parser(add_help=True):
     parser.add_argument("--lr-gamma", default=0.1, type=float, help="decrease lr by a factor of lr-gamma (multisteplr scheduler only)")
     parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
+
     parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
     parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
+    parser.add_argument("--tboard-path", default=None, help="path for saving tensorboard logs", dest="tboard_path") # for checkpointing
+
+
     parser.add_argument("--start_epoch", default=0, type=int, help="start epoch")
     parser.add_argument("--aspect-ratio-group-factor", default=3, type=int)
     parser.add_argument("--rpn-score-thresh", default=None, type=float, help="rpn score threshold for faster-rcnn")

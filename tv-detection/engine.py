@@ -10,7 +10,6 @@ from coco_utils import get_coco_api_from_dataset
 from cycling_utils import atomic_torch_save
 
 from torch.utils.tensorboard import SummaryWriter
-tb_path = "/mnt/Client/StrongUniversity/USYD-04/usyd04_adam/output_maskrcnn_resnet50_fpn/tb"
 
 def train_one_epoch(
         model, optimizer, data_loader_train, train_sampler, test_sampler,
@@ -68,13 +67,15 @@ def train_one_epoch(
 
         train_metrics.update({"images_seen": len(images) ,"loss": loss_value})
         train_metrics.update({k:v.item() for k,v in loss_dict_reduced.items()})
-        train_metrics.reduce_and_reset_local()
-
+        train_metrics.reduce() # Gather results from all nodes
+        
         report_metrics = ["loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg"]
-        norm = train_metrics.agg[train_metrics.map["images_seen"]]
-        vals = [train_metrics.agg[train_metrics.map[k]]/norm for k in report_metrics]
+        norm = train_metrics.local[train_metrics.map["images_seen"]]
+        vals = [train_metrics.local[train_metrics.map[k]]/norm for k in report_metrics]
         rpt = ", ".join([f"{k}: {v:,.3f}" for k,v in zip(report_metrics, vals)])
         print(f"EPOCH: [{epoch}], BATCH: [{train_sampler.progress}/{len(train_sampler)}], "+rpt)
+
+        train_metrics.reset_local()
 
         # metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
         # metric_logger.update(lr=optimizer.param_groups[0]["lr"])
@@ -92,7 +93,7 @@ def train_one_epoch(
 
         if utils.is_main_process() and train_sampler.progress % 1 == 0: # Checkpointing every batch
 
-            writer = SummaryWriter(log_dir=tb_path)
+            writer = SummaryWriter(log_dir=args.tboard_path)
             for metric,val in zip(report_metrics, vals):
                 writer.add_scalar("Train/"+metric, val, train_sampler.progress + epoch * len(train_sampler))
             writer.flush()
@@ -120,7 +121,6 @@ def train_one_epoch(
     # return metric_logger, timer
     return model, timer, train_metrics
 
-
 def _get_iou_types(model):
     model_without_ddp = model
     if isinstance(model, torch.nn.parallel.DistributedDataParallel):
@@ -131,7 +131,6 @@ def _get_iou_types(model):
     if isinstance(model_without_ddp, torchvision.models.detection.KeypointRCNN):
         iou_types.append("keypoints")
     return iou_types
-
 
 @torch.inference_mode()
 def evaluate(
@@ -181,12 +180,11 @@ def evaluate(
         # metric_logger.update(model_time=model_time, evaluator_time=evaluator_time)
         timer.report(f'Epoch {epoch} batch: {test_step} update evaluator')
 
+        print(f"Saving checkpoint at epoch {epoch} eval batch {test_step}")
         test_sampler.advance(len(images))
-
         test_step = test_sampler.progress // data_loader_test.batch_size
 
         if utils.is_main_process() and test_step % 1 == 0: # Checkpointing every batch
-            print(f"Saving checkpoint at epoch {epoch} eval batch {test_step}")
             checkpoint = {
                 "args": args,
                 "epoch": epoch,
@@ -215,7 +213,7 @@ def evaluate(
     results = coco_evaluator.summarize()
 
     if utils.is_main_process():
-        writer = SummaryWriter(log_dir=tb_path)
+        writer = SummaryWriter(log_dir=args.tboard_path)
         for i,val in enumerate(results):
             writer.add_scalar(f"Eval/F{i}", val, test_step + epoch * total_steps)
         writer.flush()

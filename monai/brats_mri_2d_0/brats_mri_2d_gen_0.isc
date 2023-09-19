@@ -1,6 +1,0 @@
-experiment_name="brats_mri_2d_gen"
-gpu_type="24GB VRAM GPU"
-nnodes = 9
-venv_path = "~/.venv/bin/activate"
-output_path = "~/output_brats_mri_2d_gen"
-command="train_cycling_gen_0.py --data-path=/mnt/.node1/Open-Datsets/MONAI --resume $OUTPUT_PATH/checkpoint.isc"
