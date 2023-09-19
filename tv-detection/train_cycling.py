@@ -22,10 +22,7 @@ from cycling_utils import Timer
 timer = Timer()
 timer.report('importing Timer')
 
-import datetime
 import os
-import time
-# import warnings
 
 from pathlib import Path
 import presets
@@ -38,11 +35,11 @@ from coco_utils import get_coco
 import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
 from engine import evaluate, train_one_epoch
-from group_by_aspect_ratio import create_aspect_ratio_groups, GroupedBatchSampler
+from group_by_aspect_ratio import create_aspect_ratio_groups
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
 
-from cycling_utils import InterruptableDistributedSampler, InterruptableDistributedGroupedBatchSampler, atomic_torch_save
+from cycling_utils import InterruptableDistributedSampler, InterruptableDistributedGroupedBatchSampler
 
 timer.report('importing everything else')
 
@@ -235,6 +232,8 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
+    train_metrics = utils.MetricsTracker(["images_seen", "loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg"])
+
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     checkpoint = None
@@ -245,22 +244,20 @@ def main(args, timer):
         print(f"RESUMING FROM PREVIOUS JOB {args.prev_resume}")
         checkpoint = torch.load(args.prev_resume, map_location="cpu")
     if checkpoint is not None:
-        
-        model_without_ddp.load_state_dict(checkpoint["model"])
         args.start_epoch = checkpoint["epoch"]
-
+        model_without_ddp.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
         lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
         warmup_lr_scheduler.load_state_dict(checkpoint["warmup_lr_scheduler"])
         train_sampler.load_state_dict(checkpoint["train_sampler"])
+        test_sampler.load_state_dict(checkpoint["test_sampler"])
         if args.amp:
             scaler.load_state_dict(checkpoint["scaler"])
-
-        test_sampler.load_state_dict(checkpoint["test_sampler"])
-
         # Evaluator state variables
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
+        train_metrics = checkpoint["train_metrics"]
+        train_metrics.to(device)
 
     timer.report('retrieving checkpoint')
 
@@ -279,12 +276,12 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            metric_logger, timer = train_one_epoch(model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator, epoch, scaler, timer)
+            model, timer, train_metrics = train_one_epoch(model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator, epoch, scaler, timer, train_metrics)
 
             # NEST THE TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
                 timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-                coco_evaluator, timer = evaluate(model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer)
+                coco_evaluator, timer, train_metrics = evaluate(model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer, train_metrics)
 
 def get_args_parser(add_help=True):
     import argparse
