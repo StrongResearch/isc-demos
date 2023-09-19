@@ -232,7 +232,8 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
-    train_metrics = MetricsTracker(["images_seen", "loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg"])
+    # train_metrics = MetricsTracker(["images_seen", "loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg", "bbox_regression"])
+    train_metrics = MetricsTracker()
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -257,7 +258,7 @@ def main(args, timer):
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
         train_metrics = checkpoint["train_metrics"]
-        train_metrics.to(device)
+        # train_metrics.to(device)
 
     timer.report('retrieving checkpoint')
 

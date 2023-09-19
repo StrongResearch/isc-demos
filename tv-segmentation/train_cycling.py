@@ -100,7 +100,8 @@ def train_one_epoch(
 
         train_metrics.update({"images_seen": len(images), "loss": loss.item()})
         train_metrics.reduce() # Reduce to sync metrics between nodes for this batch
-        batch_loss = train_metrics.local[train_metrics.map["loss"]] / train_metrics.local[train_metrics.map["images_seen"]]
+        # batch_loss = train_metrics.local[train_metrics.map["loss"]] / train_metrics.local[train_metrics.map["images_seen"]]
+        batch_loss = train_metrics.local["loss"] / train_metrics.local["images_seen"]
         print(f"EPOCH: [{epoch}], BATCH: [{train_step}/{total_steps}], loss: {batch_loss}")
         train_metrics.reset_local()
 
@@ -342,7 +343,8 @@ def main(args, timer):
     timer.report('init confmat')
 
     # Init general purpose metrics tracker
-    train_metrics = MetricsTracker(["images_seen", "loss"])
+    # train_metrics = MetricsTracker(["images_seen", "loss"])
+    train_metrics = MetricsTracker()
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -367,7 +369,7 @@ def main(args, timer):
         confmat.mat = checkpoint["confmat"]
         confmat.temp_mat = checkpoint["confmat_temp"]
         train_metrics = checkpoint["train_metrics"]
-        train_metrics.to(device)
+        # train_metrics.to(device)
             
     timer.report('retrieving checkpoint')
 

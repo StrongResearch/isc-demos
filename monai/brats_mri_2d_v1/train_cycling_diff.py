@@ -143,9 +143,9 @@ def main(args, timer):
     timer.report('optimizer, lr_scheduler and grad scaler')
 
     # Init metric tracker
-    train_metrics = MetricsTracker(["train_images_seen", "epoch_loss"])
-    val_metrics = MetricsTracker(["val_images_seen", "val_loss"])
-    metrics = {'train': train_metrics, 'val': val_metrics}
+    # train_metrics = MetricsTracker(["train_images_seen", "epoch_loss"])
+    # val_metrics = MetricsTracker(["val_images_seen", "val_loss"])
+    metrics = {'train': MetricsTracker(), 'val': MetricsTracker()}
 
     # RETRIEVE GENERATOR CHECKPOINT FROM PREVIOUS JOB
     
@@ -166,8 +166,8 @@ def main(args, timer):
         lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
         # Metrics
         metrics = checkpoint["metrics"]
-        metrics["train"].to(device)
-        metrics["val"].to(device)
+        # metrics["train"].to(device)
+        # metrics["val"].to(device)
 
     timer.report('checkpoint retrieval')
 

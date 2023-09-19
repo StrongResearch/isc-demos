@@ -99,9 +99,12 @@ def train_generator_one_epoch(
 
         timer.report(f'train batch {train_step} metrics update')
 
-        recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
-        gen_loss = metrics["train"].local[metrics["train"].map["gen_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
-        disc_loss = metrics["train"].local[metrics["train"].map["disc_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        # recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        # gen_loss = metrics["train"].local[metrics["train"].map["gen_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        # disc_loss = metrics["train"].local[metrics["train"].map["disc_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        recons_loss = metrics["train"].local["epoch_loss"] / metrics["train"].local["train_images_seen"]
+        gen_loss = metrics["train"].local["gen_epoch_loss"] / metrics["train"].local["train_images_seen"]
+        disc_loss = metrics["train"].local["disc_epoch_loss"] / metrics["train"].local["train_images_seen"]
         print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}, gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss, gen_loss, disc_loss))
 
         metrics["train"].reset_local()
@@ -179,7 +182,15 @@ def evaluate_generator(
             val_step = val_sampler.progress // val_loader.batch_size
 
             if val_step == total_steps:
-                 metrics["val"].end_epoch()
+                 # val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
+                val_loss = metrics["val"].agg["val_loss"] / metrics["val"].agg["val_images_seen"]
+                if utils.is_main_process():
+                    writer = SummaryWriter(log_dir=args.tboard_path)
+                    writer.add_scalar("Val/loss", val_loss, epoch)
+                    writer.flush()
+                    writer.close()
+                print(f"Epoch {epoch} val loss: {val_loss:.4f}")
+                metrics["val"].end_epoch()
 
             if utils.is_main_process() and val_step % 1 == 0: # Checkpointing every batch
                 checkpoint = {
@@ -199,14 +210,6 @@ def evaluate_generator(
                     "metrics": metrics,
                 }
                 timer = atomic_torch_save(checkpoint, args.resume, timer)
-
-    val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
-    if utils.is_main_process():
-        writer = SummaryWriter(log_dir=args.tboard_path)
-        writer.add_scalar("Val/loss", val_loss, epoch)
-        writer.flush()
-        writer.close()
-    print(f"Epoch {epoch} val loss: {val_loss:.4f}")
 
     return timer, metrics
 
@@ -257,7 +260,8 @@ def train_diffusion_one_epoch(
         metrics["train"].update({"train_images_seen":len(images), "epoch_loss":loss.item()})
         metrics["train"].reduce()
 
-        recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        # recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
+        recons_loss = metrics["train"].local["epoch_loss"] / metrics["train"].local["train_images_seen"]
         print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss))
 
         metrics["train"].reset_local()
@@ -361,7 +365,8 @@ def evaluate_diffusion(
                     }
                     timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-        val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
+        # val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
+        val_loss = metrics["val"].agg["val_loss"] / metrics["val"].agg["val_images_seen"]
         if utils.is_main_process():
             writer = SummaryWriter(log_dir=args.tboard_path)
             writer.add_scalar("Val/loss", val_loss, epoch)

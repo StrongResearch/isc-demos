@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import torch
 import torch.distributed as dist
+from collections import defaultdict
 
 def atomic_torch_save(obj, f: str | Path, timer=None, **kwargs):
     f = str(f)
@@ -15,35 +16,32 @@ def atomic_torch_save(obj, f: str | Path, timer=None, **kwargs):
         return timer
     else:
         return
-    
+
 class MetricsTracker:
-    def __init__(self, metric_names):
-        self.metric_names = metric_names
-        self.map = {n:i for i,n in enumerate(metric_names)}
-        self.local = torch.zeros(len(metric_names), dtype=torch.float16, requires_grad=False, device='cuda')
-        self.agg = torch.zeros(len(metric_names), dtype=torch.float16, requires_grad=False, device='cuda')
+    def __init__(self):
+        self.local = defaultdict(float)
+        self.agg = defaultdict(float)
         self.epoch_reports = []
 
     def update(self, metrics: dict):
         for n,v in metrics.items():
-            self.local[self.map[n]] += v
+            self.local[n] += v
         
     def reduce(self):
-        # Reduce local over all nodes, add that to local store
-        dist.all_reduce(self.local, op=dist.ReduceOp.SUM)
-        self.agg += self.local
+        names, local = zip(*self.local.items())
+        local = torch.tensor(local, dtype=torch.float16, requires_grad=False, device='cuda')
+        dist.all_reduce(local, op=dist.ReduceOp.SUM)
+        self.local = defaultdict(float, zip(names, local.cpu().numpy()))
+        for k in self.local:
+            self.agg[k] += self.local[k]
 
     def reset_local(self):
-        self.local = torch.zeros(len(self.local), dtype=torch.float16, requires_grad=False, device='cuda')
+        self.local = defaultdict(float)
     
     def end_epoch(self):
         self.epoch_reports.append(self.agg)
-        self.local = torch.zeros(len(self.local), dtype=torch.float16, requires_grad=False, device='cuda')
-        self.agg = torch.zeros(len(self.local), dtype=torch.float16, requires_grad=False, device='cuda')
-
-    def to(self, device):
-        self.local = self.local.to(device)
-        self.agg = self.agg.to(device)
+        self.local = defaultdict(float)
+        self.agg = defaultdict(float)
         
 
 # ## ENABLING ACTIVE PROGRESS TRACKING

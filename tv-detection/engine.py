@@ -69,9 +69,11 @@ def train_one_epoch(
         train_metrics.update({k:v.item() for k,v in loss_dict_reduced.items()})
         train_metrics.reduce() # Gather results from all nodes
         
-        report_metrics = ["loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg"]
-        norm = train_metrics.local[train_metrics.map["images_seen"]]
-        vals = [train_metrics.local[train_metrics.map[k]]/norm for k in report_metrics]
+        report_metrics = ["loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg", "bbox_regression"]
+        # norm = train_metrics.local[train_metrics.map["images_seen"]]
+        norm = train_metrics.local["images_seen"]
+        # vals = [train_metrics.local[train_metrics.map[k]]/norm for k in report_metrics]
+        vals = [train_metrics.local[k]/norm for k in report_metrics]
         rpt = ", ".join([f"{k}: {v:,.3f}" for k,v in zip(report_metrics, vals)])
         print(f"EPOCH: [{epoch}], BATCH: [{train_sampler.progress}/{len(train_sampler)}], "+rpt)
 

@@ -148,9 +148,9 @@ def main(args, timer):
     timer.report('grad scalers')
 
     # Init metric tracker
-    train_metrics = MetricsTracker(["train_images_seen", "epoch_loss", "gen_epoch_loss", "disc_epoch_loss"])
-    val_metrics = MetricsTracker(["val_images_seen", "val_loss"])
-    metrics = {'train': train_metrics, 'val': val_metrics}
+    # train_metrics = MetricsTracker(["train_images_seen", "epoch_loss", "gen_epoch_loss", "disc_epoch_loss"])
+    # val_metrics = MetricsTracker(["val_images_seen", "val_loss"])
+    metrics = {'train': MetricsTracker(), 'val': MetricsTracker()}
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -171,8 +171,8 @@ def main(args, timer):
         val_sampler.load_state_dict(checkpoint["val_sampler"])
         # Metrics
         metrics = checkpoint["metrics"]
-        metrics["train"].to(device)
-        metrics["val"].to(device)
+        # metrics["train"].to(device)
+        # metrics["val"].to(device)
 
     timer.report('checkpoint retrieval')
 
