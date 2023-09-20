@@ -197,8 +197,8 @@ def evaluate(
 
     if utils.is_main_process():
         writer = SummaryWriter(log_dir=args.tboard_path)
-        for name,val in metrics["val"].epoch_reports[-1]:
-            writer.add_scalar(name, val, epoch)
+        for name,val in metrics["val"].epoch_reports[-1].items():
+            writer.add_scalar("Val/"+name, val, epoch)
         writer.flush()
         writer.close()
 

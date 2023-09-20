@@ -163,6 +163,9 @@ def main(args, timer):
     if args.model == "maskrcnn_resnet101_fpn":
         backbone  = resnet_fpn_backbone(backbone_name="resnet101", weights="ResNet101_Weights.IMAGENET1K_V1")
         model = MaskRCNN(backbone=backbone, num_classes=num_classes)
+    elif args.model == "retinanet_resnet50_fpn":
+        backbone  = resnet_fpn_backbone(backbone_name="resnet50", weights="ResNet50_Weights.IMAGENET1K_V1")
+        model = RetinaNet(backbone=backbone, num_classes=num_classes)
     elif args.model == "retinanet_resnet101_fpn":
         backbone  = resnet_fpn_backbone(backbone_name="resnet101", weights="ResNet101_Weights.IMAGENET1K_V1")
         model = RetinaNet(backbone=backbone, num_classes=num_classes)
