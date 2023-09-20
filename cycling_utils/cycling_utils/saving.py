@@ -24,8 +24,8 @@ class MetricsTracker:
         self.epoch_reports = []
 
     def update(self, metrics: dict):
-        for n,v in metrics.items():
-            self.local[n] += v
+        for m,v in metrics.items():
+            self.local[m] += v
         
     def reduce(self):
         names, local = zip(*self.local.items())
@@ -39,7 +39,7 @@ class MetricsTracker:
         self.local = defaultdict(float)
     
     def end_epoch(self):
-        self.epoch_reports.append(self.agg)
+        self.epoch_reports.append(dict(self.agg))
         self.local = defaultdict(float)
         self.agg = defaultdict(float)
         

@@ -58,7 +58,7 @@ def criterion(inputs, target):
 def train_one_epoch(
         args, model, criterion, optimizer, data_loader_train,
         train_sampler, test_sampler, confmat, lr_scheduler, 
-        device, epoch, scaler=None, timer=None, train_metrics=None
+        device, epoch, scaler=None, timer=None, metrics=None
     ):
 
     model.train()
@@ -91,18 +91,18 @@ def train_one_epoch(
 
         timer.report(f'Epoch: {epoch} batch {train_step}: backward pass')
 
-        train_metrics.update({"images_seen": len(images), "loss": loss.item()})
-        train_metrics.reduce() # Reduce to sync metrics between nodes for this batch
-        batch_loss = train_metrics.local["loss"] / train_metrics.local["images_seen"]
+        metrics["train"].update({"images_seen": len(images), "loss": loss.item()})
+        metrics["train"].reduce() # Reduce to sync metrics between nodes for this batch
+        batch_loss = metrics["train"].local["loss"] / metrics["train"].local["images_seen"]
         print(f"EPOCH: [{epoch}], BATCH: [{train_step}/{total_steps}], loss: {batch_loss}")
-        train_metrics.reset_local()
+        metrics["train"].reset_local()
 
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
         train_sampler.advance(len(images))
 
         train_step = train_sampler.progress // data_loader_train.batch_size
         if train_step == total_steps:
-            train_metrics.end_epoch()
+            metrics["train"].end_epoch()
 
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
 
@@ -121,18 +121,18 @@ def train_one_epoch(
                 "test_sampler": test_sampler.state_dict(),
                 "confmat": confmat.mat,
                 "confmat_temp": confmat.temp_mat,
-                "train_metrics": train_metrics,
+                "metrics": metrics,
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
-    return model, timer, train_metrics
+    return model, timer, metrics
 
 def evaluate(
         args, model, data_loader_test, num_classes, confmat,
         optimizer, lr_scheduler, train_sampler, test_sampler, 
-        device, epoch, scaler=None, timer=None, train_metrics=None,
+        device, epoch, scaler=None, timer=None, metrics=None,
     ):
 
     model.eval()
@@ -186,6 +186,9 @@ def evaluate(
     acc_global, acc, iu = confmat.compute()
     acc = acc_global.item() * 100
     mean_iou = iu.mean().item() * 100
+    metrics["val"].update({"acc": acc, "mean_iou": mean_iou})
+    metrics["val"].reduce()
+    metrics["val"].reset_local()
     print(f"EPOCH: [{epoch}] EVAL :: acc: {acc:.2f}, mean_iou: {mean_iou:.2f}")
     confmat.reset()
 
@@ -211,10 +214,9 @@ def evaluate(
     #         "Setting the world size to 1 is always a safe bet."
     #     )
 
-    return confmat, timer
+    return confmat, timer, metrics
 
 timer.report('defined other functions')
-
 
 
 def main(args, timer):
@@ -327,7 +329,7 @@ def main(args, timer):
     timer.report('init confmat')
 
     # Init general purpose metrics tracker
-    train_metrics = MetricsTracker()
+    metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -351,7 +353,7 @@ def main(args, timer):
             scaler.load_state_dict(checkpoint["scaler"])
         confmat.mat = checkpoint["confmat"]
         confmat.temp_mat = checkpoint["confmat_temp"]
-        train_metrics = checkpoint["train_metrics"]
+        metrics = checkpoint["metrics"]
             
     timer.report('retrieving checkpoint')
 
@@ -371,20 +373,20 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            model, timer, train_metrics = train_one_epoch(
+            model, timer, metrics = train_one_epoch(
                 args, model, criterion, optimizer, data_loader_train,
                 train_sampler, test_sampler, confmat, lr_scheduler, 
-                device, epoch, scaler, timer, train_metrics
+                device, epoch, scaler, timer, metrics
             )
             timer.report(f'training for epoch {epoch}')
 
             # NEST TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
                 timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-                confmat, timer = evaluate(
+                confmat, timer, metrics = evaluate(
                     args, model, data_loader_test, num_classes, confmat,
                     optimizer, lr_scheduler, train_sampler, test_sampler, 
-                    device, epoch, scaler, timer, train_metrics,
+                    device, epoch, scaler, timer, metrics,
                 )
                 timer.report(f'evaluation for epoch {epoch}')
 

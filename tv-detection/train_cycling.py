@@ -33,6 +33,8 @@ from coco_utils import get_coco
 
 import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
+from torchvision.models.detection import MaskRCNN, RetinaNet
+from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 from engine import evaluate, train_one_epoch
 from group_by_aspect_ratio import create_aspect_ratio_groups
 from torchvision.transforms import InterpolationMode
@@ -158,9 +160,15 @@ def main(args, timer):
         if args.rpn_score_thresh is not None:
             kwargs["rpn_score_thresh"] = args.rpn_score_thresh
 
-    model = torchvision.models.get_model(
-        args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, **kwargs
-    )
+    if args.model == "maskrcnn_resnet101_fpn":
+        backbone  = resnet_fpn_backbone(backbone_name="resnet101", weights="ResNet101_Weights.IMAGENET1K_V1")
+        model = MaskRCNN(backbone=backbone, num_classes=num_classes)
+    elif args.model == "retinanet_resnet101_fpn":
+        backbone  = resnet_fpn_backbone(backbone_name="resnet101", weights="ResNet101_Weights.IMAGENET1K_V1")
+        model = RetinaNet(backbone=backbone, num_classes=num_classes)
+        # model = torchvision.models.get_model(
+        #     args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, **kwargs
+        # )
     model.to(device)
 
     timer.report('creating model and .to(device)')
@@ -228,7 +236,7 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
-    train_metrics = MetricsTracker()
+    metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -252,16 +260,16 @@ def main(args, timer):
         # Evaluator state variables
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
-        train_metrics = checkpoint["train_metrics"]
+        metrics = checkpoint["metrics"]
 
     timer.report('retrieving checkpoint')
 
-    if args.test_only:
-        # We disable the cudnn benchmarking because it can noticeably affect the accuracy
-        torch.backends.cudnn.benchmark = False
-        torch.backends.cudnn.deterministic = True
-        coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
-        return
+    # if args.test_only:
+    #     # We disable the cudnn benchmarking because it can noticeably affect the accuracy
+    #     torch.backends.cudnn.benchmark = False
+    #     torch.backends.cudnn.deterministic = True
+    #     coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
+    #     return
 
     for epoch in range(args.start_epoch, args.epochs):
         
@@ -271,12 +279,18 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-            model, timer, train_metrics = train_one_epoch(model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator, epoch, scaler, timer, train_metrics)
+            model, timer, metrics = train_one_epoch(
+                model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, 
+                args, device, coco_evaluator, epoch, scaler, timer, metrics
+            )
 
             # NEST THE TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
                 timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
-                coco_evaluator, timer, train_metrics = evaluate(model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer, train_metrics)
+                coco_evaluator, timer, metrics = evaluate(
+                    model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, 
+                    train_sampler, device, scaler, timer, metrics
+                )
 
 
 def get_args_parser(add_help=True):

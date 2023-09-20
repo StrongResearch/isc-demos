@@ -1,6 +1,6 @@
 import math
 import sys
-import time
+from itertools import product
 
 import torch
 import torchvision.models.detection.mask_rcnn
@@ -14,7 +14,7 @@ from torch.utils.tensorboard import SummaryWriter
 def train_one_epoch(
         model, optimizer, data_loader_train, train_sampler, test_sampler,
         lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator,
-        epoch, scaler=None, timer=None, train_metrics=None,
+        epoch, scaler=None, timer=None, metrics=None,
     ):
 
     model.train()
@@ -28,6 +28,7 @@ def train_one_epoch(
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in t.items()} for t in targets]
         timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: moving batch data to device')
+        print(f"First 2 image shapes: {images[0].shape}, {images[1].shape}")
 
         optimizer.zero_grad()
 
@@ -58,23 +59,23 @@ def train_one_epoch(
             print(loss_dict_reduced)
             sys.exit(1)
 
-        train_metrics.update({"images_seen": len(images) ,"loss": loss_value})
-        train_metrics.update({k:v.item() for k,v in loss_dict_reduced.items()})
-        train_metrics.reduce() # Gather results from all nodes
+        metrics["train"].update({"images_seen": len(images) ,"loss": loss_value})
+        metrics["train"].update({k:v.item() for k,v in loss_dict_reduced.items()})
+        metrics["train"].reduce() # Gather results from all nodes
         
-        report_metrics = ["loss", "loss_box_reg", "loss_classifier", "loss_mask", "loss_objectness", "loss_rpn_box_reg", "bbox_regression"]
-        norm = train_metrics.local["images_seen"]
-        vals = [train_metrics.local[k]/norm for k in report_metrics]
-        rpt = ", ".join([f"{k}: {v:,.3f}" for k,v in zip(report_metrics, vals)])
+        report_metrics = [m for m in metrics["train"].local if m != "images_seen"]
+        images_seen = metrics["train"].local["images_seen"]
+        vals = [metrics["train"].local[m]/images_seen for m in report_metrics]
+        rpt = ", ".join([f"{m}: {v:,.3f}" for m,v in zip(report_metrics, vals)])
         print(f"EPOCH: [{epoch}], BATCH: [{train_sampler.progress}/{len(train_sampler)}], "+rpt)
 
-        train_metrics.reset_local()
+        metrics["train"].reset_local()
 
         print(f"Saving checkpoint at epoch {epoch} train batch {train_sampler.progress}")
         train_sampler.advance()
 
         if train_sampler.progress == len(train_sampler):
-            train_metrics.end_epoch()
+            metrics["train"].end_epoch()
 
         if utils.is_main_process() and train_sampler.progress % 1 == 0: # Checkpointing every batch
 
@@ -96,14 +97,14 @@ def train_one_epoch(
                 # Evaluator state variables
                 "img_ids": coco_evaluator.img_ids, # catalogue of images seen already
                 "eval_imgs": coco_evaluator.eval_imgs, # image evaluations
-                "train_metrics": train_metrics,
+                "metrics": metrics,
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
     lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
-    return model, timer, train_metrics
+    return model, timer, metrics
 
 def _get_iou_types(model):
     model_without_ddp = model
@@ -120,7 +121,7 @@ def _get_iou_types(model):
 def evaluate(
     model, data_loader_test, epoch, test_sampler, args, coco_evaluator,
     optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler,
-    device, scaler=None, timer=None, train_metrics=None,
+    device, scaler=None, timer=None, metrics=None,
 ):
 
     timer.report('starting evaluation routine')
@@ -149,14 +150,11 @@ def evaluate(
         timer.report(f'Epoch {epoch} batch: {test_step} forward through model')
 
         outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
-
         timer.report(f'Epoch {epoch} batch: {test_step} outputs back to cpu')
 
         res = {target["image_id"]: output for target, output in zip(targets, outputs)}
         # res = {img_id: {'boxes': T, 'labels': T, 'scores': T, 'masks': T}, ...}
-
         coco_evaluator.update(res)
-
         timer.report(f'Epoch {epoch} batch: {test_step} update evaluator')
 
         print(f"Saving checkpoint at epoch {epoch} eval batch {test_step}")
@@ -176,7 +174,7 @@ def evaluate(
                 # Evaluator state variables
                 "img_ids": coco_evaluator.img_ids, # catalogue of images seen already
                 "eval_imgs": coco_evaluator.eval_imgs, # image evaluations
-                "train_metrics": train_metrics,
+                "metrics": metrics,
             }
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
@@ -189,10 +187,18 @@ def evaluate(
     coco_evaluator.accumulate()
     results = coco_evaluator.summarize()
 
+    metric_A = ["bbox-", "segm-"]
+    metric_B = ["AP", "AR"]
+    metric_C = ["", "50", "75", "-S", "-M", "-L"]
+    metric_names = ["".join(t) for t in product(metric_A, metric_B, metric_C)]
+    metrics["val"].update({name: val for name,val in zip(metric_names, results)})
+    metrics["val"].reduce()
+    metrics["val"].end_epoch()
+
     if utils.is_main_process():
         writer = SummaryWriter(log_dir=args.tboard_path)
-        for i,val in enumerate(results):
-            writer.add_scalar(f"Eval/F{i}", val, test_step + epoch * total_steps)
+        for name,val in metrics["val"].epoch_reports[-1]:
+            writer.add_scalar(name, val, epoch)
         writer.flush()
         writer.close()
 
@@ -205,4 +211,4 @@ def evaluate(
 
     timer.report(f'evaluator accumulation, summarization, and reset')
 
-    return coco_evaluator, timer, train_metrics
+    return coco_evaluator, timer, metrics

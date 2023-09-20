@@ -1,40 +1,45 @@
-import torch, os
+import torch
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
 import utils
 from cycling_utils import atomic_torch_save
 
+from generative.losses.adversarial_loss import PatchAdversarialLoss
+
 from torch.utils.tensorboard import SummaryWriter
-tb_path = "/mnt/Client/StrongUniversity/USYD-04/usyd04_adam/output_brats_mri_2d_gen/tb"
 
 ## -- AUTO-ENCODER - ##
 
-# def compute_kl_loss(z_mu, z_sigma):
-#     kl_loss = 0.5 * torch.sum(
-#         z_mu.pow(2) + z_sigma.pow(2) - torch.log(z_sigma.pow(2)) - 1, dim=list(range(1, len(z_sigma.shape)))
-#     )
-#     return torch.sum(kl_loss) / kl_loss.shape[0]
+def compute_kl_loss(z_mu, z_sigma):
+    kl_loss = 0.5 * torch.sum(
+        z_mu.pow(2) + z_sigma.pow(2) - torch.log(z_sigma.pow(2)) - 1, 
+        dim=list(range(1, len(z_sigma.shape)))
+    )
+    return torch.sum(kl_loss) / kl_loss.shape[0]
 
-# def generator_loss(gen_images, real_images, z_mu, z_sigma, disc_net, loss_perceptual):
-#     recons_loss = intensity_loss(gen_images, real_images)
-#     kl_loss = compute_kl_loss(z_mu, z_sigma)
-#     p_loss = loss_perceptual(gen_images.float(), real_images.float())
-#     loss_g = recons_loss + kl_weight * kl_loss + perceptual_weight * p_loss
+intensity_loss = torch.nn.L1Loss()
+adv_loss = PatchAdversarialLoss(criterion="least_squares")
 
-#     logits_fake = disc_net(gen_images)[-1]
-#     generator_loss = adv_loss(logits_fake, target_is_real=True, for_discriminator=False)
-#     loss_g = loss_g + adv_weight * generator_loss
+def generator_loss(gen_images, real_images, z_mu, z_sigma, disc_net, perceptual_loss, kl_weight, perceptual_weight, adv_weight):
+    # Image intrinsic qualities
+    recons_loss = intensity_loss(gen_images, real_images)
+    kl_loss = compute_kl_loss(z_mu, z_sigma)
+    p_loss = perceptual_loss(gen_images.float(), real_images.float())
+    loss_g = recons_loss + (kl_weight * kl_loss) + (perceptual_weight * p_loss)
+    # Discrimnator-based loss
+    logits_fake = disc_net(gen_images)[-1]
+    generator_loss = adv_loss(logits_fake, target_is_real=True, for_discriminator=False)
+    loss_g = loss_g + (adv_weight * generator_loss)
+    return loss_g
 
-#     return loss_g
-
-# def discriminator_loss(gen_images, real_images, disc_net):
-#     logits_fake = disc_net(gen_images.contiguous().detach())[-1]
-#     loss_d_fake = adv_loss(logits_fake, target_is_real=False, for_discriminator=True)
-#     logits_real = disc_net(real_images.contiguous().detach())[-1]
-#     loss_d_real = adv_loss(logits_real, target_is_real=True, for_discriminator=True)
-#     discriminator_loss = (loss_d_fake + loss_d_real) * 0.5
-#     loss_d = adv_weight * discriminator_loss
-#     return loss_d
+def discriminator_loss(gen_images, real_images, disc_net, adv_weight):
+    logits_fake = disc_net(gen_images.contiguous().detach())[-1]
+    loss_d_fake = adv_loss(logits_fake, target_is_real=False, for_discriminator=True)
+    logits_real = disc_net(real_images.contiguous().detach())[-1]
+    loss_d_real = adv_loss(logits_real, target_is_real=True, for_discriminator=True)
+    discriminator_loss = (loss_d_fake + loss_d_real) * 0.5
+    loss_d = adv_weight * discriminator_loss
+    return loss_d
 
 
 def train_generator_one_epoch(
@@ -47,8 +52,8 @@ def train_generator_one_epoch(
     kl_weight = 1e-6
     perceptual_weight = 1.0
     adv_weight = 0.5
-    # Retained from tutorial
-    generator_warm_up_n_epochs = 10
+    # From tutorial ?
+    # generator_warm_up_n_epochs = 10
 
     generator.train()
     discriminator.train()
@@ -70,24 +75,12 @@ def train_generator_one_epoch(
 
             reconstruction, z_mu, z_sigma = generator(images)
             timer.report(f'train batch {train_step} generator forward')
-            recons_loss = F.l1_loss(reconstruction.float(), images.float())
-            timer.report(f'train batch {train_step} recons_loss')
-            p_loss = perceptual_loss(reconstruction.float(), images.float())
-            timer.report(f'train batch {train_step} p_loss')
-            kl_loss = 0.5 * torch.sum(z_mu.pow(2) + z_sigma.pow(2) - torch.log(z_sigma.pow(2)) - 1, dim=[1, 2, 3])
-            kl_loss = torch.sum(kl_loss) / kl_loss.shape[0]
-            timer.report(f'train batch {train_step} kl_loss')
-            loss_g = recons_loss + (kl_weight * kl_loss) + (perceptual_weight * p_loss)
-            timer.report(f'train batch {train_step} loss_g (1)')
 
-            if epoch > generator_warm_up_n_epochs: # Train generator for n epochs on reconstruction, KL, and perceptual loss before introducing discriminator loss
-
-                logits_fake = discriminator(reconstruction.contiguous().float())[-1]
-                timer.report(f'train batch {train_step} logits_fake from discriminator')
-                generator_loss = adv_loss(logits_fake, target_is_real=True, for_discriminator=False)
-                timer.report(f'train batch {train_step} generator_loss (adv_loss)')
-                loss_g += adv_weight * generator_loss
-                timer.report(f'train batch {train_step} loss_g (2)')
+            loss_g = generator_loss(
+                reconstruction, images, z_mu, z_sigma, discriminator, perceptual_loss, 
+                kl_weight, perceptual_weight, adv_weight
+            )
+            timer.report(f'train batch {train_step} generator loss: {loss_g.item():.3f}')
 
         scaler_g.scale(loss_g).backward()
         scaler_g.step(optimizer_g)
@@ -96,47 +89,31 @@ def train_generator_one_epoch(
 
         # TRAIN DISCRIMINATOR
 
-        if epoch > generator_warm_up_n_epochs:  # Train generator for n epochs before starting discriminator training
+        optimizer_d.zero_grad(set_to_none=True)
 
-            optimizer_d.zero_grad(set_to_none=True)
+        with autocast(enabled=True):
 
-            with autocast(enabled=True):
+            loss_d = discriminator_loss(
+                reconstruction, images, discriminator, adv_weight
+            )
+            timer.report(f'train batch {train_step} discriminator loss {loss_d.item():.3f}')
 
-                logits_fake = discriminator(reconstruction.contiguous().detach())[-1]
-                timer.report(f'train batch {train_step} discriminator forward (fake)')
-                loss_d_fake = adv_loss(logits_fake, target_is_real=False, for_discriminator=True)
-                timer.report(f'train batch {train_step} loss_d_fake')
-                logits_real = discriminator(images.contiguous().detach())[-1]
-                timer.report(f'train batch {train_step} discriminator forward (real)')
-                loss_d_real = adv_loss(logits_real, target_is_real=True, for_discriminator=True)
-                timer.report(f'train batch {train_step} loss_d_real')
-                discriminator_loss = (loss_d_fake + loss_d_real) * 0.5
-                timer.report(f'train batch {train_step} discriminator_loss')
-                loss_d = adv_weight * discriminator_loss
-                timer.report(f'train batch {train_step} loss_d')
-
-            scaler_d.scale(loss_d).backward()
-            scaler_d.step(optimizer_d)
-            scaler_d.update()
-            timer.report(f'train batch {train_step} discriminator backward')
+        scaler_d.scale(loss_d).backward()
+        scaler_d.step(optimizer_d)
+        scaler_d.update()
+        timer.report(f'train batch {train_step} discriminator backward')
 
         # Reduce metrics accross nodes
-        metrics["train"].update({"train_images_seen":len(images), "epoch_loss":recons_loss.item()})
-        if epoch > generator_warm_up_n_epochs:
-            metrics["train"].update({"gen_epoch_loss":generator_loss.item(), "disc_epoch_loss":discriminator_loss.item()})
+        metrics["train"].update({"train_images_seen":len(images), "loss_g":loss_g.item(), "loss_d": loss_d.item()})
         metrics["train"].reduce()
 
-        timer.report(f'train batch {train_step} metrics update')
-
-        # recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
-        # gen_loss = metrics["train"].local[metrics["train"].map["gen_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
-        # disc_loss = metrics["train"].local[metrics["train"].map["disc_epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
-        recons_loss = metrics["train"].local["epoch_loss"] / metrics["train"].local["train_images_seen"]
-        gen_loss = metrics["train"].local["gen_epoch_loss"] / metrics["train"].local["train_images_seen"]
-        disc_loss = metrics["train"].local["disc_epoch_loss"] / metrics["train"].local["train_images_seen"]
-        print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}, gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss, gen_loss, disc_loss))
+        gen_loss = metrics["train"].local["loss_g"] / metrics["train"].local["train_images_seen"]
+        disc_loss = metrics["train"].local["loss_d"] / metrics["train"].local["train_images_seen"]
+        print("Epoch [{}] Step [{}/{}], gen_loss: {:.3f}, disc_loss: {:.3f}".format(epoch, train_step, total_steps, gen_loss, disc_loss))
 
         metrics["train"].reset_local()
+
+        timer.report(f'train batch {train_step} metrics update')
 
         ## Checkpointing
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
@@ -148,7 +125,6 @@ def train_generator_one_epoch(
 
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
             writer = SummaryWriter(log_dir=args.tboard_path)
-            writer.add_scalar("Train/recons_loss", recons_loss, train_step + epoch * total_steps)
             writer.add_scalar("Train/gen_loss", gen_loss, train_step + epoch * total_steps)
             writer.add_scalar("Train/disc_loss", disc_loss, train_step + epoch * total_steps)
             writer.flush()
@@ -171,6 +147,9 @@ def train_generator_one_epoch(
             }
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
+    gen_loss = metrics["train"].epoch_reports[-1]["loss_g"] / metrics["train"].epoch_reports[-1]["train_images_seen"]
+    disc_loss = metrics["train"].epoch_reports[-1]["loss_d"] / metrics["train"].epoch_reports[-1]["train_images_seen"]
+    print("Epoch [{}] :: gen_loss: {:,.3f}, disc_loss: {:,.3f}".format(epoch, gen_loss, disc_loss))
     return generator, timer, metrics
 
 
@@ -211,7 +190,6 @@ def evaluate_generator(
             val_step = val_sampler.progress // val_loader.batch_size
 
             if val_step == total_steps:
-                 # val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
                 val_loss = metrics["val"].agg["val_loss"] / metrics["val"].agg["val_images_seen"]
                 if utils.is_main_process():
                     writer = SummaryWriter(log_dir=args.tboard_path)
@@ -289,7 +267,6 @@ def train_diffusion_one_epoch(
         metrics["train"].update({"train_images_seen":len(images), "epoch_loss":loss.item()})
         metrics["train"].reduce()
 
-        # recons_loss = metrics["train"].local[metrics["train"].map["epoch_loss"]] / metrics["train"].local[metrics["train"].map["train_images_seen"]]
         recons_loss = metrics["train"].local["epoch_loss"] / metrics["train"].local["train_images_seen"]
         print("Epoch [{}] Step [{}/{}] :: recons_loss: {:,.3f}".format(epoch, train_step, total_steps, recons_loss))
 
@@ -328,6 +305,8 @@ def train_diffusion_one_epoch(
             }
             timer = atomic_torch_save(checkpoint, args.resume, timer)
 
+    train_loss = metrics["train"].epoch_reports[-1]["epoch_loss"] / metrics["train"].epoch_reports[-1]["train_images_seen"]
+    print("Epoch [{}] :: epoch_loss: {:,.3f}".format(epoch, train_loss))
     return unet, timer, metrics
 
 
@@ -395,12 +374,12 @@ def evaluate_diffusion(
                     timer = atomic_torch_save(checkpoint, args.resume, timer)
 
         # val_loss = metrics["val"].agg[metrics["val"].map["val_loss"]] / metrics["val"].agg[metrics["val"].map["val_images_seen"]]
-        val_loss = metrics["val"].agg["val_loss"] / metrics["val"].agg["val_images_seen"]
+        val_loss = metrics["val"].epoch_reports[-1]["val_loss"] / metrics["val"].epoch_reports[-1]["val_images_seen"]
         if utils.is_main_process():
             writer = SummaryWriter(log_dir=args.tboard_path)
             writer.add_scalar("Val/loss", val_loss, epoch)
             writer.flush()
             writer.close()
-        print(f"Epoch {epoch} diff val loss: {val_loss:.4f}")
+        print(f"Epoch [{epoch}] :: diff val loss: {val_loss:.4f}")
 
         return timer, metrics
