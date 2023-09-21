@@ -3,4 +3,4 @@ gpu_type = "24GB VRAM GPU"
 nnodes = 11
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_maskrcnn_resnet101_fpn"
-command = "train_cycling.py --dataset coco --model maskrcnn_resnet101_fpn --epochs 26 --lr-steps 16 22 -b 2 --aspect-ratio-group-factor 3 --data-path=/mnt/.node1/Open-Datsets/coco --resume $OUTPUT_PATH/checkpoint.isc --tboard-path ~/output_maskrcnn_resnet101_fpn/tb"
+command = "train_cycling.py --dataset coco --model maskrcnn_resnet101_fpn --epochs 26 --lr-steps 16 22 -b 2 --aspect-ratio-group-factor 3 --data-path=/mnt/.node1/Open-Datsets/coco --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
