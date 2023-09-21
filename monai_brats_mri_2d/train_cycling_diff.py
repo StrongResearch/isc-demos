@@ -153,7 +153,13 @@ def main(args, timer):
     # Init metric tracker
     metrics = {'train': MetricsTracker(), 'val': MetricsTracker()}
 
-    # RETRIEVE GENERATOR CHECKPOINT FROM PREVIOUS JOB
+    # Prepare LatentDiffusionInferer
+
+    scale_factor = compute_scale_factor(generator, train_loader, device)
+    scheduler = DDPMScheduler(num_train_timesteps=1000, schedule="scaled_linear_beta", beta_start=0.0015, beta_end=0.0195)
+    inferer = LatentDiffusionInferer(scheduler, scale_factor=scale_factor)
+
+    timer.report('building inferer')
     
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -179,20 +185,6 @@ def main(args, timer):
 
     n_diff_epochs = 200
     diff_val_interval = 1
-
-    # Prepare LatentDiffusionInferer
-    
-    # with torch.no_grad():
-    #     with autocast(enabled=True):
-    #         z = generator.encode_stage_2_inputs(check_data["image"].to(device))
-    # scale_factor = 1 / torch.std(z)
-
-    scale_factor = compute_scale_factor(generator, train_loader, device)
-
-    scheduler = DDPMScheduler(num_train_timesteps=1000, schedule="scaled_linear_beta", beta_start=0.0015, beta_end=0.0195)
-    inferer = LatentDiffusionInferer(scheduler, scale_factor=scale_factor)
-
-    timer.report('building inferer')
 
     for epoch in range(args.start_epoch, n_diff_epochs):
 

@@ -1,6 +1,6 @@
-from cycling_utils import Timer
+from cycling_utils import TimestampedTimer
 
-timer = Timer()
+timer = TimestampedTimer()
 timer.report('importing Timer')
 
 import os
@@ -184,7 +184,7 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = Timer("Start training")
+            timer = TimestampedTimer("Start training")
             generator, timer, metrics = train_generator_one_epoch(
                 args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
                 scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer, metrics
@@ -193,7 +193,7 @@ def main(args, timer):
 
             if epoch % gen_val_interval == 0: # Eval every epoch
                 with val_sampler.in_epoch(epoch):
-                    timer = Timer("Start evaluation")
+                    timer = TimestampedTimer("Start evaluation")
                     timer, metrics = evaluate_generator(
                         args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
                         scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer, metrics
