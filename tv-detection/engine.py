@@ -4,6 +4,7 @@ from itertools import product
 
 import torch
 import torchvision.models.detection.mask_rcnn
+import torch.distributed as dist 
 import utils
 from coco_eval import CocoEvaluator
 from coco_utils import get_coco_api_from_dataset
@@ -28,14 +29,25 @@ def train_one_epoch(
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in t.items()} for t in targets]
         timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: moving batch data to device')
-        print(f"First 2 image shapes: {images[0].shape}, {images[1].shape}")
+        # print(f"First 2 image shapes: {images[0].shape}, {images[1].shape}")
 
         optimizer.zero_grad()
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             loss_dict = model(images, targets)
+
+            # CHECK IF NUMERIC ERROR HAS OCCURRED AND IF SO, SKIP THIS BATCH
+            check_0 = 1 if torch.tensor([torch.isnan(v) for v in loss_dict.values()]).any() else 0
+            check_1 = 1 if not all([math.isfinite(v) for v in loss_dict.values()]) else 0
+            check_tensor = torch.tensor([check_0, check_1], requires_grad=False, device=device)
+            dist.all_reduce(check_tensor, op=dist.ReduceOp.SUM)
+            if check_tensor.sum() > 0:
+                print(f"CONTINUE CONDITION: {[e for e in check_tensor]}")
+                train_sampler.advance() # Advance sampler to try next batch
+                continue
+
             losses = sum(loss for loss in loss_dict.values())
-        timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: forward pass')
+            timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: forward pass')
 
         if scaler is not None:
             scaler.scale(losses).backward()

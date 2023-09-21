@@ -17,9 +17,9 @@ Also, if you train Keypoint R-CNN, the default hyperparameters are
 Because the number of images is smaller in the person keypoint subset of COCO,
 the number of epochs should be adapted so that we have the same number of iterations.
 """
-from cycling_utils import Timer
+from cycling_utils import TimestampedTimer
 
-timer = Timer()
+timer = TimestampedTimer()
 timer.report('importing Timer')
 
 import os
@@ -281,7 +281,7 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
             model, timer, metrics = train_one_epoch(
                 model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, 
                 args, device, coco_evaluator, epoch, scaler, timer, metrics
@@ -289,7 +289,7 @@ def main(args, timer):
 
             # NEST THE TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
-                timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+                timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
                 coco_evaluator, timer, metrics = evaluate(
                     model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, 
                     train_sampler, device, scaler, timer, metrics
@@ -344,7 +344,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--amp", action="store_true", help="Use torch.cuda.amp for mixed precision training")
 
     # Use CopyPaste augmentation training parameter
-    parser.add_argument("--use-copypaste",action="store_true",help="Use CopyPaste data augmentation. Works only with data-augmentation='lsj'.",)
+    parser.add_argument("--use-copypaste", action="store_true",help="Use CopyPaste data augmentation. Works only with data-augmentation='lsj'.",)
 
     parser.add_argument("--backend", default="PIL", type=str.lower, help="PIL or tensor - case insensitive")
     parser.add_argument("--use-v2", action="store_true", help="Use V2 transforms")

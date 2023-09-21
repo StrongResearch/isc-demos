@@ -119,10 +119,6 @@ class InterruptableDistributedSampler(DistributedSampler):
         yield
         self._reset_progress()
 
-
-
-## FOR tv-detection, require grouped batches
-
 def _repeat_to_at_least(iterable, n):
     repeat_times = math.ceil(n / len(iterable))
     repeated = chain.from_iterable(repeat(iterable, repeat_times))
@@ -143,21 +139,25 @@ class InterruptableDistributedGroupedBatchSampler(DistributedSampler):
         """
         This is a DistributedSampler that can be suspended and resumed.
 
-        This works by keeping track of the epoch and progress within the epoch.
-        The progress is the number of samples that have been returned by the
-        sampler. The epoch is the number of times the sampler has been iterated
-        over.
+        This works by keeping track of the sample batches that have already been 
+        dispatched. This InterruptableDistributedGroupedBatchSampler also 
+        reproduces the sampling strategy exhibited in the torch vision detection
+        reference wherein batches are created from images from within the same
+        'group', defined in the torchvision example by similarity of image 
+        aspect ratio. 
 
-        The epoch is incremented at the start of each epoch. The epoch is set
-        to 0 at initialization.
+        https://github.com/pytorch/vision/tree/main/references/detection
 
-        The progress is incremented by the number of samples returned by the
-        sampler. The progress is reset to 0 at the end of each epoch.
+        For this reason, InterruptableDistributedGroupedBatchSampler progress is
+        tracked in units of batches, not samples. This is an important
+        distinction from the InterruptableDistributedSampler which tracks progress
+        in units of samples. The progress is reset to 0 at the end of each epoch.
+
+        The epoch is set to 0 at initialization and incremented at the start 
+        of each epoch.
 
         Suspending and resuming the sampler is done by saving and loading the
-        state dict. The state dict contains the epoch and progress. This works
-        because the permutation of the dataset is deterministic given the seed
-        and epoch.
+        state dict. The state dict contains the epoch and progress.
         """
         super().__init__(dataset, num_replicas, rank, shuffle, seed, drop_last)
 
@@ -195,7 +195,7 @@ class InterruptableDistributedGroupedBatchSampler(DistributedSampler):
 
         buffer_per_group = defaultdict(list)
         samples_per_group = defaultdict(list)
-        self.num_batches = math.ceil(len(indices)/ batch_size) # why not?
+        self.num_batches = math.ceil(len(indices)/ batch_size)
 
         self.batches = [] # pre-computed so progress refers to batches, not samples.
         for idx in indices:

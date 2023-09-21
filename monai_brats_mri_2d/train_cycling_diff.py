@@ -1,6 +1,6 @@
-from cycling_utils import Timer
+from cycling_utils import TimestampedTimer
 
-timer = Timer()
+timer = TimestampedTimer()
 timer.report('importing Timer')
 
 import os
@@ -100,8 +100,8 @@ def main(args, timer):
 
     timer.report('build samplers')
 
-    # Original trainer had batch size = 2 * 50. Using 10 nodes x batch size 10 => eff batch size = 100
-    train_loader = DataLoader(train_ds, batch_size=10, sampler=train_sampler, num_workers=1)
+    # Original trainer had batch size = 2 * 50. Using 11 nodes x 6 GPUs x batch size 2 => eff batch size = 132
+    train_loader = DataLoader(train_ds, batch_size=2, sampler=train_sampler, num_workers=1)
     val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=1)
     # check_data = first(train_loader) # Used later
 
@@ -109,9 +109,10 @@ def main(args, timer):
 
     # Auto-encoder definition
     generator = AutoencoderKL(
-        spatial_dims=2, in_channels=1, out_channels=1, num_channels=(128, 128, 256), latent_channels=3,
-        num_res_blocks=2, attention_levels=(False, False, False),with_encoder_nonlocal_attn=False,
-        with_decoder_nonlocal_attn=False,
+        spatial_dims=2, in_channels=1, out_channels=1, num_channels=(64, 128, 256), 
+        latent_channels=1, num_res_blocks=2, norm_num_groups=32, norm_eps=1e-06,
+        attention_levels=(False, False, False), with_encoder_nonlocal_attn=True, 
+        with_decoder_nonlocal_attn=True,
     )
     # saved_generator_checkpoint = torch.load("/output_brats_mri_2d_gen/exp_1645/checkpoint.isc", map_location="cpu")
     saved_generator_checkpoint = torch.load(args.gen_load_path, map_location="cpu")
@@ -200,7 +201,7 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = Timer("Start training")
+            timer = TimestampedTimer("Start training")
             unet, timer, metrics = train_diffusion_one_epoch(
                 args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
                 train_sampler, val_sampler, lr_scheduler, device, timer, metrics
@@ -209,7 +210,7 @@ def main(args, timer):
 
             if epoch % diff_val_interval == 0:
                 with val_sampler.in_epoch(epoch):
-                    timer = Timer("Start evaluation")
+                    timer = TimestampedTimer("Start evaluation")
                     timer, metrics = evaluate_diffusion(
                         args, epoch, unet, generator, optimizer_u, scaler_u, inferer, train_loader, val_loader, 
                         train_sampler, val_sampler, lr_scheduler, device, timer, metrics

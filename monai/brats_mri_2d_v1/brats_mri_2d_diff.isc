@@ -1,6 +1,0 @@
-experiment_name="brats_mri_2d_diff"
-gpu_type="24GB VRAM GPU"
-nnodes = 11
-venv_path = "~/.venv/bin/activate"
-output_path = "~/output_brats_mri_2d_diff"
-command="train_cycling_diff.py --data-path=/mnt/.node1/Open-Datsets/MONAI --resume $OUTPUT_PATH/checkpoint.isc, --gen-load-path ~/output_brats_mri_2d_gen/exp_1645/checkpoint.isc --tboard-path ~/output_brats_mri_2d_diff/tb"

@@ -1,6 +1,6 @@
-from cycling_utils import Timer
+from cycling_utils import TimestampedTimer
 
-timer = Timer()
+timer = TimestampedTimer()
 timer.report('importing Timer')
 
 import os
@@ -176,7 +176,7 @@ def evaluate(
                     "test_sampler": test_sampler.state_dict(),
                     "confmat": confmat.mat, # For storing eval metric
                     "confmat_temp": confmat.temp_mat, # For storing eval metric
-                    "train_metrics": train_metrics,
+                    "metrics": metrics,
                 }
                 if args.amp:
                     checkpoint["scaler"] = scaler.state_dict()
@@ -372,7 +372,7 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
             model, timer, metrics = train_one_epoch(
                 args, model, criterion, optimizer, data_loader_train,
                 train_sampler, test_sampler, confmat, lr_scheduler, 
@@ -382,7 +382,7 @@ def main(args, timer):
 
             # NEST TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
-                timer = Timer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+                timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
                 confmat, timer, metrics = evaluate(
                     args, model, data_loader_test, num_classes, confmat,
                     optimizer, lr_scheduler, train_sampler, test_sampler, 
