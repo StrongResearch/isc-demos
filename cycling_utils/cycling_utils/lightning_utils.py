@@ -1,9 +1,13 @@
-import lightning as L
-import torch.distributed as dist
+from lightning.pytorch.callbacks import Callback
 from cycling_utils import atomic_torch_save
 
-class EpochHandler(L.Callback):
+import os 
 
+class EpochHandler(Callback):
+    '''    
+        Creates a callback to inject atomic torch save in a pytorch
+        lightning module.
+    '''
     def __init__(self, sampler, checkpoint_dir, save_freq):
         super().__init__()
         self.sampler = sampler
@@ -20,7 +24,10 @@ class EpochHandler(L.Callback):
 
         self.sampler.advance(len(batch))
         
-        if batch_idx % self.save_freq == 0 and dist.get_rank() == 0:
+        # rank is set by torchrun, otherwise zero
+        is_main = (os.getenv('RANK', 0) == 0)
+        
+        if batch_idx % self.save_freq == 0 and is_main:
 
             atomic_torch_save({
                 "sampler_state_dict": self.sampler.state_dict(),
