@@ -12,6 +12,9 @@ pycocotools
 matplotlib
 ```
 
+You must also run "prep.py" to download pretrained model weights before 
+launching your training job.
+
 You can then run the training routines for the following models using cli.
 
 ### RetinaNet
