@@ -1,3 +1,4 @@
+# Training related
 *.ipynb
 *.npz
 strong_launcher/
@@ -6,6 +7,8 @@ strong_launcher/
 *.pt
 wandb/
 lightning-examples/data
+events.out.tfevents.*
+*.safetensors
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
