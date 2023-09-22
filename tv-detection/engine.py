@@ -139,15 +139,13 @@ def evaluate(
     timer.report('starting evaluation routine')
 
     n_threads = torch.get_num_threads()
-    # FIXME remove this and make paste_masks_in_image run on the GPU
     torch.set_num_threads(1)
     cpu_device = torch.device("cpu")
     model.eval()
 
-    timer.report(f'evaluation preliminaries')
+    timer.report('evaluation preliminaries')
 
     test_step = test_sampler.progress // data_loader_test.batch_size
-    total_steps = len(test_sampler) // data_loader_test.batch_size
     print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
 
     for images, targets in data_loader_test:
@@ -221,6 +219,6 @@ def evaluate(
     iou_types = _get_iou_types(model)
     coco_evaluator = CocoEvaluator(coco, iou_types)
 
-    timer.report(f'evaluator accumulation, summarization, and reset')
+    timer.report('evaluator accumulation, summarization, and reset')
 
     return coco_evaluator, timer, metrics

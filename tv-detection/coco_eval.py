@@ -28,7 +28,9 @@ class CocoEvaluator:
     def update(self, predictions):
         '''
         predictions = {
-            image_id: {"boxes": tensor(n x 4), "labels": tensor(n,), "scores": tensor(n,), "masks": tensor(n x 1 x H x W)}, # for n < N detections
+            image_id: {
+                "boxes": tensor(n x 4), "labels": tensor(n,), "scores": tensor(n,), "masks": tensor(n x 1 x H x W)
+                }, # for n < N detections
             ... for image_id in batch
         }
         '''

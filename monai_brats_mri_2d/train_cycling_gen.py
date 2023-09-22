@@ -174,7 +174,7 @@ def main(args, timer):
 
     ## -- TRAINING THE AUTO-ENCODER - ##
 
-    n_gen_epochs = 200
+    n_gen_epochs = 100_000
     gen_val_interval = 1
 
     for epoch in range(args.start_epoch, n_gen_epochs):

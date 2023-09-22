@@ -7,6 +7,7 @@ from cycling_utils import atomic_torch_save
 from generative.losses.adversarial_loss import PatchAdversarialLoss
 
 from torch.utils.tensorboard import SummaryWriter
+from torchvision.utils import make_grid
 
 ## -- AUTO-ENCODER - ##
 
@@ -190,12 +191,20 @@ def evaluate_generator(
             val_step = val_sampler.progress // val_loader.batch_size
 
             if val_step == total_steps:
+
                 val_loss = metrics["val"].agg["val_loss"] / metrics["val"].agg["val_images_seen"]
                 if utils.is_main_process():
+
                     writer = SummaryWriter(log_dir=args.tboard_path)
                     writer.add_scalar("Val/loss", val_loss, epoch)
+                    
+                    image_pair = [images[0], reconstruction[0]]
+                    grid = make_grid(image_pair)
+                    writer.add_image('Val/images', grid, epoch)
+                    # writer.add_graph(model, images)
                     writer.flush()
                     writer.close()
+
                 print(f"Epoch {epoch} val loss: {val_loss:.4f}")
                 metrics["val"].end_epoch()
 

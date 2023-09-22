@@ -1,22 +1,3 @@
-r"""PyTorch Detection Training.
-
-To run in a multi-gpu environment, use the distributed launcher::
-
-    python -m torch.distributed.launch --nproc_per_node=$NGPU --use_env \
-        train.py ... --world-size $NGPU
-
-The default hyperparameters are tuned for training on 8 gpus and 2 images per gpu.
-    --lr 0.02 --batch-size 2 --world-size 8
-If you use different number of gpus, the learning rate should be changed to 0.02/8*$NGPU.
-
-On top of that, for training Faster/Mask R-CNN, the default hyperparameters are
-    --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3
-
-Also, if you train Keypoint R-CNN, the default hyperparameters are
-    --epochs 46 --lr-steps 36 43 --aspect-ratio-group-factor 3
-Because the number of images is smaller in the person keypoint subset of COCO,
-the number of epochs should be adapted so that we have the same number of iterations.
-"""
 from cycling_utils import TimestampedTimer
 
 timer = TimestampedTimer()
@@ -24,12 +5,15 @@ timer.report('importing Timer')
 
 import os
 from pathlib import Path
+import argparse
 import presets
 import torch
 import torch.utils.data
 import torchvision
 import utils
 from coco_utils import get_coco
+from coco_eval import CocoEvaluator
+from coco_utils import get_coco_api_from_dataset
 
 import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
@@ -108,28 +92,10 @@ def main(args, timer):
 
     timer.report('main preliminaries')
 
-    # Data loading code
     dataset_train, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    # ## SUBSET FOR TESTING
-    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
-    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
-
     timer.report('loading data')
-
-    # if args.distributed:
-    #     train_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
-    #     test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
-    # else:
-    #     train_sampler = torch.utils.data.RandomSampler(dataset)
-    #     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
-
-    # if args.aspect_ratio_group_factor >= 0: # default == 3
-    #     group_ids = create_aspect_ratio_groups(dataset_train, k=args.aspect_ratio_group_factor)
-    #     train_batch_sampler = GroupedBatchSampler(train_sampler, group_ids, args.batch_size)
-    # else:
-    #     train_batch_sampler = torch.utils.data.BatchSampler(train_sampler, args.batch_size, drop_last=True)
 
     group_ids = create_aspect_ratio_groups(dataset_train, k=args.aspect_ratio_group_factor)
     train_sampler = InterruptableDistributedGroupedBatchSampler(dataset_train, group_ids, args.batch_size)
@@ -169,9 +135,6 @@ def main(args, timer):
     elif args.model == "retinanet_resnet101_fpn":
         backbone  = resnet_fpn_backbone(backbone_name="resnet101", weights="ResNet101_Weights.IMAGENET1K_V1")
         model = RetinaNet(backbone=backbone, num_classes=num_classes)
-        # model = torchvision.models.get_model(
-        #     args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, **kwargs
-        # )
     model.to(device)
 
     timer.report('creating model and .to(device)')
@@ -231,8 +194,6 @@ def main(args, timer):
 
     timer.report('learning rate schedulers')
 
-    from coco_eval import CocoEvaluator
-    from coco_utils import get_coco_api_from_dataset
     coco = get_coco_api_from_dataset(data_loader_test.dataset)
     iou_types = _get_iou_types(model)
     coco_evaluator = CocoEvaluator(coco, iou_types)
@@ -260,19 +221,23 @@ def main(args, timer):
         test_sampler.load_state_dict(checkpoint["test_sampler"])
         if args.amp:
             scaler.load_state_dict(checkpoint["scaler"])
-        # Evaluator state variables
+        # Evaluator and metrics
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
         metrics = checkpoint["metrics"]
 
     timer.report('retrieving checkpoint')
 
-    # if args.test_only:
-    #     # We disable the cudnn benchmarking because it can noticeably affect the accuracy
-    #     torch.backends.cudnn.benchmark = False
-    #     torch.backends.cudnn.deterministic = True
-    #     coco_evaluator, timer = evaluate(model, data_loader_test, device, timer)
-    #     return
+    if args.test_only:
+        # We disable the cudnn benchmarking because it can noticeably affect the accuracy
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
+        epoch = 0
+        coco_evaluator, timer, metrics = evaluate(
+            model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, 
+            lr_scheduler, warmup_lr_scheduler, train_sampler, device, scaler, timer, metrics
+        )
+        return
 
     for epoch in range(args.start_epoch, args.epochs):
         
@@ -281,28 +246,26 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            timer = TimestampedTimer() # obtain time trial for each epoch
             model, timer, metrics = train_one_epoch(
-                model, optimizer, data_loader_train, train_sampler, test_sampler, lr_scheduler, warmup_lr_scheduler, 
-                args, device, coco_evaluator, epoch, scaler, timer, metrics
+                model, optimizer, data_loader_train, train_sampler, test_sampler, 
+                lr_scheduler, warmup_lr_scheduler, args, device, coco_evaluator, 
+                epoch, scaler, timer, metrics
             )
 
-            # NEST THE TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
-                timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+                timer = TimestampedTimer() # obtain time trial for each epoch
                 coco_evaluator, timer, metrics = evaluate(
-                    model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, lr_scheduler, warmup_lr_scheduler, 
-                    train_sampler, device, scaler, timer, metrics
+                    model, data_loader_test, epoch, test_sampler, args, coco_evaluator, 
+                    optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, 
+                    scaler, timer, metrics
                 )
 
 
 def get_args_parser(add_help=True):
-    import argparse
-
     parser = argparse.ArgumentParser(description="PyTorch Detection Training", add_help=add_help)
-
-    parser.add_argument("--data-path", default="/datasets01/COCO/022719/", type=str, help="dataset path")
-    parser.add_argument("--dataset",default="coco",type=str,help="dataset name. Use coco for object detection and instance segmentation and coco_kp for Keypoint detection",)
+    parser.add_argument("--data-path", default=None, type=str, help="dataset path")
+    parser.add_argument("--dataset",default="coco",type=str, help="dataset name. Use coco for object detection and instance segmentation and coco_kp for Keypoint detection",)
     parser.add_argument("--model", default="maskrcnn_resnet50_fpn", type=str, help="model name")
     parser.add_argument("--device", default="cuda", type=str, help="device (Use cuda or cpu Default: cuda)")
     parser.add_argument("-b", "--batch-size", default=2, type=int, help="images per gpu, the total batch size is $NGPU x batch_size")
@@ -320,12 +283,11 @@ def get_args_parser(add_help=True):
     parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
 
+    parser.add_argument("--start_epoch", default=0, type=int, help="start epoch")
     parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
     parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
     parser.add_argument("--tboard-path", default=None, help="path for saving tensorboard logs", dest="tboard_path") # for checkpointing
-
-
-    parser.add_argument("--start_epoch", default=0, type=int, help="start epoch")
+    
     parser.add_argument("--aspect-ratio-group-factor", default=3, type=int)
     parser.add_argument("--rpn-score-thresh", default=None, type=float, help="rpn score threshold for faster-rcnn")
     parser.add_argument("--trainable-backbone-layers", default=None, type=int, help="number of trainable layers of backbone")
@@ -345,7 +307,6 @@ def get_args_parser(add_help=True):
 
     # Use CopyPaste augmentation training parameter
     parser.add_argument("--use-copypaste", action="store_true",help="Use CopyPaste data augmentation. Works only with data-augmentation='lsj'.",)
-
     parser.add_argument("--backend", default="PIL", type=str.lower, help="PIL or tensor - case insensitive")
     parser.add_argument("--use-v2", action="store_true", help="Use V2 transforms")
 

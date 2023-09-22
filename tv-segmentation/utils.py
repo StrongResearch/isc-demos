@@ -118,7 +118,7 @@ class MetricLogger:
                 v = v.item()
             if not isinstance(v, (float, int)):
                 raise TypeError(
-                    f"This method expects the value of the input arguments to be of type float or int, instead  got {type(v)}"
+                    f"Method expects value of the input arguments to be of type float or int, instead  got {type(v)}"
                 )
             self.meters[k].update(v)
 

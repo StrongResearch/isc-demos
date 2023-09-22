@@ -5,6 +5,7 @@ timer.report('importing Timer')
 
 import os
 from pathlib import Path
+import argparse
 import presets
 import torch
 import torch.utils.data
@@ -14,7 +15,7 @@ from coco_utils import get_coco
 from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
 from torchvision.transforms import functional as F, InterpolationMode
-from cycling_utils import InterruptableDistributedSampler, atomic_torch_save, Timer, MetricsTracker
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save, MetricsTracker
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -138,7 +139,6 @@ def evaluate(
     model.eval()
 
     test_step = test_sampler.progress // data_loader_test.batch_size
-    total_steps = len(test_sampler) // data_loader_test.batch_size
     print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
     timer.report('launch evaluation routine')
 
@@ -156,9 +156,6 @@ def evaluate(
             confmat.update(target.flatten().detach().cpu(), output.argmax(1).flatten().detach().cpu())
             confmat.reduce_from_all_processes()
 
-            # FIXME need to take into account that the datasets
-            # could have been padded in distributed setup
-            # num_processed_samples += images.shape[0]
             timer.report(f'Epoch {epoch} batch: {test_step} confmat update')
 
             print(f"Saving checkpoint at epoch {epoch} eval batch {test_step}")
@@ -199,21 +196,6 @@ def evaluate(
         writer.flush()
         writer.close()
 
-    # num_processed_samples = utils.reduce_across_processes(num_processed_samples)
-
-    # if (
-    #     hasattr(data_loader_test.dataset, "__len__")
-    #     and len(data_loader_test.dataset) != num_processed_samples
-    #     and torch.distributed.get_rank() == 0
-    # ):
-    #     # See FIXME above
-    #     warnings.warn(
-    #         f"It looks like the dataset has {len(data_loader_test.dataset)} samples, but {num_processed_samples} "
-    #         "samples were used for the validation, which might bias the results. "
-    #         "Try adjusting the batch size and / or the world size. "
-    #         "Setting the world size to 1 is always a safe bet."
-    #     )
-
     return confmat, timer, metrics
 
 timer.report('defined other functions')
@@ -239,17 +221,7 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(args.data_path, args.dataset, "train", get_transform(True, args))
     dataset_test, _ = get_dataset(args.data_path, args.dataset, "val", get_transform(False, args))
 
-    # ## SUBSET FOR TESTING
-    # dataset_train = torch.utils.data.Subset(dataset_train, torch.arange(500))
-    # dataset_test = torch.utils.data.Subset(dataset_test, torch.arange(200))
-
     timer.report('loading data')
-
-    # if args.distributed:
-        # test_sampler = torch.utils.data.distributed.DistributedSampler(dataset_test, shuffle=False)
-    # else:
-    #     train_sampler = torch.utils.data.RandomSampler(dataset)
-    #     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
 
     train_sampler = InterruptableDistributedSampler(dataset_train)
     test_sampler = InterruptableDistributedSampler(dataset_test)
@@ -257,16 +229,19 @@ def main(args, timer):
     timer.report('creating data samplers')
 
     data_loader_train = torch.utils.data.DataLoader(
-        dataset_train, batch_size=args.batch_size, sampler=train_sampler, num_workers=args.workers, collate_fn=utils.collate_fn, drop_last=True,
+        dataset_train, batch_size=args.batch_size, sampler=train_sampler, num_workers=args.workers, 
+        collate_fn=utils.collate_fn, drop_last=True,
     )
     data_loader_test = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1, sampler=test_sampler, num_workers=args.workers, collate_fn=utils.collate_fn
+        dataset_test, batch_size=1, sampler=test_sampler, num_workers=args.workers, 
+        collate_fn=utils.collate_fn
     )
 
     timer.report('creating data loaders')
 
     model = torchvision.models.get_model(
-        args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, aux_loss=args.aux_loss,
+        args.model, weights=args.weights, weights_backbone=args.weights_backbone, num_classes=num_classes, 
+        aux_loss=args.aux_loss,
     )
     model.to(device)
 
@@ -357,13 +332,18 @@ def main(args, timer):
             
     timer.report('retrieving checkpoint')
 
-    # if args.test_only:
-    #     # We disable the cudnn benchmarking because it can noticeably affect the accuracy
-    #     torch.backends.cudnn.benchmark = False
-    #     torch.backends.cudnn.deterministic = True
-    #     confmat, timer = evaluate(model, data_loader_test, num_classes, confmat, test_sampler, device, 0, timer)
-    #     print(confmat)
-    #     return
+    if args.test_only:
+        # We disable the cudnn benchmarking because it can noticeably affect the accuracy
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
+        epoch = 0
+        confmat, timer, metrics = evaluate(
+            args, model, data_loader_test, num_classes, confmat,
+            optimizer, lr_scheduler, train_sampler, test_sampler, 
+            device, epoch, scaler, timer, metrics,
+        )
+        print(confmat)
+        return
 
     for epoch in range(args.start_epoch, args.epochs):
 
@@ -372,7 +352,7 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
-            timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+            timer = TimestampedTimer() # obtain time trial for each epoch
             model, timer, metrics = train_one_epoch(
                 args, model, criterion, optimizer, data_loader_train,
                 train_sampler, test_sampler, confmat, lr_scheduler, 
@@ -380,9 +360,8 @@ def main(args, timer):
             )
             timer.report(f'training for epoch {epoch}')
 
-            # NEST TEST SAMPLER IN TRAIN SAMPLER CONTEXT TO AVOID EPOCH RESTART?
             with test_sampler.in_epoch(epoch):
-                timer = TimestampedTimer() # Restarting timer, timed the preliminaries, now obtain time trial for each epoch
+                timer = TimestampedTimer() # obtain time trial for each epoch
                 confmat, timer, metrics = evaluate(
                     args, model, data_loader_test, num_classes, confmat,
                     optimizer, lr_scheduler, train_sampler, test_sampler, 
@@ -392,10 +371,7 @@ def main(args, timer):
 
 
 def get_args_parser(add_help=True):
-    import argparse
-
     parser = argparse.ArgumentParser(description="PyTorch Segmentation Training", add_help=add_help)
-
     parser.add_argument("--data-path", default="/datasets01/COCO/022719/", type=str, help="dataset path")
     parser.add_argument("--dataset", default="coco", type=str, help="dataset name")
     parser.add_argument("--model", default="fcn_resnet101", type=str, help="model name")
