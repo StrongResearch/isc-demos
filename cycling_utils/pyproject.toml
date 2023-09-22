@@ -2,7 +2,12 @@
 name = "cycling_utils"
 version = "0.0.1"
 description = "A collection of utilities for pytorch job cycling"
-
+dependencies = [
+  "torch"
+]
+optional-dependencies = [
+  "pytorch-lightning"
+]
 
 [build-system]
 requires = ["setuptools", "wheel"]
