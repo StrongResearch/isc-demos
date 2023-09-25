@@ -34,6 +34,7 @@ def train_one_epoch(
         optimizer.zero_grad()
 
         with torch.cuda.amp.autocast(enabled=scaler is not None):
+            assert len(targets) > 0, "Targets iterable of length 0, will return infinite loss."
             loss_dict = model(images, targets)
 
             # CHECK IF NUMERIC ERROR HAS OCCURRED AND IF SO, SKIP THIS BATCH
@@ -42,12 +43,37 @@ def train_one_epoch(
             check_tensor = torch.tensor([check_0, check_1], requires_grad=False, device=device)
             dist.all_reduce(check_tensor, op=dist.ReduceOp.SUM)
             if check_tensor.sum() > 0:
-                print(f"CONTINUE CONDITION: {[e for e in check_tensor]}")
-                train_sampler.advance() # Advance sampler to try next batch
+                print(f"CONTINUE CONDITION - NaN: {check_tensor[0].item()}, Infinite: {check_tensor[1].item()}")
+
+                # reset optimizer to prevent momentum carrying model into same issue
+                del optimizer
+                if args.norm_weight_decay is None:
+                    parameters = [p for p in model.parameters() if p.requires_grad]
+                else:
+                    param_groups = torchvision.ops._utils.split_normalization_params(model)
+                    wd_groups = [args.norm_weight_decay, args.weight_decay]
+                    parameters = [{"params": p, "weight_decay": w} for p, w in zip(param_groups, wd_groups) if p]
+
+                opt_name = args.opt.lower()
+                if opt_name.startswith("sgd"):
+                    optimizer = torch.optim.SGD(
+                        parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay,
+                        nesterov="nesterov" in opt_name,
+                    )
+                elif opt_name == "adamw":
+                    optimizer = torch.optim.AdamW(parameters, lr=args.lr, weight_decay=args.weight_decay)
+
+                # Advance sampler to try next batch
+                train_sampler.advance()
                 continue
 
             losses = sum(loss for loss in loss_dict.values())
             timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: forward pass')
+
+        # trying gradient clipping to prevent gradient issues with retinanet...
+        if args.model == 'retinanet_resnet101_fpn':
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
+            timer.report(f'Epoch: {epoch} batch {train_sampler.progress}: graient clipping')
 
         if scaler is not None:
             scaler.scale(losses).backward()
@@ -197,10 +223,17 @@ def evaluate(
     coco_evaluator.accumulate()
     results = coco_evaluator.summarize()
 
-    metric_A = ["bbox-", "segm-"]
-    metric_B = ["AP", "AR"]
-    metric_C = ["", "50", "75", "-S", "-M", "-L"]
-    metric_names = ["".join(t) for t in product(metric_A, metric_B, metric_C)]
+    # metric_A = ["bbox-", "segm-"]
+    # metric_B = ["AP", "AR"]
+    # metric_C = ["", "50", "75", "-S", "-M", "-L"]
+    # metric_names = ["".join(t) for t in product(metric_A, metric_B, metric_C)]
+    metric_names = [
+        "bbox/AP", "bbox/AP-50", "bbox/AP-75", "bbox/AP-S", "bbox/AP-M", "bbox/AP-L", 
+        "bbox/AR-MD1", "bbox/AR-MD10", "bbox/AR-MD100", "bbox/AR-S", "bbox/AR-M", "bbox/AR-L"
+    ] + [
+        "segm/AP", "segm/AP-50", "segm/AP-75", "segm/AP-S", "segm/AP-M", "segm/AP-L", 
+        "segm/AR-MD1", "segm/AR-MD10", "segm/AR-MD100", "segm/AR-S", "segm/AR-M", "segm/AR-L"
+    ]
     metrics["val"].update({name: val for name,val in zip(metric_names, results)})
     metrics["val"].reduce()
     metrics["val"].end_epoch()

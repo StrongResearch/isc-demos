@@ -159,10 +159,7 @@ def main(args, timer):
     opt_name = args.opt.lower()
     if opt_name.startswith("sgd"):
         optimizer = torch.optim.SGD(
-            parameters,
-            lr=args.lr,
-            momentum=args.momentum,
-            weight_decay=args.weight_decay,
+            parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay, 
             nesterov="nesterov" in opt_name,
         )
     elif opt_name == "adamw":
