@@ -1,3 +1,6 @@
+# Ensuring required monai version is installed
+!pip install monai==1.2.0
+
 # Download the toy dataset from MONAI
 print("Downloadning BraTS2016/17")
 from monai.apps import DecathlonDataset

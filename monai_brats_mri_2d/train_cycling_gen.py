@@ -5,6 +5,7 @@ timer.report('importing Timer')
 
 import os
 import torch
+!pip install monai==1.2.0
 from monai import transforms
 from monai.apps import DecathlonDataset
 from monai.data import DataLoader
@@ -16,7 +17,7 @@ from generative.losses.adversarial_loss import PatchAdversarialLoss
 from generative.losses.perceptual import PerceptualLoss
 from generative.networks.nets import AutoencoderKL, PatchDiscriminator
 
-from cycling_utils import InterruptableDistributedSampler, Timer, MetricsTracker
+from cycling_utils import InterruptableDistributedSampler, MetricsTracker
 from loops import train_generator_one_epoch, evaluate_generator
 import utils
 
@@ -66,7 +67,8 @@ def main(args, timer):
             
     crop_transform = transforms.Compose([
             transforms.DivisiblePadd(keys="image", k=[4,4,1]),
-            transforms.RandSpatialCropd(keys="image", roi_size=(240, 240, 1), random_size=False), # Each of the 100 slices will be randomly sampled.
+            # transforms.RandSpatialCropd(keys="image", roi_size=(240, 240, 1), random_size=False), # Each of the 100 slices will be randomly sampled.
+            transforms.RandSpatialCropSamplesd(keys="image", random_size=False, roi_size=(240, 240, 1), num_samples=26), # Each of the 100 slices will be randomly sampled.
             transforms.SqueezeDimd(keys="image", dim=3),
             transforms.RandFlipd(keys="image", prob=0.5, spatial_axis=0),
             transforms.RandFlipd(keys="image", prob=0.5, spatial_axis=1),
@@ -90,8 +92,8 @@ def main(args, timer):
 
     timer.report('build samplers')
 
-    # Original trainer had batch size = 26. Using 9 nodes x batch size 3 = eff batch size = 27
-    train_loader = DataLoader(train_ds, batch_size=3, sampler=train_sampler, num_workers=1)
+    # Original trainer had batch size = 26. Using 11 nodes x 6 GPUs x batch size 26 = eff batch size = 66
+    train_loader = DataLoader(train_ds, batch_size=1, sampler=train_sampler, num_workers=1)
     val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=1)
 
     timer.report('build dataloaders')
@@ -189,6 +191,7 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             timer = TimestampedTimer("Start training")
+
             generator, timer, metrics = train_generator_one_epoch(
                 args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
                 scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer, metrics
@@ -196,8 +199,10 @@ def main(args, timer):
             timer.report(f'training generator for epoch {epoch}')
 
             if epoch % gen_val_interval == 0: # Eval every epoch
+                
                 with val_sampler.in_epoch(epoch):
                     timer = TimestampedTimer("Start evaluation")
+
                     timer, metrics = evaluate_generator(
                         args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
                         scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer, metrics

@@ -6,6 +6,7 @@ timer.report('importing Timer')
 import os
 import torch
 # import torch.nn.functional as F
+!pip install monai==1.2.0
 from monai import transforms
 from monai.apps import DecathlonDataset
 # from monai.config import print_config
