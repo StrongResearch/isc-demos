@@ -10,38 +10,14 @@ from monai.inferers import sliding_window_inference
 from monai.metrics import compute_dice
 import yaml, time, os, utils
 from cycling_utils import atomic_torch_save
-
-# args = {
-#         "resume": parser["resume"],
-#         "arch_ckpt_path": parser["arch_ckpt_path"],
-#         "amp": parser["amp"],
-#         "data_file_base_dir": parser["data_file_base_dir"],
-#         "data_list_file_path": parser["data_list_file_path"],
-#         "determ": parser["determ"],
-#         "learning_rate": parser["learning_rate"],
-#         "learning_rate_arch": parser["learning_rate_arch"],
-#         "learning_rate_milestones": np.array(parser["learning_rate_milestones"]),
-#         "num_images_per_batch": parser["num_images_per_batch"],
-#         "num_epochs": parser["num_epochs"],  # around 20k iterations
-#         "num_epochs_per_validation": parser["num_epochs_per_validation"],
-#         "num_epochs_warmup": parser["num_epochs_warmup"],
-#         "num_sw_batch_size": parser["num_sw_batch_size"],
-#         "output_classes": parser["output_classes"],
-#         "overlap_ratio": parser["overlap_ratio"],
-#         "patch_size_valid": parser["patch_size_valid"],
-#         "ram_cost_factor": parser["ram_cost_factor"],
-
-#         "start_epoch": 0,
-#     }
+from torch.utils.tensorboard import SummaryWriter
 
 def search_one_epoch(
-    # Stateful objs that will need to be checkpointed
-    model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, train_sampler, val_sampler, model_scaler, space_scaler, metrics,
-    # Stateless callables
-    train_loader, loss_func, writer,
-    # Mutable constants
-    epoch, args
+    model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
+    train_sampler, val_sampler, model_scaler, space_scaler, train_metrics, val_metric,
+    epoch, train_loader, loss_func, args
 ):
+    device = args["device"] # for convenience
 
     decay = 0.5 ** np.sum(
         [(epoch - args["num_epochs_warmup"]) / (args["num_epochs"] - args["num_epochs_warmup"]) > args["learning_rate_milestones"]]
@@ -50,7 +26,6 @@ def search_one_epoch(
     for param_group in optimizer.param_groups:
         param_group["lr"] = lr
 
-    device = args["device"] # for convenience
     model.train()
 
     train_step = train_sampler.progress // train_loader.batch_size
@@ -63,13 +38,6 @@ def search_one_epoch(
         inputs_search, labels_search = inputs.detach().clone(), labels.detach().clone() # added, will this work?
 
         # UPDATE MODEL
-
-        # if args["world_size"] == 1:
-        #     for _ in model.weight_parameters():
-        #         _.requires_grad = True
-        # else:
-        #     for _ in model.module.weight_parameters():
-        #         _.requires_grad = True
 
         for p in model.module.weight_parameters():
             p.requires_grad=True
@@ -99,19 +67,12 @@ def search_one_epoch(
             optimizer.step()
 
         # Reporting and stuff
-        metrics.update({"model_loss": loss.item(), "inputs_seen": len(inputs)})
+        train_metrics.update({"model_loss": loss.item(), "inputs_seen": len(inputs)})
 
         # Only update space after number of warmup epochs
         if epoch >= args["num_epochs_warmup"]:
 
             # UPDATE SPACE
-
-            # if args["world_size"] == 1:
-            #     for _ in model.weight_parameters():
-            #         _.requires_grad = False
-            # else:
-            #     for _ in model.module.weight_parameters():
-            #         _.requires_grad = False
 
             for p in model.module.weight_parameters():
                 p.requires_grad=False
@@ -119,7 +80,7 @@ def search_one_epoch(
             dints_space.log_alpha_c.requires_grad = True
 
             # linear increase topology and RAM loss
-            entropy_alpha_c = torch.tensor(0.0).to(device)
+            entropy_alpha_c = torch.tensor(0.0,).to(device)
             entropy_alpha_a = torch.tensor(0.0).to(device)
             ram_cost_full = torch.tensor(0.0).to(device)
             ram_cost_usage = torch.tensor(0.0).to(device)
@@ -174,27 +135,37 @@ def search_one_epoch(
                 arch_optimizer_c.step()
 
             # Reporting and stuff
-            metrics.update({"space_loss": loss.item()})
+            train_metrics.update({"space_loss": loss.item()})
 
         # Batch reporting
-        metrics.reduce()
-
-        batch_model_loss = metrics.local["model_loss"] / metrics.local["inputs_seen"]
-        batch_space_loss = metrics.local["space_loss"] / metrics.local["inputs_seen"]
-        metrics.reset_local()
+        train_metrics.reduce()
+        batch_model_loss = train_metrics.local["model_loss"] / train_metrics.local["inputs_seen"]
+        if "space_loss" in train_metrics.local:
+            batch_space_loss = train_metrics.local["space_loss"] / train_metrics.local["inputs_seen"]
+        else:
+            batch_space_loss = "NONE"
         print(f"EPOCH [{epoch}], BATCH [{train_step}], MODEL LOSS [{batch_model_loss:,.3f}, SPACE LOSS: [{batch_space_loss:,.3f}]")
+        train_metrics.reset_local()
 
         ## Checkpointing
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
         train_sampler.advance(len(inputs))
         train_step = train_sampler.progress // train_loader.batch_size
 
+        if train_step == total_steps:
+            train_metrics.end_epoch()
+
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
 
+            writer = SummaryWriter(log_dir=args["tboard_path"])
             writer.add_scalar("Train/model_loss", batch_model_loss, train_step + epoch * total_steps)
-            writer.add_scalar("Train/space_loss", batch_space_loss, train_step + epoch * total_steps)
+            if batch_space_loss != "NONE":
+                writer.add_scalar("Train/space_loss", batch_space_loss, train_step + epoch * total_steps)
+            writer.flush()
+            writer.close()
 
             checkpoint = {
+                "epoch": epoch,
                 "model": model.module.state_dict(),
                 "dints": dints_space.state_dict(),
                 "optimizer": optimizer.state_dict(),
@@ -204,105 +175,105 @@ def search_one_epoch(
                 "val_sampler": val_sampler.state_dict(),
                 "model_scaler": model_scaler.state_dict(),
                 "space_scaler": space_scaler.state_dict(),
-                "metrics": metrics
+                "train_metrics": train_metrics,
+                "val_metric": val_metric
             }
-            timer = atomic_torch_save(checkpoint, args.resume, timer)
+            timer = atomic_torch_save(checkpoint, args["resume"], timer)
 
-    return model, dints_space
+    return model, dints_space, timer, train_metrics
 
 
 def eval_search(
-        model, output_classes, device, val_loader, patch_size_valid, num_sw_batch_size, overlap_ratio, 
-        post_pred, post_label, epoch, idx_iter
+        model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
+        train_sampler, val_sampler, model_scaler, space_scaler, train_metrics, val_metric,
+        epoch, val_loader, post_pred, post_label, args,
 ):
+    device = args["device"] # for convenience
 
     torch.cuda.empty_cache()
     model.eval()
 
     with torch.no_grad():
 
-        metric = torch.zeros((output_classes - 1) * 2, dtype=torch.float, device=device)
-        metric_sum = 0.0
-        metric_count = 0
-        metric_mat = []
-        val_images = None
-        val_labels = None
-        val_outputs = None
+        val_step = val_sampler.progress // val_loader.batch_size
+        total_steps = int(len(val_sampler) / val_loader.batch_size)
+        print(f'\nEvaluating / resuming epoch {epoch} from eval step {val_step}\n')
 
-        _index = 0
         for val_data in val_loader:
 
-            val_images = val_data["image"].to(device)
-            val_labels = val_data["label"].to(device)
-            roi_size = patch_size_valid
-            sw_batch_size = num_sw_batch_size
+            val_images, val_labels = val_data["image"].to(device), val_data["label"].to(device)
+            roi_size = args["patch_size_valid"]
+            sw_batch_size = args["num_sw_batch_size"]
 
-            if amp:
+            if args["amp"]:
                 with torch.cuda.amp.autocast():
                     pred = sliding_window_inference(
-                        val_images,
-                        roi_size,
-                        sw_batch_size,
-                        lambda x: model(x),
-                        mode="gaussian",
-                        overlap=overlap_ratio,
+                        val_images, roi_size, sw_batch_size,
+                        lambda x: model(x), mode="gaussian",
+                        overlap=args["overlap_ratio"],
                     )
             else:
                 pred = sliding_window_inference(
-                    val_images,
-                    roi_size,
-                    sw_batch_size,
-                    lambda x: model(x),
-                    mode="gaussian",
-                    overlap=overlap_ratio,
+                    val_images, roi_size, sw_batch_size,
+                    lambda x: model(x), mode="gaussian",
+                    overlap=args["overlap_ratio"],
                 )
 
-            val_outputs = pred
-            val_outputs = post_pred(val_outputs[0, ...])
+            val_outputs = post_pred(pred[0, ...])
             val_outputs = val_outputs[None, ...]
             val_labels = post_label(val_labels[0, ...])
             val_labels = val_labels[None, ...]
 
             value = compute_dice(y_pred=val_outputs, y=val_labels, include_background=False)
 
-            print(_index + 1, "/", len(val_loader), value)
-
-            metric_count += len(value)
-            metric_sum += value.sum().item()
-            metric_vals = value.cpu().numpy()
-            if len(metric_mat) == 0:
-                metric_mat = metric_vals
-            else:
-                metric_mat = np.concatenate((metric_mat, metric_vals), axis=0)
-
-            for _c in range(output_classes - 1):
+            for _c in range(args["output_classes"] - 1):
                 val0 = torch.nan_to_num(value[0, _c], nan=0.0)
                 val1 = 1.0 - torch.isnan(value[0, 0]).float()
-                metric[2 * _c] += val0 * val1
-                metric[2 * _c + 1] += val1
+                val_metric[2 * _c] += val0 * val1
+                val_metric[2 * _c + 1] += val1
 
-            _index += 1
+            ## Checkpointing
+            print(f"Saving checkpoint at epoch {epoch} eval batch {val_step}")
+            val_sampler.advance(len(val_images))
+            val_step = val_sampler.progress // val_loader.batch_size
 
-            ## SAVE CHECKPOINT
+            if utils.is_main_process() and val_step % 1 == 0: # Checkpointing every batch
+
+                checkpoint = {
+                    "epoch": epoch,
+                    "model": model.module.state_dict(),
+                    "dints": dints_space.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "arch_optimizer_a": arch_optimizer_a.state_dict(),
+                    "arch_optimizer_c": arch_optimizer_c.state_dict(),
+                    "train_sampler": train_sampler.state_dict(),
+                    "val_sampler": val_sampler.state_dict(),
+                    "model_scaler": model_scaler.state_dict(),
+                    "space_scaler": space_scaler.state_dict(),
+                    "train_metrics": train_metrics,
+                    "val_metric": val_metric
+                }
+                timer = atomic_torch_save(checkpoint, args["resume"], timer)
 
         # synchronizes all processes and reduce results
         if torch.cuda.device_count() > 1:
             dist.barrier()
-            dist.all_reduce(metric, op=torch.distributed.ReduceOp.SUM)
+            dist.all_reduce(val_metric, op=torch.distributed.ReduceOp.SUM)
 
-        metric = metric.tolist()
-        if torch.cuda.device_count() == 1 or dist.get_rank() == 0:
-            for _c in range(output_classes - 1):
-                print("evaluation metric - class {0:d}:".format(_c + 1), metric[2 * _c] / metric[2 * _c + 1])
+        val_metric = val_metric.tolist()
+        if utils.is_main_process():
+
+            for _c in range(args["output_classes"] - 1):
+                print("evaluation metric - class {0:d}:".format(_c + 1), val_metric[2 * _c] / val_metric[2 * _c + 1])
             avg_metric = 0
-            for _c in range(output_classes - 1):
-                avg_metric += metric[2 * _c] / metric[2 * _c + 1]
-            avg_metric = avg_metric / float(output_classes - 1)
+            for _c in range(args["output_classes"] - 1):
+                avg_metric += val_metric[2 * _c] / val_metric[2 * _c + 1]
+            avg_metric = avg_metric / float(args["output_classes"] - 1)
             print("avg_metric", avg_metric)
 
-            if avg_metric > best_metric:
-                best_metric = avg_metric
-                best_metric_epoch = epoch + 1
-                best_metric_iterations = idx_iter
+            # if avg_metric > best_metric:
+            #     best_metric = avg_metric
+            #     best_metric_epoch = epoch + 1
+                # best_metric_iterations = idx_iter
 
-    return best_metric_epoch, best_metric_iterations
+    return timer
