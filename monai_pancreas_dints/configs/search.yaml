@@ -1,7 +1,7 @@
 ---
 imports:
   - "$from scipy import ndimage"
-# arch_ckpt_path: models
+arch_ckpt_path: models
 amp: true
 # data_file_base_dir: /workspace/data/msd/Task07_Pancreas
 data_file_base_dir: /mnt/Datasets/Open-Datasets/MONAI/Task07_Pancreas

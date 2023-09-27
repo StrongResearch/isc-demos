@@ -271,9 +271,24 @@ def eval_search(
             avg_metric = avg_metric / float(args["output_classes"] - 1)
             print("avg_metric", avg_metric)
 
-            # if avg_metric > best_metric:
-            #     best_metric = avg_metric
-            #     best_metric_epoch = epoch + 1
+            if avg_metric > best_metric:
+                best_metric = avg_metric
+                # best_metric_epoch = epoch + 1
                 # best_metric_iterations = idx_iter
+
+                (node_a_d, arch_code_a_d, arch_code_c_d, arch_code_a_max_d) = dints_space.decode()
+                torch.save(
+                    {
+                        "node_a": node_a_d,
+                        "arch_code_a": arch_code_a_d,
+                        "arch_code_a_max": arch_code_a_max_d,
+                        "arch_code_c": arch_code_c_d,
+                        # "iter_num": idx_iter,
+                        "epochs": epoch + 1,
+                        "best_dsc": best_metric,
+                        # "best_path": best_metric_iterations,
+                    },
+                    os.path.join(args["arch_ckpt_path"], "search_code.pt"),
+                )
 
     return timer

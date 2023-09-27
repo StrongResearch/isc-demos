@@ -61,7 +61,7 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
         "resume": resume,
         "prev_resume": prev_resume,
         "tboard_path": tboard_path,
-        # "arch_ckpt_path": parser["arch_ckpt_path"],
+        "arch_ckpt_path": parser["arch_ckpt_path"],
         "amp": parser["amp"],
         "data_file_base_dir": parser["data_file_base_dir"],
         "data_list_file_path": parser["data_list_file_path"],
