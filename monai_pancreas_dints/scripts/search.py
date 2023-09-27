@@ -68,7 +68,6 @@ def run(config_file: Union[str, Sequence[str]]):
         "overlap_ratio": parser["overlap_ratio"],
         "patch_size_valid": parser["patch_size_valid"],
         "ram_cost_factor": parser["ram_cost_factor"],
-
         "start_epoch": 0,
     }
     print("[info] GPU RAM cost factor:", args["ram_cost_factor"])
@@ -80,25 +79,25 @@ def run(config_file: Union[str, Sequence[str]]):
     train_transforms = parser.get_parsed_content("transform_train")
     val_transforms = parser.get_parsed_content("transform_validation")
 
-    # network architecture
-    if torch.cuda.device_count() > 1:
-        device = torch.device(f"cuda:{dist.get_rank()}")
-    else:
-        device = torch.device("cuda:0")
-    torch.cuda.set_device(device)
+    # # network architecture
+    # if torch.cuda.device_count() > 1:
+    #     device = torch.device(f"cuda:{dist.get_rank()}")
+    # else:
+    #     device = torch.device("cuda:0")
+    # torch.cuda.set_device(device)
 
     # deterministic training
     if args["determ"]:
         set_determinism(seed=0)
 
-    print("[info] number of GPUs:", torch.cuda.device_count())
-    if torch.cuda.device_count() > 1:
-        # initialize the distributed training process, every GPU runs in a process
-        dist.init_process_group(backend="nccl", init_method="env://")
-        world_size = dist.get_world_size()
-    else:
-        world_size = 1
-    print("[info] world_size:", world_size)
+    # # print("[info] number of GPUs:", torch.cuda.device_count())
+    # if torch.cuda.device_count() > 1:
+    #     # initialize the distributed training process, every GPU runs in a process
+    #     dist.init_process_group(backend="nccl", init_method="env://")
+    #     world_size = dist.get_world_size()
+    # else:
+    #     world_size = 1
+    # print("[info] world_size:", world_size)
 
     print("Loading json")
     with open(args["data_list_file_path"], "r") as f:

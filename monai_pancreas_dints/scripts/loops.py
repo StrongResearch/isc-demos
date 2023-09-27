@@ -11,28 +11,28 @@ from monai.metrics import compute_dice
 import yaml, time, os, utils
 from cycling_utils import atomic_torch_save
 
-args = {
-        "resume": parser["resume"],
-        "arch_ckpt_path": parser["arch_ckpt_path"],
-        "amp": parser["amp"],
-        "data_file_base_dir": parser["data_file_base_dir"],
-        "data_list_file_path": parser["data_list_file_path"],
-        "determ": parser["determ"],
-        "learning_rate": parser["learning_rate"],
-        "learning_rate_arch": parser["learning_rate_arch"],
-        "learning_rate_milestones": np.array(parser["learning_rate_milestones"]),
-        "num_images_per_batch": parser["num_images_per_batch"],
-        "num_epochs": parser["num_epochs"],  # around 20k iterations
-        "num_epochs_per_validation": parser["num_epochs_per_validation"],
-        "num_epochs_warmup": parser["num_epochs_warmup"],
-        "num_sw_batch_size": parser["num_sw_batch_size"],
-        "output_classes": parser["output_classes"],
-        "overlap_ratio": parser["overlap_ratio"],
-        "patch_size_valid": parser["patch_size_valid"],
-        "ram_cost_factor": parser["ram_cost_factor"],
+# args = {
+#         "resume": parser["resume"],
+#         "arch_ckpt_path": parser["arch_ckpt_path"],
+#         "amp": parser["amp"],
+#         "data_file_base_dir": parser["data_file_base_dir"],
+#         "data_list_file_path": parser["data_list_file_path"],
+#         "determ": parser["determ"],
+#         "learning_rate": parser["learning_rate"],
+#         "learning_rate_arch": parser["learning_rate_arch"],
+#         "learning_rate_milestones": np.array(parser["learning_rate_milestones"]),
+#         "num_images_per_batch": parser["num_images_per_batch"],
+#         "num_epochs": parser["num_epochs"],  # around 20k iterations
+#         "num_epochs_per_validation": parser["num_epochs_per_validation"],
+#         "num_epochs_warmup": parser["num_epochs_warmup"],
+#         "num_sw_batch_size": parser["num_sw_batch_size"],
+#         "output_classes": parser["output_classes"],
+#         "overlap_ratio": parser["overlap_ratio"],
+#         "patch_size_valid": parser["patch_size_valid"],
+#         "ram_cost_factor": parser["ram_cost_factor"],
 
-        "start_epoch": 0,
-    }
+#         "start_epoch": 0,
+#     }
 
 def search_one_epoch(
     # Stateful objs that will need to be checkpointed
@@ -51,12 +51,6 @@ def search_one_epoch(
         param_group["lr"] = lr
 
     device = args["device"] # for convenience
-
-    # if torch.cuda.device_count() == 1 or dist.get_rank() == 0:
-    #     print("-" * 10)
-    #     print(f"epoch {epoch + 1}/{num_epochs}")
-    #     print("learning rate is set to {}".format(lr))
-
     model.train()
 
     train_step = train_sampler.progress // train_loader.batch_size
@@ -65,18 +59,20 @@ def search_one_epoch(
 
     for batch_data in train_loader:
 
-        step += 1
         inputs, labels = batch_data["image"].to(device), batch_data["label"].to(device)
-        inputs_search, labels_search = inputs.detach().clone(), labels.detach().clone() # added
+        inputs_search, labels_search = inputs.detach().clone(), labels.detach().clone() # added, will this work?
 
         # UPDATE MODEL
 
-        if args["world_size"] == 1:
-            for _ in model.weight_parameters():
-                _.requires_grad = True
-        else:
-            for _ in model.module.weight_parameters():
-                _.requires_grad = True
+        # if args["world_size"] == 1:
+        #     for _ in model.weight_parameters():
+        #         _.requires_grad = True
+        # else:
+        #     for _ in model.module.weight_parameters():
+        #         _.requires_grad = True
+
+        for p in model.module.weight_parameters():
+            p.requires_grad=True
         dints_space.log_alpha_a.requires_grad = False
         dints_space.log_alpha_c.requires_grad = False
 
@@ -104,83 +100,85 @@ def search_one_epoch(
 
         # Reporting and stuff
         metrics.update({"model_loss": loss.item(), "inputs_seen": len(inputs)})
-        # metrics.reduce()
-        # batch_loss = metrics.local["loss"] / metrics.local["inputs_seen"]
-        # metrics.reset_local()
 
         # Only update space after number of warmup epochs
-        if epoch < args["num_epochs_warmup"]:
-            continue
+        if epoch >= args["num_epochs_warmup"]:
 
-        # UPDATE SPACE
+            # UPDATE SPACE
 
-        if args["world_size"] == 1:
-            for _ in model.weight_parameters():
-                _.requires_grad = False
-        else:
-            for _ in model.module.weight_parameters():
-                _.requires_grad = False
-        dints_space.log_alpha_a.requires_grad = True
-        dints_space.log_alpha_c.requires_grad = True
+            # if args["world_size"] == 1:
+            #     for _ in model.weight_parameters():
+            #         _.requires_grad = False
+            # else:
+            #     for _ in model.module.weight_parameters():
+            #         _.requires_grad = False
 
-        # linear increase topology and RAM loss
-        entropy_alpha_c = torch.tensor(0.0).to(device)
-        entropy_alpha_a = torch.tensor(0.0).to(device)
-        ram_cost_full = torch.tensor(0.0).to(device)
-        ram_cost_usage = torch.tensor(0.0).to(device)
-        ram_cost_loss = torch.tensor(0.0).to(device)
-        topology_loss = torch.tensor(0.0).to(device)
+            for p in model.module.weight_parameters():
+                p.requires_grad=False
+            dints_space.log_alpha_a.requires_grad = True
+            dints_space.log_alpha_c.requires_grad = True
 
-        probs_a, arch_code_prob_a = dints_space.get_prob_a(child=True)
-        entropy_alpha_a = -((probs_a) * torch.log(probs_a + 1e-5)).mean()
-        sm = F.softmax(dints_space.log_alpha_c, dim=-1)
-        lsm = F.log_softmax(dints_space.log_alpha_c, dim=-1)
-        entropy_alpha_c = -(sm * lsm).mean()
-        topology_loss = dints_space.get_topology_entropy(probs_a)
+            # linear increase topology and RAM loss
+            entropy_alpha_c = torch.tensor(0.0).to(device)
+            entropy_alpha_a = torch.tensor(0.0).to(device)
+            ram_cost_full = torch.tensor(0.0).to(device)
+            ram_cost_usage = torch.tensor(0.0).to(device)
+            ram_cost_loss = torch.tensor(0.0).to(device)
+            topology_loss = torch.tensor(0.0).to(device)
 
-        ram_cost_full = dints_space.get_ram_cost_usage(inputs.shape, full=True)
-        ram_cost_usage = dints_space.get_ram_cost_usage(inputs.shape)
-        ram_cost_loss = torch.abs(args["ram_cost_factor"] - ram_cost_usage / ram_cost_full)
+            probs_a, arch_code_prob_a = dints_space.get_prob_a(child=True)
+            entropy_alpha_a = -((probs_a) * torch.log(probs_a + 1e-5)).mean()
+            sm = F.softmax(dints_space.log_alpha_c, dim=-1)
+            lsm = F.log_softmax(dints_space.log_alpha_c, dim=-1)
+            entropy_alpha_c = -(sm * lsm).mean()
+            topology_loss = dints_space.get_topology_entropy(probs_a)
 
-        arch_optimizer_a.zero_grad()
-        arch_optimizer_c.zero_grad()
+            ram_cost_full = dints_space.get_ram_cost_usage(inputs.shape, full=True)
+            ram_cost_usage = dints_space.get_ram_cost_usage(inputs.shape)
+            ram_cost_loss = torch.abs(args["ram_cost_factor"] - ram_cost_usage / ram_cost_full)
 
-        combination_weights = (epoch - args["num_epochs_warmup"]) / (args["num_epochs"] - args["num_epochs_warmup"])
+            arch_optimizer_a.zero_grad()
+            arch_optimizer_c.zero_grad()
 
-        if args["amp"]:
-            with autocast():
+            combination_weights = (epoch - args["num_epochs_warmup"]) / (args["num_epochs"] - args["num_epochs_warmup"])
+
+            if args["amp"]:
+                with autocast():
+                    outputs_search = model(inputs_search)
+                    if args["output_classes"] == 2:
+                        loss = loss_func(torch.flip(outputs_search, dims=[1]), 1 - labels_search)
+                    else:
+                        loss = loss_func(outputs_search, labels_search)
+
+                    loss += combination_weights * (
+                        (entropy_alpha_a + entropy_alpha_c) + ram_cost_loss + 0.001 * topology_loss
+                    )
+
+                space_scaler.scale(loss).backward()
+                space_scaler.step(arch_optimizer_a)
+                space_scaler.step(arch_optimizer_c)
+                space_scaler.update()
+            else:
                 outputs_search = model(inputs_search)
                 if args["output_classes"] == 2:
                     loss = loss_func(torch.flip(outputs_search, dims=[1]), 1 - labels_search)
                 else:
                     loss = loss_func(outputs_search, labels_search)
 
-                loss += combination_weights * (
-                    (entropy_alpha_a + entropy_alpha_c) + ram_cost_loss + 0.001 * topology_loss
+                loss += 1.0 * (
+                    combination_weights * (entropy_alpha_a + entropy_alpha_c) + ram_cost_loss + 0.001 * topology_loss
                 )
 
-            space_scaler.scale(loss).backward()
-            space_scaler.step(arch_optimizer_a)
-            space_scaler.step(arch_optimizer_c)
-            space_scaler.update()
-        else:
-            outputs_search = model(inputs_search)
-            if args["output_classes"] == 2:
-                loss = loss_func(torch.flip(outputs_search, dims=[1]), 1 - labels_search)
-            else:
-                loss = loss_func(outputs_search, labels_search)
+                loss.backward()
+                arch_optimizer_a.step()
+                arch_optimizer_c.step()
 
-            loss += 1.0 * (
-                combination_weights * (entropy_alpha_a + entropy_alpha_c) + ram_cost_loss + 0.001 * topology_loss
-            )
+            # Reporting and stuff
+            metrics.update({"space_loss": loss.item()})
 
-            loss.backward()
-            arch_optimizer_a.step()
-            arch_optimizer_c.step()
-
-        # Reporting and stuff
-        metrics.update({"space_loss": loss.item()})
+        # Batch reporting
         metrics.reduce()
+
         batch_model_loss = metrics.local["model_loss"] / metrics.local["inputs_seen"]
         batch_space_loss = metrics.local["space_loss"] / metrics.local["inputs_seen"]
         metrics.reset_local()
