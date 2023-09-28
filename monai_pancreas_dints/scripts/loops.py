@@ -291,3 +291,163 @@ def eval_search(
                 )
 
     return timer
+
+
+def train_one_epoch(
+    model, optimizer,
+    train_sampler, val_sampler, scaler, train_metrics, val_metric,
+    epoch, train_loader, loss_func, args
+):
+    device = args["device"] # for convenience
+
+    model.train()
+
+    train_step = train_sampler.progress // train_loader.batch_size
+    total_steps = int(len(train_sampler) / train_loader.batch_size)
+    print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
+
+    for batch_data in train_loader:
+
+        inputs, labels = batch_data["image"].to(device), batch_data["label"].to(device)
+
+        optimizer.zero_grad()
+
+        if args["amp"]:
+            with autocast():
+                outputs = model(inputs)
+                if args["output_classes"] == 2:
+                    loss = loss_func(torch.flip(outputs, dims=[1]), 1 - labels)
+                else:
+                    loss = loss_func(outputs, labels)
+
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            outputs = model(inputs)
+            if args["output_classes"] == 2:
+                loss = loss_func(torch.flip(outputs, dims=[1]), 1 - labels)
+            else:
+                loss = loss_func(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+        # Reporting and stuff
+        train_metrics.update({"model_loss": loss.item(), "inputs_seen": len(inputs)})
+        train_metrics.reduce()
+        batch_model_loss = train_metrics.local["model_loss"] / train_metrics.local["inputs_seen"]
+        print(f"EPOCH [{epoch}], BATCH [{train_step}], MODEL LOSS [{batch_model_loss:,.3f}]")
+        train_metrics.reset_local()
+
+        ## Checkpointing
+        print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
+        train_sampler.advance(len(inputs))
+        train_step = train_sampler.progress // train_loader.batch_size
+
+        if train_step == total_steps:
+            train_metrics.end_epoch()
+
+        if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
+
+            writer = SummaryWriter(log_dir=args["tboard_path"])
+            writer.add_scalar("Train/model_loss", batch_model_loss, train_step + epoch * total_steps)
+            writer.flush()
+            writer.close()
+
+            checkpoint = {
+                "epoch": epoch,
+                "model": model.module.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "train_sampler": train_sampler.state_dict(),
+                "val_sampler": val_sampler.state_dict(),
+                "scaler": scaler.state_dict(),
+                "train_metrics": train_metrics,
+                "val_metric": val_metric,
+            }
+            timer = atomic_torch_save(checkpoint, args["resume"], timer)
+
+    return model, timer, train_metrics
+
+
+def evaluate(
+        model, optimizer,
+        train_sampler, val_sampler, scaler, train_metrics, val_metric,
+        epoch, val_loader, post_pred, post_label, args,
+):
+    device = args["device"] # for convenience
+
+    torch.cuda.empty_cache()
+    model.eval()
+
+    with torch.no_grad():
+
+        val_step = val_sampler.progress // val_loader.batch_size
+        print(f'\nEvaluating / resuming epoch {epoch} from eval step {val_step}\n')
+
+        for val_data in val_loader:
+
+            val_images, val_labels = val_data["image"].to(device), val_data["label"].to(device)
+            roi_size = args["patch_size_valid"]
+            sw_batch_size = args["num_sw_batch_size"]
+
+            if args["amp"]:
+                with torch.cuda.amp.autocast():
+                    pred = sliding_window_inference(
+                        val_images, roi_size, sw_batch_size,
+                        lambda x: model(x), mode="gaussian",
+                        overlap=args["overlap_ratio"],
+                    )
+            else:
+                pred = sliding_window_inference(
+                    val_images, roi_size, sw_batch_size,
+                    lambda x: model(x), mode="gaussian",
+                    overlap=args["overlap_ratio"],
+                )
+
+            val_outputs = post_pred(pred[0, ...])
+            val_outputs = val_outputs[None, ...]
+            val_labels = post_label(val_labels[0, ...])
+            val_labels = val_labels[None, ...]
+
+            value = compute_dice(y_pred=val_outputs, y=val_labels, include_background=False)
+
+            for _c in range(args["output_classes"] - 1):
+                val0 = torch.nan_to_num(value[0, _c], nan=0.0)
+                val1 = 1.0 - torch.isnan(value[0, 0]).float()
+                val_metric[2 * _c] += val0 * val1
+                val_metric[2 * _c + 1] += val1
+
+            ## Checkpointing
+            print(f"Saving checkpoint at epoch {epoch} eval batch {val_step}")
+            val_sampler.advance(len(val_images))
+            val_step = val_sampler.progress // val_loader.batch_size
+
+            if utils.is_main_process() and val_step % 1 == 0: # Checkpointing every batch
+
+                checkpoint = {
+                    "epoch": epoch,
+                    "model": model.module.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "train_sampler": train_sampler.state_dict(),
+                    "val_sampler": val_sampler.state_dict(),
+                    "scaler": scaler.state_dict(),
+                    "train_metrics": train_metrics,
+                    "val_metric": val_metric,
+                }
+                timer = atomic_torch_save(checkpoint, args["resume"], timer)
+
+        # synchronizes all processes and reduce results
+        if torch.cuda.device_count() > 1:
+            dist.barrier()
+            dist.all_reduce(val_metric, op=torch.distributed.ReduceOp.SUM)
+
+        val_metric = val_metric.tolist()
+        if utils.is_main_process():
+
+            for _c in range(args["output_classes"] - 1):
+                print("evaluation metric - class {0:d}:".format(_c + 1), val_metric[2 * _c] / val_metric[2 * _c + 1])
+            avg_metric = 0
+            for _c in range(args["output_classes"] - 1):
+                avg_metric += val_metric[2 * _c] / val_metric[2 * _c + 1]
+            avg_metric = avg_metric / float(args["output_classes"] - 1)
+            print("avg_metric", avg_metric)

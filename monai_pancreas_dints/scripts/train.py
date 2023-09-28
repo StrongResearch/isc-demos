@@ -101,6 +101,8 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
     optimizer = torch.optim.SGD(
         model_without_ddp.weight_parameters(), lr=args["learning_rate"] * args["world_size"], momentum=0.9, weight_decay=0.00004
     )
+    dints_space.log_alpha_a.requires_grad = False
+    dints_space.log_alpha_c.requires_grad = False
 
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, milestones=[80 * args["world_size"]], gamma=0.5)
 
@@ -114,7 +116,8 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
     val_interval = args["num_epochs_per_validation"]
 
     # Init metric trackers
-    metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
+    train_metrics = MetricsTracker()
+    val_metric = torch.zeros((args["output_classes"] - 1) * 2, dtype=torch.float, device=device)
 
     # RETRIEVE CHECKPOINT
     Path(args["resume"]).parent.mkdir(parents=True, exist_ok=True)
@@ -128,12 +131,13 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
     if checkpoint is not None:
         args["start_epoch"] = checkpoint["epoch"]
         model_without_ddp.load_state_dict(checkpoint["model"])
-        dints_space.load_state_dict(checkpoint["dints"])
         optimizer.load_state_dict(checkpoint["optimizer"])
         train_sampler.load_state_dict(checkpoint["train_sampler"])
         val_sampler.load_state_dict(checkpoint["val_sampler"])
         scaler.load_state_dict(checkpoint["scaler"])
-        metrics = checkpoint["metrics"]
+        train_metrics = checkpoint["train_metrics"]
+        val_metric = checkpoint["val_metric"]
+        val_metric.to(device)
 
     for epoch in range(args["start_epoch"], args["num_epochs"]):
 
@@ -144,7 +148,11 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
         with train_sampler.in_epoch(epoch):
             timer = TimestampedTimer("Start training")
 
-            model, dints_space, timer, metrics = train_one_epoch(...)
+            model, dints_space, timer, train_metrics, val_metric = train_one_epoch(
+                model, optimizer,
+                train_sampler, val_sampler, scaler, train_metrics, val_metric,
+                epoch, train_loader, loss_func, args
+            )
             timer.report(f'training for epoch {epoch}')
 
             if (epoch + 1) % val_interval == 0 or (epoch + 1) == args["num_epochs"]:
@@ -152,6 +160,10 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
                 with val_sampler.in_epoch(epoch):
                     timer = TimestampedTimer("Start evaluation")
 
-                    timer = evaluate(...)
+                    timer = evaluate(
+                        model, optimizer,
+                        train_sampler, val_sampler, scaler, train_metrics, val_metric,
+                        epoch, val_loader, post_pred, post_label, args,
+                    )
                     timer.report(f'evaluating for epoch {epoch}')
 
