@@ -21,6 +21,7 @@ import sys
 import time
 from datetime import datetime
 from typing import Sequence, Union
+from scipy import ndimage
 
 import monai
 import numpy as np
@@ -30,6 +31,8 @@ import torch.nn.functional as F
 import yaml
 from monai import transforms
 from monai.bundle import ConfigParser
+from monai.networks.nets import TopologySearch, DiNTS
+from monai.losses import DiceCELoss
 from monai.data import ThreadDataLoader, partition_dataset, DataLoader
 from monai.inferers import sliding_window_inference
 from monai.metrics import compute_dice
@@ -43,12 +46,12 @@ from loops import search_one_epoch, eval_search
 from pathlib import Path
 import utils
 
-def get_args_parser(add_help=True):
-    parser = argparse.ArgumentParser(description="DiNTS search", add_help=add_help)
-    parser.add_argument("--resume", type=str, help="path of checkpoint", required=True) # for checkpointing
-    parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
-    parser.add_argument("--tboard-path", default=None, help="path for saving tensorboard logs", dest="tboard_path") # for checkpointing
-    return parser
+# def get_args_parser(add_help=True):
+#     parser = argparse.ArgumentParser(description="DiNTS search", add_help=add_help)
+#     parser.add_argument("--resume", type=str, help="path of checkpoint", required=True) # for checkpointing
+#     parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
+#     parser.add_argument("--tboard-path", default=None, help="path for saving tensorboard logs", dest="tboard_path") # for checkpointing
+#     return parser
 
 def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard_path=None):
     # logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -147,9 +150,9 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
     #     timer.report("batch")
     #     inputs.size == (1, 1, 96, 96, 96), labels.size == (1, 1, 96, 96, 96)
 
-    model = parser.get_parsed_content("network")
-    dints_space = parser.get_parsed_content("dints_space")
-    loss_func = parser.get_parsed_content("loss")
+    dints_space = TopologySearch(channel_mul=0.5, num_blocks=12, num_depths=4, use_downsample=True, device=device)
+    model = DiNTS(dints_space, in_channels=1, num_classes=3, use_downsample=True)
+    loss_func = DiceCELoss(include_background=False, to_onehot_y=True, softmax=True, squared_pred=True, batch=True, smooth_nr=1e-05, smooth_dr=1e-05)
 
     model = model.to(device)
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
@@ -177,9 +180,8 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
 
     # amp
     if args["amp"]:
-        from torch.cuda.amp import GradScaler, autocast
-        model_scaler = GradScaler()
-        space_scaler = GradScaler()
+        from torch.cuda.amp import GradScaler
+        scaler = GradScaler()
         if torch.cuda.device_count() == 1 or dist.get_rank() == 0:
             print("[info] amp enabled")
 
@@ -207,8 +209,7 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
         arch_optimizer_c.load_state_dict(checkpoint["arch_optimizer_c"])
         train_sampler.load_state_dict(checkpoint["train_sampler"])
         val_sampler.load_state_dict(checkpoint["val_sampler"])
-        model_scaler.load_state_dict(checkpoint["model_scaler"])
-        space_scaler.load_state_dict(checkpoint["space_scaler"])
+        scaler.load_state_dict(checkpoint["scaler"])
         train_metrics = checkpoint["train_metrics"]
         val_metric = checkpoint["val_metric"]
         val_metric.to(device)
@@ -224,7 +225,7 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
 
             model, dints_space, timer, train_metrics = search_one_epoch(
                 model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-                train_sampler, val_sampler, model_scaler, space_scaler, train_metrics, val_metric,
+                train_sampler, val_sampler, scaler, train_metrics, val_metric,
                 epoch, train_loader, loss_func, args
             )
             timer.report(f'searching space for epoch {epoch}')
@@ -236,7 +237,7 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
 
                     timer = eval_search(
                         model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-                        train_sampler, val_sampler, model_scaler, space_scaler, train_metrics, val_metric,
+                        train_sampler, val_sampler, scaler, train_metrics, val_metric,
                         epoch, val_loader, post_pred, post_label, args
                     )
                     timer.report(f'evaluating search for epoch {epoch}')

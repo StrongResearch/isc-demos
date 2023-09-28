@@ -3,23 +3,19 @@ from cycling_utils import TimestampedTimer
 timer = TimestampedTimer()
 timer.report('importing Timer')
 
-import os
-import torch
-!pip install monai==1.2.0
+import torch, os, utils
+from torch.cuda.amp import GradScaler
+from pathlib import Path
+# !pip install monai==1.2.0
 from monai import transforms
 from monai.apps import DecathlonDataset
 from monai.data import DataLoader
 from monai.utils import set_determinism
-from torch.cuda.amp import GradScaler
-from pathlib import Path
-
-from generative.losses.adversarial_loss import PatchAdversarialLoss
 from generative.losses.perceptual import PerceptualLoss
 from generative.networks.nets import AutoencoderKL, PatchDiscriminator
 
 from cycling_utils import InterruptableDistributedSampler, MetricsTracker
 from loops import train_generator_one_epoch, evaluate_generator
-import utils
 
 def get_args_parser(add_help=True):
     import argparse
@@ -44,10 +40,7 @@ def main(args, timer):
 
     utils.init_distributed_mode(args) # Sets args.distributed among other things
     assert args.distributed # don't support cycling when not distributed for simplicity
-
     device = torch.device(args.device)
-
-    # Maybe this will work?
     set_determinism(42)
 
     timer.report('preliminaries')
@@ -92,7 +85,7 @@ def main(args, timer):
 
     timer.report('build samplers')
 
-    # Original trainer had batch size = 26. Using 11 nodes x 6 GPUs x batch size 26 = eff batch size = 66
+    # Original trainer had batch size = 26. Using 11 nodes x 6 GPUs x batch size 1 = eff batch size = 66
     train_loader = DataLoader(train_ds, batch_size=1, sampler=train_sampler, num_workers=1)
     val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=1)
 
@@ -119,7 +112,6 @@ def main(args, timer):
     timer.report('discriminator to device')
 
     # Autoencoder loss functions
-    adv_loss = PatchAdversarialLoss(criterion="least_squares")
     perceptual_loss = PerceptualLoss(
         spatial_dims=2, network_type="resnet50", pretrained=True, #ImageNet pretrained weights used
     )
@@ -163,6 +155,7 @@ def main(args, timer):
         checkpoint = torch.load(args.resume, map_location="cpu")
     elif args.prev_resume and os.path.isfile(args.prev_resume):
         checkpoint = torch.load(args.prev_resume, map_location="cpu")
+
     if checkpoint is not None:
         args.start_epoch = checkpoint["epoch"]
         generator_without_ddp.load_state_dict(checkpoint["generator"])
@@ -194,7 +187,7 @@ def main(args, timer):
 
             generator, timer, metrics = train_generator_one_epoch(
                 args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
-                scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer, metrics
+                scaler_g, scaler_d, train_loader, perceptual_loss, device, timer, metrics
             )
             timer.report(f'training generator for epoch {epoch}')
 
@@ -205,7 +198,7 @@ def main(args, timer):
 
                     timer, metrics = evaluate_generator(
                         args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
-                        scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer, metrics
+                        scaler_g, scaler_d, val_loader, device, timer, metrics
                     )
                     timer.report(f'evaluating generator for epoch {epoch}')
 

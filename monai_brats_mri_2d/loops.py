@@ -1,15 +1,10 @@
-import torch
+import torch, utils
 from torch.cuda.amp import autocast
 import torch.nn.functional as F
-import utils
 from cycling_utils import atomic_torch_save
-
 from generative.losses.adversarial_loss import PatchAdversarialLoss
-
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import make_grid
-import torch.distributed as dist
-# import matplotlib.pyplot as plt
 
 ## -- AUTO-ENCODER - ##
 
@@ -44,27 +39,10 @@ def discriminator_loss(gen_images, real_images, disc_net, adv_weight):
     loss_d = adv_weight * discriminator_loss
     return loss_d
 
-# def plot_images_grid(images, rows, cols):
-#     fig, axes = plt.subplots(rows, cols, figsize=(12, 6))
-#     fig.subplots_adjust(hspace=0.5)
-#     for i, ax in enumerate(axes.flat):
-#         image = images[i].squeeze().numpy()
-#         ax.imshow(image, cmap='gray')
-#         ax.axis('off')
-#     return fig
-
 def train_generator_one_epoch(
         args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
-        scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer,
-        metrics
+        scaler_g, scaler_d, train_loader, perceptual_loss, device, timer, metrics
     ):
-
-    # Obtained from scripts.losses.generator_loss
-    # kl_weight = 1e-6
-    # perceptual_weight = 1.0
-    # adv_weight = 0.5
-    # From tutorial ?
-    # generator_warm_up_n_epochs = 10
 
     generator.train()
     discriminator.train()
@@ -73,7 +51,7 @@ def train_generator_one_epoch(
     total_steps = int(len(train_sampler) / train_loader.batch_size)
     print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
 
-    for step, batch in enumerate(train_loader):
+    for batch in train_loader:
 
         images = batch["image"].to(device)
         timer.report(f'train batch {train_step} to device')
@@ -166,8 +144,7 @@ def train_generator_one_epoch(
 
 def evaluate_generator(
         args, epoch, generator, discriminator, optimizer_g, optimizer_d, train_sampler, val_sampler,
-        scaler_g, scaler_d, train_loader, val_loader, perceptual_loss, adv_loss, device, timer,
-        metrics
+        scaler_g, scaler_d, val_loader, device, timer, metrics
     ):
 
     generator.eval()

@@ -4,6 +4,7 @@ import numpy as np
 import torch.distributed as dist
 from torch.cuda.amp import autocast
 from datetime import datetime
+from scipy import ndimage
 import torch.nn.functional as F
 
 from monai.inferers import sliding_window_inference
@@ -14,7 +15,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 def search_one_epoch(
     model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-    train_sampler, val_sampler, model_scaler, space_scaler, train_metrics, val_metric,
+    train_sampler, val_sampler, scaler, train_metrics, val_metric,
     epoch, train_loader, loss_func, args
 ):
     device = args["device"] # for convenience
@@ -54,9 +55,9 @@ def search_one_epoch(
                 else:
                     loss = loss_func(outputs, labels)
 
-            model_scaler.scale(loss).backward()
-            model_scaler.step(optimizer)
-            model_scaler.update()
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
         else:
             outputs = model(inputs)
             if args["output_classes"] == 2:
@@ -115,10 +116,10 @@ def search_one_epoch(
                         (entropy_alpha_a + entropy_alpha_c) + ram_cost_loss + 0.001 * topology_loss
                     )
 
-                space_scaler.scale(loss).backward()
-                space_scaler.step(arch_optimizer_a)
-                space_scaler.step(arch_optimizer_c)
-                space_scaler.update()
+                scaler.scale(loss).backward()
+                scaler.step(arch_optimizer_a)
+                scaler.step(arch_optimizer_c)
+                scaler.update()
             else:
                 outputs_search = model(inputs_search)
                 if args["output_classes"] == 2:
@@ -173,8 +174,7 @@ def search_one_epoch(
                 "arch_optimizer_c": arch_optimizer_c.state_dict(),
                 "train_sampler": train_sampler.state_dict(),
                 "val_sampler": val_sampler.state_dict(),
-                "model_scaler": model_scaler.state_dict(),
-                "space_scaler": space_scaler.state_dict(),
+                "scaler": scaler.state_dict(),
                 "train_metrics": train_metrics,
                 "val_metric": val_metric
             }
@@ -185,7 +185,7 @@ def search_one_epoch(
 
 def eval_search(
         model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-        train_sampler, val_sampler, model_scaler, space_scaler, train_metrics, val_metric,
+        train_sampler, val_sampler, scaler, train_metrics, val_metric,
         epoch, val_loader, post_pred, post_label, args,
 ):
     device = args["device"] # for convenience
@@ -248,8 +248,7 @@ def eval_search(
                     "arch_optimizer_c": arch_optimizer_c.state_dict(),
                     "train_sampler": train_sampler.state_dict(),
                     "val_sampler": val_sampler.state_dict(),
-                    "model_scaler": model_scaler.state_dict(),
-                    "space_scaler": space_scaler.state_dict(),
+                    "scaler": scaler.state_dict(),
                     "train_metrics": train_metrics,
                     "val_metric": val_metric
                 }

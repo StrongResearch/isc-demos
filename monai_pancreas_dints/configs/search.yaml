@@ -261,6 +261,7 @@ loss:
   batch: true
   smooth_nr: 0.00001
   smooth_dr: 0.00001
+  
 dints_space:
   _target_: monai.networks.nets.TopologySearch
   channel_mul: 0.5
@@ -268,6 +269,7 @@ dints_space:
   num_depths: 4
   use_downsample: true
   device: "$torch.device('cuda')"
+
 network:
   _target_: monai.networks.nets.DiNTS
   dints_space: "@dints_space"
