@@ -64,12 +64,12 @@ isc clusters # view the status of the clusters
 
 (from https://github.com/pytorch/vision/tree/main/references/segmentation)
 
-- WIP [fcn_resnet101.isc](./tv-segmentation/fcn_resnet101.isc)
-- WIP [deeplabv3_mobilenet_v3_large.isc](./tv-segmentation/deeplabv3_mobilenet_v3_large.isc)
+- [fcn_resnet101.isc](./tv-segmentation/fcn_resnet101.isc)
+- [deeplabv3_mobilenet_v3_large.isc](./tv-segmentation/deeplabv3_mobilenet_v3_large.isc)
 
 ### tv-detection
 
 (from https://github.com/pytorch/vision/tree/main/references/detection)
 
-- WIP [maskrcnn_resnet50_fpn.isc](./tv-detection/fasterrcnn_resnet50_fpn.isc)
-- WIP [retinanet_resnet50_fpn.isc](./tv-detection/retinanet_resnet50_fpn.isc)
+- [maskrcnn_resnet50_fpn.isc](./tv-detection/fasterrcnn_resnet50_fpn.isc)
+- [retinanet_resnet50_fpn.isc](./tv-detection/retinanet_resnet50_fpn.isc)
