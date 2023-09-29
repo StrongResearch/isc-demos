@@ -454,3 +454,8 @@ def evaluate(
                 avg_metric += val_metric[2 * _c] / val_metric[2 * _c + 1]
             avg_metric = avg_metric / float(args["output_classes"] - 1)
             print("avg_metric", avg_metric)
+
+            writer = SummaryWriter(log_dir=args["tboard_path"])
+            writer.add_scalar("Val/avg_metric", avg_metric, epoch)
+            writer.flush()
+            writer.close()
