@@ -9,14 +9,15 @@ import torch.nn.functional as F
 
 from monai.inferers import sliding_window_inference
 from monai.metrics import compute_dice
-import yaml, time, os, utils
+import yaml, time, os
+import scripts.utils as utils
 from cycling_utils import atomic_torch_save
 from torch.utils.tensorboard import SummaryWriter
 
 def search_one_epoch(
     model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
     train_sampler, val_sampler, scaler, train_metrics, val_metric,
-    epoch, train_loader, loss_func, args
+    epoch, train_loader, loss_func, args, timer
 ):
     device = args["device"] # for convenience
 
@@ -29,6 +30,8 @@ def search_one_epoch(
 
     model.train()
 
+    timer.report('model.train()')
+
     train_step = train_sampler.progress // train_loader.batch_size
     total_steps = int(len(train_sampler) / train_loader.batch_size)
     print(f'\nTraining / resuming epoch {epoch} from training step {train_step}\n')
@@ -38,6 +41,8 @@ def search_one_epoch(
         inputs, labels = batch_data["image"].to(device), batch_data["label"].to(device)
         inputs_search, labels_search = inputs.detach().clone(), labels.detach().clone() # added, will this work?
 
+        timer.report('data to device')
+
         # UPDATE MODEL
 
         for p in model.module.weight_parameters():
@@ -46,6 +51,8 @@ def search_one_epoch(
         dints_space.log_alpha_c.requires_grad = False
 
         optimizer.zero_grad()
+
+        timer.report('config model to train')
 
         if args["amp"]:
             with autocast():
@@ -69,6 +76,8 @@ def search_one_epoch(
 
         # Reporting and stuff
         train_metrics.update({"model_loss": loss.item(), "inputs_seen": len(inputs)})
+
+        timer.report('update')
 
         # Only update space after number of warmup epochs
         if epoch >= args["num_epochs_warmup"]:
@@ -138,6 +147,8 @@ def search_one_epoch(
             # Reporting and stuff
             train_metrics.update({"space_loss": loss.item()})
 
+        timer.report('space update')
+
         # Batch reporting
         train_metrics.reduce()
         batch_model_loss = train_metrics.local["model_loss"] / train_metrics.local["inputs_seen"]
@@ -147,6 +158,8 @@ def search_one_epoch(
             batch_space_loss = "NONE"
         print(f"EPOCH [{epoch}], BATCH [{train_step}], MODEL LOSS [{batch_model_loss:,.3f}, SPACE LOSS: [{batch_space_loss:,.3f}]")
         train_metrics.reset_local()
+
+        timer.report('metrics reduce')
 
         ## Checkpointing
         print(f"Saving checkpoint at epoch {epoch} train batch {train_step}")
@@ -180,18 +193,22 @@ def search_one_epoch(
             }
             timer = atomic_torch_save(checkpoint, args["resume"], timer)
 
-    return model, dints_space, timer, train_metrics
+    timer.report(f'EPOCH {epoch}')
+
+    return model, dints_space, timer, train_metrics, timer
 
 
 def eval_search(
         model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
         train_sampler, val_sampler, scaler, train_metrics, val_metric,
-        epoch, val_loader, post_pred, post_label, args,
+        epoch, val_loader, post_pred, post_label, args, timer,
 ):
     device = args["device"] # for convenience
 
     torch.cuda.empty_cache()
     model.eval()
+
+    timer.report('model ready to eval')
 
     with torch.no_grad():
 
@@ -254,6 +271,8 @@ def eval_search(
                 }
                 timer = atomic_torch_save(checkpoint, args["resume"], timer)
 
+            timer.report(f'eval step {val_step}')
+
         # synchronizes all processes and reduce results
         if torch.cuda.device_count() > 1:
             dist.barrier()
@@ -289,6 +308,8 @@ def eval_search(
                     },
                     os.path.join(args["arch_ckpt_path"], "search_code.pt"),
                 )
+    
+    timer.report(f'EVAL EPOCH {epoch}')
 
     return timer
 

@@ -10,8 +10,7 @@
 # limitations under the License.
 from cycling_utils import TimestampedTimer
 
-timer = TimestampedTimer()
-timer.report('importing Timer')
+timer = TimestampedTimer('importing timer')
 
 import json
 import logging
@@ -42,9 +41,9 @@ from torch.nn.parallel import DistributedDataParallel
 
 import argparse
 from cycling_utils import InterruptableDistributedSampler, MetricsTracker
-from loops import search_one_epoch, eval_search
+from scripts.loops import search_one_epoch, eval_search
 from pathlib import Path
-import utils
+import scripts.utils as utils
 
 # def get_args_parser(add_help=True):
 #     parser = argparse.ArgumentParser(description="DiNTS search", add_help=add_help)
@@ -53,8 +52,11 @@ import utils
 #     parser.add_argument("--tboard-path", default=None, help="path for saving tensorboard logs", dest="tboard_path") # for checkpointing
 #     return parser
 
+timer.report('importing everything else')
+
 def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard_path=None):
     # logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    timer = TimestampedTimer('commencing run')
 
     parser = ConfigParser()
     parser.read_config(config_file)
@@ -87,23 +89,24 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
     assert args["distributed"] # don't support cycling when not distributed for simplicity
     device = torch.device(args["device"])
 
-    train_transforms = parser.get_parsed_content("transform_train")
-    val_transforms = parser.get_parsed_content("transform_validation")
-
     # deterministic training
     if args["determ"]:
         set_determinism(seed=0)
 
-    print("Loading json")
+    timer.report('preliminaries')
+
+    train_transforms = parser.get_parsed_content("transform_train")
+    val_transforms = parser.get_parsed_content("transform_validation")
+
+    timer.report('transforms')
+
     with open(args["data_list_file_path"], "r") as f:
         json_data = json.load(f)
 
-    print("Listing json")
     list_train = json_data["training"]
     list_valid = json_data["validation"]
 
     # training data
-    print("Preparing train_files")
     files = []
     for _i in range(len(list_train)):
         str_img = os.path.join(args["data_file_base_dir"], list_train[_i]["image"])
@@ -117,8 +120,9 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
 
     random.shuffle(train_files)
 
+    timer.report('training files')
+
     # validation data
-    print("Preparing val_files")
     files = []
     for _i in range(len(list_valid)):
         str_img = os.path.join(args["data_file_base_dir"], list_valid[_i]["image"])
@@ -129,6 +133,8 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
 
         files.append({"image": str_img, "label": str_seg})
     val_files = files
+
+    timer.report('validation files')
 
     n_workers = 1
     cache_rate = 0.0
@@ -142,6 +148,8 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
 
     train_loader = DataLoader(train_ds, batch_size=1, sampler=train_sampler, num_workers=1)
     val_loader = DataLoader(val_ds, batch_size=1, sampler=val_sampler, num_workers=1)
+
+    timer.report('datasets and dataloaders')
 
     # # TESTING
     # timer = TimestampedTimer("testing start")
@@ -160,6 +168,8 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
     post_pred = transforms.Compose([transforms.EnsureType(), transforms.AsDiscrete(to_onehot=args["output_classes"], argmax=True)])
     post_label = transforms.Compose([transforms.EnsureType(), transforms.AsDiscrete(to_onehot=args["output_classes"])])
 
+    timer.report('model to device')
+
     model_without_ddp = model
     if args["distributed"]:
         model = DistributedDataParallel(model, device_ids=[args["gpu"]], find_unused_parameters=True)
@@ -176,6 +186,8 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
         [dints_space.log_alpha_c], lr=args["learning_rate_arch"] * args["world_size"], betas=(0.5, 0.999), weight_decay=0.0
     )
 
+    timer.report('model ready to train')
+
     # amp
     if args["amp"]:
         from torch.cuda.amp import GradScaler
@@ -189,6 +201,8 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
     # Init metric trackers
     train_metrics = MetricsTracker()
     val_metric = torch.zeros((args["output_classes"] - 1) * 2, dtype=torch.float, device=device)
+
+    timer.report('metrics setup')
 
     # RETRIEVE CHECKPOINT
     Path(args["resume"]).parent.mkdir(parents=True, exist_ok=True)
@@ -212,10 +226,12 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
         val_metric = checkpoint["val_metric"]
         val_metric.to(device)
 
+    timer.report('obtain checkpoint')
+
     for epoch in range(args["start_epoch"], args["num_epochs"]):
 
         print('\n')
-        print(f"EPOCH :: {epoch}")
+        print(f"EPOCH :: {epoch} / {args['num_epochs']}")
         print('\n')
 
         with train_sampler.in_epoch(epoch):
@@ -224,7 +240,7 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
             model, dints_space, timer, train_metrics = search_one_epoch(
                 model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
                 train_sampler, val_sampler, scaler, train_metrics, val_metric,
-                epoch, train_loader, loss_func, args
+                epoch, train_loader, loss_func, args, timer
             )
             timer.report(f'searching space for epoch {epoch}')
 
@@ -236,6 +252,6 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
                     timer = eval_search(
                         model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
                         train_sampler, val_sampler, scaler, train_metrics, val_metric,
-                        epoch, val_loader, post_pred, post_label, args
+                        epoch, val_loader, post_pred, post_label, args, timer
                     )
                     timer.report(f'evaluating search for epoch {epoch}')
