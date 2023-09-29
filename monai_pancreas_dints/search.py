@@ -13,33 +13,32 @@ from cycling_utils import TimestampedTimer
 timer = TimestampedTimer('importing timer')
 
 import json
-import logging
+# import logging
 import os
 import random
-import sys
-import time
-from datetime import datetime
-from typing import Sequence, Union
-from scipy import ndimage
+# import sys
+# import time
+# from datetime import datetime
+# from typing import Sequence, Union
+# from scipy import ndimage
 
 import monai
 import numpy as np
 import torch
 import torch.distributed as dist
-import torch.nn.functional as F
+# import torch.nn.functional as F
 import yaml
 from monai import transforms
 from monai.bundle import ConfigParser
 from monai.networks.nets import TopologySearch, DiNTS
 from monai.losses import DiceCELoss
-from monai.data import ThreadDataLoader, partition_dataset, DataLoader
-from monai.inferers import sliding_window_inference
-from monai.metrics import compute_dice
+# from monai.data import ThreadDataLoader, partition_dataset, 
+from monai.data import DataLoader
+# from monai.inferers import sliding_window_inference
+# from monai.metrics import compute_dice
 from monai.utils import set_determinism
 from torch.nn.parallel import DistributedDataParallel
 
-
-import argparse
 from cycling_utils import InterruptableDistributedSampler, MetricsTracker
 from loops import search_one_epoch, eval_search
 from pathlib import Path
