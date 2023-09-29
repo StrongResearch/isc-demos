@@ -3,4 +3,4 @@ gpu_type="24GB VRAM GPU"
 nnodes = 11
 venv_path = "~/.venv/bin/activate"
 output_path = "~/outputs/monai_pancreas_dints"
-command="-m scripts.search run --config_file configs/search.yaml --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
+command="search.py --config-file configs/search.yaml --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
