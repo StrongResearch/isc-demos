@@ -28,7 +28,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--start-epoch", default=0, type=int, metavar="N", help="start epoch")
     parser.add_argument("--dist-url", default="env://", type=str, help="url used to set up distributed training")
     parser.add_argument("-j", "--workers", default=16, type=int, metavar="N", help="number of data loading workers (default: 16)")
-    parser.add_argument("--lr",default=1e-5,type=float, help="initial learning rate")
+    parser.add_argument("--lr", default=5e-5, type=float, help="initial learning rate")
     parser.add_argument("--kl-weight",default=1e-6,type=float, help="kl loss weight for generator", dest="kl_weight")
     parser.add_argument("--perceptual-weight",default=1.0,type=float, help="perceptual loss weight for generator", dest="perceptual_weight")
     parser.add_argument("--adv-weight",default=0.5,type=float, help="adversarial loss weight for generator", dest="adv_weight")
@@ -60,8 +60,8 @@ def main(args, timer):
             
     crop_transform = transforms.Compose([
             transforms.DivisiblePadd(keys="image", k=[4,4,1]),
-            # transforms.RandSpatialCropd(keys="image", roi_size=(240, 240, 1), random_size=False), # Each of the 100 slices will be randomly sampled.
-            transforms.RandSpatialCropSamplesd(keys="image", random_size=False, roi_size=(240, 240, 1), num_samples=26), # Each of the 100 slices will be randomly sampled.
+            transforms.RandSpatialCropd(keys="image", roi_size=(240, 240, 1), random_size=False), # Each of the 100 slices will be randomly sampled.
+            # transforms.RandSpatialCropSamplesd(keys="image", random_size=False, roi_size=(240, 240, 1), num_samples=26), # Each of the 100 slices will be randomly sampled.
             transforms.SqueezeDimd(keys="image", dim=3),
             transforms.RandFlipd(keys="image", prob=0.5, spatial_axis=0),
             transforms.RandFlipd(keys="image", prob=0.5, spatial_axis=1),

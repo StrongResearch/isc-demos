@@ -294,7 +294,7 @@ def eval_search(
 
 
 def train_one_epoch(
-    model, optimizer,
+    model, optimizer, lr_scheduler,
     train_sampler, val_sampler, scaler, train_metrics, val_metric,
     epoch, train_loader, loss_func, args
 ):
@@ -346,6 +346,7 @@ def train_one_epoch(
 
         if train_step == total_steps:
             train_metrics.end_epoch()
+            lr_scheduler.step()
 
         if utils.is_main_process() and train_step % 1 == 0: # Checkpointing every batch
 
@@ -358,6 +359,7 @@ def train_one_epoch(
                 "epoch": epoch,
                 "model": model.module.state_dict(),
                 "optimizer": optimizer.state_dict(),
+                "lr_scheduler": lr_scheduler.state_dict(),
                 "train_sampler": train_sampler.state_dict(),
                 "val_sampler": val_sampler.state_dict(),
                 "scaler": scaler.state_dict(),
@@ -370,7 +372,7 @@ def train_one_epoch(
 
 
 def evaluate(
-        model, optimizer,
+        model, optimizer, lr_scheduler,
         train_sampler, val_sampler, scaler, train_metrics, val_metric,
         epoch, val_loader, post_pred, post_label, args,
 ):
@@ -428,6 +430,7 @@ def evaluate(
                     "epoch": epoch,
                     "model": model.module.state_dict(),
                     "optimizer": optimizer.state_dict(),
+                    "lr_scheduler": lr_scheduler.state_dict(),
                     "train_sampler": train_sampler.state_dict(),
                     "val_sampler": val_sampler.state_dict(),
                     "scaler": scaler.state_dict(),

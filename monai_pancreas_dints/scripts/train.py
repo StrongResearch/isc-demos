@@ -93,6 +93,9 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
     loss_func = DiceCELoss(include_background=False, to_onehot_y=True, softmax=True, squared_pred=True, batch=True, smooth_nr=1e-05, smooth_dr=1e-05)
 
+    post_pred = transforms.Compose([transforms.Activationsd(softmax=True), transforms.AsDiscrete(to_onehot=args["output_classes"], argmax=True)])
+    post_label = transforms.Compose([transforms.Activationsd(softmax=False), transforms.AsDiscrete(to_onehot=args["output_classes"], argmax=False)])
+
     model_without_ddp = model
     if args["distributed"]:
         model = DistributedDataParallel(model, device_ids=[args["gpu"]], find_unused_parameters=True)
@@ -132,6 +135,7 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
         args["start_epoch"] = checkpoint["epoch"]
         model_without_ddp.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
+        lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
         train_sampler.load_state_dict(checkpoint["train_sampler"])
         val_sampler.load_state_dict(checkpoint["val_sampler"])
         scaler.load_state_dict(checkpoint["scaler"])
@@ -149,7 +153,7 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
             timer = TimestampedTimer("Start training")
 
             model, dints_space, timer, train_metrics, val_metric = train_one_epoch(
-                model, optimizer,
+                model, optimizer, lr_scheduler,
                 train_sampler, val_sampler, scaler, train_metrics, val_metric,
                 epoch, train_loader, loss_func, args
             )
@@ -161,7 +165,7 @@ def run(config_file: Union[str, Sequence[str]], resume=None, prev_resume=None, t
                     timer = TimestampedTimer("Start evaluation")
 
                     timer = evaluate(
-                        model, optimizer,
+                        model, optimizer, lr_scheduler,
                         train_sampler, val_sampler, scaler, train_metrics, val_metric,
                         epoch, val_loader, post_pred, post_label, args,
                     )

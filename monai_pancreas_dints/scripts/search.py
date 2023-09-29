@@ -157,9 +157,7 @@ def run(config_file: Union[str, Sequence[str]], resume, prev_resume=None, tboard
     model = model.to(device)
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
 
-    post_pred = transforms.Compose(
-        [transforms.EnsureType(), transforms.AsDiscrete(argmax=True, to_onehot=args["output_classes"])]
-    )
+    post_pred = transforms.Compose([transforms.EnsureType(), transforms.AsDiscrete(to_onehot=args["output_classes"], argmax=True)])
     post_label = transforms.Compose([transforms.EnsureType(), transforms.AsDiscrete(to_onehot=args["output_classes"])])
 
     model_without_ddp = model
