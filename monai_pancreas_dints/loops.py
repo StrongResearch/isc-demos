@@ -210,7 +210,7 @@ def search_one_epoch(
 
     timer.report(f'EPOCH {epoch}')
 
-    return model, dints_space, timer, train_metrics, timer
+    return model, dints_space, timer, train_metrics
 
 
 def eval_search(

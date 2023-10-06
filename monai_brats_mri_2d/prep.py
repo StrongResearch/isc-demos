@@ -1,5 +1,5 @@
 # Ensuring required monai version is installed
-!pip install monai==1.2.0
+# pip install monai==1.2.0
 
 # Download the toy dataset from MONAI
 print("Downloadning BraTS2016/17")
@@ -7,7 +7,7 @@ from monai.apps import DecathlonDataset
 from generative.losses.perceptual import PerceptualLoss
 
 # _ = DecathlonDataset(root_dir="/mnt/Datasets/Open-Datasets/MONAI", task="Task01_BrainTumour", section="training", download=True)
-_ = DecathlonDataset(root_dir="/mnt/.node1/Open-Datsets/MONAI", task="Task01_BrainTumour", section="training", download=True)
+# _ = DecathlonDataset(root_dir="/mnt/.node1/Open-Datsets/MONAI", task="Task01_BrainTumour", section="training", download=True)
 
 perceptual_loss = PerceptualLoss(
     spatial_dims=2, network_type="resnet50", pretrained=True, #ImageNet pretrained weights used

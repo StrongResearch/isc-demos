@@ -124,6 +124,7 @@ def train_one_epoch(
                 "confmat_temp": confmat.temp_mat,
                 "metrics": metrics,
             }
+
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
@@ -301,10 +302,10 @@ def main(args, timer):
 
     # Init global confmat for eval - eval accumulator
     confmat = utils.ConfusionMatrix(num_classes)
-    timer.report('init confmat')
-
     # Init general purpose metrics tracker
     metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
+
+    timer.report('init metrics')
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -352,6 +353,7 @@ def main(args, timer):
         print('\n')
 
         with train_sampler.in_epoch(epoch):
+
             timer = TimestampedTimer() # obtain time trial for each epoch
             model, timer, metrics = train_one_epoch(
                 args, model, criterion, optimizer, data_loader_train,
@@ -361,6 +363,7 @@ def main(args, timer):
             timer.report(f'training for epoch {epoch}')
 
             with test_sampler.in_epoch(epoch):
+                
                 timer = TimestampedTimer() # obtain time trial for each epoch
                 confmat, timer, metrics = evaluate(
                     args, model, data_loader_test, num_classes, confmat,

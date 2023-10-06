@@ -153,8 +153,10 @@ def main(args, timer):
     checkpoint = None
     if args.resume and os.path.isfile(args.resume): # If we're resuming...
         checkpoint = torch.load(args.resume, map_location="cpu")
+        print("RESUMING PAUSED EXPERIMENT")
     elif args.prev_resume and os.path.isfile(args.prev_resume):
         checkpoint = torch.load(args.prev_resume, map_location="cpu")
+        print("RE-STARTING FROM PREVIOUS EXPERIMENT")
 
     if checkpoint is not None:
         args.start_epoch = checkpoint["epoch"]

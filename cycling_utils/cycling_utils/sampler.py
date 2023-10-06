@@ -161,15 +161,18 @@ class InterruptableDistributedGroupedBatchSampler(DistributedSampler):
         # OVERALL STATUS INDICATOR
         self.progress = 0
         self._has_reset_progress = True
+        self.batch_size = batch_size
+        self.group_ids = group_ids
+        self.batches = self._create_batches()
 
-        # PRE-PROCESS DATASET
-        if shuffle:
-            # deterministically shuffle based on seed
+    def _create_batches(self):
+        if self.shuffle:
+            # deterministically shuffle based on epoch and seed
             g = torch.Generator()
-            g.manual_seed(seed)
-            indices = torch.randperm(len(dataset), generator=g).tolist()  # type: ignore[arg-type]
+            g.manual_seed(self.seed + self.epoch)
+            indices = torch.randperm(len(self.dataset), generator=g).tolist()  # type: ignore[arg-type]
         else:
-            indices = list(range(len(dataset)))  # type: ignore[arg-type]
+            indices = list(range(len(self.dataset)))  # type: ignore[arg-type]
 
         if not self.drop_last:
             # add extra samples to make dataset evenly divisible accross ranks
@@ -185,45 +188,44 @@ class InterruptableDistributedGroupedBatchSampler(DistributedSampler):
 
         # subsample indices to use on this rank
         indices = indices[self.rank : self.total_size : self.num_replicas]
-        # num_samples is the number of samples to be processed each rank
         assert len(indices) == self.num_samples
 
         # PRE-COMPUTE GROUPED BATCHES
-
         buffer_per_group = defaultdict(list)
         samples_per_group = defaultdict(list)
-        self.num_batches = math.ceil(len(indices)/ batch_size)
+        self.num_batches = math.ceil(len(indices)/ self.batch_size)
 
-        self.batches = [] # pre-computed so progress refers to batches, not samples.
+        batches = [] # pre-computed so progress refers to batches, not samples.
         for idx in indices:
-            group_id = group_ids[idx]
+            group_id = self.group_ids[idx]
             buffer_per_group[group_id].append(idx)
             samples_per_group[group_id].append(idx)
-            if len(buffer_per_group[group_id]) == batch_size:
-                self.batches.append(buffer_per_group[group_id])
+            if len(buffer_per_group[group_id]) == self.batch_size:
+                batches.append(buffer_per_group[group_id])
                 del buffer_per_group[group_id]
-            assert len(buffer_per_group[group_id]) < batch_size
+            assert len(buffer_per_group[group_id]) < self.batch_size
 
         # now we have run out of elements that satisfy
         # the group criteria, let's return the remaining
         # elements so that the size of the sampler is
         # deterministic
-        num_remaining = self.num_batches - len(self.batches)
+        num_remaining = self.num_batches - len(batches)
         if num_remaining > 0:
             # for the remaining batches, take first the buffers with the largest number
             # of elements
             for group_id, _ in sorted(buffer_per_group.items(), key=lambda x: len(x[1]), reverse=True):
-                remaining = batch_size - len(buffer_per_group[group_id])
+                remaining = self.batch_size - len(buffer_per_group[group_id])
                 samples_from_group_id = _repeat_to_at_least(samples_per_group[group_id], remaining)
                 buffer_per_group[group_id].extend(samples_from_group_id[:remaining])
-                assert len(buffer_per_group[group_id]) == batch_size
-                self.batches.append(buffer_per_group[group_id])
+                assert len(buffer_per_group[group_id]) == self.batch_size
+                batches.append(buffer_per_group[group_id])
                 num_remaining -= 1
                 if num_remaining == 0:
                     break
 
-        assert len(self.batches) == self.num_batches
-
+        # Check that the batches are all good to go
+        assert len(batches) == self.num_batches
+        return batches
 
     def _reset_progress(self):
         self.progress = 0

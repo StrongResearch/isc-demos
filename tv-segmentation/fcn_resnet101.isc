@@ -4,4 +4,4 @@ gpu_type="24GB VRAM GPU"
 nnodes = 11
 venv_path = "~/.venv/bin/activate"
 output_path = "~/outputs/fcn_resnet101"
-command="train_cycling.py --lr 0.001 --dataset coco -b 4 --model fcn_resnet101 --aux-loss --weights-backbone ResNet101_Weights.IMAGENET1K_V1 --data-path=/mnt/.node1/Open-Datasets/coco --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
+command="train_cycling.py --lr 0.001 --dataset coco -b 4 --model fcn_resnet101 --aux-loss --weights-backbone ResNet101_Weights.IMAGENET1K_V1 --data-path=/mnt/.node1/Open-Datasets/coco --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb --prev-resume /mnt/Client/StrongHumans/strong_adam/outputs/fcn_resnet101/13a04288-f836-44eb-aa0c-3e5dda18ddb5/checkpoint.isc"

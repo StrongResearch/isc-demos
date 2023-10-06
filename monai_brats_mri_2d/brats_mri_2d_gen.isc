@@ -3,4 +3,4 @@ gpu_type="24GB VRAM GPU"
 nnodes = 11
 venv_path = "~/.venv/bin/activate"
 output_path = "~/outputs/brats_mri_2d_gen"
-command="train_cycling_gen.py --lr 1e-5 --data-path=/mnt/.node1/Open-Datasets/MONAI --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
+command="train_cycling_gen.py --lr 1e-5 --data-path=/mnt/.node1/Open-Datasets/MONAI --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb --prev-resume /mnt/Client/StrongHumans/strong_adam/outputs/brats_mri_2d_gen/301e7ac7-0c9a-4daa-920e-57ea5ea983b9/checkpoint.isc"
