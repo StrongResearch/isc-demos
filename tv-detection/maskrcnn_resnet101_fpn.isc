@@ -1,6 +1,6 @@
 experiment_name = "maskrcnn_resnet101_fpn"
 gpu_type = "24GB VRAM GPU"
 nnodes = 11
-venv_path = "~/.venv/bin/activate"
-output_path = "~/outputs/maskrcnn_resnet101_fpn"
+venv_path = "/mnt/Client/Adamstn3rh22tykvgyhdkclook3rnk7q/adaadam4qalumfvjdstjpx7zyvlebh2u/.venv/bin/activate"
+output_path = "/mnt/Client/Adamstn3rh22tykvgyhdkclook3rnk7q/adaadam4qalumfvjdstjpx7zyvlebh2u/outputs/maskrcnn_resnet101_fpn"
 command = "train_cycling.py --dataset coco --model maskrcnn_resnet101_fpn --epochs 26 --lr-steps 16 22 -b 2 --aspect-ratio-group-factor 3 --data-path=/mnt/.node1/Open-Datasets/coco --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
