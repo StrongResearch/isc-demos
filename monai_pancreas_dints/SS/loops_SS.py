@@ -17,7 +17,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 def search_one_epoch(
     model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-    train_sampler, val_sampler, scaler, train_metrics, val_metric, best_metric,
+    train_sampler, val_sampler, scaler, train_metrics, val_metric,
     epoch, train_loader, loss_func, args, timer
 ):
     device = args["device"] # for convenience
@@ -204,8 +204,7 @@ def search_one_epoch(
                 "val_sampler": val_sampler.state_dict(),
                 "scaler": scaler.state_dict(),
                 "train_metrics": train_metrics,
-                "val_metric": val_metric,
-                "best_metric": best_metric,
+                "val_metric": val_metric
             }
             timer = atomic_torch_save(checkpoint, args["resume"], timer)
 
@@ -216,7 +215,7 @@ def search_one_epoch(
 
 def eval_search(
         model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-        train_sampler, val_sampler, scaler, train_metrics, val_metric, best_metric,
+        train_sampler, val_sampler, scaler, train_metrics, val_metric,
         epoch, val_loader, post_pred, post_label, args, timer,
 ):
     device = args["device"] # for convenience
@@ -260,16 +259,8 @@ def eval_search(
             value = compute_dice(y_pred=val_outputs, y=val_labels, include_background=False)
 
             for _c in range(args["output_classes"] - 1):
-
                 val0 = torch.nan_to_num(value[0, _c], nan=0.0)
                 val1 = 1.0 - torch.isnan(value[0, 0]).float()
-
-                val0, val1, val_metric =  val0.to(device), val1.to(device), val_metric.to(device)
-
-                print(f"val_metric.device = {val_metric.device}")
-                print(f"val0.device = {val0.device}")
-                print(f"val1.device = {val1.device}")
-
                 val_metric[2 * _c] += val0 * val1
                 val_metric[2 * _c + 1] += val1
 
@@ -291,8 +282,7 @@ def eval_search(
                     "val_sampler": val_sampler.state_dict(),
                     "scaler": scaler.state_dict(),
                     "train_metrics": train_metrics,
-                    "val_metric": val_metric,
-                    "best_metric": best_metric,
+                    "val_metric": val_metric
                 }
                 timer = atomic_torch_save(checkpoint, args["resume"], timer)
 
@@ -301,10 +291,6 @@ def eval_search(
         # synchronizes all processes and reduce results
         if torch.cuda.device_count() > 1:
             dist.barrier()
-            val_metric = val_metric.to_dense()
-            val_metric = val_metric.to(device)
-            print(f"val_metric.device = {val_metric.device}")
-            print(f"val_metric.layout = {val_metric.layout}")
             dist.all_reduce(val_metric, op=torch.distributed.ReduceOp.SUM)
 
         val_metric = val_metric.tolist()
@@ -337,22 +323,6 @@ def eval_search(
                     },
                     os.path.join(args["arch_ckpt_path"], "search_code.pt"),
                 )
-
-                checkpoint = {
-                    "epoch": epoch,
-                    "model": model.module.state_dict(),
-                    "dints": dints_space.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "arch_optimizer_a": arch_optimizer_a.state_dict(),
-                    "arch_optimizer_c": arch_optimizer_c.state_dict(),
-                    "train_sampler": train_sampler.state_dict(),
-                    "val_sampler": val_sampler.state_dict(),
-                    "scaler": scaler.state_dict(),
-                    "train_metrics": train_metrics,
-                    "val_metric": val_metric,
-                    "best_metric": best_metric,
-                }
-                timer = atomic_torch_save(checkpoint, args["resume"], timer)
     
     timer.report(f'EVAL EPOCH {epoch}')
 

@@ -1,4 +1,4 @@
-experiment_name="monai_pancreas_dints"
+experiment_name="monai_pancreas_dints_lr"
 gpu_type="24GB VRAM GPU"
 nnodes = 11
 venv_path = "~/.venv/bin/activate"

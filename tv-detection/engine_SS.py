@@ -4,7 +4,7 @@ from itertools import product
 
 import torch
 import torchvision.models.detection.mask_rcnn
-import torch.distributed as dist
+import torch.distributed as dist 
 import utils
 from coco_eval import CocoEvaluator
 from coco_utils import get_coco_api_from_dataset
@@ -42,14 +42,11 @@ def train_one_epoch(
             check_1 = 1 if not all([math.isfinite(v) for v in loss_dict.values()]) else 0
             check_tensor = torch.tensor([check_0, check_1], requires_grad=False, device=device)
             dist.all_reduce(check_tensor, op=dist.ReduceOp.SUM)
-            
             if check_tensor.sum() > 0:
                 print(f"CONTINUE CONDITION - NaN: {check_tensor[0].item()}, Infinite: {check_tensor[1].item()}")
 
                 # reset optimizer to prevent momentum carrying model into same issue
-                del optimizer, images, targets
-                torch.cuda.empty_cache()
-
+                del optimizer
                 if args.norm_weight_decay is None:
                     parameters = [p for p in model.parameters() if p.requires_grad]
                 else:
@@ -226,24 +223,25 @@ def evaluate(
     coco_evaluator.accumulate()
     results = coco_evaluator.summarize()
 
+    # metric_A = ["bbox-", "segm-"]
+    # metric_B = ["AP", "AR"]
+    # metric_C = ["", "50", "75", "-S", "-M", "-L"]
+    # metric_names = ["".join(t) for t in product(metric_A, metric_B, metric_C)]
     metric_names = [
         "bbox/AP", "bbox/AP-50", "bbox/AP-75", "bbox/AP-S", "bbox/AP-M", "bbox/AP-L", 
-        "bbox/AR-MD1", "bbox/AR-MD10", "bbox/AR-MD100", "bbox/AR-S", "bbox/AR-M", "bbox/AR-L",
+        "bbox/AR-MD1", "bbox/AR-MD10", "bbox/AR-MD100", "bbox/AR-S", "bbox/AR-M", "bbox/AR-L"
+    ] + [
         "segm/AP", "segm/AP-50", "segm/AP-75", "segm/AP-S", "segm/AP-M", "segm/AP-L", 
         "segm/AR-MD1", "segm/AR-MD10", "segm/AR-MD100", "segm/AR-S", "segm/AR-M", "segm/AR-L"
     ]
-
     metrics["val"].update({name: val for name,val in zip(metric_names, results)})
     metrics["val"].reduce()
-    # Normalise validation metrics by world_size
-    ngpus = dist.get_world_size()
-    metrics["val"].agg = {k:v/ngpus for k,v in metrics["val"].agg.items()}
     metrics["val"].end_epoch()
 
     if utils.is_main_process():
         writer = SummaryWriter(log_dir=args.tboard_path)
         for name,val in metrics["val"].epoch_reports[-1].items():
-            writer.add_scalar("Val/"+name, val/ngpus, epoch)
+            writer.add_scalar("Val/"+name, val, epoch)
         writer.flush()
         writer.close()
 

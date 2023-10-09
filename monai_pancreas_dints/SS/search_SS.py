@@ -204,7 +204,6 @@ def main(args, timer):
     # Init metric trackers
     train_metrics = MetricsTracker()
     val_metric = torch.zeros((args["output_classes"] - 1) * 2, dtype=torch.float, device=device)
-    best_metric = 0
 
     timer.report('metrics setup')
 
@@ -228,7 +227,6 @@ def main(args, timer):
         scaler.load_state_dict(checkpoint["scaler"])
         train_metrics = checkpoint["train_metrics"]
         val_metric = checkpoint["val_metric"]
-        best_metric = checkpoint["best_metric"]
         val_metric.to(device)
 
     timer.report('obtain checkpoint')
@@ -244,7 +242,7 @@ def main(args, timer):
 
             model, dints_space, timer, train_metrics = search_one_epoch(
                 model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-                train_sampler, val_sampler, scaler, train_metrics, val_metric, best_metric,
+                train_sampler, val_sampler, scaler, train_metrics, val_metric,
                 epoch, train_loader, loss_func, args, timer
             )
             timer.report(f'searching space for epoch {epoch}')
@@ -256,7 +254,7 @@ def main(args, timer):
 
                     timer = eval_search(
                         model, optimizer, dints_space, arch_optimizer_a, arch_optimizer_c, 
-                        train_sampler, val_sampler, scaler, train_metrics, val_metric, best_metric,
+                        train_sampler, val_sampler, scaler, train_metrics, val_metric,
                         epoch, val_loader, post_pred, post_label, args, timer
                     )
                     timer.report(f'evaluating search for epoch {epoch}')

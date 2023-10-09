@@ -8,14 +8,14 @@ data_file_base_dir: /mnt/Datasets/Open-Datasets/MONAI/Task07_Pancreas
 data_list_file_path: configs/dataset_0.json
 determ: true
 input_channels: 1
-learning_rate: 0.025
-learning_rate_arch: 0.001
+learning_rate: 0.0025
+learning_rate_arch: 0.0001
 learning_rate_milestones:
 - 0.4
 - 0.8
 num_images_per_batch: 1
 num_epochs: 1430
-num_epochs_per_validation: 100
+num_epochs_per_validation: 1
 num_epochs_warmup: 715
 num_patches_per_image: 1
 num_sw_batch_size: 6
