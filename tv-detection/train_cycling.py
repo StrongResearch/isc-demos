@@ -257,7 +257,7 @@ def main(args, timer):
                     optimizer, lr_scheduler, warmup_lr_scheduler, train_sampler, device, 
                     scaler, timer, metrics
                 )
-
+                
 
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="PyTorch Detection Training", add_help=add_help)
@@ -269,7 +269,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--epochs", default=26, type=int, metavar="N", help="number of total epochs to run")
     parser.add_argument("-j", "--workers", default=4, type=int, metavar="N", help="number of data loading workers (default: 4)")
     parser.add_argument("--opt", default="sgd", type=str, help="optimizer")
-    parser.add_argument("--lr",default=0.02,type=float,help="initial learning rate, 0.02 is the default value for training on 8 gpus and 2 images_per_gpu")
+    parser.add_argument("--lr", default=0.02, type=float,help="initial learning rate, 0.02 is the default value for training on 8 gpus and 2 images_per_gpu")
     parser.add_argument("--momentum", default=0.9, type=float, metavar="M", help="momentum")
     parser.add_argument("--wd","--weight-decay",default=1e-4,type=float,metavar="W",help="weight decay (default: 1e-4)",dest="weight_decay",)
     parser.add_argument("--norm-weight-decay",default=None,type=float,help="weight decay for Normalization layers (default: None, same value as --wd)")

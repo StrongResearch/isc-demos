@@ -1,6 +1,6 @@
 import math
 import sys
-from itertools import product
+# from itertools import product
 
 import torch
 import torchvision.models.detection.mask_rcnn
@@ -24,7 +24,7 @@ def train_one_epoch(
 
     print(f'\nTraining / resuming epoch {epoch} from training step {train_sampler.progress}\n')
 
-    for images, targets in data_loader_train:
+    for i, (images, targets) in enumerate(data_loader_train):
 
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in t.items()} for t in targets]
@@ -143,7 +143,7 @@ def train_one_epoch(
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
-
+    
     lr_scheduler.step() # OUTER LR_SCHEDULER STEP EACH EPOCH
     return model, timer, metrics
 
@@ -177,7 +177,7 @@ def evaluate(
     test_step = test_sampler.progress // data_loader_test.batch_size
     print(f'\nEvaluating / resuming epoch {epoch} from eval step {test_step}\n')
 
-    for images, targets in data_loader_test:
+    for i, (images, targets) in enumerate(data_loader_test):
 
         images = list(img.to(device) for img in images)
         timer.report(f'Epoch {epoch} batch: {test_step} moving to device')
@@ -218,7 +218,7 @@ def evaluate(
             if args.amp:
                 checkpoint["scaler"] = scaler.state_dict()
             timer = atomic_torch_save(checkpoint, args.resume, timer)
-
+    
     # gather the stats from all processes
     coco_evaluator.synchronize_between_processes()
 
