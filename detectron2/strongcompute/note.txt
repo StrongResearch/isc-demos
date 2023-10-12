@@ -1,0 +1,35 @@
+# changes made directly to the detectron2 source files
+/detectron2/config/defaults.py
+- shuffle config variable added to control sampler indices output
+
+/detectron2/data/build.py
+- _train_loader_from_config() function now initialises TrainingSampler with
+shuffle and seed parameters which can be customised in our config.yml or
+directly in /detectron2/config/defaults.py
+- removed parameters and return variables prefetch_factor, persistent_workers
+and pin_memory from build_batch_data_loader() and
+build_detection_train_loader()
+
+# strongcompute implementations
+/strongcompute/main.py
+- this is a demo program mirroring /tools/plain_train_net.py that performs
+distributed training for instance segmentation using the coco dataset
+- added distributed training capabilities
+
+- training loop: dataloader now retrieves the data corresnponding to the
+iteration. the sampler generates an infinite stream of indices which correspond
+to permutations of the dataset.
+if the sampler parameters shuffle is set to false and seed is set to positive,
+then the indices are determined.
+hence, the training loop will iterate through an entire dataset of unique
+indices before moving on to the next permutation.
+
+- quality of life: ease of customisation and more config variables added which
+can be set in config.yml
+
+# no need for atomic save
+- detectron2 creates a new checkpoint file every checkpointer save period,
+and generates a linker file that points to the latest checkpoint file.
+this means that even if the training is halted during save, the linker file
+will be pointing to the previous checkpoint file as the latest checkpoint file
+was not fully generated.

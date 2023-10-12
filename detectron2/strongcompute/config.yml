@@ -3,7 +3,7 @@
 # @date 2023-10-09
 # @brief detectron2 demo configurations
 
-ITER_LOG_PERIOD: 200
+ITER_LOG_PERIOD: 1
 
 CHECKPOINT_PATH: '/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/output/detectron2/checkpoint/'
 TENSORBOARD_PATH: '/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/output/detectron2/tensorboard/'
