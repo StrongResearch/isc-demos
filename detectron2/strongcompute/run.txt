@@ -1,1 +1,3 @@
-torchrun --nnodes 1 --nproc-per-node 6 main.py
+torchrun --nnodes 1 --nproc_per_node 6 main.py
+torchrun --nnodes 2 --nproc_per_node 6 --master_addr 192.168.5.70 --master_port 9999 --node_rank 0 main.py
+torchrun --nnodes 2 --nproc-per-node 6 --master_addr 192.168.5.70 --master_port 9999 --node_rank 1 main.py

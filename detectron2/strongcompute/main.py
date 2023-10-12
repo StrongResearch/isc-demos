@@ -56,8 +56,8 @@ def setup_dist_print(is_master: bool) -> None:
   __builtins__.print = print
 
 def init_dist_mode(params: Dict[str, Any]) -> None:
-  torch.cuda.set_device(int(os.environ['RANK']))
-  dist.init_process_group(backend='nccl')
+  torch.cuda.set_device(int(os.environ['LOCAL_RANK']))
+  dist.init_process_group('nccl')
   comm.create_local_process_group(params['NUM_WORKERS'])
   dist.barrier()
   setup_dist_print(comm.get_rank() == 0)
