@@ -5,7 +5,7 @@ import time
 from collections import defaultdict, deque
 
 import torch
-import torch.distributed as dist
+import torch.distributed as dist  
 
 class SmoothedValue:
     """Track a series of values and provide access to smoothed values over a
@@ -29,7 +29,11 @@ class SmoothedValue:
         """
         Warning: does not synchronize the deque!
         """
-        t = reduce_across_processes([self.count, self.total])
+        if not is_dist_avail_and_initialized():
+            return
+        t = torch.tensor([self.count, self.total], dtype=torch.float64, device="cuda")
+        dist.barrier()
+        dist.all_reduce(t)
         t = t.tolist()
         self.count = int(t[0])
         self.total = t[1]
@@ -62,49 +66,47 @@ class SmoothedValue:
         )
 
 
-class ConfusionMatrix:
-    def __init__(self, num_classes):
-        self.num_classes = num_classes
-        # temp_mat will accumulate results from images seen on this node
-        self.temp_mat = torch.zeros((num_classes, num_classes), dtype=torch.int64, device='cpu', requires_grad=False)
-        # mat will then store the accumulation of all temp_mats, avoiding multiple-counting
-        self.mat = torch.zeros((num_classes, num_classes), dtype=torch.int64, device='cpu', requires_grad=False)
+def all_gather(data):
+    """
+    Run all_gather on arbitrary picklable data (not necessarily tensors)
+    Args:
+        data: any picklable object
+    Returns:
+        list[data]: list of data gathered from each rank
+    """
+    world_size = get_world_size()
+    if world_size == 1:
+        return [data]
+    data_list = [None] * world_size
+    dist.all_gather_object(data_list, data)
+    return data_list
 
-    def update(self, a, b):
-        n = self.num_classes
-        # if self.mat is None:
-        #     self.mat = torch.zeros((n, n), dtype=torch.int64, device=a.device)
-        with torch.inference_mode():
-            k = (a >= 0) & (a < n)
-            inds = n * a[k].to(torch.int64) + b[k]
-            self.temp_mat += torch.bincount(inds, minlength=n**2).reshape(n, n)
 
-    def reset(self):
-        self.temp_mat.zero_()
-        self.mat.zero_()
-
-    def compute(self):
-        h = self.mat.float()
-        acc_global = torch.diag(h).sum() / h.sum()
-        acc = torch.diag(h) / h.sum(1)
-        iu = torch.diag(h) / (h.sum(1) + h.sum(0) - torch.diag(h))
-        return acc_global, acc, iu
-
-    def reduce_from_all_processes(self):
-        reduce_across_processes(self.temp_mat)
-        # add the accumulated results from all nodes
-        self.mat += self.temp_mat.clone()
-        # reset temp_mat
-        self.temp_mat.zero_()
-
-    def __str__(self):
-        acc_global, acc, iu = self.compute()
-        return ("global correct: {:.1f}\naverage row correct: {}\nIoU: {}\nmean IoU: {:.1f}").format(
-            acc_global.item() * 100,
-            [f"{i:.1f}" for i in (acc * 100).tolist()],
-            [f"{i:.1f}" for i in (iu * 100).tolist()],
-            iu.mean().item() * 100,
-        )
+def reduce_dict(input_dict, average=True):
+    """
+    Args:
+        input_dict (dict): all the values will be reduced
+        average (bool): whether to do average or sum
+    Reduce the values in the dictionary from all processes so that all processes
+    have the averaged results. Returns a dict with the same fields as
+    input_dict, after reduction.
+    """
+    world_size = get_world_size()
+    if world_size < 2:
+        return input_dict
+    with torch.inference_mode():
+        names = []
+        values = []
+        # sort the keys so that they are consistent across processes
+        for k in sorted(input_dict.keys()):
+            names.append(k)
+            values.append(input_dict[k])
+        values = torch.stack(values, dim=0)
+        dist.all_reduce(values)
+        if average:
+            values /= world_size
+        reduced_dict = {k: v for k, v in zip(names, values)}
+    return reduced_dict
 
 
 class MetricLogger:
@@ -116,10 +118,7 @@ class MetricLogger:
         for k, v in kwargs.items():
             if isinstance(v, torch.Tensor):
                 v = v.item()
-            if not isinstance(v, (float, int)):
-                raise TypeError(
-                    f"Method expects value of the input arguments to be of type float or int, instead  got {type(v)}"
-                )
+            assert isinstance(v, (float, int))
             self.meters[k].update(v)
 
     def __getattr__(self, attr):
@@ -172,7 +171,7 @@ class MetricLogger:
             data_time.update(time.time() - end)
             yield obj
             iter_time.update(time.time() - end)
-            if i % print_freq == 0:
+            if i % print_freq == 0: # or i == len(iterable) - 1: ## EDITED - POTENTIALLY UNNECESSARY
                 eta_seconds = iter_time.global_avg * (len(iterable) - i)
                 eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
                 if torch.cuda.is_available():
@@ -193,27 +192,15 @@ class MetricLogger:
                             i, len(iterable), eta=eta_string, meters=str(self), time=str(iter_time), data=str(data_time)
                         )
                     )
-            i += 1
+            i += 1 
             end = time.time()
         total_time = time.time() - start_time
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-        print(f"{header} Total time: {total_time_str}")
-
-
-def cat_list(images, fill_value=0):
-    max_size = tuple(max(s) for s in zip(*[img.shape for img in images]))
-    batch_shape = (len(images),) + max_size
-    batched_imgs = images[0].new(*batch_shape).fill_(fill_value)
-    for img, pad_img in zip(images, batched_imgs):
-        pad_img[..., : img.shape[-2], : img.shape[-1]].copy_(img)
-    return batched_imgs
+        print(f"{header} Total time: {total_time_str}") # ({total_time / len(iterable):.4f} s / it)") ## EDITED
 
 
 def collate_fn(batch):
-    images, targets = list(zip(*batch))
-    batched_imgs = cat_list(images, fill_value=0)
-    batched_targets = cat_list(targets, fill_value=255)
-    return batched_imgs, batched_targets
+    return tuple(zip(*batch))
 
 
 def mkdir(path):
@@ -277,8 +264,6 @@ def init_distributed_mode(args):
     elif "SLURM_PROCID" in os.environ:
         args.rank = int(os.environ["SLURM_PROCID"])
         args.gpu = args.rank % torch.cuda.device_count()
-    elif hasattr(args, "rank"):
-        pass
     else:
         print("Not using distributed mode")
         args.distributed = False
@@ -294,14 +279,3 @@ def init_distributed_mode(args):
     )
     torch.distributed.barrier()
     setup_for_distributed(args.rank == 0)
-
-
-def reduce_across_processes(val):
-    if not is_dist_avail_and_initialized():
-        # nothing to sync, but we still convert to tensor for consistency with the distributed case.
-        return torch.tensor(val)
-
-    t = torch.tensor(val, device="cuda")
-    dist.barrier()
-    dist.all_reduce(t) # default all_reduce op is SUM
-    return t

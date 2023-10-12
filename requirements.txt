@@ -9,3 +9,4 @@ matplotlib==3.7.2
 diffusers==0.18.2
 wandb==0.15.7
 lightning==2.1.0rc0
+tensorboard==2.14.0
