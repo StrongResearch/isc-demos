@@ -76,11 +76,13 @@ def setup(params: Dict[str, Any], args: argparse.ArgumentParser):
   default_setup(cfg, args)
 
   cfg.merge_from_file(model_zoo.get_config_file(params['CONFIG_FILE']))
-  cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(params['CONFIG_FILE'])
   cfg.DATASETS.TRAIN = ('train',)
   cfg.DATASETS.TEST = ('test',)
-  cfg.DATALOADER.NUM_WORKERS = params['NUM_WORKERS']
+  cfg.MODEL.MASK_ON = params['MASK_ON']
+  cfg.MODEL.RESNETS.DEPTH = params['RESNETS_DEPTH']
   cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = params['BATCH_SIZE_PER_IMAGE']
+  cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(params['CONFIG_FILE'])
+  cfg.DATALOADER.NUM_WORKERS = params['NUM_WORKERS']
   cfg.SOLVER.CHECKPOINT_PERIOD = params['CHECKPOINT_PERIOD']
   cfg.SOLVER.IMS_PER_BATCH = params['IMS_PER_BATCH']
   cfg.SOLVER.BASE_LR = params['BASE_LR']
@@ -167,8 +169,11 @@ def train(params: Dict[str, Any], cfg, model, resume=False) -> None:
         test(params, cfg, model)
         comm.synchronize()
 
-      for writer in writers:
-        writer.write()
+      if iteration-start_iter > 5 and \
+      (iteration+1)%params['ITER_LOG_PERIOD'] == 0 or \
+      iteration == max_iter-1:
+        for writer in writers:
+          writer.write()
       periodic_checkpointer.step(iteration)
 
 def main():
@@ -186,7 +191,7 @@ def main():
 
   model = build_model(cfg)
   model = DistributedDataParallel(
-    model, device_ids=[comm.get_local_rank()], broadcast_buffers=False
+    model, device_ids=[comm.get_rank() % torch.cuda.device_count()]
   )
 
   train(params, cfg, model, resume=args.resume)
