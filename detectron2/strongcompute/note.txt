@@ -16,9 +16,10 @@ build_detection_train_loader()
 distributed training for instance segmentation using the coco dataset
 - added distributed training capabilities
 
-- training loop: dataloader now retrieves the data corresnponding to the
-iteration. the sampler generates an infinite stream of indices which correspond
-to permutations of the dataset.
+- training loop: now retrieves the data corresnponding to the iteration from
+the data loader. 
+the sampler generates an infinite stream of indices which correspond to 
+permutations of the dataset.
 if the sampler parameters shuffle is set to false and seed is set to positive,
 then the indices are determined.
 hence, the training loop will iterate through an entire dataset of unique
