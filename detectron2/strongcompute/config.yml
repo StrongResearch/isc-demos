@@ -1,0 +1,23 @@
+# @file config.yml
+# @author strongcompute-henry
+# @date 2023-10-09
+# @brief detectron2 demo configurations
+
+CHECKPOINT_PATH: '/mnt/Client/StrongHumans/strongcompute_henry/output/detectron2/checkpoint/'
+TENSORBOARD_PATH: '/mnt/Client/StrongHumans/strongcompute_henry/output/detectron2/tensorboard/'
+RESULT_PATH: '/mnt/Client/StrongHumans/strongcompute_henry/output/detectron2/result/'
+
+NUM_WORKERS: 1
+BATCH_SIZE_PER_IMAGE: 128
+CHECKPOINT_PERIOD: 20
+IMS_PER_BATCH: 6
+BASE_LR: 0.00025
+MAX_ITER: 200
+STEPS: []   # STEPS: [] prevents learning rate decay
+
+TRAIN_ANNOTATION_PATH: '/mnt/.node1/Open-Datasets/coco/annotations/instances_train2017.json'
+TRAIN_DATASET_PATH: '/mnt/.node1/Open-Datasets/coco/train2017'
+TEST_ANNOTATION_PATH: '/mnt/.node1/Open-Datasets/coco/annotations/instances_val2017.json'
+TEST_DATASET_PATH: '/mnt/.node1/Open-Datasets/coco/val2017'
+
+CONFIG_FILE: 'COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml'

@@ -628,7 +628,7 @@ _C.OUTPUT_DIR = "./output"
 # Set seed to positive to use a fixed seed. Note that a fixed seed increases
 # reproducibility but does not guarantee fully deterministic behavior.
 # Disabling all parallelism further increases reproducibility.
-_C.SEED = -1
+_C.SEED = 0
 # Benchmark different cudnn algorithms.
 # If input images have very different sizes, this option will have large overhead
 # for about 10k iterations. It usually hurts total time, but can benefit for certain models.
@@ -648,3 +648,10 @@ _C.VIS_PERIOD = 0
 # Do not commit any configs into it.
 _C.GLOBAL = CN()
 _C.GLOBAL.HACK = 1.0
+
+'''
+strongcompute - prevent shuffling to keep fixed seed dataset indices same 
+thorughout cycling.
+ensure to set the value of _C.SEED positive for fixed seed
+'''
+_C.SHUFFLE = False
