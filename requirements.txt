@@ -1,0 +1,11 @@
+torch==2.0.1
+torchvision==0.15.2
+lightning==2.1.0rc0
+accelerate==0.21.0
+transformers==4.31.0
+pycocotools==2.0.6
+evaluate==0.4.0
+wandb==0.15.7
+matplotlib==3.7.2
+datasets==2.13.1
+diffusers==0.18.2
