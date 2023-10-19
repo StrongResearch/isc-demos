@@ -38,7 +38,6 @@ of your experiments and clusters.
 
 ```bash
 isc experiments # view a list of your experiments
-isc clusters # view the status of the clusters
 ```
 
 ## Example Configurations
