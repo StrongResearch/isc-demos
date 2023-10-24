@@ -249,7 +249,7 @@ The `fashion_mnist` subdirectory contains the following files of interest.
     few minutes to read and understand the contents of this file, there are lots of notes to explain what's happening. 
     Reach out with any questions. Note that `train.py` provides for command line arguments to be passed, we will see how 
     when looking at the next file.
-5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching the experiment on the isc. The key information 
+5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. The key information 
    included in the ISC Config file is as follows.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
