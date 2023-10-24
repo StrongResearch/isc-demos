@@ -2,9 +2,9 @@
 
 Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
-
-1. [Getting Started](#getting-started)
-2. [Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
+ - [1. Getting Started](#getting-started)
+ - [1.1. Setting up the VPN](#setting-up-the-vpn)
+ - [Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
 
 ## 1. Getting Started
 
@@ -195,7 +195,7 @@ The ability to abruptly interrupt experiments or **"interruptibility"** is cruci
 and resuming. The main approach to achieve interruptibility is **robust and frequent checkpointing** which we will 
 demonstrate with the example project that follows.
 
-### Hello World with Fashion MNIST
+### 2.2. Hello World with Fashion MNIST
 
 To follow this demonstration, first ensure you have activated your virtual environment, cloned this repo in your home 
 directory on the ISC, and installed the necessary requirements with the following commands.
@@ -311,7 +311,7 @@ tensorboard.
 
 Congratulations, you have successfully launched your first experiment on the ISC!
 
-## More examples
+## 3. More examples
 
 The following examples further demonstrate how to implement interruptibility in distributed training scripts using 
 checkpointing, atomic saving, and stateful samplers.
@@ -352,7 +352,7 @@ Each example published below is annotated with its degree of completion. Example
 | fcn_resnet101 | Image segmentation | ResNet101 | [2] | [isc-demos/tv-segmentation](tv-segmentation) |
 | deeplabv3_mobilenet_v3_large | Image segmentation | MobileNetV3 Large | [2] | [isc-demos/tv-segmentation](tv-segmentation) |
 
-### tv-detection
+### Torchvision detection
 
 (from https://github.com/pytorch/vision/tree/main/references/detection)
 
@@ -370,7 +370,7 @@ Each example published below is annotated with its degree of completion. Example
 | detectron2 | TBC | Detectron2 | [2] | [isc-demos/detectron2](detectron2) |
 | detectron2_densepose | TBC | Detectron2 | [2] | [isc-demos/detectron2/projects/densepose](detectron2/projects/densepose) |
 
-## Large Language Models
+## Large Language Models (LLM)
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
