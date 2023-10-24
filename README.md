@@ -10,7 +10,7 @@ Pytorch models on the Strong Compute ISC.
  - [2. Interruptible Experiments](#interruptible-experiments)
  - [2.1. Rapid Cycling and Burst To Cloud](#rapid-cycling-burst)
  - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
- - [3. More examples](#more-examples)
+ - [2.3. More examples](#more-examples)
 
 
 ## 1. Getting Started <a name="getting-started"></a>
@@ -318,7 +318,7 @@ tensorboard.
 
 Congratulations, you have successfully launched your first experiment on the ISC!
 
-## 3. More examples <a name="more-examples"></a>
+### 2.3. More examples <a name="more-examples"></a>
 
 The following examples further demonstrate how to implement interruptibility in distributed training scripts using 
 checkpointing, atomic saving, and stateful samplers.
@@ -327,7 +327,7 @@ These examples are being actively developed to achieve [1] interruptibility in d
 completion of a full training run, and [3] achievement of benchmark performance published by others (where applicable). 
 Each example published below is annotated with its degree of completion. Examples annotated with [0] are "coming soon".
 
-### Hello World
+#### Hello World
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
@@ -335,7 +335,7 @@ Each example published below is annotated with its degree of completion. Example
 | CIFAR100 | Image classification | ResNet50 | [2] | [isc-demos/cifar100-resnet50](cifar100-resnet50) |
 | Distributed Model Parallel | TBC | TBC | [0] | |
 
-### pytorch-image-models (timm)
+#### pytorch-image-models (timm)
 
 (from https://github.com/huggingface/pytorch-image-models)
 
@@ -350,7 +350,7 @@ Each example published below is annotated with its degree of completion. Example
 | vit_base_patch16_224 | Image classification | VIT Base Patch16 224 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 | vit_large_patch16_224 | Image classification | VIT Large Patch16 224 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 
-### Torchvision segmentation
+#### Torchvision segmentation
 
 (from https://github.com/pytorch/vision/tree/main/references/segmentation)
 
@@ -359,7 +359,7 @@ Each example published below is annotated with its degree of completion. Example
 | fcn_resnet101 | Image segmentation | ResNet101 | [2] | [isc-demos/tv-segmentation](tv-segmentation) |
 | deeplabv3_mobilenet_v3_large | Image segmentation | MobileNetV3 Large | [2] | [isc-demos/tv-segmentation](tv-segmentation) |
 
-### Torchvision detection
+#### Torchvision detection
 
 (from https://github.com/pytorch/vision/tree/main/references/detection)
 
@@ -368,7 +368,7 @@ Each example published below is annotated with its degree of completion. Example
 | maskrcnn_resnet101_fpn | Object detection | Mask RCNN (ResNet101 FPN) | [2] | [isc-demos/tv-detection](tv-detection) |
 | retinanet_resnet101_fpn | Object detection | RetinaNet (ResNet101 FPN) | [2] | [isc-demos/tv-detection](tv-detection) |
 
-## Detectron2
+#### Detectron2
 
 (from https://github.com/facebookresearch/detectron2)
 
@@ -377,7 +377,7 @@ Each example published below is annotated with its degree of completion. Example
 | detectron2 | TBC | Detectron2 | [2] | [isc-demos/detectron2](detectron2) |
 | detectron2_densepose | TBC | Detectron2 | [2] | [isc-demos/detectron2/projects/densepose](detectron2/projects/densepose) |
 
-## Large Language Models (LLM)
+#### Large Language Models (LLM)
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
