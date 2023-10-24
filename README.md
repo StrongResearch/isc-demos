@@ -272,7 +272,7 @@ annotated with [0] are "coming soon".
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
 | Fashion MNIST | Image classification | CNN | [3] | [isc-demos/fashion_mnist](fashion_mnist) |
-| CIFAR100 | Image classification | ResNet50 | [2] | |
+| CIFAR100 | Image classification | ResNet50 | [2] | [isc-demos/cifar100-resnet50](cifar100-resnet50) |
 | Distributed Model Parallel | TBC | TBC | [0] | |
 
 ### pytorch-image-models (timm)
