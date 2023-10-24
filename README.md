@@ -261,18 +261,18 @@ The following examples further demonstrate how to implement interruptibility in
 distributed training scripts using checkpointing, atomic saving, and
 stateful samplers.
 
-These examples are being actively developed to achieve (1) interruptibility
-in distributed training, (2) verified completion of a full training run, and
-(3) achievement of benchmark performance published by others (where applicable). 
+These examples are being actively developed to achieve [1] interruptibility
+in distributed training, [2] verified completion of a full training run, and
+[3] achievement of benchmark performance published by others (where applicable). 
 Each example published below is annotated with its degree of completion. Examples
 annotated with [0] are "coming soon".
 
 ### Hello World
 
-| Title          | Description | Model   | Status        |
-| :---           |    :----:   |:----:|          ---: |
-| Fashion MNIST  | Title       || Here's this   |
-| CIFAR100       | Text        || And more      |
+| Title | Description | Model | Status |
+| :--- | :----: | :----: | ---: |
+| Fashion MNIST | Demonstrating Interruptibility | CNN | [3] |
+| CIFAR100 | Demonstrating Interruptibility | ResNet50 | [2] |
 
 - [cifar100-resnet50.isc](./cifar100-resnet50/cifar100-resnet50.isc) [3]
 - [fashion_mnist.isc](./fashion_mnist/fashion_mnist.isc) [3]
