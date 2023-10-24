@@ -2,19 +2,20 @@
 
 Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
-[1. Getting Started](#getting-started)
-[1.1. Setting up the VPN](#setting-up-vpn)
-[2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
+ - [1. Getting Started](#getting-started)
+ - [1.1. Setting up the VPN](#setting-up-vpn)
+ - [1.1.1. For MacOS and Windows](#for-mac-windows)
+ - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
 
 
-## 1. Getting Started
+## 1. Getting Started <a name="getting-started"></a>
 
 ### 1.1. Setting up the VPN <a name="setting-up-vpn"></a>
 #### Note: Advised this process is soon to be deprecated.
 Before connecting to the Strong Compute ISC, you must have recieved login credentials from Strong Compute by email. 
 Please reach out to us if you have not received this email.
 
-#### 1.1.1. For MacOS and Windows
+#### 1.1.1. For MacOS and Windows  <a name="for-mac-windows"></a>
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
 2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
@@ -196,7 +197,7 @@ The ability to abruptly interrupt experiments or **"interruptibility"** is cruci
 and resuming. The main approach to achieve interruptibility is **robust and frequent checkpointing** which we will 
 demonstrate with the example project that follows.
 
-### 2.2. Hello World with Fashion MNIST
+### 2.2. Hello World with Fashion MNIST <a name="hello-world-with-fashion-mnist"></a>
 
 To follow this demonstration, first ensure you have activated your virtual environment, cloned this repo in your home 
 directory on the ISC, and installed the necessary requirements with the following commands.
