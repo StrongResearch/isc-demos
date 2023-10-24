@@ -270,7 +270,7 @@ annotated with [0] are "coming soon".
 ### Hello World
 
 | Title | Description | Model | Status |
-| :--- | :----: | :----: | ---: |
+| :--- | :--- | :--- | :----: |
 | Fashion MNIST | Demonstrating Interruptibility | CNN | [3] |
 | CIFAR100 | Demonstrating Interruptibility | ResNet50 | [2] |
 
