@@ -3,14 +3,14 @@
 Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
  - [1. Getting Started](#getting-started)
-  - [1.1. Setting up the VPN](#setting-up-vpn)
-   - [1.1.1. For MacOS and Windows](#for-mac-windows)
-   - [1.1.2. For Linux](#for-linux)
-  - [1.2. Creating your ISC User and Organisation credentials](#creating-your-isc-user-credentials)
+ - [1.1. Setting up the VPN](#setting-up-vpn)
+ - [1.1.1. For MacOS and Windows](#for-mac-windows)
+ - [1.1.2. For Linux](#for-linux)
+ - [1.2. Creating your ISC User and Organisation credentials](#creating-your-isc-user-credentials)
  - [2. Interruptible Experiments](#interruptible-experiments)
-  - [2.1. Rapid Cycling and Burst To Cloud](#rapid-cycling-burst)
-  - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
-  - [2.3. More examples](#more-examples)
+ - [2.1. Rapid Cycling and Burst To Cloud](#rapid-cycling-burst)
+ - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
+ - [2.3. More examples](#more-examples)
 
 
 ## 1. Getting Started <a name="getting-started"></a>
