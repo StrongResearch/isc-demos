@@ -11,6 +11,7 @@ Pytorch models on the Strong Compute ISC.
    - [2.1. Rapid Cycling and Burst To Cloud](#rapid-cycling-burst)
    - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
    - [2.3. More examples](#more-examples)
+ - [3. Transferring Your Dataset](#data-transfer)
 
 
 ## 1. Getting Started <a name="getting-started"></a>
@@ -87,14 +88,13 @@ avoid doubling-up Organisations.
     and choose a suitable password.
 2. If you are the first person in your Organisation to register, click on the menu at the top right of the page 
     (labelled with your email and Organisation name) and click on **"Organisations"**. On the "Your Organisations" page, 
-    click on the tile for your organisation. When you first register, your Organisation will be named 
-    **"<your email>'s Personal Organisation"**. From the **"Organisation Settings"** page you can update the name of your 
-    Organisation, view current members, and send invitations to new members. If you would like to use Control Plane to 
-    track your usage on Azure, AWS, GCP, or Lambda you can also manage your API keys for these platforms, though this is 
-    not necessary for using the ISC.
-2. Click on the menu at the top right of the page and click on **"Settings"**.
-3. At the bottom of the page, click on **"NEW SSH KEY"**.
-4. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
+    click on the tile for your organisation. When you first register, your Organisation will be named **"<your email>'s Personal
+    Organisation"**. From the **"Organisation Settings"** page you can update the name of your Organisation, view current members,
+    and send invitations to new members. If you would like to use Control Plane to track your usage on Azure, AWS, GCP, or Lambda
+    you can also manage your API keys for these platforms, though this is not necessary for using the ISC.
+3. Click on the menu at the top right of the page and click on **"Settings"**.
+4. At the bottom of the page, click on **"NEW SSH KEY"**.
+5. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
     provide a filename in which to save the key. You can also optionally enter a passphrase (or just press enter twice). This will 
     generate two files containing your public and private keys. Your public key will be saved in the file ending in `.pub`.
     Alternatively you can use any 
@@ -102,16 +102,16 @@ avoid doubling-up Organisations.
     should start with `ssh-rsa` and end with `.local`. Copy the entire contents of this file and paste into the input field on
     Control Plane beneath **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
 7. Return to the Settings page on Control Plane and click on **"NEW API KEY"**. Optionally name your API key. If you already have
-    multiple Organisations established, select the Organisation to associate this API key with. Click 
-    on **"GENERATE NEW API ACCESS TOKEN"**. You will be presented with the API Access Token associated with your API key. 
-    Save a copy of this API Access Token. Be careful to save the entire API Access Token, note that some characters will be 
-    obscured by the fixed width of the display window. For security purposes you will only be shown this API Access Token once 
-    and will not be able to access it again, though you can always create a new API Key.
+    multiple Organisations established, select the Organisation to associate this API key with. Click on **"GENERATE NEW API ACCESS
+    TOKEN"**. You will be presented with the API Access Token associated with your API key. Save a copy of this API Access Token. Be
+    careful to save the entire API Access Token, note that some characters will be obscured by the fixed width of the display window.
+    For security purposes you will only be shown this API Access Token once and will not be able to access it again, though you can
+    always create a new API Key. Note you will need a separate API Key set up for each Organisation you wish to login to.
 8. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
     You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
 9. Open a terminal and enter the entire the SSH Username command. The command should start with `ssh` and end with `@<ip-address>`. 
     You should be greeted by the Strong Compute logo and ISC welcome message below. This indicates that you have successfully logged 
-    into your home directory on the ISC.
+    into your home directory on the ISC. Your home directory on the ISC is a subdirectory within your Organisation directory.
 
 ```bash
                     ;≥░░░≥≥-
@@ -151,11 +151,11 @@ Version 0.5.0-alpha of the ISC is now live!
 ...
 ```
 
-9. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
+10. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
     is used to authenticate you when you launch experiments on the ISC, and should be saved in the root of your home directory.
-10. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
+11. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
     created correctly.
-11. Create a virtual environment by running `python3 -m virtualenv ~/.venv` and activate your virtual environment by 
+12. Create a virtual environment by running `python3 -m virtualenv ~/.venv` and activate your virtual environment by 
     running `~/.venv/bin/activate`. You will need to ensure that you have activated your virtual environment when installing 
     dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
     Config file(s)](#isc-config).
