@@ -3,13 +3,13 @@
 Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
 1. [1. Getting Started](#getting-started)
-2. [1.1. Setting up the VPN](#setting-up-the-vpn)
+2. [Setting up the VPN](#setting-up-the-vpn)
 3. [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
 
 
 ## 1. Getting Started
 
-### 1.1. Setting up the VPN
+### Setting up the VPN
 #### Note: Advised this process is soon to be deprecated.
 Before connecting to the Strong Compute ISC, you must have recieved login credentials from Strong Compute by email. 
 Please reach out to us if you have not received this email.
