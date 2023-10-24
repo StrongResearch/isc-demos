@@ -269,14 +269,11 @@ annotated with [0] are "coming soon".
 
 ### Hello World
 
-| Title | Description | Model | Status |
-| :--- | :--- | :--- | :----: |
-| Fashion MNIST | Image classification | CNN | [3] |
-| CIFAR100 | Image classification | ResNet50 | [2] |
-
-- [cifar100-resnet50.isc](./cifar100-resnet50/cifar100-resnet50.isc) [3]
-- [fashion_mnist.isc](./fashion_mnist/fashion_mnist.isc) [3]
-- WIP [dist_model_parallel.isc](./dist_model_parallel.isc) [0]
+| Title | Description | Model | Status | Link |
+| :--- | :--- | :--- | :----: | :--- |
+| Fashion MNIST | Image classification | CNN | [3] | |
+| CIFAR100 | Image classification | ResNet50 | [2] | |
+| Distributed Model Parallel | TBC | TBC | [0] | |
 
 ### pytorch-image-models (timm)
 
