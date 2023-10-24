@@ -6,14 +6,14 @@ Pytorch models on the Strong Compute ISC.
 1. [Getting Started](#getting-started)
 2. [Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
 
-## Getting Started
+## 1. Getting Started
 
-### 1. Setting up the VPN
+### 1.1. Setting up the VPN
 #### Note: Advised this process is soon to be deprecated.
 Before connecting to the Strong Compute ISC, you must have recieved login credentials from Strong Compute by email. 
 Please reach out to us if you have not received this email.
 
-#### For MacOS and Windows
+#### 1.1.1. For MacOS and Windows
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
 2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
@@ -27,7 +27,7 @@ Please reach out to us if you have not received this email.
 6. Ensure the VPN tunnel is enabled when accessing the Strong Compute ISC. When the VPN is correctly enabled you should 
     be able to open a terminal, run `ping 192.168.127.70` and recieve `64 bytes from 192.168.127.70`.
 
-#### For Linux
+#### 1.1.2. For Linux
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
 2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
@@ -66,7 +66,7 @@ PersistentKeepalive = 15
     `sudo wg-quick up wg0` and disable with `sudo wg-quick down wg0`. When the VPN is correctly enabled you should be 
     able to open a terminal, run `ping 192.168.127.70` and recieve `64 bytes from 192.168.127.70`.
 
-### 2. Creating your ISC User and Organisation credentials
+### 1.2. Creating your ISC User and Organisation credentials
 Now that you have your VPN correctly installed, configured, and enabled, we'll get you set up with a login to the ISC 
 associated with your User and Organisation.
 
@@ -158,13 +158,13 @@ Congratulations, you are all set to start running experiments on the ISC. Follow
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
 is "interruptable" (including what this means).
 
-## Interruptible Experiments
+## 2. Interruptible Experiments
 
 We will now explore and run some code to launch an experiment on the ISC. This example will demonstrate the principle and 
 application of interruptibility, which will be important to consider when developing your experiments to run successfully 
 on the ISC.
 
-### Rapid Cycling and Burst To Cloud
+### 2.1. Rapid Cycling and Burst To Cloud
 
 The ISC is comprised of a **Rapid Cycling** stage and a **Burst To Cloud ("Burst")** stage. Experiments launched on the ISC are 
 run first in **Rapid Cycling** as a validation step before being **Burst** to the cloud. This provides Users with near-immediate 
