@@ -239,7 +239,7 @@ the following.
  were initialised. Each `rank_X.txt` file should contain at least the following. By default, only the `rank_0.txt` file 
  should contain anything more.
 
- ```toml
+ ```bash
  WARNING:torch.distributed.run:
 *****************************************
 Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being \
