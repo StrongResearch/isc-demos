@@ -5,8 +5,12 @@ Pytorch models on the Strong Compute ISC.
  - [1. Getting Started](#getting-started)
  - [1.1. Setting up the VPN](#setting-up-vpn)
  - [1.1.1. For MacOS and Windows](#for-mac-windows)
+ - [1.1.2. For Linux](#for-linux)
+ - [1.2. Creating your ISC User and Organisation credentials](#creating-your-isc-user-credentials)
+ - [2. Interruptible Experiments](#interruptible-experiments)
+ - [2.1. Rapid Cycling and Burst To Cloud](#rapid-cycling-burst)
  - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
-
+ - [3. More examples](#more-examples)
 
 ## 1. Getting Started <a name="getting-started"></a>
 
@@ -15,7 +19,7 @@ Pytorch models on the Strong Compute ISC.
 Before connecting to the Strong Compute ISC, you must have recieved login credentials from Strong Compute by email. 
 Please reach out to us if you have not received this email.
 
-#### 1.1.1. For MacOS and Windows  <a name="for-mac-windows"></a>
+#### 1.1.1. For MacOS and Windows <a name="for-mac-windows"></a>
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
 2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
@@ -29,7 +33,7 @@ Please reach out to us if you have not received this email.
 6. Ensure the VPN tunnel is enabled when accessing the Strong Compute ISC. When the VPN is correctly enabled you should 
     be able to open a terminal, run `ping 192.168.127.70` and recieve `64 bytes from 192.168.127.70`.
 
-#### 1.1.2. For Linux
+#### 1.1.2. For Linux <a name="for-linux"></a>
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
 2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
@@ -68,7 +72,7 @@ PersistentKeepalive = 15
     `sudo wg-quick up wg0` and disable with `sudo wg-quick down wg0`. When the VPN is correctly enabled you should be 
     able to open a terminal, run `ping 192.168.127.70` and recieve `64 bytes from 192.168.127.70`.
 
-### 1.2. Creating your ISC User and Organisation credentials
+### 1.2. Creating your ISC User and Organisation credentials  <a name="creating-your-isc-user-credentials"></a>
 Now that you have your VPN correctly installed, configured, and enabled, we'll get you set up with a login to the ISC 
 associated with your User and Organisation.
 
@@ -160,13 +164,13 @@ Congratulations, you are all set to start running experiments on the ISC. Follow
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
 is "interruptable" (including what this means).
 
-## 2. Interruptible Experiments
+## 2. Interruptible Experiments <a name="interruptible-experiments"></a>
 
 We will now explore and run some code to launch an experiment on the ISC. This example will demonstrate the principle and 
 application of interruptibility, which will be important to consider when developing your experiments to run successfully 
 on the ISC.
 
-### 2.1. Rapid Cycling and Burst To Cloud
+### 2.1. Rapid Cycling and Burst To Cloud <a name="rapid-cycling-burst"></a>
 
 The ISC is comprised of a **Rapid Cycling** stage and a **Burst To Cloud ("Burst")** stage. Experiments launched on the ISC are 
 run first in **Rapid Cycling** as a validation step before being **Burst** to the cloud. This provides Users with near-immediate 
@@ -313,7 +317,7 @@ tensorboard.
 
 Congratulations, you have successfully launched your first experiment on the ISC!
 
-## 3. More examples
+## 3. More examples <a name="more-examples"></a>
 
 The following examples further demonstrate how to implement interruptibility in distributed training scripts using 
 checkpointing, atomic saving, and stateful samplers.
