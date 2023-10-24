@@ -100,8 +100,37 @@ avoid doubling-up Organisations.
 7. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
     You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
 8. Open terminal and enter the entire the SSH Username command. The command should start with `ssh` and end with `@<ip-address>`. 
-    You should be greeted by the Strong Compute logo and ISC welcome message. This indicates that you have successfully logged 
+    You should be greeted by the Strong Compute logo and ISC welcome message below. This indicates that you have successfully logged 
     into your home directory on the ISC.
+
+```bash
+                    ;≥░░░≥≥-
+             ╓ ]▒╠╬╦  ░░░Γ ,φ╬╬▒  ,
+      ,╓ )▒╬╬╬╦ ╚╬╬╬╬╦   ,φ╬╬╬╬╜ φ╬╬╬▒ ┌,
+    ╬╬╬╬  ╬╬╬╬╬╦ ╙╬╬╩  ╔╖ ╙╩╬╬╙ φ╬╬╬╬╩ ╚╬╬╬▒
+    ╠╬╬╬▒ ╚╬╬╬╬╬▒   ╓φ╬╬╬╠╦,   ╬╬╬╬╬╬  ╬╬╬╬╬
+    ╘╬╬╬╬ε ╠╬╩╙ ,╔ç ╚╬╬╬╬╬╬╜ ╔╖  ╙╩╬╜ ╠╬╬╬╬╩
+     ╬╬╬╩╙  ,╔φ╬╬╬╬▒  ╚╬╬╩ ,╠╬╬╬╬╦╖   ╙╩╬╬╬
+       ,╔φ▒  ╬╬╬╬╬╬╬╬╦   ,φ╬╬╬╬╬╬╬╩ ╔▒╦╖,
+      ╠╬╬╬╬╬ç ╠╬╬╬╬╬╬╜ ╓╖ ╙╬╬╬╬╬╬╙ φ╬╬╬╬╬╬
+       ╬╬╬╬╬╬╦ ╙╬╩╜ ,φ╬╬╬╬╗  ╙╩╬  ╠╬╬╬╬╬╬
+        ╠╬╬╬╬╩╜  .φ╬╬╬╬╬╬╬╬╬╬╗   ╙╩╬╬╬╬╬
+         ╙  ,╓#▒▒  ╚╬╬╬╬╬╬╬╬╜ ╓╬▒╗╖   ╙
+           ╬╬╬╬╬╬╬▒  ╙╠╬╬╬╜ ╓╬╬╬╬╬╬╬╬
+            ╙╬╬╬╬╬╬╬▒╖   ,φ╬╬╬╬╬╬╬╬╩
+              ╙╬╬╬╬╝╜ ,╔╖  ╙╬╬╬╬╬╩
+                ╙  ╓#▓╬╬╬╬▒╗╖  ╙
+                   ╙╣╬╬╬╬╬╬╬╜
+                      ╙╝╝╙
+ 
+=================================================
+                ISC v0.5.0-alpha
+=================================================
+
+Version 0.5.0-alpha of the ISC is now live!
+...
+```
+
 9. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
     is used to authenticate you when you launch experiments on the ISC, and should be saved in the root of your home directory.
 10. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
