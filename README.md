@@ -220,10 +220,10 @@ the requirements included in the `requrements.txt` file, it is mandatory to have
 Other requirements included in the `requrements.txt` file are necessary for one or more of the other example projects 
 showcased in this repo.
 
-You will also need to clone the `cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package in editable mode with the following 
-commands. The `cycling_utils` package contains helpful functions and classes for achieving interruptibility in 
-distributed training. Installing `cycling_utils` in editable mode will allow you to extend this package at any time with 
-your own modules as needed without having to reinstall the package.
+You will also need to clone the `cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package 
+in editable mode with the following commands. The `cycling_utils` package contains helpful functions and classes for achieving 
+interruptibility in distributed training. Installing `cycling_utils` in editable mode will allow you to extend this package at any 
+time with your own modules as needed without having to reinstall the package.
 
 ```bash
 cd ~
@@ -250,8 +250,8 @@ The `fashion_mnist` subdirectory contains the following files of interest.
     few minutes to read and understand the contents of this file, there are lots of notes to explain what's happening. 
     Reach out with any questions. Note that `train.py` provides for command line arguments to be passed, we will see how 
     when looking at the next file.
-5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. The key information 
-   included in the ISC Config file is as follows.
+5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. 
+   The key information included in the ISC Config file is as follows.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
     - `gpu_type`: The type of GPU that you are requesting for your experiment. At this time, the only supported 
