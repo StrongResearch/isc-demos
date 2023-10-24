@@ -97,7 +97,8 @@ avoid doubling-up Organisations.
 4. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
     provide a filename in which to save the key. You can also optionally enter a passphrase (or just press enter twice). This will 
     generate two files containing your public and private keys. Your public key will be saved in the file ending in `.pub`.
-5. Open the file containing your public key. If you generated your keypair with the instruction above, the public key file contents
+    Alternatively you can use any 
+6. Open the file containing your public key. If you generated your keypair with the instruction above, the public key file contents
     should start with `ssh-rsa` and end with `.local`. Copy the entire contents of this file and paste into the input field on
     Control Plane beneath **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
 7. Return to the Settings page on Control Plane and click on **"NEW API KEY"**. Optionally name your API key. If you already have
