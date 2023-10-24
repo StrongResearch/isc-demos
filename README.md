@@ -12,7 +12,7 @@ Please reach out to us if you have not received this email.
 #### For MacOS and Windows
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
-2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at https://vpn.strongcompute.ai:4445/ and 
+2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
     login with the credentials you receieved by email.
 3. In the FireZone portal, click "Add Device". You can give the configuration any name you like, if you do not provide a 
     name for the configuration, FireZone will automatically generate one for you.
@@ -26,7 +26,7 @@ Please reach out to us if you have not received this email.
 #### For Linux
 
 1. You will need to download and install WireGuard from https://www.wireguard.com/install/.
-2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at https://vpn.strongcompute.ai:4445/ and 
+2. Once you have WireGuard installed, visit the Strong Compute FireZone portal at the website advised in the email (above) and 
     login with the credentials you receieved by email.
 3. In the FireZone portal, click "Add Device". You can give the configuration any name you like, if you do not provide a 
     name for the configuration, FireZone will automatically generate one for you.
