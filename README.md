@@ -4,7 +4,7 @@ Welcome to the Strong Compute ISC Demos repo, here you will find all the instruc
 Pytorch models on the Strong Compute ISC.
 [1. Getting Started](#getting-started)
 [1.1. Setting up the VPN](#setting-up-the-vpn)
-[Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
+[2.2. Hello World with Fashion MNIST](#2.2.-hello-world-with-fashion-mnist)
 
 ## 1. Getting Started
 
