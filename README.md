@@ -279,14 +279,16 @@ annotated with [0] are "coming soon".
 
 (from https://github.com/huggingface/pytorch-image-models)
 
-- [resnet50.isc](./pytorch-image-models/resnet50.isc) [2]
-- [resnet152.isc](./pytorch-image-models/resnet152.isc) [2]
-- [efficientnet_b0.isc](./pytorch-image-models/efficientnet_b0.isc) [2]
-- [efficientnet_b7.isc](./pytorch-image-models/efficientnet_b7.isc) [2]
-- [efficientnetv2_s.isc](./pytorch-image-models/efficientnetv2_s.isc) [2]
-- WIP [efficientnetv2_xl.isc](./pytorch-image-models/efficientnetv2_xl.isc) [2]
-- [vit_base_patch16_224.isc](./pytorch-image-models/vit_base_patch16_224.isc) [2]
-- WIP [vit_large_patch16_224.isc](./pytorch-image-models/vit_large_patch16_224.isc) [2]
+| Title | Description | Model | Status | Link |
+| :--- | :--- | :--- | :----: | :--- |
+| resnet50 | Image classification | ResNet50 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| resnet152 | Image classification | ResNet152 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| efficientnet_b0 | Image classification | EfficientNet B0 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| efficientnet_b7 | Image classification | EfficientNet B7 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| efficientnetv2_s | Image classification | EfficientNetV2 S | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| efficientnetv2_xl | Image classification | EfficientNetV2 XL | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| vit_base_patch16_224 | Image classification | VIT Base Patch16 224 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| vit_large_patch16_224 | Image classification | VIT Large Patch16 224 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 
 ### tv-segmentation
 
