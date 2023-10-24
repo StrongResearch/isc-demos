@@ -271,8 +271,8 @@ annotated with [0] are "coming soon".
 
 | Title | Description | Model | Status |
 | :--- | :--- | :--- | :----: |
-| Fashion MNIST | Demonstrating Interruptibility | CNN | [3] |
-| CIFAR100 | Demonstrating Interruptibility | ResNet50 | [2] |
+| Fashion MNIST | Image classification | CNN | [3] |
+| CIFAR100 | Image classification | ResNet50 | [2] |
 
 - [cifar100-resnet50.isc](./cifar100-resnet50/cifar100-resnet50.isc) [3]
 - [fashion_mnist.isc](./fashion_mnist/fashion_mnist.isc) [3]
