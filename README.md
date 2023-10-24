@@ -128,6 +128,16 @@ avoid doubling-up Organisations.
 =================================================
 
 Version 0.5.0-alpha of the ISC is now live!
+
+## Changelog
+...
+## Cycling
+...
+## Checkpointing
+...
+## Cycling utilities
+...
+## Example training scripts
 ...
 ```
 
