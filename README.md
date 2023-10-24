@@ -290,28 +290,36 @@ annotated with [0] are "coming soon".
 | vit_base_patch16_224 | Image classification | VIT Base Patch16 224 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 | vit_large_patch16_224 | Image classification | VIT Large Patch16 224 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 
-### tv-segmentation
+### Torchvision segmentation
 
 (from https://github.com/pytorch/vision/tree/main/references/segmentation)
 
-- WIP [fcn_resnet101.isc](./tv-segmentation/fcn_resnet101.isc) [1]
-- WIP [deeplabv3_mobilenet_v3_large.isc](./tv-segmentation/deeplabv3_mobilenet_v3_large.isc) [1]
+| Title | Description | Model | Status | Link |
+| :--- | :--- | :--- | :----: | :--- |
+| fcn_resnet101 | Image segmentation | ResNet101 | [2] | [isc-demos/tv-segmentation](tv-segmentation) |
+| deeplabv3_mobilenet_v3_large | Image segmentation | MobileNetV3 Large | [2] | [isc-demos/tv-segmentation](tv-segmentation) |
 
 ### tv-detection
 
 (from https://github.com/pytorch/vision/tree/main/references/detection)
 
-- WIP [maskrcnn_resnet50_fpn.isc](./tv-detection/fasterrcnn_resnet50_fpn.isc) [0]
-- WIP [retinanet_resnet50_fpn.isc](./tv-detection/retinanet_resnet50_fpn.isc) [0]
+| Title | Description | Model | Status | Link |
+| :--- | :--- | :--- | :----: | :--- |
+| maskrcnn_resnet101_fpn | Object detection | Mask RCNN (ResNet101 FPN) | [2] | [isc-demos/tv-detection](tv-detection) |
+| retinanet_resnet101_fpn | Object detection | RetinaNet (ResNet101 FPN) | [2] | [isc-demos/tv-detection](tv-detection) |
 
 ## Detectron2
 
 (from https://github.com/facebookresearch/detectron2)
 
-- WIP [detectron2.isc](./detectron2.isc) [0]
-- WIP [detectron2_densepose.isc](./detectron2_densepose.isc) [0]
+| Title | Description | Model | Status | Link |
+| :--- | :--- | :--- | :----: | :--- |
+| detectron2 | TBC | Detectron2 | [2] | [isc-demos/detectron2](detectron2) |
+| detectron2_densepose | TBC | Detectron2 | [2] | [isc-demos/detectron2/projects/densepose](detectron2/projects/densepose) |
 
 ## Large Language Models
 
-- WIP [llama2.isc](./llama2.isc) [0]
-- WIP [mistral.isc](./mistral.isc) [0]
+| Title | Description | Model | Status | Link |
+| :--- | :--- | :--- | :----: | :--- |
+| Llama2 | LoRA | Llama2 | [0] | [isc-demos/llama2](llama2) |
+| Mistral | TBC | Mistral | [0] | [isc-demos/mistral](mistral) |
