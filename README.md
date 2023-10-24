@@ -3,7 +3,9 @@
 Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
 
-**Getting Started** (#getting-started)
+[Getting Started](getting-started)
+
+[Hello World with Fashion MNIST](hello-world-with-fashion-mnist)
 
 ## Getting Started
 
