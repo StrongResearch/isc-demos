@@ -94,22 +94,21 @@ avoid doubling-up Organisations.
     not necessary for using the ISC.
 2. Click on the menu at the top right of the page and click on **"Settings"**.
 3. At the bottom of the page, click on **"NEW SSH KEY"**.
-4. You will need to generate an RSA key pair by opening terminal and running `ssh-keygen`. When prompted, provide a 
-    filename in which to save the key. You can also optionally enter a passphrase (or just press enter twice). This will 
+4. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
+    provide a filename in which to save the key. You can also optionally enter a passphrase (or just press enter twice). This will 
     generate two files containing your public and private keys. Your public key will be saved in the file ending in `.pub`.
-5. Open the file containing the public key. The public key file contents should start with `ssh-rsa` and end with 
-    `.local`. Copy the entire contents of this file and paste into the input field on Control Plane beneath **"Public key 
-    contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**. Note, only RSA public keys are currently supported, reach out to 
-    us if this is unsuitable for you.
-6. When you are returned to the Settings page on Control Plane, click on **"NEW API KEY"**. Optionally name your API key. 
-    If you already have multiple Organisations established, select the Organisation to associate this API key with. Click 
+5. Open the file containing your public key. If you generated your keypair with the instruction above, the public key file contents
+    should start with `ssh-rsa` and end with `.local`. Copy the entire contents of this file and paste into the input field on
+    Control Plane beneath **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
+7. Return to the Settings page on Control Plane and click on **"NEW API KEY"**. Optionally name your API key. If you already have
+    multiple Organisations established, select the Organisation to associate this API key with. Click 
     on **"GENERATE NEW API ACCESS TOKEN"**. You will be presented with the API Access Token associated with your API key. 
     Save a copy of this API Access Token. Be careful to save the entire API Access Token, note that some characters will be 
     obscured by the fixed width of the display window. For security purposes you will only be shown this API Access Token once 
     and will not be able to access it again, though you can always create a new API Key.
-7. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
+8. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
     You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
-8. Open terminal and enter the entire the SSH Username command. The command should start with `ssh` and end with `@<ip-address>`. 
+9. Open a terminal and enter the entire the SSH Username command. The command should start with `ssh` and end with `@<ip-address>`. 
     You should be greeted by the Strong Compute logo and ISC welcome message below. This indicates that you have successfully logged 
     into your home directory on the ISC.
 
@@ -156,8 +155,9 @@ Version 0.5.0-alpha of the ISC is now live!
 10. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
     created correctly.
 11. Create a virtual environment by running `python3 -m virtualenv ~/.venv` and activate your virtual environment by 
-    running `~/.venv/bin/activate`. You will need to ensure that you have activated your virtual environment whenever 
-    you launch experiments on the ISC.
+    running `~/.venv/bin/activate`. You will need to ensure that you have activated your virtual environment when installing 
+    dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
+    Config file(s)](#isc-config).
 
 **Note: This process does not yet cover installation of necessary python packages including torch. Perhaps it should.**
 
@@ -249,8 +249,8 @@ The `fashion_mnist` subdirectory contains the following files of interest.
     few minutes to read and understand the contents of this file, there are lots of notes to explain what's happening. 
     Reach out with any questions. Note that `train.py` provides for command line arguments to be passed, we will see how 
     when looking at the next file.
-5. `fashion_mnist.isc` is the file necessary for launching the experiment on the isc. The key information included in the 
-    `.isc` file is as follows.
+5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching the experiment on the isc. The key information 
+   included in the ISC Config file is as follows.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
     - `gpu_type`: The type of GPU that you are requesting for your experiment. At this time, the only supported 
