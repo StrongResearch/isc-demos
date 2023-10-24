@@ -5,7 +5,8 @@ Pytorch models on the Strong Compute ISC.
 
 ## Getting Started
 
-### 1. Setting up the VPN - Note: Advised this process is soon to be deprecated.
+### 1. Setting up the VPN
+#### Note: Advised this process is soon to be deprecated.
 Before connecting to the Strong Compute ISC, you must have recieved login credentials from Strong Compute by email. 
 Please reach out to us if you have not received this email.
 
