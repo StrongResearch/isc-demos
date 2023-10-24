@@ -271,7 +271,7 @@ annotated with [0] are "coming soon".
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
-| Fashion MNIST | Image classification | CNN | [3] | [Fashion MNIST](fashion_mnist) |
+| Fashion MNIST | Image classification | CNN | [3] | [/fashion_mnist](fashion_mnist) |
 | CIFAR100 | Image classification | ResNet50 | [2] | |
 | Distributed Model Parallel | TBC | TBC | [0] | |
 
