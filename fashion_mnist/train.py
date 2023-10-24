@@ -140,7 +140,7 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         train_dataloader.sampler.advance(len(inputs))
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - advance sampler")
         # Report training metrics
-        total_batch_loss, examples_seen = itemgetter("loss", "examples_seen")(metrics["train"])
+        total_batch_loss, examples_seen = itemgetter("loss", "examples_seen")(metrics["train"].local)
         batch_avg_loss = total_batch_loss / examples_seen
         metrics["train"].reset_local()
 
@@ -203,7 +203,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
             # Performance summary at the end of the epoch
             if args.is_master and is_last_batch:
 
-                total_loss, correct, examples_seen = itemgetter("loss", "correct", "examples_seen")(metrics["test"])
+                total_loss, correct, examples_seen = itemgetter("loss", "correct", "examples_seen")(metrics["test"].agg)
                 avg_test_loss = total_loss / examples_seen
                 pct_test_correct = correct / examples_seen
                 writer.add_scalar("Test/avg_test_loss", avg_test_loss, epoch)
