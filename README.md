@@ -159,9 +159,8 @@ Version 0.5.0-alpha of the ISC is now live!
     running `~/.venv/bin/activate`. You will need to ensure that you have activated your virtual environment when installing 
     dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
     Config file(s)](#isc-config).
-13. As a minimum 
-
-**Note: This process does not yet cover installation of necessary python packages including torch. Perhaps it should.**
+13. Only Pytorch models are currently supported on the ISC and distributed training is coordinated using torchrun, so install pytorch 
+    by running `pip install torch==2.0.1`.
 
 Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
@@ -216,32 +215,21 @@ demonstrate with the example project that follows.
 ### 2.2. Hello World with Fashion MNIST <a name="hello-world-with-fashion-mnist"></a>
 
 To follow this demonstration, first ensure you have activated your virtual environment, cloned this repo in your home 
-directory on the ISC, and installed the necessary requirements with the following commands.
+directory on the ISC, and installed the necessary requirements with the following commands. You will also need to clone the 
+`cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package in editable mode.
 
 ```bash
 cd ~
 source ~/.venv/bin/activate
 git clone https://github.com/StrongResearch/isc-demos.git
-cd ~/isc-demos
-pip install -r requirements.txt
-```
-Only Pytorch models are currently supported on the ISC and distributed training is coordinated using torchrun. Therefore, of 
-the requirements included in the `requrements.txt` file, it is mandatory to have Pytorch (2.0.1 or later) installed at a minimum. 
-Other requirements included in the `requrements.txt` file are necessary for one or more of the other example projects 
-showcased in this repo.
-
-You will also need to clone the `cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package 
-in editable mode with the following commands. The `cycling_utils` package contains helpful functions and classes for achieving 
-interruptibility in distributed training. Installing `cycling_utils` in editable mode will allow you to extend this package at any 
-time with your own modules as needed without having to reinstall the package.
-
-```bash
-cd ~
 git clone https://github.com/StrongResearch/cycling_utils.git
 pip install -e cycling_utils
 ```
 
-Next return to the `isc-demos` repo directory and inspect the contents of the `fashion_mnist` subdirectory.
+The `cycling_utils` package contains helpful functions and classes for achieving interruptibility in distributed training. 
+Installing `cycling_utils` in editable mode will allow you to extend this package at any time with your own modules as needed 
+without having to reinstall the package. Next navigate to the `isc-demos` repo directory and inspect the contents of the 
+`fashion_mnist` subdirectory.
 
 ```bash
 cd ~/isc-demos/fashion_mnist
