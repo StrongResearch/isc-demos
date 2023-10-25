@@ -394,8 +394,6 @@ Each example published below is annotated with its degree of completion. Example
 | Llama2 | LoRA | Llama2 | [0] | [isc-demos/llama2](llama2) |
 | Mistral | TBC | Mistral | [0] | [isc-demos/mistral](mistral) |
 
-
-
 ## 3. Transferring your dataset <a name="data-transfer"></a>
 The process for transferring large datasets to the ISC for training includes two main steps:
 1. Download your dataset to the **Download Server**.
