@@ -183,6 +183,15 @@ this table will be empty. Each time you launch an experiment on the ISC, a recor
 table. Only *your* experiments will be visible to you in this table. There may be other experiments scheduled to run on 
 the ISC at the same time that will not be visible to you.
 
+```bash
+                               ISC Experiments                                                                                                                          
+┏━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ ID     ┃ Name     ┃ NNodes    ┃ Output Path                                 ┃ Status        ┃
+┡━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│        │          │           │                                             │               │
+└────────┴──────────┴───────────┴─────────────────────────────────────────────┴───────────────┘
+```
+
 Experiments share time on the **Rapid Cycling** cluster by means of a queue which is cycled at fixed time intervals. The 
 queue is comprised of two sub-queues, indicated by status `enqueued` and `paused` respectively. All `enqueued` 
 experiments are cycled before any `paused` experiment is cycled.
