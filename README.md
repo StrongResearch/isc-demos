@@ -252,7 +252,7 @@ The `fashion_mnist` subdirectory contains the following files of interest.
     `python -m prep_data` we download the dataset to the `fashion_mnist` directory, from which it is available to the 
     Rapid Cycling cluster, which will mean that this data is ready to go when the experiment is launched and no cycling 
     time is wasted waiting for the data to download. Preparing your data ahead of time is an essential requirement for 
-    running experiments on the ISC and we will cover **how to transfer your private dataset to our cloud storage** for 
+    running experiments on the ISC and we will cover [**how to transfer your private dataset to our cloud storage**](#data-transfer) for 
     training in a later section.
 3. `model.py` includes a description of the neural network model that we will train.
 4. `train.py` describes configuration for distributed training, initialisation, and distributed training loops. Take a 
