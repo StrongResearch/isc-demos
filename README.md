@@ -18,7 +18,7 @@ Pytorch models on the Strong Compute ISC.
 ### 1.1. Setting up the VPN <a name="setting-up-vpn"></a>
 #### Note: Advised this process is soon to be deprecated.
 Before connecting to the Strong Compute ISC, you must have recieved login credentials from Strong Compute by email. 
-Please reach out to us if you have not received this email.
+Please reach out to us if you have not recieved this email.
 
 #### 1.1.1. For MacOS and Windows <a name="for-mac-windows"></a>
 
@@ -77,20 +77,20 @@ PersistentKeepalive = 15
 Now that you have your VPN correctly installed, configured, and enabled, we'll get you set up with a login to the ISC 
 associated with your User and Organisation.
 
-Your User login to the ISC will be associated with an Organisation. If you are the first person in your organisation to 
-register, then you will be assigned to a brand new Organisation, and you can then invite others to this organisation. If 
-someone has already created an Organisation on Control Plane that you should be associated with, they can send you an 
-invitation to join (step 2 below) and you can skip to step 3 below. Check with your colleagues before proceeding to 
-avoid doubling-up Organisations.
+Your User login to the ISC will be associated with an Organisation. Check with your colleagues before proceeding to avoid 
+doubling-up Organisations.
+
+**If you are the first person in your Organisation to register:**
 
 1. Visit the Strong Compute **Control Plane** at https://cp.strongcompute.ai/, click on **"Register"**, register with your email 
     and choose a suitable password.
-2. If you are the first person in your Organisation to register, click on the menu at the top right of the page 
-    (labelled with your email and Organisation name) and click on **"Organisations"**. On the "Your Organisations" page, 
-    click on the tile for your organisation. When you first register, your Organisation will be named **"<your email>'s Personal
-    Organisation"**. From the **"Organisation Settings"** page you can update the name of your Organisation, view current members,
-    and send invitations to new members. If you would like to use Control Plane to track your usage on Azure, AWS, GCP, or Lambda
-    you can also manage your API keys for these platforms, though this is not necessary for using the ISC.
+2. Click on the menu at the top right of the page (labelled with your email and Organisation name) and click on **"Organisations"**. 
+    On the "Your Organisations" page, click on the tile for your organisation. When you first register, your Organisation will be
+    named **"<your email>'s Personal Organisation"**. From the **"Organisation Settings"** page you can update the name of your
+    Organisation, view current members, and send invitations to new members.
+
+**If you are responding to an invitation to join an Organisation on Control Plane, continue from here:**
+   
 3. Click on the menu at the top right of the page and click on **"Settings"**.
 4. At the bottom of the page, click on **"NEW SSH KEY"**.
 5. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
@@ -159,12 +159,13 @@ Version 0.5.0-alpha of the ISC is now live!
     running `~/.venv/bin/activate`. You will need to ensure that you have activated your virtual environment when installing 
     dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
     Config file(s)](#isc-config).
+13. As a minimum 
 
 **Note: This process does not yet cover installation of necessary python packages including torch. Perhaps it should.**
 
 Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
-is "interruptable" (including what this means).
+is "interruptible" (including what this means).
 
 ## 2. Interruptible experiments <a name="interruptible-experiments"></a>
 
