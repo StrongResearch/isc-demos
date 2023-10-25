@@ -11,10 +11,10 @@ Pytorch models on the Strong Compute ISC.
    - [2.1. Rapid Cycling and Burst To Cloud](#rapid-cycling-burst)
    - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
    - [2.3. More examples](#more-examples)
- - [3. Transferring Your Dataset](#data-transfer)
+ - [3. Transferring your dataset](#data-transfer)
 
 
-## 1. Getting Started <a name="getting-started"></a>
+## 1. Getting started <a name="getting-started"></a>
 
 ### 1.1. Setting up the VPN <a name="setting-up-vpn"></a>
 #### Note: Advised this process is soon to be deprecated.
@@ -166,7 +166,7 @@ Congratulations, you are all set to start running experiments on the ISC. Follow
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
 is "interruptable" (including what this means).
 
-## 2. Interruptible Experiments <a name="interruptible-experiments"></a>
+## 2. Interruptible experiments <a name="interruptible-experiments"></a>
 
 We will now explore and run some code to launch an experiment on the ISC. This example will demonstrate the principle and 
 application of interruptibility, which will be important to consider when developing your experiments to run successfully 
@@ -384,3 +384,5 @@ Each example published below is annotated with its degree of completion. Example
 | :--- | :--- | :--- | :----: | :--- |
 | Llama2 | LoRA | Llama2 | [0] | [isc-demos/llama2](llama2) |
 | Mistral | TBC | Mistral | [0] | [isc-demos/mistral](mistral) |
+
+## 3. Transferring your dataset <a name="data-transfer"></a>
