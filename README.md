@@ -1,5 +1,4 @@
 # ISC Demos
-
 Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
  - [1. Getting Started](#getting-started)
