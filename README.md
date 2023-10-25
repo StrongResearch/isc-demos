@@ -162,11 +162,16 @@ Version 0.5.0-alpha of the ISC is now live!
     is used to authenticate you when you launch experiments on the ISC, and should be saved in the root of your home directory.
 9. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
     created correctly.
-10. Create a virtual environment by running `python3 -m virtualenv ~/.venv` and activate your virtual environment by 
-    running `source ~/.venv/bin/activate`. You will need to ensure that you have activated your virtual environment when installing 
+10. Create and activate a virtual environment by running the following commands.
+
+```bash
+python3 -m virtualenv ~/.venv
+source ~/.venv/bin/activate
+```
+11. You will need to ensure that you have activated your virtual environment when installing 
     dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
     Config file(s)](#isc-config).
-11. Only Pytorch models are currently supported on the ISC and distributed training is coordinated using torchrun, so install pytorch 
+12. Only Pytorch models are currently supported on the ISC and distributed training is coordinated using torchrun, so install pytorch 
     by running `pip install torch==2.0.1`.
 
 Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
