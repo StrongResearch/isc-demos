@@ -91,6 +91,7 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         optimizer.zero_grad()
         # Determine the current batch
         batch = train_dataloader.sampler.progress // train_dataloader.batch_size
+        print(batch)
         is_last_batch = (batch + 1) == train_batches_per_epoch
         # Move input and targets to device
         inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
@@ -110,7 +111,6 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         optimizer.step()
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - model parameter update")
         # Advance sampler - essential for interruptibility
-        train_dataloader.sampler.advance(len(inputs))
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - advance sampler")
         # Report training metrics
         total_batch_loss, examples_seen = itemgetter("loss", "examples_seen")(metrics["train"].local)
@@ -156,11 +156,15 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
             timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - loss calculation")
             # Performance metrics logging
             correct = (predictions.argmax(1) == targets).type(torch.float).sum()
+            print('correct')
             metrics["test"].update(
                 {"examples_seen": len(inputs), "loss": test_loss.item(), "correct": correct.item()}
             )
+            print('update')
             metrics["test"].reduce() # Gather results from all nodes - sums metrics from all nodes into local aggregate
+            print('reduce')
             metrics["test"].reset_local() # Reset local cache
+            print('reset')
             timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - metrics logging")
             # Advance sampler
             test_dataloader.sampler.advance(len(inputs))
@@ -273,21 +277,19 @@ def main(args, timer):
     metrics = {"train": MetricsTracker(), "test": MetricsTracker()}
     writer = SummaryWriter(log_dir=args.tboard_path)
 
-    
-    cycler = BaseCycler(model=model, dataloader=train_dataloader, optimizer=optimizer, save_path=args.checkpoint_path, batch_size=args.batch_size, scheduler=lr_scheduler, metrics_tracker=metrics, save_interval=1)
+    cycler = BaseCycler(model=model, rank=rank, dataloader=train_dataloader, optimizer=optimizer, save_path=args.checkpoint_path, scheduler=lr_scheduler, metrics_tracker=metrics, save_interval=1)
 
     #####################################
     # Main training loop
     # --------------------
     # Each epoch the training loop is called within a context set from the training InterruptibleDistributedSampler
-
     for epoch in range(train_dataloader.sampler.epoch, args.epochs):
         with train_dataloader.sampler.in_epoch(epoch):
             train_loop(
                 model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, 
                 metrics, writer, args
             )
-
+            cycler.on_epoch_end()
             # An inner context is also set from the testing sampler. This ensures that both training and testing can be
             # interrupted and resumed from checkpoint. 
 
@@ -298,7 +300,6 @@ def main(args, timer):
                         metrics, writer, args
                     )
 
-            cycler.on_epoch_end()
 
     print("Done!")
 
