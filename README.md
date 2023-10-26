@@ -25,8 +25,10 @@ source ~/.venv/bin/activate
 git clone https://github.com/StrongResearch/isc-demos.git
 cd ~/isc-demos
 pip install -r requirements.txt
+cd ~
+git clone https://github.com/StrongResearch/cycling_utils.git
+cd ~/cycling_utils
 pip install -e cycling_utils # supports suspending and resuming a distributed sampler
-# Note: cycling_utils will soon be moved to a separate repository.
 
 # fashion mnist
 cd ~/isc-demos/fashion_mnist
