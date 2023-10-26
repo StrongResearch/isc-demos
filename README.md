@@ -248,7 +248,7 @@ cd ~/isc-demos/fashion_mnist
 ls
 ```
 
-The `fashion_mnist` subdirectory contains the following files of interest.
+The `isc-demos/fashion_mnist` subdirectory contains the following files of interest.
 1. `README.md` includes instructions for installing dependencies and downloading the dataset (the next two steps).
 2. `requirements.txt` includes dependencies necessary for this specific demo. Install these by running `pip install -r 
     requirements.txt`.
