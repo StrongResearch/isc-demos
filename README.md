@@ -249,19 +249,20 @@ ls
 ```
 
 The `fashion_mnist` subdirectory contains the following files of interest.
-1. `requirements.txt` includes some dependencies necessary for this specific demo. Install these by running `pip install -r 
+1. `README.md` includes instructions for installing dependencies and downloading the dataset (the next two steps).
+2. `requirements.txt` includes dependencies necessary for this specific demo. Install these by running `pip install -r 
     requirements.txt`.
-2. `prep_data.py` includes commands for downloading the required dataset (Fashion MNIST). Run this with `python -m prep_data` 
+3. `prep_data.py` includes commands for downloading the required dataset (Fashion MNIST). Run this with `python -m prep_data` 
     to download the dataset to the `fashion_mnist` directory, from which it is available to the Rapid Cycling cluster. This will 
     mean that this data is ready to go when the experiment is launched and no cycling time is wasted waiting for the data to 
     download. Preparing your data ahead of time is an essential requirement for running experiments on the ISC and we will cover 
     [**how to transfer your private dataset to our cloud storage**](#data-transfer) for training in a later section.
-3. `model.py` includes a description of the neural network model that we will train.
-4. `train.py` describes configuration for distributed training, initialisation, and distributed training loops. Take a 
+4. `model.py` includes a description of the neural network model that we will train.
+5. `train.py` describes configuration for distributed training, initialisation, and distributed training loops. Take a 
     few minutes to read and understand the contents of this file, there are lots of notes to explain what's happening. 
     Reach out with any questions. Note that `train.py` provides for command line arguments to be passed, we will see how 
     when looking at the next file.
-5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. 
+6. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. 
    The key information included in the ISC Config file is as follows.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
