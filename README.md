@@ -321,11 +321,10 @@ overloaded, please further tune the variable for optimal performance in your app
  the experiment with the following command.
 
  ```bash
- cd <Output Path from ISC Experiments table>
  tensorboard --logdir <Output Path from ISC Experiments table>
  ```
 
-Tensorboard will attempt to launch on a default port (typically 6006). If this port is unavailable, you can manually set an alternative port of your chosing with the flag `--port <port>`. You can then view the tensorboard at `http://localhost:<port>/`. Tensorboard recursively searches the directory it was launched from for tensorboard event logs, so it will discover the event logs in the `/tb` subdirectory.
+Tensorboard will attempt to launch on a default port (typically 6006). If this port is unavailable, you can manually set an alternative port of your chosing with the flag `--port <port>`. You can then view the tensorboard at `http://localhost:<port>/`. Tensorboard recursively searches for tensorboard logs in the directory passed after the `--logdir` flag, so it will discover the event logs in the `/tb` subdirectory.
 
 ![fashion_mnist_tensorboard](https://github.com/StrongResearch/isc-demos/blob/main/fashion_mnist/fashionmnist_tensorboard.png?raw=true)
 
