@@ -82,7 +82,7 @@ associated with your User and Organisation.
     and choose a suitable password.
 2. Click on the menu at the top right of the page (labelled with your email and Organisation name) and click on **"Organisations"**. 
     On the "Your Organisations" page, click on the tile for your organisation. When you first register, your Organisation will be
-    named **"<your email>'s Personal Organisation"**.
+    named **"\<your email\>'s Personal Organisation"**.
 3. From the **"Organisation Settings"** page you can update the name of your
     Organisation, view current members, and *create* invitations for other members to join. **Note that Control Plane does not send
     emails to invitees.** If you invite a member to join your Organisation, you will need to notify them that they have been invited
@@ -321,10 +321,10 @@ overloaded, please further tune the variable for optimal performance in your app
  the experiment with the following command.
 
  ```bash
- tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
+ tensorboard --logdir <Output Path from ISC Experiments table>
  ```
 
-You can then view the tensorboard at `http://localhost:<port>/`.
+Tensorboard will attempt to launch on a default port (typically 6006). If this port is unavailable, you can manually set an alternative port of your chosing with the flag `--port <port>`. You can then view the tensorboard at `http://localhost:<port>/`.
 
 ![fashion_mnist_tensorboard](https://github.com/StrongResearch/isc-demos/blob/main/fashion_mnist/fashionmnist_tensorboard.png?raw=true)
 
