@@ -217,7 +217,7 @@ def main(args, timer):
 
     timer.report("Setup for distributed training")
 
-    args.checkpoint_path = args.save_dir / "checkpoint.isc"
+    args.checkpoint_path = args.save_dir / "checkpoint.pt"
     args.checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     timer.report("Validated checkpoint path")
 
@@ -297,7 +297,7 @@ def main(args, timer):
 
     if os.path.isfile(args.checkpoint_path):
         print(f"Loading checkpoint from {args.checkpoint_path}")
-        checkpoint = torch.load(args.checkpoint_path)
+        checkpoint = torch.load(args.checkpoint_path, map_location=f'cuda:{args.device_id}')
 
         model.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
