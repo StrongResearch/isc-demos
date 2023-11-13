@@ -171,7 +171,11 @@ source ~/.venv/bin/activate
     dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
     Config file(s)](#isc-config).
 12. Only Pytorch models are currently supported on the ISC and distributed training is coordinated using torchrun, so install pytorch 
-    by running `pip install torch==2.0.1`.
+    by running the following. Note if your project requires a specific version of pytorch, adapt the following install command to suit.
+
+```bash
+pip install torch==2.0.1
+```
 
 Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
@@ -248,8 +252,10 @@ ls
 ```
 
 The `isc-demos/fashion_mnist` subdirectory contains the following files of interest.
-1. `requirements.txt` includes dependencies necessary for this specific demo. Install these by running `pip install -r 
-    requirements.txt`.
+1. `requirements.txt` includes dependencies necessary for this specific demo. Install these by running the following.
+```bash
+pip install -r requirements.txt
+```
 2. `prep_data.py` includes commands for downloading the required dataset (Fashion MNIST). Run this with `python -m prep_data` 
     to download the dataset to the `fashion_mnist` directory, from which it is available to the Rapid Cycling cluster. This will 
     mean that this data is ready to go when the experiment is launched and no cycling time is wasted waiting for the data to 
