@@ -274,8 +274,8 @@ class CommonMetricPrinter(EventWriter):
         # NOTE: max_mem is parsed by grep in "dev/parse_results.sh"
         self.logger.info(
             str.format(
-                " {eta}iter: {iter}  {losses}  {non_losses}  {avg_time}{last_time}"
-                + "{avg_data_time}{last_data_time} lr: {lr}  {memory}",
+                "Iteration: {iter}\n {eta} {losses}  {non_losses}  {avg_time}{last_time}"
+                + "{avg_data_time}{last_data_time} lr: {lr}  {memory}\n------------------------------------------\n",
                 eta=f"eta: {eta_string}  " if eta_string else "",
                 iter=iteration,
                 losses="  ".join(

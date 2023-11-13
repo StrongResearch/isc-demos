@@ -5,9 +5,9 @@
 
 ITER_LOG_PERIOD: 1
 
-CHECKPOINT_PATH: '/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/output/detectron2/checkpoint/'
-TENSORBOARD_PATH: '/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/output/detectron2/tensorboard/'
-RESULT_PATH: '/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/output/detectron2/result/'
+CHECKPOINT_PATH: '/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/detectron/isc-demos/detectron2/strongcompute/checkpoint/'
+TENSORBOARD_PATH: '/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/detectron/isc-demos/detectron2/strongcompute/tensorboard/'
+RESULT_PATH: '/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/detectron/isc-demos/detectron2/strongcompute/output/'
 
 TRAIN_ANNOTATION_PATH: '/mnt/.node1/Open-Datasets/coco/annotations/instances_train2017.json'
 TRAIN_DATASET_PATH: '/mnt/.node1/Open-Datasets/coco/train2017'
@@ -19,9 +19,9 @@ MASK_ON: True
 RESNETS_DEPTH: 50
 BATCH_SIZE_PER_IMAGE: 512
 CONFIG_FILE: 'COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml'
-NUM_WORKERS: 11
-CHECKPOINT_PERIOD: 200
-IMS_PER_BATCH: 66
+NUM_WORKERS: 1
+CHECKPOINT_PERIOD: 80
+IMS_PER_BATCH: 12
 BASE_LR: 0.001
 MAX_ITER: 270000
 STEPS: [210000, 250000]   # STEPS: [] prevents learning rate decay

@@ -96,19 +96,19 @@ def setup_logger(
         logger.addHandler(ch)
 
     # file logging: all workers
-    if output is not None:
-        if output.endswith(".txt") or output.endswith(".log"):
-            filename = output
-        else:
-            filename = os.path.join(output, "log.txt")
-        if distributed_rank > 0:
-            filename = filename + ".rank{}".format(distributed_rank)
-        PathManager.mkdirs(os.path.dirname(filename))
+    # if output is not None:
+    #     if output.endswith(".txt") or output.endswith(".log"):
+    #         filename = output
+    #     else:
+    #         filename = os.path.join(output, "log.txt")
+    #     if distributed_rank > 0:
+    #         filename = filename + ".rank{}".format(distributed_rank)
+    #     PathManager.mkdirs(os.path.dirname(filename))
 
-        fh = logging.StreamHandler(_cached_log_stream(filename))
-        fh.setLevel(logging.DEBUG)
-        fh.setFormatter(plain_formatter)
-        logger.addHandler(fh)
+    #     fh = logging.StreamHandler(_cached_log_stream(filename))
+    #     fh.setLevel(logging.DEBUG)
+    #     fh.setFormatter(plain_formatter)
+    #     logger.addHandler(fh)
 
     return logger
 

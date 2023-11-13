@@ -195,20 +195,20 @@ def default_setup(cfg, args):
     logger.info("Environment info:\n" + collect_env_info())
 
     logger.info("Command line arguments: " + str(args))
-    if hasattr(args, "config_file") and args.config_file != "":
-        logger.info(
-            "Contents of args.config_file={}:\n{}".format(
-                args.config_file,
-                _highlight(PathManager.open(args.config_file, "r").read(), args.config_file),
-            )
-        )
+    # if hasattr(args, "config_file") and args.config_file != "":
+    #     logger.info(
+    #         "Contents of args.config_file={}:\n{}".format(
+    #             args.config_file,
+    #             _highlight(PathManager.open(args.config_file, "r").read(), args.config_file),
+    #         )
+    #     )
 
     if comm.is_main_process() and output_dir:
         # Note: some of our scripts may expect the existence of
         # config.yaml in output directory
         path = os.path.join(output_dir, "config.yaml")
         if isinstance(cfg, CfgNode):
-            logger.info("Running with full config:\n{}".format(_highlight(cfg.dump(), ".yaml")))
+            logger.info("Running with full config")
             with PathManager.open(path, "w") as f:
                 f.write(cfg.dump())
         else:

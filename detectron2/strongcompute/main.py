@@ -10,7 +10,7 @@ cycling is also implemented to run on the isc
 debug: bool = False
 
 import os
-
+import datetime
 import argparse
 import itertools
 import logging
@@ -56,7 +56,6 @@ def setup_dist_print(is_master: bool) -> None:
   __builtins__.print = print
 
 def init_dist_mode(params: Dict[str, Any]) -> None:
-  torch.cuda.set_device(int(os.environ['LOCAL_RANK']))
   dist.init_process_group('nccl')
   comm.create_local_process_group(params['NUM_WORKERS'])
   dist.barrier()
@@ -186,6 +185,7 @@ def main():
   os.makedirs(params['TENSORBOARD_PATH'], exist_ok=True)
   os.makedirs(params['RESULT_PATH'], exist_ok=True)
 
+
   init_dist_mode(params)
   cfg = setup(params, args)
 
@@ -198,4 +198,5 @@ def main():
   test(params, cfg, model)
 
 if __name__ == '__main__':
+  print(f"{datetime.datetime.now()} STARTING:")
   main()

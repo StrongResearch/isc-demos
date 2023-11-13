@@ -1,0 +1,6 @@
+experiment_name = "detectron2-densepose"
+gpu_type = "24GB VRAM GPU"
+nnodes = 2
+venv_path = "~/detectron/isc-demos/.venv/bin/activate"
+output_path = "~/detectron/isc-demos/detectron2/projects/DensePose/output"
+command = "start.py --config-file configs/densepose_rcnn_R_50_FPN_s1x.yaml"

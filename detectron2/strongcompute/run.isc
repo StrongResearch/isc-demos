@@ -1,6 +1,6 @@
-experiment_name = "detectron2-coco-instance_segmentation"
+experiment_name = "detectron2"
 gpu_type = "24GB VRAM GPU"
-nnodes = 11
-venv_path = "/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/.venv/bin/activate"
-output_path = "/mnt/Client/Henrysum6ozbny5rajdf2qlo7c3uspca/henhenwezwxhp3d5d2rk24pjsdyvz25q/output/detectron2/"
+nnodes = 2
+venv_path = "~/detectron/isc-demos/.venv/bin/activate"
+output_path = "~/detectron/isc-demos/detectron2/strongcompute/output"
 command = "main.py"
