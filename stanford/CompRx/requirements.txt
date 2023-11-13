@@ -1,5 +1,5 @@
 # --------- pytorch --------- #
-# torch>=1.10.0
+torch==2.0.1
 torchvision>=0.11.0
 
 # --------- hydra --------- #
@@ -27,3 +27,13 @@ kornia          # image augmentations
 # accelerate      # huggingface's accelerate to take care of multi-node, multi-gpu
 git+https://github.com/Lightning-AI/metrics.git@release/stable  # metrics
 lightning-bolts # lightning bolts
+
+einops
+accelerate
+open_clip_torch
+torch-fidelity
+git+https://github.com/openai/CLIP.git
+pylibjpeg
+pylibjpeg-libjpeg
+GDCM
+git+https://github.com/StrongResearch/cycling_utils.git

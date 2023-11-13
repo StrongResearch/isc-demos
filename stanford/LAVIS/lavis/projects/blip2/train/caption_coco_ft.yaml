@@ -25,9 +25,9 @@ datasets:
           prompt: "a photo of "
         eval:
           name: "blip_caption"
-    # build_info:
-    #     images:
-    #         storage: '/export/share/datasets/vision/coco/images/'
+    build_info:
+        images:
+            storage: '/mnt/.node1/Open-Datasets/coco'
 
 run:
   task: captioning
@@ -39,9 +39,9 @@ run:
   warmup_steps: 1000
   weight_decay: 0.05
   max_epoch: 5
-  batch_size_train: 16
-  batch_size_eval: 8
-  num_workers: 4
+  batch_size_train: 1
+  batch_size_eval: 1
+  num_workers: 1
   accum_grad_iters: 1
 
   max_len: 30
@@ -49,7 +49,7 @@ run:
   num_beams: 5
 
   seed: 42
-  output_dir: "output/BLIP2/Caption_coco"
+  output_dir: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/stanford/LAVIS/output/BLIP2/Caption_coco"
 
   amp: True
   resume_ckpt_path: null

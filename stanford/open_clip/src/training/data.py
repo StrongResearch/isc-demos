@@ -19,6 +19,10 @@ from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler, IterableD
 from torch.utils.data.distributed import DistributedSampler
 from webdataset.filters import _shuffle
 from webdataset.tariterators import base_plus_ext, url_opener, tar_file_expander, valid_sample
+from cycling_utils import InterruptableDistributedSampler
+
+from functools import partial
+
 
 try:
     import horovod.torch as hvd
@@ -27,9 +31,13 @@ except ImportError:
 
 
 class CsvDataset(Dataset):
-    def __init__(self, input_filename, transforms, img_key, caption_key, sep="\t", tokenizer=None):
+    def __init__(self, input_filename, transforms, img_key, caption_key, samples=None, sep=",", tokenizer=None):
         logging.debug(f'Loading csv data from {input_filename}.')
-        df = pd.read_csv(input_filename, sep=sep)
+        
+        if samples is not None:
+            df = pd.read_csv(input_filename, sep=sep, nrows=samples)
+        else:
+            df = pd.read_csv(input_filename, sep=sep)
 
         self.images = df[img_key].tolist()
         self.captions = df[caption_key].tolist()
@@ -61,7 +69,7 @@ class SharedEpoch:
 @dataclass
 class DataInfo:
     dataloader: DataLoader
-    sampler: DistributedSampler = None
+    sampler: InterruptableDistributedSampler = None
     shared_epoch: SharedEpoch = None
 
     def set_epoch(self, epoch):
@@ -395,8 +403,6 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
         wds.batched(args.batch_size, partial=not is_train)
     ])
 
-    dataset = wds.DataPipeline(*pipeline)
-
     if is_train:
         if not resampled:
             num_shards = num_shards or len(expand_urls(input_shards)[0])
@@ -414,8 +420,11 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
         # last batches are partial, eval is done on single (master) node
         num_batches = math.ceil(num_samples / args.batch_size)
 
+    sampler = InterruptableDistributedSampler(dataset, shuffle=False)
+    
     dataloader = wds.WebLoader(
         dataset,
+        sampler=sampler,
         batch_size=None,
         shuffle=False,
         num_workers=args.workers,
@@ -439,23 +448,46 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
     # add meta-data to dataloader instance for convenience
     dataloader.num_batches = num_batches
     dataloader.num_samples = num_samples
-
-    return DataInfo(dataloader=dataloader, shared_epoch=shared_epoch)
+    
+    return DataInfo(dataloader=dataloader, sampler=sampler, shared_epoch=shared_epoch)
 
 
 def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     input_filename = args.train_data if is_train else args.val_data
     assert input_filename
-    dataset = CsvDataset(
-        input_filename,
-        preprocess_fn,
-        img_key=args.csv_img_key,
-        caption_key=args.csv_caption_key,
-        sep=args.csv_separator,
-        tokenizer=tokenizer
-    )
+    if is_train:
+        dataset = CsvDataset(
+            input_filename,
+            preprocess_fn,
+            img_key=args.csv_img_key,
+            caption_key=args.csv_caption_key,
+            samples=args.train_num_samples,
+            sep=args.csv_separator,
+            tokenizer=tokenizer
+        )
+    else:
+        if args.val_num_samples:
+            dataset = CsvDataset(
+            input_filename,
+            preprocess_fn,
+            img_key=args.csv_img_key,
+            caption_key=args.csv_caption_key,
+            samples=args.val_num_samples,
+            sep=args.csv_separator,
+            tokenizer=tokenizer
+        )
+            
+        else:
+            dataset = CsvDataset(
+                input_filename,
+                preprocess_fn,
+                img_key=args.csv_img_key,
+                caption_key=args.csv_caption_key,
+                sep=args.csv_separator,
+                tokenizer=tokenizer
+            )
     num_samples = len(dataset)
-    sampler = DistributedSampler(dataset) if args.distributed and is_train else None
+    sampler = InterruptableDistributedSampler(dataset) if args.distributed else None
     shuffle = is_train and sampler is None
 
     dataloader = DataLoader(
@@ -467,6 +499,7 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
         sampler=sampler,
         drop_last=is_train,
     )
+    logging.info(f"Dataloader created with total num samples = {num_samples} and num batches = {len(dataloader)}")
     dataloader.num_samples = num_samples
     dataloader.num_batches = len(dataloader)
 
@@ -546,7 +579,6 @@ def get_dataset_fn(data_path, dataset_type):
 def get_data(args, preprocess_fns, epoch=0, tokenizer=None):
     preprocess_train, preprocess_val = preprocess_fns
     data = {}
-
     if args.train_data or args.dataset_type == "synthetic":
         data["train"] = get_dataset_fn(args.train_data, args.dataset_type)(
             args, preprocess_train, is_train=True, epoch=epoch, tokenizer=tokenizer)

@@ -11,9 +11,13 @@ from rich import print
 from torch.utils.data import DataLoader
 from torchmetrics import MeanMetric
 
+import time
+
 from comprx.utils.extras import sanitize_dataloader_kwargs, set_seed
 from comprx.utils.vae.litema import LitEma, ema_scope
 from comprx.utils.vae.train_components import training_epoch, validation_epoch
+
+from cycling_utils import InterruptableDistributedSampler
 
 # Set the project root
 root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
@@ -27,19 +31,28 @@ OmegaConf.register_new_resolver("eval", eval)
 def main(cfg: DictConfig):
     # Instantiating config
     print(f"=> Starting [experiment={cfg.task_name}]")
+    
+    time.sleep(20)
+    print('pre-instantiation')
+    time.sleep(5)
     cfg = instantiate(cfg)
+    
+    time.sleep(20)
+    
+    print("post instantiation")
 
     # Seeding
     if cfg.get("seed", None) is not None:
         print(f"=> Setting seed [seed={cfg.seed}]")
         set_seed(cfg.seed)
-
+    
     torch.backends.cuda.matmul.allow_tf32 = True
 
     # Setup accelerator
     logger_kwargs = cfg.get("logger", None)
     is_logging = bool(logger_kwargs)
     print(f"=> Instantiate accelerator [logging={is_logging}]")
+    
 
     gradient_accumulation_steps = cfg.get("gradient_accumulation_steps", 1)
     accelerator = Accelerator(
@@ -56,6 +69,7 @@ def main(cfg: DictConfig):
             )
         ],
     )
+    time.sleep(20)
     accelerator.init_trackers("comprx", config=cfg, init_kwargs={"wandb": logger_kwargs})
 
     # Determine the mode
@@ -64,11 +78,17 @@ def main(cfg: DictConfig):
     inference_mode = cfg.get("inference", False)
     print(f"=> Running in inference mode: {inference_mode}")
 
+    
     print(f"=> Instantiating train dataloader [device={accelerator.device}]")
-    train_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["train"]))
+    train_dataset = cfg["dataloader"]["train"]["dataset"]
+    cfg["dataloader"]["train"]["shuffle"] = False
+    train_sampler = InterruptableDistributedSampler(train_dataset)
+    train_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["train"]), sampler=train_sampler)
 
     print(f"=> Instantiating valid dataloader [device={accelerator.device}]")
-    valid_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["valid"]))
+    val_dataset = cfg["dataloader"]["valid"]["dataset"]
+    val_sampler = InterruptableDistributedSampler(val_dataset)
+    valid_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["valid"]), sampler=val_sampler)
 
     # Create loss function
     criterion = cfg.criterion
@@ -77,6 +97,8 @@ def main(cfg: DictConfig):
     # Create model
     model = cfg.model
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+    
+    time.sleep(10)
 
     # Set up exponential moving average (EMA) parameter tracking
     use_ema = cfg.get("ema_decay", None) is not None

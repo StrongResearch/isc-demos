@@ -6,8 +6,9 @@
 model:
   arch: blip_caption
 
-  model_type: base_coco
+  model_type: large_coco
   load_finetuned: False
+  load_pretrained: False
 
 datasets:
   coco_caption: # name of the dataset builder
@@ -22,31 +23,40 @@ datasets:
           prompt: "a picture of "
         eval:
           name: "blip_caption"
-
+    build_info:
+            images:
+                storage: '/mnt/.node1/Open-Datasets/coco'
 run:
   # task: retrieval
   task: captioning
+  runner: runner_base
+  # max_iters: 2e4
+  # iters_per_inner_epoch: 50
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
   init_lr: 1e-5
   min_lr: 0
   weight_decay: 0.05
   max_epoch: 5
-  batch_size_train: 32
-  batch_size_eval: 64
-  num_workers: 4
+  batch_size_train: 10
+  batch_size_eval: 10
+  num_workers: 3
 
   max_len: 20
   min_len: 5
   num_beams: 3
 
   seed: 42
-  output_dir: "output/BLIP/Caption_coco"
+  output_dir: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/isc-demos/stanford/LAVIS/checkpoint"
+  resume_ckpt_path: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/isc-demos/stanford/LAVIS/checkpoint/caption_latest.pth"
+  tensorboard_path: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/isc-demos/stanford/LAVIS/logs"
 
-  amp: False
-  resume_ckpt_path: null
+  checkpoint_freq: 5
+
+  amp: True
 
   evaluate: False 
+  eval_freq: 2
   train_splits: ["train"]
   valid_splits: ["val"]
   test_splits: ["test"]

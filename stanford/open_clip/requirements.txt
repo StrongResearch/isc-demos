@@ -1,4 +1,4 @@
-torch>=1.9.0
+torch==2.0.1
 torchvision
 regex
 ftfy
@@ -7,3 +7,4 @@ huggingface_hub
 sentencepiece
 protobuf
 timm
+git+https://github.com/StrongResearch/cycling_utils.git

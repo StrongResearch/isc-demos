@@ -9,6 +9,8 @@ import argparse
 import os
 import random
 
+from datetime import datetime
+
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
@@ -76,6 +78,9 @@ def main():
     # os.environ["NCCL_BLOCKING_WAIT"] = "1"
 
     # set before init_distributed_mode() to ensure the same job_id shared across all ranks.
+
+    print(f"[{datetime.now()}] Starting job")
+
     job_id = now()
 
     cfg = Config(parse_args())
@@ -88,16 +93,14 @@ def main():
     setup_logger()
 
     cfg.pretty_print()
-
     task = tasks.setup_task(cfg)
     datasets = task.build_datasets(cfg)
     model = task.build_model(cfg)
-
+    
     runner = get_runner_class(cfg)(
         cfg=cfg, job_id=job_id, task=task, model=model, datasets=datasets
     )
     runner.train()
-
 
 if __name__ == "__main__":
     main()

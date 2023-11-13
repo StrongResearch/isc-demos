@@ -25,4 +25,4 @@ model:
     ch_mult: ???
 
 # Training settings
-mixed_precision: "no"
+mixed_precision: "bf16"

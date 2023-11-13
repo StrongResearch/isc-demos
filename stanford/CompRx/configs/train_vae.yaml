@@ -28,7 +28,7 @@ task_name: null
 tags: []
 
 # log frequency
-log_every_n_steps: 10
+log_every_n_steps: 1
 
 # start trainig at epoch n
 start_epoch: 0
@@ -37,7 +37,7 @@ start_epoch: 0
 max_epoch: 50
 
 # mini-batch size
-batch_size: 256
+batch_size: 12
 
 # gradient accumulation
 gradient_accumulation_steps: 1

@@ -37,8 +37,9 @@ from training.scheduler import cosine_lr, const_lr, const_lr_cooldown
 from training.train import train_one_epoch, evaluate
 from training.file_utils import pt_load, check_exists, start_sync_process, remote_sync
 
+from cycling_utils import atomic_torch_save
 
-LATEST_CHECKPOINT_NAME = "epoch_latest.pt"
+LATEST_CHECKPOINT_NAME = "latest.pt"
 
 
 def random_seed(seed=42, rank=0):
@@ -128,7 +129,7 @@ def main(args):
     else:
         args.tensorboard_path = ''
 
-    if resume_latest:
+    if resume_latest and 1==2:
         resume_from = None
         checkpoint_path = args.checkpoint_path
         # If using remote_sync, need to check the remote instead of the local checkpoints folder.
@@ -279,8 +280,8 @@ def main(args):
         model.set_grad_checkpointing()
 
     if is_master(args):
-        logging.info("Model:")
-        logging.info(f"{str(model)}")
+        # logging.info("Model:")
+        # logging.info(f"{str(model)}")
         logging.info("Params:")
         params_file = os.path.join(args.logs, args.name, "params.txt")
         with open(params_file, "w") as f:
@@ -333,12 +334,18 @@ def main(args):
 
     # optionally resume from a checkpoint
     start_epoch = 0
-    if args.resume is not None:
+    start_iteration = 1
+    sampler = None
+    checkpoint_exists = os.path.isfile(args.resume)
+    if not checkpoint_exists:
+        print("Checkpoint file specified but not found, starting from scratch instead")
+    if args.resume is not None and checkpoint_exists:
         checkpoint = pt_load(args.resume, map_location='cpu')
         if 'epoch' in checkpoint:
             # resuming a train checkpoint w/ epoch and optimizer state
             start_epoch = checkpoint["epoch"]
-            sd = checkpoint["state_dict"]
+            start_iteration = checkpoint["iteration"] + 1
+            sd = checkpoint["model"]
             if not args.distributed and next(iter(sd.items()))[0].startswith('module'):
                 sd = {k[len('module.'):]: v for k, v in sd.items()}
             model.load_state_dict(sd)
@@ -346,20 +353,38 @@ def main(args):
                 optimizer.load_state_dict(checkpoint["optimizer"])
             if scaler is not None and 'scaler' in checkpoint:
                 scaler.load_state_dict(checkpoint['scaler'])
-            logging.info(f"=> resuming checkpoint '{args.resume}' (epoch {start_epoch})")
+            sampler = checkpoint["sampler"]
+            logging.info(f"=> resuming checkpoint '{args.resume}' (epoch {start_epoch}) (iteration {start_iteration})")
         else:
             # loading a bare (model only) checkpoint for fine-tune or evaluation
             model.load_state_dict(checkpoint)
             logging.info(f"=> loaded checkpoint '{args.resume}' (epoch {start_epoch})")
-
-    # initialize datasets
-    tokenizer = get_tokenizer(args.model)
-    data = get_data(
-        args,
-        (preprocess_train, preprocess_val),
-        epoch=start_epoch,
-        tokenizer=tokenizer,
-    )
+            
+        tokenizer = get_tokenizer(args.model)
+        data = get_data(
+            args,
+            (preprocess_train, preprocess_val),
+            epoch=start_epoch,
+            tokenizer=tokenizer,
+        )
+        if "sampler" in checkpoint:
+            data["train"].dataloader.sampler.load_state_dict(sampler)
+        # if test_sampler is not None:
+        #     data["val"].dataloader.sampler.load_state_dict(test_sampler)
+    else:
+        tokenizer = get_tokenizer(args.model)
+        data = get_data(
+            args,
+            (preprocess_train, preprocess_val),
+            epoch=start_epoch,
+            tokenizer=tokenizer,
+        )
+    
+    # if os.path.isfile(args.resume[:-3] + "_eval.pt"):
+    #     logging.info("Found eval checkpoint, loading val sampler")
+    #     eval_checkpoint = pt_load(args.resume[:-3] + "_eval.pt", map_location='cpu')
+    #     data["val"].dataloader.sampler.load_state_dict(eval_checkpoint["sampler"])
+        
     assert len(data), 'At least one train or eval dataset must be specified.'
 
     # create scheduler if train
@@ -430,44 +455,21 @@ def main(args):
     loss = create_loss(args)
 
     for epoch in range(start_epoch, args.epochs):
-        if is_master(args):
-            logging.info(f'Start epoch {epoch}')
-
-        train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist_model, args, tb_writer=writer)
-        completed_epoch = epoch + 1
-
-        if any(v in data for v in ('val', 'imagenet-val', 'imagenet-v2')):
-            evaluate(model, data, completed_epoch, args, tb_writer=writer, tokenizer=tokenizer)
-
-        # Saving checkpoints.
-        if args.save_logs:
-            checkpoint_dict = {
-                "epoch": completed_epoch,
-                "name": args.name,
-                "state_dict": original_model.state_dict(),
-                "optimizer": optimizer.state_dict(),
-            }
-            if scaler is not None:
-                checkpoint_dict["scaler"] = scaler.state_dict()
-
-            if completed_epoch == args.epochs or (
-                args.save_frequency > 0 and (completed_epoch % args.save_frequency) == 0
-            ):
-                torch.save(
-                    checkpoint_dict,
-                    os.path.join(args.checkpoint_path, f"epoch_{completed_epoch}.pt"),
-                )
-            if args.delete_previous_checkpoint:
-                previous_checkpoint = os.path.join(args.checkpoint_path, f"epoch_{completed_epoch - 1}.pt")
-                if os.path.exists(previous_checkpoint):
-                    os.remove(previous_checkpoint)
-
-            if args.save_most_recent:
-                # try not to corrupt the latest checkpoint if save fails
-                tmp_save_path = os.path.join(args.checkpoint_path, "tmp.pt")
-                latest_save_path = os.path.join(args.checkpoint_path, LATEST_CHECKPOINT_NAME)
-                torch.save(checkpoint_dict, tmp_save_path)
-                os.replace(tmp_save_path, latest_save_path)
+        with data["train"].dataloader.sampler.in_epoch(epoch):
+            # status_path = args.resume[:-9] + "status.pt"
+            # if get_status(status_path) == "train": 
+            logging.info(f"Beginning training with tb_writer = {writer} and path is {args.logs}")
+            train_one_epoch(model, data, loss, epoch, start_iteration, optimizer, scaler, scheduler, dist_model, args, tb_writer=writer)
+            start_iteration = 1
+                # if is_master(args):
+                    # set_status("eval", status_path)
+            # else:
+            #     start_epoch = start_epoch - 1
+            if any(v in data for v in ('val', 'imagenet-val', 'imagenet-v2')) and ((epoch + 1) % args.val_frequency == 0 or epoch == args.epochs):
+                with data["val"].dataloader.sampler.in_epoch(epoch):
+                    evaluate(model, data, epoch, args, tb_writer=writer, tokenizer=tokenizer)
+            # if is_master(args):
+            #     set_status("train", status_path)
 
     if args.wandb and is_master(args):
         wandb.finish()
@@ -485,7 +487,6 @@ def main(args):
             logging.info('Final remote sync successful.')
         else:
             logging.info('Final remote sync failed.')
-    
 
 def copy_codebase(args):
     from shutil import copytree, ignore_patterns

@@ -7,6 +7,8 @@ import time
 import numpy as np
 import torch
 import torch.nn.functional as F
+from torch.distributed import get_world_size
+import torch.distributed as dist
 from torch.nn.parallel.distributed import DistributedDataParallel
 
 try:
@@ -19,6 +21,7 @@ from .distributed import is_master
 from .zero_shot import zero_shot_eval
 from .precision import get_autocast
 
+from cycling_utils import atomic_torch_save
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -59,9 +62,19 @@ def backward(total_loss, scaler):
         scaler.scale(total_loss).backward()
     else:
         total_loss.backward()
+        
+def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, path):
+    checkpoint_dict = {
+                "epoch": epoch,
+                "iteration": iteration,
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "sampler": sampler.state_dict(),
+                "scaler": scaler.state_dict()
+            }
+    atomic_torch_save(checkpoint_dict, path)
 
-
-def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
+def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
     device = torch.device(args.device)
     autocast = get_autocast(args.precision)
     input_dtype = get_input_dtype(args.precision)
@@ -82,7 +95,9 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
     batch_time_m = AverageMeter()
     data_time_m = AverageMeter()
     end = time.time()
+    
     for i, batch in enumerate(dataloader):
+        
         i_accum = i // args.accum_freq
         step = num_batches_per_epoch * epoch + i_accum
 
@@ -95,6 +110,9 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
 
         data_time_m.update(time.time() - end)
         optimizer.zero_grad()
+        
+        if is_master(args) and iters % 5 == 0:
+            logging.info(f"Training - {iters}/{len(dataloader)}")
 
         if args.accum_freq == 1:
             with autocast():
@@ -191,11 +209,23 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
         batch_time_m.update(time.time() - end)
         end = time.time()
         batch_count = i_accum + 1
+        dataloader.sampler.advance(args.batch_size)
+        if is_master(args):
+            if iters >= len(dataloader):
+                #  save checkpoint and break
+                logging.info("Reached the end of the dataloader - saving checkpoint")
+                save_train_checkpoint(epoch + 1, 1, model, optimizer, dataloader.sampler, scaler, args.resume)
+                #break
+            elif iters % args.save_frequency == 0:  # Save checkpoint every n iterations
+                logging.info(f"Saving checkpoint at epoch {epoch} and iteration {iters}/{len(dataloader)}")
+                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
+    
         if is_master(args) and (i_accum % args.log_every_n_steps == 0 or batch_count == num_batches_per_epoch):
             batch_size = len(images)
             num_samples = batch_count * batch_size * args.accum_freq * args.world_size
-            samples_per_epoch = dataloader.num_samples
-            percent_complete = 100.0 * batch_count / num_batches_per_epoch
+            samples_per_epoch = len(dataloader) * get_world_size() * batch_size
+            # percent_complete = 100.0 * batch_count / num_batches_per_epoch
+            percent_complete = ((iters - 1) * batch_size * get_world_size() * 100) / samples_per_epoch
 
             # NOTE loss is coarsely sampled, just master node and per log update
             for key, val in losses.items():
@@ -213,7 +243,7 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
             samples_per_second = args.accum_freq * args.batch_size * args.world_size / batch_time_m.val
             samples_per_second_per_gpu = args.accum_freq * args.batch_size / batch_time_m.val
             logging.info(
-                f"Train Epoch: {epoch} [{num_samples:>{sample_digits}}/{samples_per_epoch} ({percent_complete:.0f}%)] "
+                f"Train Epoch: {epoch} [{(iters - 2) * batch_size * get_world_size()}/{samples_per_epoch} ({percent_complete:.0f}%)] "
                 f"Data (t): {data_time_m.avg:.3f} "
                 f"Batch (t): {batch_time_m.avg:.3f}, {samples_per_second:#g}/s, {samples_per_second_per_gpu:#g}/s/gpu "
                 f"LR: {optimizer.param_groups[0]['lr']:5f} "
@@ -232,7 +262,7 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
             log_data.update({name:val.val for name,val in losses_m.items()})
 
             log_data = {"train/" + name: val for name, val in log_data.items()}
-
+            
             if tb_writer is not None:
                 for name, val in log_data.items():
                     tb_writer.add_scalar(name, val, step)
@@ -245,8 +275,30 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
             # resetting batch / data time meters per log window
             batch_time_m.reset()
             data_time_m.reset()
+            
+        iters += 1
     # end for
 
+
+def save_eval_checkpoint(sampler, iteration, cum_loss, cum_gen_loss, img_features, txt_features, path):
+    checkpoint_dict = {
+                "sampler": sampler.state_dict(),
+                "iteration": iteration,
+                "cum_loss": cum_loss,
+                "cum_gen_loss": cum_gen_loss,
+                "img_features": img_features,
+                "txt_features": txt_features,
+            }
+    atomic_torch_save(checkpoint_dict, path)
+
+def load_eval_checkpoint(path):
+    if os.path.isfile(path):
+        checkpoint = torch.load(path, map_location="cpu")
+        logging.info(f"Checkpoint loaded with iters = {checkpoint['iteration']}")
+        return ((checkpoint["epoch"], checkpoint["iteration"], checkpoint["cum_loss"], 
+                checkpoint["cum_gen_loss"], checkpoint["img_features"], checkpoint["txt_features"]), checkpoint["sampler"])
+    logging.info("No eval checkpoint found, starting eval from scratch.")
+    return False
 
 def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     metrics = {}
@@ -261,10 +313,13 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     autocast = get_autocast(args.precision)
     input_dtype = get_input_dtype(args.precision)
 
-    if 'val' in data and (args.val_frequency and ((epoch % args.val_frequency) == 0 or epoch == args.epochs)):
+    if 'val' in data:
         dataloader = data['val'].dataloader
         num_samples = 0
         samples_per_val = dataloader.num_samples
+        
+        logging.info(f"Length of the val dataloader is: {len(dataloader)}")
+        logging.info(f"Num of samples in dataloader is: {dataloader.sampler.num_samples}")
 
         # FIXME this does not scale past small eval datasets
         # all_image_features @ all_text_features will blow up memory and compute very quickly
@@ -276,7 +331,10 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 images, texts = batch
                 images = images.to(device=device, dtype=input_dtype, non_blocking=True)
                 texts = texts.to(device=device, non_blocking=True)
-
+                try:
+                    dataloader.sampler.advance(args.batch_size)
+                except Exception:
+                    print("Sampler stepped too far at the end of batch - ignoring")
                 with autocast():
                     model_out = model(images, texts)
                     image_features = model_out["image_features"]
@@ -303,7 +361,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 num_samples += batch_size
                 if is_master(args) and (i % 100) == 0:
                     logging.info(
-                        f"Eval Epoch: {epoch} [{num_samples} / {samples_per_val}]\t"
+                        f"Eval Epoch: {epoch} [{num_samples * get_world_size()} / {samples_per_val}]\t"
                         f"Clip Loss: {cumulative_loss / num_samples:.6f}\t")
 
                     if gen_loss is not None:

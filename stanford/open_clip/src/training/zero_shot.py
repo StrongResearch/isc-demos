@@ -15,12 +15,20 @@ def accuracy(output, target, topk=(1,)):
 
 
 def run(model, classifier, dataloader, args):
+    logging.info("getting autocast")
     autocast = get_autocast(args.precision)
+    logging.info("getting dtype")
     input_dtype = get_input_dtype(args.precision)
 
     with torch.no_grad():
         top1, top5, n = 0., 0., 0.
+        logging.info("iterating...")
+        i = 0
+        t = tqdm(dataloader, unit_scale=args.batch_size)
         for images, target in tqdm(dataloader, unit_scale=args.batch_size):
+            if i % 100 == 0:
+                logging.info("progres: " + str(i) + "/" + str(args.batch_size))
+            
             images = images.to(device=args.device, dtype=input_dtype)
             target = target.to(args.device)
 
@@ -35,6 +43,7 @@ def run(model, classifier, dataloader, args):
             top1 += acc1
             top5 += acc5
             n += images.size(0)
+            i += 1
 
     top1 = (top1 / n)
     top5 = (top5 / n)

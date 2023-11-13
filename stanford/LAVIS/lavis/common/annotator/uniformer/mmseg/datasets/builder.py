@@ -54,7 +54,6 @@ def _concat_dataset(cfg, default_args=None):
         if isinstance(split, (list, tuple)):
             data_cfg['split'] = split[i]
         datasets.append(build_dataset(data_cfg, default_args))
-
     return ConcatDataset(datasets)
 
 

@@ -6,7 +6,7 @@ defaults:
   - override /criterion: lpips_with_discriminator.yaml
 
 # General settings
-num_latent_channels: ???
+num_latent_channels: 1
 downsize_factor: ${eval:'2 ** (len(${model.ddconfig.ch_mult})-1)'}
 img_size: 384
 task_name: vae_${downsize_factor}x_${num_latent_channels}c_${img_size}s
@@ -15,8 +15,8 @@ task_name: vae_${downsize_factor}x_${num_latent_channels}c_${img_size}s
 gradient_accumulation_steps: 2
 mixed_precision: "no"
 max_epoch: 100
-batch_size: 64
-log_every_n_steps: 20
+batch_size: 12
+log_every_n_steps: 1
 base_learning_rate: 4.5e-6
 ema_decay: null
 fast_dev_run: false

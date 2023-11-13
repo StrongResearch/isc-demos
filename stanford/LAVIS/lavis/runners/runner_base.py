@@ -11,6 +11,7 @@ import logging
 import os
 import time
 from pathlib import Path
+import torch.utils.tensorboard as tensorboard
 
 import torch
 import torch.distributed as dist
@@ -34,6 +35,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import DataLoader, DistributedSampler
 from torch.utils.data.dataset import ChainDataset
 
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 
 @registry.register_runner("runner_base")
 class RunnerBase:
@@ -61,6 +63,7 @@ class RunnerBase:
         self._lr_sched = None
 
         self.start_epoch = 0
+        self.start_iter = 1
 
         # self.setup_seeds()
         self.setup_output_dir()
@@ -75,6 +78,11 @@ class RunnerBase:
     @property
     def use_distributed(self):
         return self.config.run_cfg.distributed
+    
+    @property
+    def eval_freq(self):
+        eval_freq = self.config.run_cfg.get("eval_freq", 1)
+        return int(eval_freq)
 
     @property
     def model(self):
@@ -190,8 +198,8 @@ class RunnerBase:
             logging.info(
                 "dataset_ratios not specified, datasets will be concatenated (map-style datasets) or chained (webdataset.DataPipeline)."
             )
-
             datasets = reorg_datasets_by_split(self.datasets)
+            
             self.datasets = concat_datasets(datasets)
 
             # print dataset statistics after concatenation/chaining
@@ -323,6 +331,7 @@ class RunnerBase:
     @property
     def resume_ckpt_path(self):
         return self.config.run_cfg.get("resume_ckpt_path", None)
+    
 
     @property
     def train_loader(self):
@@ -351,56 +360,67 @@ class RunnerBase:
         best_epoch = 0
 
         self.log_config()
-
-        # resume from checkpoint if specified
-        if not self.evaluate_only and self.resume_ckpt_path is not None:
+        
+        writer = None
+        if self.config.run_cfg.tensorboard_path and os.path.isdir(self.config.run_cfg.tensorboard_path):
+            writer = tensorboard.SummaryWriter(self.config.run_cfg.tensorboard_path)
+            
+        
+        if os.path.isfile(self.resume_ckpt_path):
             self._load_checkpoint(self.resume_ckpt_path)
+        else:
+            logging.info(f"Checkpoint path is: {self.resume_ckpt_path}")
+            logging.info("Checkpoint path specified but not found, starting from scratch instead.")
+            
 
         for cur_epoch in range(self.start_epoch, self.max_epoch):
-            # training phase
-            if not self.evaluate_only:
-                logging.info("Start training")
-                # See https://github.com/salesforce/LAVIS/issues/449
-                # if cur_epoch == self.start_epoch:
-                #     self.task.before_training(
-                #         model=self.unwrap_dist_model(self.model),
-                #         dataset=self.datasets["train"],
-                #     )
-                train_stats = self.train_epoch(cur_epoch)
-                self.log_stats(split_name="train", stats=train_stats)
-
-            # evaluation phase
-            if len(self.valid_splits) > 0:
-                for split_name in self.valid_splits:
-                    logging.info("Evaluating on {}.".format(split_name))
-
-                    val_log = self.eval_epoch(
-                        split_name=split_name, cur_epoch=cur_epoch
-                    )
-                    if val_log is not None:
-                        if is_main_process():
-                            assert (
-                                "agg_metrics" in val_log
-                            ), "No agg_metrics found in validation log."
-
-                            agg_metrics = val_log["agg_metrics"]
-                            if agg_metrics > best_agg_metric and split_name == "val":
-                                best_epoch, best_agg_metric = cur_epoch, agg_metrics
-
-                                self._save_checkpoint(cur_epoch, is_best=True)
-
-                            val_log.update({"best_epoch": best_epoch})
-                            self.log_stats(val_log, split_name)
-
-            else:
-                # if no validation split is provided, we just save the checkpoint at the end of each epoch.
+            with self.train_loader._dataloader.sampler.in_epoch(cur_epoch):
+                # training phase
                 if not self.evaluate_only:
-                    self._save_checkpoint(cur_epoch, is_best=False)
+                    logging.info("Start training")
+                    # See https://github.com/salesforce/LAVIS/issues/449
+                    # if cur_epoch == self.start_epoch:
+                    #     self.task.before_training(
+                    #         model=self.unwrap_dist_model(self.model),
+                    #         dataset=self.datasets["train"],
+                    #     )
+                    train_stats = self.train_epoch(cur_epoch, writer=writer)
+                    self.log_stats(split_name="train", stats=train_stats)
 
-            if self.evaluate_only:
-                break
+                # evaluation phase
+                if len(self.valid_splits) > 0 and (cur_epoch + 1) % self.eval_freq == 0:
+                    for split_name in self.valid_splits:
+                        with self.dataloaders["val"].sampler.in_epoch(cur_epoch):
+                            logging.info("Evaluating on {}.".format(split_name))
 
-            dist.barrier()
+                            val_log = self.eval_epoch(
+                                split_name=split_name, cur_epoch=cur_epoch, skip_reload=True
+                            )
+                            if val_log is not None:
+                                if is_main_process():
+                                    assert (
+                                        "agg_metrics" in val_log
+                                    ), "No agg_metrics found in validation log."
+
+                                    agg_metrics = val_log["agg_metrics"]
+                                    if agg_metrics > best_agg_metric and split_name == "val":
+                                        best_epoch, best_agg_metric = cur_epoch, agg_metrics
+
+                                        self._save_checkpoint(cur_epoch, 1, is_best=True)
+
+                                    val_log.update({"best_epoch": best_epoch})
+                                    self.log_stats(val_log, split_name)
+
+                else:
+                    # if no validation split is provided, we just save the checkpoint at the end of each epoch.
+                    # if not self.evaluate_only:
+                    #     self._save_checkpoint(cur_epoch, 1, is_best=False)
+                    pass
+
+                if self.evaluate_only:
+                    break
+
+                dist.barrier()
 
         # testing phase
         test_epoch = "best" if len(self.valid_splits) > 0 else cur_epoch
@@ -421,7 +441,7 @@ class RunnerBase:
 
             return test_logs
 
-    def train_epoch(self, epoch):
+    def train_epoch(self, epoch, writer=None):
         # train
         self.model.train()
 
@@ -435,6 +455,9 @@ class RunnerBase:
             cuda_enabled=self.cuda_enabled,
             log_freq=self.log_freq,
             accum_grad_iters=self.accum_grad_iters,
+            start_iters=self.start_iter,
+            args=self.config,
+            writer=writer,
         )
 
     @torch.no_grad()
@@ -463,6 +486,7 @@ class RunnerBase:
             model=model,
             dataset=self.datasets[split_name],
         )
+
         results = self.task.evaluation(model, data_loader)
 
         if results is not None:
@@ -471,6 +495,7 @@ class RunnerBase:
                 split_name=split_name,
                 epoch=cur_epoch,
             )
+        
 
     def unwrap_dist_model(self, model):
         if self.use_distributed:
@@ -510,11 +535,9 @@ class RunnerBase:
                 # map-style dataset are concatenated together
                 # setup distributed sampler
                 if self.use_distributed:
-                    sampler = DistributedSampler(
+                    sampler = InterruptableDistributedSampler(
                         dataset,
-                        shuffle=is_train,
-                        num_replicas=get_world_size(),
-                        rank=get_rank(),
+                        shuffle=is_train
                     )
                     if not self.use_dist_eval_sampler:
                         # e.g. retrieval evaluation
@@ -522,16 +545,29 @@ class RunnerBase:
                 else:
                     sampler = None
 
-                loader = DataLoader(
-                    dataset,
-                    batch_size=bsz,
-                    num_workers=num_workers,
-                    pin_memory=True,
-                    sampler=sampler,
-                    shuffle=sampler is None and is_train,
-                    collate_fn=collate_fn,
-                    drop_last=True if is_train else False,
-                )
+                if is_train:
+                    loader = DataLoader(
+                        dataset,
+                        batch_size=bsz,
+                        num_workers=num_workers,
+                        pin_memory=True,
+                        sampler=sampler,
+                        shuffle=sampler is None and is_train,
+                        collate_fn=collate_fn,
+                        drop_last=True if is_train else False,
+                    )
+                else:
+                    loader = DataLoader(
+                        dataset,
+                        batch_size=bsz,
+                        num_workers=num_workers,
+                        pin_memory=True,
+                        sampler=sampler,
+                        shuffle=sampler is None and is_train,
+                        collate_fn=collate_fn,
+                        drop_last=True if is_train else False,
+                    )
+                    
                 loader = PrefetchLoader(loader)
 
                 if is_train:
@@ -560,7 +596,7 @@ class RunnerBase:
         return loaders
 
     @main_process
-    def _save_checkpoint(self, cur_epoch, is_best=False):
+    def _save_checkpoint(self, cur_epoch, iter, is_best=False):
         """
         Save the checkpoint at the current epoch.
         """
@@ -577,16 +613,19 @@ class RunnerBase:
         save_obj = {
             "model": state_dict,
             "optimizer": self.optimizer.state_dict(),
+            "train_sampler" : self.train_loader._dataloader.sampler.state_dict(),
+            "val_sampler": self.dataloaders["val"]._dataloader.sampler.state_dict(),
             "config": self.config.to_dict(),
             "scaler": self.scaler.state_dict() if self.scaler else None,
             "epoch": cur_epoch,
+            "iteration": iter,
         }
         save_to = os.path.join(
             self.output_dir,
-            "checkpoint_{}.pth".format("best" if is_best else cur_epoch),
+            "{}_{}.pth".format(self.task.name, "best" if is_best else "latest"),
         )
         logging.info("Saving checkpoint at epoch {} to {}.".format(cur_epoch, save_to))
-        torch.save(save_obj, save_to)
+        atomic_torch_save(save_obj, save_to)
 
     def _reload_best_model(self, model):
         """
@@ -628,8 +667,13 @@ class RunnerBase:
         self.optimizer.load_state_dict(checkpoint["optimizer"])
         if self.scaler and "scaler" in checkpoint:
             self.scaler.load_state_dict(checkpoint["scaler"])
-
-        self.start_epoch = checkpoint["epoch"] + 1
+        if type(self.train_loader) == IterLoader:
+            self.train_loader._dataloader.sampler.load_state_dict(checkpoint["train_sampler"])
+        else:
+            self.train_loader.sampler.load_state_dict(checkpoint["train_sampler"])
+        # self.dataloaders["val"].sampler.load_state_dict(checkpoint["val_sampler"]),
+        self.start_epoch = checkpoint["epoch"]
+        self.start_iter = checkpoint["iteration"] + 1
         logging.info("Resume checkpoint from {}".format(url_or_filename))
 
     @main_process

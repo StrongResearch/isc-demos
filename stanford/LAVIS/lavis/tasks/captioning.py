@@ -7,7 +7,7 @@
 
 import json
 import os
-
+import sys
 from lavis.common.dist_utils import main_process
 from lavis.common.registry import registry
 from lavis.tasks.base_task import BaseTask
@@ -22,6 +22,7 @@ class CaptionTask(BaseTask):
         self.max_len = max_len
         self.min_len = min_len
         self.evaluate = evaluate
+        self.name = "caption"
 
         self.report_metric = report_metric
 
@@ -43,6 +44,7 @@ class CaptionTask(BaseTask):
             evaluate=evaluate,
             report_metric=report_metric,
         )
+        
 
     def valid_step(self, model, samples):
         results = []

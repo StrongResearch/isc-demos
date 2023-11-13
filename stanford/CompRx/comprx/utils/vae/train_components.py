@@ -42,7 +42,9 @@ def training_epoch(
     model.train()
     epoch_start, batch_start = time(), time()
     dtype = get_weight_dtype(accelerator)
+
     for i, batch in enumerate(dataloader):
+    
         data_time = time() - batch_start
 
         with accelerator.accumulate(model):

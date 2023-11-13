@@ -2,6 +2,11 @@ import os
 from typing import Callable, List, Union
 
 import polars as pl
+from PIL import Image
+import pydicom
+import numpy as np
+import torch
+import torchvision
 from torch.utils.data import Dataset
 
 __all__ = ["GenericDataset"]
@@ -84,15 +89,14 @@ class GenericDataset(Dataset):
 
         self.df = pl.read_csv(split_path)
         if isinstance(split_column, str) and isinstance(split_name, str):
-            self.df = self.df.filter(pl.col(split_column) == split_name)
+            self.df = self.df.filter(pl.col("image_id") != -22222)  # This image is evil
 
         # Generate image paths
         if img_column is not None:
-            self.samples["img"] = (
-                self.df.get_column(img_column)
-                .apply(lambda x: os.path.join(self.img_dir, f"{x}{img_suffix or ''}"))
-                .to_list()
-            )
+            self.samples["img"] = []
+            for row in self.df.rows(named=True):
+                path = os.path.join(os.path.join(self.img_dir, str(row["patient_id"])), str(row[img_column])) + self.img_suffix
+                self.samples["img"].append(path)
 
         # Extract the columns with labels
         if lbl_columns is not None:
@@ -118,7 +122,10 @@ class GenericDataset(Dataset):
 
         # Image
         if "img" in self.samples:
-            sample["img"] = self.samples["img"][idx]
+            sample["img"] = torch.from_numpy(np.array(pydicom.dcmread(self.samples["img"][idx]).pixel_array, dtype=np.float32)).apply_(lambda x: x / 255)
+            if sample["img"].dim() < 4:
+                sample["img"] = sample["img"].unsqueeze(0)
+
             if callable(self.img_transform):
                 sample["img"] = self.img_transform(sample["img"])
 

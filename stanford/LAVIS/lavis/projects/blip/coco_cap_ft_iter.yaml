@@ -20,12 +20,15 @@ datasets:
           prompt: "a picture of "
         eval:
           name: "blip_caption"
+    build_info:
+        images:
+          storage: '/mnt/.node1/Open-Datasets/coco'
 
 run:
   runner: runner_iter
 
   max_iters: 2e4
-  iters_per_inner_epoch: 2e3
+  iters_per_inner_epoch: 50
 
   # task: retrieval
   task: captioning
@@ -43,9 +46,9 @@ run:
   num_beams: 3
 
   seed: 42
-  output_dir: "output/BLIP/Caption_coco"
+  output_dir: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/stanford/LAVIS/output/BLIP/Caption_coco"
 
-  amp: False
+  amp: True
   resume_ckpt_path: null
 
   evaluate: False 

@@ -166,7 +166,7 @@ def parse_args(args):
         help="Power for polynomial cooldown schedule. Default: 1.0 (linear decay)"
     )
     parser.add_argument(
-        "--save-frequency", type=int, default=1, help="How often to save checkpoints."
+        "--save-frequency", type=int, default=20, help="How often to save checkpoints."
     )
     parser.add_argument(
         "--save-most-recent",
@@ -391,7 +391,7 @@ def parse_args(args):
     parser.add_argument(
         "--log-every-n-steps",
         type=int,
-        default=100,
+        default=10,
         help="Log every n steps to tensorboard/console/wandb.",
     )
     parser.add_argument(
@@ -426,7 +426,7 @@ def parse_args(args):
     )
     parser.add_argument(
         "--delete-previous-checkpoint",
-        default=False,
+        default=True,
         action="store_true",
         help="If true, delete previous checkpoint after storing a new one."
     )

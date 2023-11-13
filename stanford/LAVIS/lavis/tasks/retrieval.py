@@ -55,6 +55,7 @@ class RetrievalTask(BaseTask):
 
         # Images->Text
         ranks = np.zeros(scores_i2t.shape[0])
+        print(enumerate(scores_i2t))
         for index, score in enumerate(scores_i2t):
             inds = np.argsort(score)[::-1]
             # Score
