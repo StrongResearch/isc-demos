@@ -7,4 +7,4 @@ huggingface_hub
 sentencepiece
 protobuf
 timm
-git+https://github.com/StrongResearch/cycling_utils.git
+braceexpand
