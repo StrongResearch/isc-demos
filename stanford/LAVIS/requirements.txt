@@ -24,7 +24,7 @@ timm==0.4.12
 torch==2.0.1
 torchvision
 tqdm
-transformers>=4.28.0
+transformers==4.25.0
 webdataset
 wheel
 tensorboard
