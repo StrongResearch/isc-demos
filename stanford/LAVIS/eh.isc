@@ -1,6 +1,0 @@
-experiment_name = "blap"
-gpu_type = "24GB VRAM GPU"
-nnodes = 2
-venv_path = "~/isc-demos/stanford/LAVIS/.venv/bin/activate"
-output_path = "~/isc-demos/stanford/LAVIS/output"
-command = "train.py --cfg-path lavis/projects/blip/train/retrieval_coco_ft.yaml"
