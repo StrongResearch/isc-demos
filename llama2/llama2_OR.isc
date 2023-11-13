@@ -1,0 +1,6 @@
+experiment_name = "llama2-OR"
+gpu_type = "24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.llama2env/bin/activate"
+output_path = "~/outputs/llama2"
+command = "new_test.py"

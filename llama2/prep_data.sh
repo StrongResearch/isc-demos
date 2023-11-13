@@ -1,0 +1,1 @@
+python prep_data.py --enable_fsdp --low_cpu_fsdp --use_peft --peft_method lora --fsdp_config.pure_bf16

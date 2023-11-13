@@ -1,0 +1,6 @@
+experiment_name = "llama2-test"
+gpu_type = "24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.llama2env/bin/activate"
+output_path = "~/outputs/llama2"
+command = "test.py --train_config.enable_fsdp --train_config.low_cpu_fsdp --train_config.use_peft --train_config.peft_method=lora --train_config.use_fp16 --train_config.batch_size_training=1 --fsdp_config.use_fp16 --fsdp_config.pure_bf16  --resume $OUTPUT_PATH"
