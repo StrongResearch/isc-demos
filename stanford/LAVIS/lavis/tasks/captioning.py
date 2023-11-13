@@ -83,14 +83,19 @@ class CaptionTask(BaseTask):
 
     @main_process
     def _report_metrics(self, eval_result_file, split_name):
-
+        print("Report metrics stuff:")
         # TODO better way to define this
         coco_gt_root = os.path.join(registry.get_path("cache_root"), "coco_gt")
         coco_val = coco_caption_eval(coco_gt_root, eval_result_file, split_name)
-
+        print("coco_val")
+        print(coco_val)
+        
+        print("eval")
+        print(coco_val.eval)
         agg_metrics = coco_val.eval["CIDEr"] + coco_val.eval["Bleu_4"]
         log_stats = {split_name: {k: v for k, v in coco_val.eval.items()}}
-
+        print("log stats")
+        print(log_stats)
         with open(
             os.path.join(registry.get_path("output_dir"), "evaluate.txt"), "a"
         ) as f:

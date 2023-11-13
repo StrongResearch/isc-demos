@@ -37,7 +37,7 @@ start_epoch: 0
 max_epoch: 50
 
 # mini-batch size
-batch_size: 12
+batch_size: 72
 
 # gradient accumulation
 gradient_accumulation_steps: 1

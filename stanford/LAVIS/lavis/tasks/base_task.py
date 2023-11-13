@@ -85,7 +85,7 @@ class BaseTask:
     def inference_step(self):
         raise NotImplementedError
 
-    def evaluation(self, model, data_loader, cuda_enabled=True):
+    def evaluation(self, model, data_loader, cuda_enabled=True, writer=None):
         metric_logger = MetricLogger(delimiter="  ")
         header = "Evaluation"
         # TODO make it configurable

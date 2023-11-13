@@ -394,7 +394,7 @@ class RunnerBase:
                             logging.info("Evaluating on {}.".format(split_name))
 
                             val_log = self.eval_epoch(
-                                split_name=split_name, cur_epoch=cur_epoch, skip_reload=True
+                                split_name=split_name, cur_epoch=cur_epoch, skip_reload=True, writer=writer
                             )
                             if val_log is not None:
                                 if is_main_process():
@@ -461,7 +461,7 @@ class RunnerBase:
         )
 
     @torch.no_grad()
-    def eval_epoch(self, split_name, cur_epoch, skip_reload=False):
+    def eval_epoch(self, split_name, cur_epoch, skip_reload=False, writer=None):
         """
         Evaluate the model on a given split.
 

@@ -1,0 +1,992 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+pre-instantiation
+pre-instantiation
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.Working with z of shape (1, 1, 48, 48) = 2304 dimensions.Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+
+
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channelsmaking attention of type 'vanilla' with 512 in_channels
+
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  0%|                                        | 144k/338M [00:00<07:50, 751kiB/s]  0%|                                       | 384k/338M [00:00<04:42, 1.25MiB/s]  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  0%|                                       | 448k/338M [00:00<02:01, 2.91MiB/s]  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  0%|                                       | 768k/338M [00:00<02:34, 2.28MiB/s]  0%|                                       | 1.01M/338M [00:01<06:43, 874kiB/s]  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  0%|                                      | 1.01M/338M [00:00<04:08, 1.42MiB/s]  0%|                                      | 1.01M/338M [00:00<03:01, 1.94MiB/s]  1%|▎                                     | 2.27M/338M [00:01<02:28, 2.36MiB/s]  0%|                                       | 528k/338M [00:00<04:01, 1.46MiB/s]  0%|▏                                     | 1.56M/338M [00:00<01:58, 2.98MiB/s]  1%|▎                                     | 2.83M/338M [00:01<02:05, 2.79MiB/s]  1%|▏                                     | 1.89M/338M [00:00<02:28, 2.37MiB/s]  1%|▍                                     | 3.35M/338M [00:01<01:49, 3.19MiB/s]  1%|▏                                     | 1.80M/338M [00:01<03:12, 1.83MiB/s]  0%|                                        | 128k/338M [00:00<15:02, 392kiB/s]  1%|▎                                     | 2.45M/338M [00:00<01:50, 3.18MiB/s]  0%|                                        | 672k/338M [00:00<06:49, 862kiB/s]  1%|▍                                     | 3.86M/338M [00:01<01:51, 3.13MiB/s]  1%|▎                                     | 2.97M/338M [00:01<01:34, 3.73MiB/s]  1%|▍                                     | 4.30M/338M [00:01<01:43, 3.39MiB/s]  1%|▍                                     | 3.38M/338M [00:01<01:41, 3.46MiB/s]  1%|▏                                     | 1.99M/338M [00:01<04:12, 1.39MiB/s]  0%|                                        | 304k/338M [00:00<13:01, 453kiB/s]  1%|▌                                     | 4.73M/338M [00:01<01:44, 3.34MiB/s]  1%|▎                                     | 2.41M/338M [00:01<03:17, 1.78MiB/s]  0%|                                        | 760k/338M [00:01<09:59, 589kiB/s]  1%|▍                                     | 3.76M/338M [00:01<01:49, 3.19MiB/s]  1%|▎                                     | 2.67M/338M [00:01<03:01, 1.94MiB/s]  2%|▌                                     | 5.12M/338M [00:02<01:57, 2.97MiB/s]  1%|▍                                     | 4.09M/338M [00:01<01:56, 2.99MiB/s]  1%|▎                                     | 2.97M/338M [00:01<02:44, 2.13MiB/s]  0%|                                        | 384k/338M [00:01<16:16, 362kiB/s]  2%|▌                                     | 5.47M/338M [00:02<02:11, 2.66MiB/s]  1%|▎                                     | 3.23M/338M [00:01<02:50, 2.06MiB/s]  0%|                                        | 560k/338M [00:01<10:01, 588kiB/s]  1%|▍                                     | 4.41M/338M [00:01<02:17, 2.55MiB/s]  0%|                                        | 824k/338M [00:01<13:26, 438kiB/s]  1%|▍                                     | 3.47M/338M [00:01<02:49, 2.07MiB/s]  0%|                                        | 960k/338M [00:01<10:20, 569kiB/s]  1%|▌                                     | 4.67M/338M [00:01<02:20, 2.48MiB/s]  2%|▋                                     | 5.77M/338M [00:02<02:18, 2.51MiB/s]  0%|▏                                      | 1.11M/338M [00:01<07:36, 773kiB/s]  1%|▍                                     | 3.70M/338M [00:02<02:45, 2.12MiB/s]  2%|▋                                     | 6.16M/338M [00:02<02:05, 2.78MiB/s]  1%|▌                                     | 4.92M/338M [00:01<02:26, 2.38MiB/s]  0%|▏                                     | 1.33M/338M [00:01<05:32, 1.06MiB/s]  1%|▍                                     | 3.93M/338M [00:02<02:46, 2.10MiB/s]  0%|                                        | 648k/338M [00:01<13:17, 443kiB/s]  2%|▌                                     | 5.16M/338M [00:02<02:32, 2.28MiB/s]  2%|▋                                     | 6.45M/338M [00:02<02:17, 2.53MiB/s]  0%|▏                                     | 1.55M/338M [00:01<04:27, 1.32MiB/s]  1%|▍                                     | 4.19M/338M [00:02<02:40, 2.18MiB/s]  2%|▌                                     | 5.39M/338M [00:02<02:39, 2.18MiB/s]  1%|▏                                     | 1.78M/338M [00:01<03:44, 1.57MiB/s]  1%|▍                                     | 4.42M/338M [00:02<02:36, 2.24MiB/s]  2%|▊                                     | 6.72M/338M [00:02<02:30, 2.31MiB/s]  2%|▋                                     | 5.60M/338M [00:02<02:40, 2.17MiB/s]  1%|▏                                     | 2.02M/338M [00:02<03:19, 1.77MiB/s]  1%|▌                                     | 4.65M/338M [00:02<02:34, 2.25MiB/s]  2%|▊                                     | 7.06M/338M [00:02<02:13, 2.59MiB/s]  2%|▋                                     | 5.81M/338M [00:02<02:39, 2.18MiB/s]  1%|▎                                     | 2.30M/338M [00:02<02:49, 2.07MiB/s]  0%|                                        | 720k/338M [00:01<17:33, 335kiB/s]  2%|▊                                     | 7.39M/338M [00:03<02:04, 2.77MiB/s]  1%|▌                                     | 4.88M/338M [00:02<02:39, 2.19MiB/s]  2%|▋                                     | 6.06M/338M [00:02<02:32, 2.28MiB/s]  1%|▎                                     | 2.61M/338M [00:02<02:27, 2.38MiB/s]  0%|                                        | 928k/338M [00:01<10:24, 565kiB/s]  2%|▌                                     | 5.14M/338M [00:02<02:31, 2.30MiB/s]  1%|▎                                     | 3.05M/338M [00:02<01:57, 2.99MiB/s]  2%|▋                                     | 6.29M/338M [00:02<02:42, 2.14MiB/s]  0%|▏                                      | 1.20M/338M [00:02<06:09, 953kiB/s]  2%|▊                                     | 7.68M/338M [00:03<02:35, 2.22MiB/s]  2%|▌                                     | 5.37M/338M [00:02<02:33, 2.26MiB/s]  1%|▍                                     | 3.39M/338M [00:02<01:51, 3.15MiB/s]  2%|▋                                     | 6.50M/338M [00:02<02:42, 2.13MiB/s]  0%|▏                                     | 1.42M/338M [00:02<04:58, 1.18MiB/s]  2%|▋                                     | 5.59M/338M [00:02<02:38, 2.19MiB/s]  2%|▉                                     | 7.92M/338M [00:03<02:44, 2.10MiB/s]  2%|▊                                     | 6.71M/338M [00:02<02:41, 2.14MiB/s]  0%|▏                                     | 1.60M/338M [00:02<04:25, 1.32MiB/s]  1%|▍                                     | 3.71M/338M [00:02<02:11, 2.66MiB/s]  2%|▉                                     | 8.16M/338M [00:03<02:39, 2.17MiB/s]  2%|▋                                     | 5.80M/338M [00:03<02:52, 2.01MiB/s]  1%|▏                                     | 1.80M/338M [00:02<03:57, 1.48MiB/s]  2%|▊                                     | 6.92M/338M [00:02<03:06, 1.86MiB/s]  2%|▉                                     | 8.40M/338M [00:03<02:35, 2.22MiB/s]  2%|▋                                     | 5.99M/338M [00:03<02:52, 2.02MiB/s]  1%|▍                                     | 3.99M/338M [00:02<02:18, 2.53MiB/s]  1%|▏                                     | 2.05M/338M [00:02<03:22, 1.74MiB/s]  2%|▊                                     | 7.11M/338M [00:03<03:14, 1.78MiB/s]  1%|▍                                     | 4.28M/338M [00:02<02:13, 2.62MiB/s]  2%|▋                                     | 6.19M/338M [00:03<02:57, 1.95MiB/s]  3%|▉                                     | 8.62M/338M [00:03<02:44, 2.10MiB/s]  1%|▎                                     | 2.25M/338M [00:02<03:18, 1.77MiB/s]  2%|▊                                     | 7.31M/338M [00:03<03:08, 1.84MiB/s]  1%|▌                                     | 4.61M/338M [00:02<02:04, 2.81MiB/s]  2%|▋                                     | 6.44M/338M [00:03<02:44, 2.12MiB/s]  3%|▉                                     | 8.84M/338M [00:03<02:49, 2.04MiB/s]  1%|▎                                     | 2.45M/338M [00:02<03:29, 1.68MiB/s]  2%|▊                                     | 7.50M/338M [00:03<03:05, 1.87MiB/s]  2%|▊                                     | 6.81M/338M [00:03<02:14, 2.58MiB/s]  1%|▌                                     | 4.91M/338M [00:03<02:05, 2.78MiB/s]  3%|█                                     | 9.04M/338M [00:03<02:49, 2.03MiB/s]  2%|▉                                     | 7.78M/338M [00:03<02:40, 2.15MiB/s]  3%|█                                     | 9.27M/338M [00:04<02:41, 2.14MiB/s]  1%|▎                                     | 2.62M/338M [00:02<03:50, 1.53MiB/s]  2%|▉                                     | 7.99M/338M [00:03<02:46, 2.08MiB/s]  3%|█                                     | 9.59M/338M [00:04<02:22, 2.42MiB/s]  1%|▎                                     | 2.79M/338M [00:03<03:43, 1.57MiB/s]  1%|▎                                     | 2.95M/338M [00:03<03:41, 1.59MiB/s]  3%|█                                     | 9.83M/338M [00:04<02:23, 2.39MiB/s]  2%|▊                                     | 7.06M/338M [00:04<05:31, 1.05MiB/s]  2%|▌                                     | 5.18M/338M [00:03<05:00, 1.16MiB/s]  2%|▉                                      | 8.20M/338M [00:03<05:47, 993kiB/s]  3%|█▏                                    | 10.1M/338M [00:04<04:05, 1.40MiB/s]  1%|▎                                      | 3.12M/338M [00:03<06:08, 951kiB/s]  2%|▉                                     | 8.12M/338M [00:04<02:22, 2.43MiB/s]  2%|▋                                     | 5.67M/338M [00:03<03:27, 1.67MiB/s]  3%|▉                                     | 8.73M/338M [00:04<03:22, 1.71MiB/s]  3%|█▏                                    | 10.6M/338M [00:04<02:30, 2.28MiB/s]  1%|▍                                     | 3.58M/338M [00:03<03:33, 1.64MiB/s]  2%|▋                                     | 5.95M/338M [00:03<03:20, 1.73MiB/s]  1%|▍                                     | 4.00M/338M [00:03<02:38, 2.21MiB/s]  3%|█▏                                    | 10.9M/338M [00:04<02:38, 2.17MiB/s]  3%|▉                                     | 8.55M/338M [00:04<02:34, 2.23MiB/s]  3%|█                                     | 8.91M/338M [00:04<02:30, 2.29MiB/s]  3%|█                                      | 9.01M/338M [00:05<10:29, 547kiB/s]  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  2%|▋                                      | 6.20M/338M [00:05<10:00, 578kiB/s]  1%|▍                                      | 4.28M/338M [00:05<09:30, 613kiB/s]  3%|█▎                                     | 11.2M/338M [00:06<08:50, 645kiB/s]  3%|█                                      | 9.23M/338M [00:05<06:31, 879kiB/s]  2%|▊                                     | 7.36M/338M [00:05<04:05, 1.41MiB/s]  2%|▌                                     | 5.50M/338M [00:05<03:45, 1.54MiB/s]  3%|█▎                                    | 11.7M/338M [00:05<01:57, 2.90MiB/s]  4%|█▍                                    | 12.5M/338M [00:06<03:30, 1.62MiB/s]  3%|█▏                                    | 10.0M/338M [00:05<04:40, 1.22MiB/s]  0%|                                       | 256k/338M [00:00<03:04, 1.91MiB/s]  2%|▋                                     | 6.00M/338M [00:05<03:14, 1.79MiB/s]  3%|█▏                                    | 10.4M/338M [00:05<04:02, 1.42MiB/s]  4%|█▍                                    | 13.0M/338M [00:06<03:05, 1.83MiB/s]  2%|▉                                     | 7.84M/338M [00:05<03:38, 1.58MiB/s]  4%|█▍                                    | 12.6M/338M [00:06<01:51, 3.05MiB/s]  2%|▋                                     | 6.44M/338M [00:05<02:45, 2.09MiB/s]  3%|█▏                                    | 10.8M/338M [00:05<03:37, 1.57MiB/s]  4%|█▌                                    | 13.4M/338M [00:06<02:47, 2.02MiB/s]  0%|                                        | 448k/338M [00:00<06:14, 944kiB/s]  2%|▉                                     | 8.23M/338M [00:05<03:18, 1.74MiB/s]  2%|▊                                     | 6.87M/338M [00:05<02:22, 2.43MiB/s]  3%|█▏                                    | 11.1M/338M [00:06<03:14, 1.76MiB/s]  4%|█▍                                    | 13.3M/338M [00:06<01:46, 3.20MiB/s]  3%|▉                                     | 8.59M/338M [00:05<03:05, 1.86MiB/s]  0%|                                       | 800k/338M [00:00<04:26, 1.33MiB/s]  3%|█▎                                    | 11.6M/338M [00:06<02:34, 2.21MiB/s]  4%|█▌                                    | 14.0M/338M [00:06<01:32, 3.68MiB/s]  2%|▊                                     | 7.30M/338M [00:05<02:24, 2.40MiB/s]  4%|█▌                                    | 13.8M/338M [00:06<02:55, 1.93MiB/s]  3%|█                                     | 8.91M/338M [00:06<02:46, 2.07MiB/s]  0%|▏                                     | 1.23M/338M [00:00<02:47, 2.11MiB/s]  4%|█▎                                    | 11.9M/338M [00:06<02:20, 2.43MiB/s]  2%|▊                                     | 7.66M/338M [00:05<02:15, 2.56MiB/s]  4%|█▌                                    | 14.2M/338M [00:07<02:39, 2.12MiB/s]  1%|▏                                     | 1.70M/338M [00:00<02:06, 2.79MiB/s]  4%|█▋                                    | 14.6M/338M [00:06<01:31, 3.72MiB/s]  3%|█                                     | 9.23M/338M [00:06<02:39, 2.16MiB/s]  4%|█▍                                    | 12.2M/338M [00:06<02:16, 2.49MiB/s]  4%|█▋                                    | 14.5M/338M [00:07<02:27, 2.30MiB/s]  1%|▏                                     | 2.12M/338M [00:00<01:50, 3.20MiB/s]  2%|▉                                     | 8.02M/338M [00:06<02:17, 2.51MiB/s]  3%|█                                     | 9.52M/338M [00:06<02:38, 2.17MiB/s]  4%|█▋                                    | 15.2M/338M [00:06<01:32, 3.64MiB/s]  4%|█▋                                    | 14.8M/338M [00:07<02:22, 2.38MiB/s]  4%|█▍                                    | 12.6M/338M [00:06<02:26, 2.33MiB/s]  1%|▎                                     | 2.48M/338M [00:01<01:56, 3.01MiB/s]  3%|█                                     | 9.80M/338M [00:06<02:29, 2.29MiB/s]  2%|▉                                     | 8.33M/338M [00:06<02:27, 2.34MiB/s]  4%|█▋                                    | 15.1M/338M [00:07<02:22, 2.38MiB/s]  4%|█▍                                    | 12.9M/338M [00:06<02:23, 2.37MiB/s]  1%|▎                                     | 2.88M/338M [00:01<01:47, 3.25MiB/s]  5%|█▊                                    | 15.7M/338M [00:07<01:40, 3.37MiB/s]  3%|█▏                                    | 10.1M/338M [00:06<02:31, 2.27MiB/s]  3%|▉                                     | 8.60M/338M [00:06<02:34, 2.23MiB/s]  1%|▍                                     | 3.39M/338M [00:01<01:34, 3.72MiB/s]  5%|█▋                                    | 15.4M/338M [00:07<02:28, 2.28MiB/s]  4%|█▍                                    | 13.1M/338M [00:06<02:26, 2.32MiB/s]  3%|█▏                                    | 10.3M/338M [00:06<02:25, 2.35MiB/s]  5%|█▊                                    | 16.1M/338M [00:07<01:47, 3.15MiB/s]  3%|▉                                     | 8.85M/338M [00:06<02:40, 2.14MiB/s]  5%|█▊                                    | 15.6M/338M [00:07<02:39, 2.11MiB/s]  4%|█▌                                    | 13.4M/338M [00:07<02:41, 2.11MiB/s]  3%|█▏                                    | 10.6M/338M [00:06<02:38, 2.16MiB/s]  1%|▍                                     | 3.77M/338M [00:01<02:01, 2.89MiB/s]  5%|█▊                                    | 16.4M/338M [00:07<01:53, 2.97MiB/s]  3%|█                                     | 9.09M/338M [00:06<02:53, 1.99MiB/s]  4%|█▌                                    | 13.6M/338M [00:07<02:45, 2.06MiB/s]  3%|█▏                                    | 10.8M/338M [00:06<02:44, 2.08MiB/s]  5%|█▊                                    | 15.9M/338M [00:07<02:55, 1.93MiB/s]  3%|█                                     | 9.30M/338M [00:06<02:58, 1.93MiB/s]  4%|█▌                                    | 13.9M/338M [00:07<02:33, 2.22MiB/s]  1%|▍                                     | 4.09M/338M [00:01<02:18, 2.52MiB/s]  5%|█▊                                    | 16.1M/338M [00:07<02:56, 1.91MiB/s]  5%|█▉                                    | 16.8M/338M [00:07<02:13, 2.52MiB/s]  3%|█▏                                    | 11.0M/338M [00:07<02:52, 1.99MiB/s]  4%|█▌                                    | 14.1M/338M [00:07<02:33, 2.21MiB/s]  3%|█                                     | 9.49M/338M [00:06<03:10, 1.81MiB/s]  5%|█▊                                    | 16.4M/338M [00:08<02:35, 2.16MiB/s]  3%|█▎                                    | 11.2M/338M [00:07<02:48, 2.03MiB/s]  1%|▍                                     | 4.37M/338M [00:01<02:34, 2.26MiB/s]  5%|█▉                                    | 17.0M/338M [00:07<02:30, 2.23MiB/s]  3%|█                                     | 9.67M/338M [00:06<03:09, 1.82MiB/s]  5%|█▊                                    | 16.6M/338M [00:08<02:23, 2.34MiB/s]  3%|█▎                                    | 11.5M/338M [00:07<02:43, 2.10MiB/s]  4%|█▌                                    | 14.3M/338M [00:07<02:53, 1.96MiB/s]  1%|▌                                     | 4.61M/338M [00:01<02:40, 2.17MiB/s]  5%|█▉                                    | 17.3M/338M [00:07<02:32, 2.20MiB/s]  3%|█                                     | 9.85M/338M [00:07<03:17, 1.74MiB/s]  5%|█▉                                    | 16.9M/338M [00:08<02:20, 2.39MiB/s]  3%|█▎                                    | 11.7M/338M [00:07<02:47, 2.04MiB/s]  4%|█▋                                    | 14.5M/338M [00:07<03:05, 1.83MiB/s]  1%|▌                                     | 4.84M/338M [00:02<02:43, 2.14MiB/s]  3%|█▏                                    | 10.0M/338M [00:07<03:11, 1.79MiB/s]  5%|█▉                                    | 17.5M/338M [00:07<02:26, 2.29MiB/s]  5%|█▉                                    | 17.1M/338M [00:08<02:17, 2.45MiB/s]  4%|█▎                                    | 11.9M/338M [00:07<02:45, 2.06MiB/s]  4%|█▋                                    | 14.7M/338M [00:07<03:09, 1.79MiB/s]  3%|█▏                                    | 10.2M/338M [00:07<03:02, 1.88MiB/s]  1%|▌                                     | 5.05M/338M [00:02<02:52, 2.02MiB/s]  5%|██                                    | 17.8M/338M [00:08<02:23, 2.34MiB/s]  5%|█▉                                    | 17.4M/338M [00:08<02:19, 2.42MiB/s]  4%|█▎                                    | 12.1M/338M [00:07<03:03, 1.86MiB/s]  4%|█▋                                    | 14.9M/338M [00:07<03:09, 1.78MiB/s]  2%|▌                                     | 5.30M/338M [00:02<02:44, 2.12MiB/s]  5%|██                                    | 18.0M/338M [00:08<02:24, 2.32MiB/s]  3%|█▏                                    | 10.5M/338M [00:07<02:59, 1.91MiB/s]  5%|█▉                                    | 17.6M/338M [00:08<02:31, 2.22MiB/s]  4%|█▋                                    | 15.1M/338M [00:08<02:58, 1.89MiB/s]  4%|█▍                                    | 12.3M/338M [00:07<03:10, 1.79MiB/s]  2%|▌                                     | 5.51M/338M [00:02<02:44, 2.11MiB/s]  3%|█▏                                    | 10.6M/338M [00:07<03:10, 1.80MiB/s]  5%|██                                    | 18.3M/338M [00:08<02:33, 2.18MiB/s]  5%|██                                    | 17.9M/338M [00:08<02:44, 2.04MiB/s]  5%|█▋                                    | 15.3M/338M [00:08<03:02, 1.85MiB/s]  4%|█▍                                    | 12.5M/338M [00:07<03:16, 1.74MiB/s]  2%|▋                                     | 5.72M/338M [00:02<02:44, 2.11MiB/s]  3%|█▏                                    | 10.8M/338M [00:07<03:09, 1.81MiB/s]  5%|██                                    | 18.5M/338M [00:08<02:33, 2.18MiB/s]  5%|██                                    | 18.1M/338M [00:08<02:25, 2.30MiB/s]  5%|█▋                                    | 15.5M/338M [00:08<03:03, 1.84MiB/s]  4%|█▍                                    | 12.6M/338M [00:07<03:17, 1.72MiB/s]  2%|▋                                     | 5.95M/338M [00:02<02:39, 2.18MiB/s]  3%|█▏                                    | 11.0M/338M [00:07<03:09, 1.80MiB/s]  6%|██                                    | 18.7M/338M [00:08<02:33, 2.18MiB/s]  5%|██                                    | 18.4M/338M [00:08<02:15, 2.47MiB/s]  5%|█▊                                    | 15.7M/338M [00:08<03:05, 1.82MiB/s]  4%|█▍                                    | 12.8M/338M [00:08<03:16, 1.74MiB/s]  2%|▋                                     | 6.25M/338M [00:02<02:22, 2.43MiB/s]  6%|██▏                                   | 18.9M/338M [00:08<02:33, 2.18MiB/s]  3%|█▎                                    | 11.2M/338M [00:07<03:14, 1.76MiB/s]  2%|▋                                     | 6.53M/338M [00:02<02:14, 2.58MiB/s]  5%|█▊                                    | 15.9M/338M [00:08<02:42, 2.07MiB/s]  4%|█▍                                    | 13.0M/338M [00:08<03:15, 1.74MiB/s]  6%|██▏                                   | 19.3M/338M [00:08<02:07, 2.62MiB/s]  3%|█▎                                    | 11.4M/338M [00:07<03:22, 1.69MiB/s]  4%|█▍                                    | 13.1M/338M [00:08<03:17, 1.73MiB/s]  2%|▊                                     | 6.78M/338M [00:02<02:18, 2.51MiB/s]  6%|██▏                                   | 19.6M/338M [00:08<02:05, 2.66MiB/s]  6%|██                                    | 18.7M/338M [00:09<03:13, 1.73MiB/s]  5%|█▊                                    | 16.1M/338M [00:08<03:03, 1.83MiB/s]  3%|█▎                                    | 11.5M/338M [00:08<03:27, 1.65MiB/s]  4%|█▌                                    | 13.4M/338M [00:08<02:54, 1.95MiB/s]  2%|▊                                     | 7.03M/338M [00:03<02:30, 2.30MiB/s]  5%|█▊                                    | 16.3M/338M [00:08<03:06, 1.81MiB/s]  3%|█▎                                    | 11.7M/338M [00:08<03:19, 1.72MiB/s]  6%|██▏                                   | 18.9M/338M [00:09<03:18, 1.68MiB/s]  4%|█▌                                    | 13.7M/338M [00:08<02:21, 2.41MiB/s]  6%|██▏                                   | 19.8M/338M [00:08<02:31, 2.20MiB/s]  5%|█▊                                    | 16.5M/338M [00:08<02:58, 1.89MiB/s]  4%|█▎                                    | 11.9M/338M [00:08<03:19, 1.71MiB/s]  2%|▊                                     | 7.26M/338M [00:03<02:43, 2.12MiB/s]  6%|██▏                                   | 19.1M/338M [00:09<03:09, 1.76MiB/s]  4%|█▌                                    | 14.0M/338M [00:08<02:20, 2.41MiB/s]  6%|██▎                                   | 20.0M/338M [00:09<02:35, 2.14MiB/s]  5%|█▉                                    | 16.8M/338M [00:08<02:45, 2.03MiB/s]  4%|█▎                                    | 12.1M/338M [00:08<02:56, 1.93MiB/s]  2%|▊                                     | 7.47M/338M [00:03<02:47, 2.07MiB/s]  6%|██▏                                   | 19.3M/338M [00:09<03:11, 1.75MiB/s]  6%|██▎                                   | 20.3M/338M [00:09<02:30, 2.22MiB/s]  4%|█▌                                    | 14.2M/338M [00:08<02:36, 2.17MiB/s]  5%|█▉                                    | 17.0M/338M [00:09<02:48, 2.00MiB/s]  4%|█▍                                    | 12.3M/338M [00:08<02:55, 1.95MiB/s]  2%|▊                                     | 7.67M/338M [00:03<02:49, 2.05MiB/s]  6%|██▏                                   | 19.5M/338M [00:09<03:11, 1.74MiB/s]  6%|██▎                                   | 20.6M/338M [00:09<02:25, 2.28MiB/s]  5%|█▉                                    | 17.2M/338M [00:09<02:35, 2.16MiB/s]  4%|█▌                                    | 14.4M/338M [00:08<02:47, 2.02MiB/s]  4%|█▍                                    | 12.5M/338M [00:08<02:56, 1.93MiB/s]  6%|██▏                                   | 19.6M/338M [00:09<03:10, 1.75MiB/s]  5%|█▉                                    | 17.5M/338M [00:09<02:27, 2.28MiB/s]  6%|██▎                                   | 20.8M/338M [00:09<02:37, 2.11MiB/s]  4%|█▍                                    | 12.7M/338M [00:08<03:05, 1.84MiB/s]  4%|█▋                                    | 14.6M/338M [00:09<02:55, 1.93MiB/s]  6%|██▏                                   | 19.8M/338M [00:09<03:08, 1.77MiB/s]  2%|▉                                     | 7.88M/338M [00:03<04:06, 1.40MiB/s]  6%|██▎                                   | 21.0M/338M [00:09<02:41, 2.06MiB/s]  5%|█▉                                    | 17.7M/338M [00:09<02:41, 2.08MiB/s]  4%|█▍                                    | 12.9M/338M [00:08<03:03, 1.86MiB/s]  4%|█▋                                    | 14.8M/338M [00:09<02:58, 1.89MiB/s]  6%|██▎                                   | 20.0M/338M [00:10<03:03, 1.81MiB/s]  2%|▉                                     | 8.05M/338M [00:03<03:56, 1.46MiB/s]  4%|█▍                                    | 13.1M/338M [00:08<03:03, 1.85MiB/s]  6%|██▍                                   | 21.2M/338M [00:09<02:47, 1.98MiB/s]  4%|█▋                                    | 15.0M/338M [00:09<02:52, 1.96MiB/s]  6%|██▎                                   | 20.2M/338M [00:10<03:09, 1.76MiB/s]  5%|██                                    | 17.9M/338M [00:09<03:03, 1.83MiB/s]  2%|▉                                     | 8.26M/338M [00:03<03:39, 1.58MiB/s]  6%|██▍                                   | 21.4M/338M [00:09<02:45, 2.00MiB/s]  4%|█▍                                    | 13.3M/338M [00:09<03:08, 1.80MiB/s]  6%|██▎                                   | 20.4M/338M [00:10<03:11, 1.73MiB/s]  5%|█▋                                    | 15.2M/338M [00:09<03:02, 1.86MiB/s]  5%|██                                    | 18.1M/338M [00:09<03:08, 1.78MiB/s]  2%|▉                                     | 8.43M/338M [00:04<03:31, 1.63MiB/s]  6%|██▍                                   | 21.6M/338M [00:09<02:45, 2.00MiB/s]  4%|█▌                                    | 13.4M/338M [00:09<03:13, 1.76MiB/s]  5%|█▋                                    | 15.4M/338M [00:09<03:04, 1.83MiB/s]  6%|██▎                                   | 20.6M/338M [00:10<03:27, 1.60MiB/s]  3%|▉                                     | 8.60M/338M [00:04<03:27, 1.67MiB/s]  5%|██                                    | 18.3M/338M [00:09<03:12, 1.74MiB/s]  6%|██▍                                   | 21.8M/338M [00:10<02:36, 2.11MiB/s]  5%|█▊                                    | 15.6M/338M [00:09<02:53, 1.94MiB/s]  4%|█▌                                    | 13.6M/338M [00:09<03:21, 1.69MiB/s]  6%|██▎                                   | 20.7M/338M [00:10<03:22, 1.64MiB/s]  5%|██                                    | 18.5M/338M [00:09<03:09, 1.77MiB/s]  3%|▉                                     | 8.77M/338M [00:04<03:36, 1.59MiB/s]  7%|██▍                                   | 22.1M/338M [00:10<02:28, 2.23MiB/s]  4%|█▌                                    | 13.8M/338M [00:09<03:20, 1.69MiB/s]  6%|██▎                                   | 20.9M/338M [00:10<03:09, 1.75MiB/s]  5%|█▊                                    | 15.8M/338M [00:09<03:08, 1.79MiB/s]  6%|██                                    | 18.6M/338M [00:09<03:06, 1.80MiB/s]  3%|█                                     | 8.96M/338M [00:04<03:24, 1.68MiB/s]  4%|█▌                                    | 13.9M/338M [00:09<03:28, 1.62MiB/s]  7%|██▌                                   | 22.3M/338M [00:10<02:46, 1.99MiB/s]  6%|██▍                                   | 21.2M/338M [00:10<02:48, 1.96MiB/s]  5%|█▊                                    | 16.0M/338M [00:09<03:12, 1.76MiB/s]  3%|█                                     | 9.13M/338M [00:04<03:24, 1.69MiB/s]  6%|██                                    | 18.8M/338M [00:10<03:15, 1.71MiB/s]  7%|██▌                                   | 22.5M/338M [00:10<02:44, 2.01MiB/s]  4%|█▌                                    | 14.1M/338M [00:09<03:34, 1.58MiB/s]  6%|██▍                                   | 21.4M/338M [00:10<02:45, 2.00MiB/s]  3%|█                                     | 9.30M/338M [00:04<03:22, 1.70MiB/s]  6%|██▏                                   | 19.0M/338M [00:10<03:01, 1.84MiB/s]  5%|█▊                                    | 16.2M/338M [00:09<03:27, 1.62MiB/s]  7%|██▌                                   | 22.8M/338M [00:10<02:20, 2.35MiB/s]  4%|█▌                                    | 14.3M/338M [00:09<03:27, 1.64MiB/s]  6%|██▍                                   | 21.6M/338M [00:10<02:52, 1.92MiB/s]  6%|██▏                                   | 19.2M/338M [00:10<02:54, 1.91MiB/s]  3%|█                                     | 9.52M/338M [00:04<03:07, 1.84MiB/s]  5%|█▊                                    | 16.4M/338M [00:10<03:22, 1.66MiB/s]  4%|█▋                                    | 14.5M/338M [00:09<03:02, 1.86MiB/s]  6%|██▍                                   | 21.8M/338M [00:11<02:52, 1.92MiB/s]  7%|██▌                                   | 23.1M/338M [00:10<02:34, 2.14MiB/s]  6%|██▏                                   | 19.5M/338M [00:10<02:29, 2.23MiB/s]  5%|█▊                                    | 16.5M/338M [00:10<03:18, 1.69MiB/s]  3%|█                                     | 9.70M/338M [00:04<03:09, 1.81MiB/s]  4%|█▋                                    | 14.7M/338M [00:09<02:52, 1.96MiB/s]  7%|██▍                                   | 22.0M/338M [00:11<03:00, 1.83MiB/s]  7%|██▌                                   | 23.3M/338M [00:10<02:40, 2.06MiB/s]  5%|█▉                                    | 16.7M/338M [00:10<03:04, 1.82MiB/s]  6%|██▏                                   | 19.8M/338M [00:10<02:34, 2.16MiB/s]  3%|█                                     | 9.93M/338M [00:04<02:57, 1.94MiB/s]  4%|█▋                                    | 14.9M/338M [00:10<02:50, 1.98MiB/s]  7%|██▍                                   | 22.2M/338M [00:11<02:53, 1.90MiB/s]  5%|█▉                                    | 17.0M/338M [00:10<02:44, 2.04MiB/s]  6%|██▏                                   | 20.0M/338M [00:10<02:35, 2.15MiB/s]  3%|█▏                                    | 10.2M/338M [00:05<02:48, 2.04MiB/s]  7%|██▋                                   | 23.5M/338M [00:10<02:51, 1.92MiB/s]  4%|█▋                                    | 15.1M/338M [00:10<02:59, 1.89MiB/s]  7%|██▌                                   | 22.4M/338M [00:11<02:55, 1.88MiB/s]  5%|█▉                                    | 17.3M/338M [00:10<02:16, 2.46MiB/s]  6%|██▎                                   | 20.2M/338M [00:10<02:39, 2.08MiB/s]  3%|█▏                                    | 10.4M/338M [00:05<02:59, 1.91MiB/s]  7%|██▋                                   | 23.7M/338M [00:10<02:53, 1.90MiB/s]  5%|█▋                                    | 15.3M/338M [00:10<03:12, 1.75MiB/s]  5%|█▉                                    | 17.6M/338M [00:10<02:15, 2.47MiB/s]  6%|██▎                                   | 20.4M/338M [00:10<02:40, 2.07MiB/s]  3%|█▏                                    | 10.6M/338M [00:05<02:53, 1.98MiB/s]  7%|██▋                                   | 23.9M/338M [00:11<02:51, 1.91MiB/s]  7%|██▌                                   | 22.5M/338M [00:11<03:18, 1.66MiB/s]  5%|█▋                                    | 15.5M/338M [00:10<03:22, 1.66MiB/s]  6%|██▎                                   | 20.7M/338M [00:10<02:22, 2.33MiB/s]  5%|██                                    | 17.8M/338M [00:10<02:20, 2.39MiB/s]  3%|█▏                                    | 10.9M/338M [00:05<02:37, 2.17MiB/s]  7%|██▌                                   | 22.7M/338M [00:11<03:15, 1.69MiB/s]  7%|██▋                                   | 24.1M/338M [00:11<02:57, 1.86MiB/s]  5%|██                                    | 18.1M/338M [00:10<02:12, 2.52MiB/s]  6%|██▎                                   | 21.0M/338M [00:11<02:07, 2.60MiB/s]  5%|█▊                                    | 15.6M/338M [00:10<03:28, 1.62MiB/s]  7%|██▌                                   | 22.9M/338M [00:11<03:08, 1.75MiB/s]  7%|██▋                                   | 24.2M/338M [00:11<02:59, 1.83MiB/s]  3%|█▏                                    | 11.1M/338M [00:05<02:54, 1.96MiB/s]  5%|██                                    | 18.4M/338M [00:10<02:05, 2.67MiB/s]  5%|█▊                                    | 15.9M/338M [00:10<03:13, 1.74MiB/s]  7%|██▌                                   | 23.1M/338M [00:11<02:56, 1.87MiB/s]  6%|██▍                                   | 21.3M/338M [00:11<02:18, 2.40MiB/s]  7%|██▋                                   | 24.4M/338M [00:11<03:05, 1.77MiB/s]  3%|█▎                                    | 11.3M/338M [00:05<02:59, 1.91MiB/s]  6%|██                                    | 18.7M/338M [00:11<02:06, 2.64MiB/s]  5%|█▊                                    | 16.1M/338M [00:10<03:04, 1.83MiB/s]  7%|██▋                                   | 23.3M/338M [00:11<02:46, 1.98MiB/s]  7%|██▊                                   | 24.6M/338M [00:11<03:08, 1.74MiB/s]  3%|█▎                                    | 11.5M/338M [00:05<02:53, 1.97MiB/s]  6%|██▍                                   | 21.5M/338M [00:11<02:48, 1.97MiB/s]  7%|██▋                                   | 23.6M/338M [00:12<02:29, 2.21MiB/s]  5%|█▊                                    | 16.2M/338M [00:10<03:13, 1.74MiB/s]  6%|██▏                                   | 18.9M/338M [00:11<02:18, 2.41MiB/s]  7%|██▊                                   | 24.8M/338M [00:11<03:01, 1.81MiB/s]  3%|█▎                                    | 11.7M/338M [00:05<02:54, 1.96MiB/s]  6%|██▏                                   | 19.2M/338M [00:11<02:15, 2.46MiB/s]  5%|█▊                                    | 16.4M/338M [00:10<03:15, 1.72MiB/s]  6%|██▍                                   | 21.7M/338M [00:11<03:00, 1.84MiB/s]  7%|██▋                                   | 23.8M/338M [00:12<02:37, 2.08MiB/s]  7%|██▊                                   | 25.0M/338M [00:11<02:49, 1.93MiB/s]  4%|█▎                                    | 11.9M/338M [00:05<02:59, 1.91MiB/s]  6%|██▍                                   | 21.9M/338M [00:11<02:58, 1.86MiB/s]  6%|██▏                                   | 19.4M/338M [00:11<02:15, 2.46MiB/s]  5%|█▊                                    | 16.6M/338M [00:11<03:25, 1.63MiB/s]  7%|██▊                                   | 25.2M/338M [00:11<02:48, 1.94MiB/s]  7%|██▋                                   | 24.0M/338M [00:12<02:48, 1.95MiB/s]  4%|█▎                                    | 12.0M/338M [00:06<03:02, 1.87MiB/s]  6%|██▏                                   | 19.7M/338M [00:11<02:13, 2.50MiB/s]  7%|██▍                                   | 22.1M/338M [00:11<02:54, 1.90MiB/s]  5%|█▉                                    | 16.8M/338M [00:11<03:19, 1.69MiB/s]  8%|██▊                                   | 25.4M/338M [00:11<02:45, 1.97MiB/s]  7%|██▋                                   | 24.2M/338M [00:12<02:50, 1.93MiB/s]  4%|█▍                                    | 12.3M/338M [00:06<02:39, 2.13MiB/s]  7%|██▌                                   | 22.3M/338M [00:11<02:49, 1.95MiB/s]  6%|██▏                                   | 19.9M/338M [00:11<02:19, 2.38MiB/s]  5%|█▉                                    | 17.1M/338M [00:11<02:47, 2.00MiB/s]  8%|██▉                                   | 25.6M/338M [00:12<02:47, 1.95MiB/s]  7%|██▊                                   | 24.4M/338M [00:12<02:44, 2.00MiB/s]  4%|█▍                                    | 12.6M/338M [00:06<02:24, 2.36MiB/s]  7%|██▌                                   | 22.5M/338M [00:11<02:46, 1.99MiB/s]  6%|██▎                                   | 20.2M/338M [00:11<02:24, 2.31MiB/s]  8%|██▉                                   | 25.8M/338M [00:12<02:52, 1.90MiB/s]  7%|██▊                                   | 24.6M/338M [00:12<02:45, 1.98MiB/s]  4%|█▍                                    | 12.9M/338M [00:06<02:19, 2.43MiB/s]  5%|█▉                                    | 17.2M/338M [00:11<02:58, 1.88MiB/s]  7%|██▌                                   | 22.7M/338M [00:12<02:33, 2.15MiB/s]  8%|██▉                                   | 26.0M/338M [00:12<02:49, 1.93MiB/s]  7%|██▊                                   | 24.8M/338M [00:12<02:51, 1.91MiB/s]  4%|█▍                                    | 13.1M/338M [00:06<02:30, 2.27MiB/s]  5%|█▉                                    | 17.4M/338M [00:11<03:08, 1.78MiB/s]  6%|██▎                                   | 20.4M/338M [00:11<02:44, 2.02MiB/s]  7%|██▌                                   | 23.1M/338M [00:12<02:17, 2.40MiB/s]  8%|██▉                                   | 26.3M/338M [00:12<02:25, 2.25MiB/s]  7%|██▊                                   | 25.1M/338M [00:12<02:43, 2.01MiB/s]  5%|█▉                                    | 17.6M/338M [00:11<03:06, 1.79MiB/s]  4%|█▍                                    | 13.3M/338M [00:06<02:28, 2.29MiB/s]  7%|██▌                                   | 23.3M/338M [00:12<02:17, 2.39MiB/s]  6%|██▎                                   | 20.6M/338M [00:11<03:00, 1.84MiB/s]  8%|██▉                                   | 26.6M/338M [00:12<02:18, 2.36MiB/s]  7%|██▊                                   | 25.3M/338M [00:12<02:33, 2.13MiB/s]  5%|██                                    | 17.9M/338M [00:11<02:43, 2.05MiB/s]  4%|█▌                                    | 13.6M/338M [00:06<02:24, 2.35MiB/s]  6%|██▎                                   | 20.8M/338M [00:12<02:57, 1.88MiB/s]  7%|██▋                                   | 23.5M/338M [00:12<02:31, 2.17MiB/s]  8%|██▊                                   | 25.5M/338M [00:13<02:34, 2.12MiB/s]  8%|███                                   | 26.8M/338M [00:12<02:27, 2.21MiB/s]  4%|█▌                                    | 13.8M/338M [00:06<02:20, 2.42MiB/s]  5%|██                                    | 18.2M/338M [00:11<02:22, 2.35MiB/s]  6%|██▎                                   | 21.0M/338M [00:12<02:55, 1.89MiB/s]  4%|█▌                                    | 14.1M/338M [00:06<02:06, 2.69MiB/s]  8%|███                                   | 27.0M/338M [00:12<02:33, 2.13MiB/s]  7%|██▋                                   | 23.7M/338M [00:12<02:48, 1.96MiB/s]  5%|██                                    | 18.4M/338M [00:11<02:28, 2.25MiB/s]  8%|██▉                                   | 25.7M/338M [00:13<02:50, 1.92MiB/s]  6%|██▍                                   | 21.2M/338M [00:12<02:57, 1.87MiB/s]  4%|█▌                                    | 14.4M/338M [00:07<02:06, 2.68MiB/s]  8%|██▉                                   | 26.0M/338M [00:13<02:37, 2.07MiB/s]  8%|███                                   | 27.2M/338M [00:12<02:40, 2.03MiB/s]  6%|██                                    | 18.6M/338M [00:12<02:32, 2.19MiB/s]  7%|██▋                                   | 23.9M/338M [00:12<03:02, 1.80MiB/s]  6%|██▍                                   | 21.4M/338M [00:12<03:00, 1.83MiB/s]  8%|███                                   | 27.4M/338M [00:12<02:34, 2.10MiB/s]  4%|█▋                                    | 14.7M/338M [00:07<02:17, 2.47MiB/s]  6%|██                                    | 18.9M/338M [00:12<02:33, 2.17MiB/s]  7%|██▋                                   | 24.1M/338M [00:12<03:09, 1.74MiB/s]  8%|██▉                                   | 26.2M/338M [00:13<02:57, 1.84MiB/s]  6%|██▍                                   | 21.6M/338M [00:12<03:01, 1.83MiB/s]  8%|███                                   | 27.6M/338M [00:13<02:36, 2.08MiB/s]  7%|██▋                                   | 24.3M/338M [00:12<03:03, 1.79MiB/s]  4%|█▋                                    | 14.9M/338M [00:07<02:34, 2.19MiB/s]  6%|██▏                                   | 19.1M/338M [00:12<02:55, 1.91MiB/s]  8%|██▉                                   | 26.4M/338M [00:13<03:01, 1.80MiB/s]  6%|██▍                                   | 21.8M/338M [00:12<02:59, 1.84MiB/s]  8%|███▏                                  | 27.9M/338M [00:13<02:39, 2.03MiB/s]  7%|██▊                                   | 24.5M/338M [00:12<03:10, 1.73MiB/s]  7%|██▍                                   | 21.9M/338M [00:12<02:59, 1.84MiB/s]  4%|█▋                                    | 15.1M/338M [00:07<02:41, 2.09MiB/s]  8%|██▉                                   | 26.5M/338M [00:13<03:03, 1.77MiB/s]  6%|██▏                                   | 19.3M/338M [00:12<03:04, 1.81MiB/s]  8%|███▏                                  | 28.1M/338M [00:13<02:29, 2.17MiB/s]  5%|█▋                                    | 15.3M/338M [00:07<02:40, 2.11MiB/s]  7%|██▍                                   | 22.1M/338M [00:12<02:59, 1.84MiB/s]  7%|██▊                                   | 24.7M/338M [00:13<03:15, 1.68MiB/s]  8%|███                                   | 26.7M/338M [00:13<02:58, 1.83MiB/s]  8%|███▏                                  | 28.4M/338M [00:13<02:18, 2.34MiB/s]  6%|██▏                                   | 19.4M/338M [00:12<03:25, 1.63MiB/s]  7%|██▌                                   | 22.4M/338M [00:12<02:31, 2.18MiB/s]  5%|█▊                                    | 15.6M/338M [00:07<02:39, 2.12MiB/s]  8%|███                                   | 26.9M/338M [00:13<03:01, 1.80MiB/s]  7%|██▊                                   | 24.8M/338M [00:13<03:21, 1.62MiB/s]  8%|███▏                                  | 28.6M/338M [00:13<02:23, 2.26MiB/s]  6%|██▏                                   | 19.6M/338M [00:12<03:25, 1.62MiB/s]  5%|█▊                                    | 15.8M/338M [00:07<02:37, 2.14MiB/s]  7%|██▌                                   | 22.7M/338M [00:13<02:14, 2.45MiB/s]  7%|██▊                                   | 25.0M/338M [00:13<03:22, 1.62MiB/s]  8%|███                                   | 27.1M/338M [00:14<03:07, 1.74MiB/s]  9%|███▏                                  | 28.8M/338M [00:13<02:31, 2.13MiB/s]  6%|██▏                                   | 19.8M/338M [00:12<03:32, 1.57MiB/s]  7%|██▊                                   | 25.2M/338M [00:13<02:54, 1.87MiB/s]  5%|█▊                                    | 16.0M/338M [00:07<02:46, 2.03MiB/s]  7%|██▌                                   | 23.0M/338M [00:13<02:22, 2.32MiB/s]  8%|███                                   | 27.3M/338M [00:14<03:12, 1.69MiB/s]  6%|██▏                                   | 19.9M/338M [00:12<03:38, 1.52MiB/s]  9%|███▎                                  | 29.0M/338M [00:13<02:45, 1.96MiB/s]  5%|█▊                                    | 16.2M/338M [00:07<02:45, 2.03MiB/s]  8%|██▉                                   | 25.6M/338M [00:13<02:19, 2.34MiB/s]  7%|██▌                                   | 23.2M/338M [00:13<02:31, 2.18MiB/s]  8%|███                                   | 27.5M/338M [00:14<03:02, 1.78MiB/s]  6%|██▎                                   | 20.1M/338M [00:13<03:31, 1.58MiB/s]  9%|███▎                                  | 29.2M/338M [00:13<02:45, 1.96MiB/s]  8%|██▉                                   | 25.9M/338M [00:13<02:00, 2.71MiB/s]  5%|█▊                                    | 16.4M/338M [00:08<02:52, 1.95MiB/s]  7%|██▋                                   | 23.4M/338M [00:13<02:31, 2.17MiB/s]  8%|███                                   | 27.7M/338M [00:14<03:06, 1.74MiB/s]  6%|██▎                                   | 20.3M/338M [00:13<03:03, 1.81MiB/s]  9%|███▎                                  | 29.4M/338M [00:13<02:51, 1.88MiB/s]  8%|██▉                                   | 26.2M/338M [00:13<01:57, 2.78MiB/s]  7%|██▋                                   | 23.6M/338M [00:13<02:28, 2.22MiB/s]  5%|█▊                                    | 16.6M/338M [00:08<02:57, 1.90MiB/s]  8%|███▏                                  | 27.8M/338M [00:14<03:07, 1.73MiB/s]  6%|██▎                                   | 20.5M/338M [00:13<02:57, 1.87MiB/s]  8%|██▉                                   | 26.6M/338M [00:13<01:52, 2.89MiB/s]  5%|█▉                                    | 16.8M/338M [00:08<02:44, 2.05MiB/s]  9%|███▎                                  | 29.6M/338M [00:14<03:02, 1.77MiB/s]  8%|███▏                                  | 28.0M/338M [00:14<03:10, 1.70MiB/s]  7%|██▋                                   | 23.9M/338M [00:13<02:48, 1.96MiB/s]  6%|██▎                                   | 20.7M/338M [00:13<02:53, 1.91MiB/s]  9%|███▎                                  | 29.9M/338M [00:14<02:31, 2.12MiB/s]  5%|█▉                                    | 17.0M/338M [00:08<02:41, 2.08MiB/s]  8%|███▏                                  | 28.2M/338M [00:14<03:08, 1.72MiB/s]  7%|██▋                                   | 24.1M/338M [00:13<02:44, 2.00MiB/s]  6%|██▎                                   | 20.9M/338M [00:13<02:58, 1.86MiB/s]  8%|███                                   | 26.9M/338M [00:14<02:17, 2.37MiB/s]  9%|███▍                                  | 30.3M/338M [00:14<01:56, 2.76MiB/s]  5%|█▉                                    | 17.2M/338M [00:08<02:43, 2.06MiB/s]  8%|███▏                                  | 28.4M/338M [00:14<02:58, 1.81MiB/s]  7%|██▋                                   | 24.4M/338M [00:13<02:31, 2.17MiB/s]  6%|██▍                                   | 21.1M/338M [00:13<03:04, 1.80MiB/s]  9%|███▍                                  | 30.6M/338M [00:14<01:52, 2.85MiB/s]  5%|█▉                                    | 17.4M/338M [00:08<02:40, 2.09MiB/s]  8%|███▏                                  | 28.6M/338M [00:14<02:35, 2.08MiB/s]  8%|███                                   | 27.1M/338M [00:14<02:36, 2.08MiB/s]  7%|██▊                                   | 24.6M/338M [00:13<02:17, 2.39MiB/s]  6%|██▍                                   | 21.3M/338M [00:13<03:12, 1.72MiB/s]  5%|█▉                                    | 17.6M/338M [00:08<02:44, 2.04MiB/s]  9%|███▎                                  | 28.9M/338M [00:14<02:19, 2.32MiB/s]  9%|███▍                                  | 30.9M/338M [00:14<02:01, 2.64MiB/s]  8%|███                                   | 27.3M/338M [00:14<02:43, 1.99MiB/s]  7%|██▊                                   | 24.9M/338M [00:14<02:12, 2.48MiB/s]  6%|██▍                                   | 21.5M/338M [00:13<03:20, 1.65MiB/s]  5%|██                                    | 17.8M/338M [00:08<02:45, 2.03MiB/s]  9%|███▎                                  | 29.2M/338M [00:15<02:27, 2.20MiB/s]  7%|██▊                                   | 25.2M/338M [00:14<02:01, 2.70MiB/s]  9%|███▌                                  | 31.2M/338M [00:14<02:11, 2.44MiB/s]  8%|███                                   | 27.5M/338M [00:14<02:54, 1.87MiB/s]  6%|██▍                                   | 21.6M/338M [00:13<03:28, 1.59MiB/s]  5%|██                                    | 18.0M/338M [00:08<02:54, 1.92MiB/s]  9%|███▎                                  | 29.4M/338M [00:15<02:30, 2.15MiB/s]  8%|███                                   | 27.7M/338M [00:14<02:52, 1.89MiB/s]  9%|███▌                                  | 31.4M/338M [00:14<02:22, 2.25MiB/s]  8%|██▊                                   | 25.5M/338M [00:14<02:15, 2.42MiB/s]  6%|██▍                                   | 21.8M/338M [00:14<03:29, 1.58MiB/s]  5%|██                                    | 18.2M/338M [00:09<02:50, 1.96MiB/s]  9%|███▎                                  | 29.6M/338M [00:15<02:46, 1.94MiB/s]  8%|███▏                                  | 27.9M/338M [00:14<02:53, 1.87MiB/s]  6%|██▍                                   | 21.9M/338M [00:14<03:33, 1.55MiB/s]  9%|███▌                                  | 31.7M/338M [00:14<02:31, 2.12MiB/s]  6%|██                                    | 18.6M/338M [00:09<02:22, 2.34MiB/s]  8%|██▉                                   | 25.8M/338M [00:14<02:28, 2.20MiB/s]  9%|███▎                                  | 29.8M/338M [00:15<02:45, 1.94MiB/s]  8%|███▏                                  | 28.1M/338M [00:14<02:59, 1.81MiB/s]  7%|██▍                                   | 22.1M/338M [00:14<03:33, 1.55MiB/s]  8%|██▉                                   | 26.0M/338M [00:14<02:20, 2.33MiB/s]  9%|███▌                                  | 31.9M/338M [00:15<02:38, 2.02MiB/s]  6%|██                                    | 18.9M/338M [00:09<02:18, 2.42MiB/s]  9%|███▍                                  | 30.0M/338M [00:15<02:45, 1.95MiB/s]  7%|██▌                                   | 22.2M/338M [00:14<03:33, 1.55MiB/s]  8%|██▉                                   | 26.3M/338M [00:14<02:08, 2.53MiB/s]  8%|███▏                                  | 28.3M/338M [00:14<03:16, 1.65MiB/s] 10%|███▌                                  | 32.1M/338M [00:15<02:46, 1.93MiB/s]  6%|██▏                                   | 19.1M/338M [00:09<02:27, 2.26MiB/s]  9%|███▍                                  | 30.2M/338M [00:15<02:34, 2.09MiB/s]  7%|██▌                                   | 22.4M/338M [00:14<03:35, 1.53MiB/s]  8%|██▉                                   | 26.6M/338M [00:14<02:12, 2.47MiB/s]  6%|██▏                                   | 19.3M/338M [00:09<02:31, 2.20MiB/s]  8%|███▏                                  | 28.4M/338M [00:15<03:33, 1.52MiB/s] 10%|███▋                                  | 32.3M/338M [00:15<02:54, 1.83MiB/s]  9%|███▍                                  | 30.5M/338M [00:15<02:26, 2.19MiB/s]  7%|██▌                                   | 22.5M/338M [00:14<03:42, 1.49MiB/s]  8%|███                                   | 26.8M/338M [00:14<02:19, 2.34MiB/s]  6%|██▏                                   | 19.5M/338M [00:09<02:29, 2.23MiB/s]  8%|███▏                                  | 28.6M/338M [00:15<03:32, 1.52MiB/s]  9%|███▍                                  | 30.7M/338M [00:15<02:16, 2.36MiB/s] 10%|███▋                                  | 32.4M/338M [00:15<03:01, 1.76MiB/s]  7%|██▌                                   | 22.7M/338M [00:14<03:43, 1.48MiB/s]  6%|██▏                                   | 19.8M/338M [00:09<02:27, 2.26MiB/s]  9%|███▏                                  | 28.8M/338M [00:15<03:31, 1.53MiB/s]  9%|███▍                                  | 31.0M/338M [00:15<02:14, 2.40MiB/s] 10%|███▋                                  | 32.6M/338M [00:15<02:56, 1.81MiB/s]  8%|███                                   | 27.0M/338M [00:15<02:31, 2.15MiB/s]  7%|██▌                                   | 22.8M/338M [00:14<03:55, 1.40MiB/s]  6%|██▎                                   | 20.1M/338M [00:09<02:10, 2.55MiB/s]  9%|███▎                                  | 28.9M/338M [00:15<03:30, 1.54MiB/s]  8%|███                                   | 27.3M/338M [00:15<02:30, 2.16MiB/s] 10%|███▋                                  | 32.8M/338M [00:15<02:56, 1.81MiB/s]  9%|███▌                                  | 31.2M/338M [00:16<02:36, 2.05MiB/s]  7%|██▌                                   | 23.0M/338M [00:14<03:52, 1.42MiB/s]  6%|██▎                                   | 20.4M/338M [00:09<02:10, 2.56MiB/s] 10%|███▋                                  | 33.0M/338M [00:15<02:47, 1.91MiB/s]  9%|███▎                                  | 29.1M/338M [00:15<03:42, 1.46MiB/s]  8%|███                                   | 27.5M/338M [00:15<02:37, 2.07MiB/s]  9%|███▌                                  | 31.4M/338M [00:16<02:36, 2.05MiB/s]  7%|██▌                                   | 23.1M/338M [00:15<03:48, 1.45MiB/s]  9%|███▎                                  | 29.2M/338M [00:15<03:40, 1.46MiB/s] 10%|███▋                                  | 33.2M/338M [00:15<02:48, 1.90MiB/s]  8%|███                                   | 27.7M/338M [00:15<02:43, 1.98MiB/s]  6%|██▎                                   | 20.6M/338M [00:10<02:29, 2.23MiB/s]  9%|███▌                                  | 31.7M/338M [00:16<02:24, 2.22MiB/s]  7%|██▌                                   | 23.3M/338M [00:15<03:42, 1.48MiB/s]  9%|███▎                                  | 29.4M/338M [00:15<03:38, 1.48MiB/s]  8%|███▏                                  | 27.9M/338M [00:15<02:36, 2.08MiB/s] 10%|███▊                                  | 33.4M/338M [00:15<02:55, 1.82MiB/s]  6%|██▎                                   | 20.8M/338M [00:10<02:33, 2.17MiB/s]  7%|██▋                                   | 23.5M/338M [00:15<03:25, 1.60MiB/s]  9%|███▌                                  | 31.9M/338M [00:16<02:39, 2.01MiB/s]  9%|███▎                                  | 29.5M/338M [00:15<03:39, 1.47MiB/s]  8%|███▏                                  | 28.1M/338M [00:15<02:28, 2.18MiB/s] 10%|███▊                                  | 33.6M/338M [00:16<02:55, 1.82MiB/s]  6%|██▍                                   | 21.1M/338M [00:10<02:21, 2.35MiB/s]  7%|██▋                                   | 23.7M/338M [00:15<03:16, 1.67MiB/s] 10%|███▌                                  | 32.1M/338M [00:16<02:41, 1.99MiB/s]  9%|███▎                                  | 29.7M/338M [00:15<03:34, 1.51MiB/s]  6%|██▍                                   | 21.4M/338M [00:10<02:15, 2.44MiB/s] 10%|███▊                                  | 33.8M/338M [00:16<03:03, 1.74MiB/s]  8%|███▏                                  | 28.3M/338M [00:15<02:41, 2.01MiB/s]  7%|██▋                                   | 23.9M/338M [00:15<03:13, 1.70MiB/s] 10%|███▋                                  | 32.4M/338M [00:16<02:34, 2.07MiB/s]  9%|███▎                                  | 29.9M/338M [00:16<03:23, 1.58MiB/s]  6%|██▍                                   | 21.6M/338M [00:10<02:14, 2.46MiB/s] 10%|███▊                                  | 34.0M/338M [00:16<03:02, 1.74MiB/s]  7%|██▋                                   | 24.0M/338M [00:15<03:13, 1.70MiB/s]  8%|███▏                                  | 28.5M/338M [00:15<02:51, 1.89MiB/s] 10%|███▋                                  | 32.6M/338M [00:16<02:21, 2.26MiB/s]  9%|███▍                                  | 30.1M/338M [00:16<02:58, 1.80MiB/s]  6%|██▍                                   | 21.9M/338M [00:10<02:08, 2.57MiB/s] 10%|███▊                                  | 34.2M/338M [00:16<03:03, 1.74MiB/s]  7%|██▋                                   | 24.2M/338M [00:15<03:00, 1.82MiB/s]  9%|███▏                                  | 28.8M/338M [00:15<02:39, 2.03MiB/s] 10%|███▋                                  | 32.9M/338M [00:16<02:07, 2.51MiB/s]  9%|███▍                                  | 30.3M/338M [00:16<02:40, 2.01MiB/s]  7%|██▍                                   | 22.2M/338M [00:10<02:06, 2.62MiB/s]  7%|██▊                                   | 24.5M/338M [00:15<02:30, 2.18MiB/s] 10%|███▊                                  | 34.4M/338M [00:16<02:55, 1.81MiB/s]  9%|███▎                                  | 29.0M/338M [00:16<02:42, 1.99MiB/s] 10%|███▋                                  | 33.2M/338M [00:17<01:57, 2.71MiB/s]  9%|███▍                                  | 30.6M/338M [00:16<02:22, 2.26MiB/s]  7%|██▌                                   | 22.4M/338M [00:10<02:10, 2.53MiB/s] 10%|███▉                                  | 34.6M/338M [00:16<02:36, 2.03MiB/s]  7%|██▊                                   | 24.9M/338M [00:15<02:10, 2.51MiB/s]  9%|███▎                                  | 29.2M/338M [00:16<02:45, 1.96MiB/s] 10%|███▊                                  | 33.5M/338M [00:17<02:06, 2.53MiB/s]  9%|███▍                                  | 30.9M/338M [00:16<02:15, 2.37MiB/s]  7%|██▊                                   | 25.2M/338M [00:16<01:57, 2.80MiB/s]  7%|██▌                                   | 22.7M/338M [00:10<02:19, 2.36MiB/s] 10%|███▉                                  | 34.8M/338M [00:16<02:43, 1.94MiB/s]  9%|███▎                                  | 29.4M/338M [00:16<02:42, 1.98MiB/s] 10%|███▊                                  | 33.8M/338M [00:17<02:01, 2.61MiB/s]  9%|███▌                                  | 31.1M/338M [00:16<02:35, 2.07MiB/s]  8%|██▊                                   | 25.5M/338M [00:16<02:01, 2.68MiB/s]  9%|███▎                                  | 29.6M/338M [00:16<02:39, 2.02MiB/s]  7%|██▌                                   | 22.9M/338M [00:11<02:25, 2.27MiB/s] 10%|███▉                                  | 35.0M/338M [00:16<02:54, 1.82MiB/s] 10%|███▊                                  | 34.1M/338M [00:17<01:50, 2.89MiB/s]  9%|███▌                                  | 31.3M/338M [00:16<02:39, 2.01MiB/s]  9%|███▎                                  | 29.9M/338M [00:16<02:11, 2.45MiB/s]  7%|██▌                                   | 23.1M/338M [00:11<02:26, 2.26MiB/s] 10%|███▉                                  | 35.2M/338M [00:17<02:49, 1.87MiB/s]  8%|██▉                                   | 25.7M/338M [00:16<02:23, 2.27MiB/s] 10%|███▉                                  | 34.4M/338M [00:17<02:08, 2.47MiB/s]  9%|███▍                                  | 30.3M/338M [00:16<02:02, 2.63MiB/s] 11%|███▉                                  | 35.5M/338M [00:17<02:29, 2.12MiB/s]  9%|███▌                                  | 31.5M/338M [00:16<02:50, 1.88MiB/s]  7%|██▋                                   | 23.4M/338M [00:11<02:44, 2.01MiB/s]  8%|██▉                                   | 26.0M/338M [00:16<02:40, 2.04MiB/s] 10%|███▉                                  | 34.7M/338M [00:17<02:20, 2.26MiB/s] 11%|████                                  | 35.7M/338M [00:17<02:37, 2.01MiB/s]  9%|███▌                                  | 31.7M/338M [00:16<02:59, 1.79MiB/s]  9%|███▍                                  | 30.5M/338M [00:16<02:23, 2.25MiB/s]  7%|██▋                                   | 23.6M/338M [00:11<02:49, 1.94MiB/s]  8%|██▉                                   | 26.2M/338M [00:16<02:40, 2.03MiB/s] 10%|███▉                                  | 34.9M/338M [00:17<02:26, 2.16MiB/s]  9%|███▌                                  | 31.9M/338M [00:17<03:02, 1.75MiB/s]  7%|██▋                                   | 23.8M/338M [00:11<02:48, 1.96MiB/s] 11%|████                                  | 35.9M/338M [00:17<02:51, 1.84MiB/s]  9%|███▍                                  | 30.7M/338M [00:16<02:39, 2.02MiB/s]  8%|██▉                                   | 26.4M/338M [00:16<02:28, 2.20MiB/s] 10%|███▌                                  | 32.1M/338M [00:17<03:06, 1.72MiB/s] 10%|███▉                                  | 35.1M/338M [00:17<02:34, 2.06MiB/s] 11%|████                                  | 36.1M/338M [00:17<02:35, 2.03MiB/s]  7%|██▋                                   | 24.0M/338M [00:11<03:00, 1.83MiB/s]  9%|███▍                                  | 30.9M/338M [00:17<02:39, 2.01MiB/s]  8%|███                                   | 26.7M/338M [00:16<02:34, 2.11MiB/s] 10%|███▋                                  | 32.2M/338M [00:17<03:04, 1.74MiB/s] 11%|████                                  | 36.4M/338M [00:17<02:22, 2.22MiB/s] 10%|███▉                                  | 35.3M/338M [00:18<02:35, 2.03MiB/s]  7%|██▋                                   | 24.1M/338M [00:11<02:58, 1.84MiB/s]  9%|███▌                                  | 31.2M/338M [00:17<02:36, 2.06MiB/s]  8%|███                                   | 26.9M/338M [00:16<02:33, 2.12MiB/s] 10%|███▋                                  | 32.5M/338M [00:17<02:46, 1.92MiB/s] 11%|████▏                                 | 36.8M/338M [00:17<02:03, 2.55MiB/s]  7%|██▋                                   | 24.4M/338M [00:11<02:39, 2.06MiB/s] 11%|███▉                                  | 35.5M/338M [00:18<02:44, 1.92MiB/s]  9%|███▌                                  | 31.4M/338M [00:17<02:39, 2.02MiB/s]  8%|███                                   | 27.1M/338M [00:16<02:28, 2.19MiB/s] 11%|████▏                                 | 37.1M/338M [00:17<01:53, 2.78MiB/s] 10%|███▋                                  | 32.7M/338M [00:17<02:54, 1.83MiB/s] 11%|████                                  | 35.7M/338M [00:18<02:43, 1.93MiB/s]  7%|██▊                                   | 24.6M/338M [00:12<02:44, 2.00MiB/s]  9%|███▌                                  | 31.6M/338M [00:17<02:21, 2.27MiB/s]  8%|███                                   | 27.3M/338M [00:17<02:30, 2.16MiB/s] 10%|███▋                                  | 32.9M/338M [00:17<02:53, 1.84MiB/s] 11%|████                                  | 35.9M/338M [00:18<02:46, 1.90MiB/s]  7%|██▊                                   | 24.8M/338M [00:12<02:44, 2.00MiB/s]  9%|███▌                                  | 31.9M/338M [00:17<02:25, 2.21MiB/s] 11%|████▏                                 | 37.4M/338M [00:17<02:12, 2.38MiB/s]  8%|███                                   | 27.5M/338M [00:17<02:38, 2.06MiB/s] 10%|███▋                                  | 33.1M/338M [00:17<02:30, 2.13MiB/s] 11%|████                                  | 36.1M/338M [00:18<02:37, 2.01MiB/s]  7%|██▊                                   | 25.0M/338M [00:12<02:46, 1.97MiB/s] 10%|███▌                                  | 32.1M/338M [00:17<02:37, 2.03MiB/s]  8%|███                                   | 27.8M/338M [00:17<02:43, 1.99MiB/s] 10%|███▊                                  | 33.4M/338M [00:17<02:19, 2.29MiB/s] 11%|████▏                                 | 37.6M/338M [00:18<02:32, 2.06MiB/s] 11%|████                                  | 36.4M/338M [00:18<02:26, 2.15MiB/s]  7%|██▊                                   | 25.2M/338M [00:12<02:51, 1.91MiB/s] 10%|███▋                                  | 32.3M/338M [00:17<02:41, 1.98MiB/s]  8%|███▏                                  | 27.9M/338M [00:17<02:51, 1.90MiB/s] 11%|████▎                                 | 37.8M/338M [00:18<02:32, 2.06MiB/s] 10%|███▊                                  | 33.6M/338M [00:17<02:27, 2.16MiB/s] 11%|████                                  | 36.6M/338M [00:18<02:21, 2.22MiB/s]  8%|██▊                                   | 25.4M/338M [00:12<02:56, 1.85MiB/s] 10%|███▋                                  | 32.5M/338M [00:17<02:39, 2.01MiB/s] 11%|████▎                                 | 38.0M/338M [00:18<02:27, 2.13MiB/s]  8%|███▏                                  | 28.1M/338M [00:17<03:03, 1.77MiB/s] 11%|████▏                                 | 36.8M/338M [00:18<02:30, 2.10MiB/s] 10%|███▊                                  | 33.8M/338M [00:18<02:39, 2.00MiB/s]  8%|██▉                                   | 25.6M/338M [00:12<03:01, 1.80MiB/s] 10%|███▋                                  | 32.7M/338M [00:17<02:42, 1.96MiB/s] 11%|████▎                                 | 38.3M/338M [00:18<02:13, 2.36MiB/s]  8%|███▏                                  | 28.3M/338M [00:17<02:54, 1.86MiB/s] 11%|████▏                                 | 37.1M/338M [00:18<02:26, 2.15MiB/s] 10%|███▊                                  | 34.0M/338M [00:18<02:38, 2.01MiB/s]  8%|██▉                                   | 25.8M/338M [00:12<02:50, 1.92MiB/s] 10%|███▋                                  | 32.9M/338M [00:18<02:47, 1.91MiB/s]  8%|███▏                                  | 28.6M/338M [00:17<02:24, 2.24MiB/s] 11%|████▏                                 | 37.3M/338M [00:18<02:12, 2.37MiB/s] 11%|████▎                                 | 38.6M/338M [00:18<02:23, 2.19MiB/s]  8%|██▉                                   | 26.1M/338M [00:12<02:25, 2.24MiB/s] 10%|███▊                                  | 34.2M/338M [00:18<02:48, 1.88MiB/s]  9%|███▎                                  | 29.0M/338M [00:17<01:58, 2.73MiB/s] 10%|███▋                                  | 33.1M/338M [00:18<02:57, 1.80MiB/s] 11%|████▎                                 | 38.8M/338M [00:18<02:25, 2.15MiB/s]  8%|██▉                                   | 26.4M/338M [00:12<02:10, 2.50MiB/s] 11%|████▏                                 | 37.6M/338M [00:19<02:30, 2.09MiB/s] 10%|███▊                                  | 34.4M/338M [00:18<03:01, 1.76MiB/s]  9%|███▎                                  | 29.5M/338M [00:18<01:40, 3.21MiB/s] 10%|███▋                                  | 33.3M/338M [00:18<02:57, 1.79MiB/s]  8%|██▉                                   | 26.6M/338M [00:12<02:10, 2.51MiB/s] 12%|████▍                                 | 39.0M/338M [00:18<02:29, 2.10MiB/s] 11%|████▎                                 | 37.8M/338M [00:19<02:34, 2.04MiB/s] 10%|███▉                                  | 34.6M/338M [00:18<03:03, 1.73MiB/s] 10%|███▊                                  | 33.4M/338M [00:18<03:04, 1.73MiB/s]  8%|███                                   | 26.9M/338M [00:13<02:11, 2.49MiB/s]  9%|███▎                                  | 29.8M/338M [00:18<01:56, 2.77MiB/s] 12%|████▍                                 | 39.2M/338M [00:18<02:41, 1.94MiB/s] 10%|███▉                                  | 34.8M/338M [00:18<03:03, 1.73MiB/s] 11%|████▎                                 | 38.0M/338M [00:19<02:42, 1.93MiB/s] 10%|███▊                                  | 33.6M/338M [00:18<03:05, 1.72MiB/s]  8%|███                                   | 27.2M/338M [00:13<02:02, 2.66MiB/s] 12%|████▍                                 | 39.4M/338M [00:19<02:48, 1.85MiB/s] 10%|███▉                                  | 35.0M/338M [00:18<02:43, 1.94MiB/s] 11%|████▎                                 | 38.2M/338M [00:19<02:45, 1.89MiB/s]  9%|███▍                                  | 30.1M/338M [00:18<02:16, 2.36MiB/s]  8%|███                                   | 27.5M/338M [00:13<01:59, 2.72MiB/s] 10%|███▊                                  | 33.9M/338M [00:18<02:49, 1.87MiB/s] 10%|███▉                                  | 35.2M/338M [00:18<02:43, 1.94MiB/s] 12%|████▍                                 | 39.6M/338M [00:19<02:43, 1.91MiB/s] 11%|████▎                                 | 38.4M/338M [00:19<02:30, 2.08MiB/s] 10%|███▊                                  | 34.0M/338M [00:18<02:49, 1.88MiB/s]  8%|███                                   | 27.7M/338M [00:13<02:05, 2.60MiB/s]  9%|███▍                                  | 30.3M/338M [00:18<02:30, 2.15MiB/s] 12%|████▍                                 | 39.9M/338M [00:19<02:26, 2.13MiB/s] 11%|████▎                                 | 38.7M/338M [00:19<02:12, 2.36MiB/s] 10%|███▉                                  | 35.4M/338M [00:19<02:57, 1.78MiB/s] 10%|███▊                                  | 34.2M/338M [00:18<02:59, 1.78MiB/s]  9%|███▍                                  | 30.6M/338M [00:18<02:25, 2.21MiB/s]  8%|███▏                                  | 28.0M/338M [00:13<02:21, 2.30MiB/s] 12%|████▍                                 | 39.0M/338M [00:19<02:05, 2.49MiB/s] 12%|████▌                                 | 40.2M/338M [00:19<02:22, 2.18MiB/s] 11%|████                                  | 35.6M/338M [00:19<03:01, 1.75MiB/s]  9%|███▍                                  | 30.8M/338M [00:18<02:23, 2.25MiB/s]  8%|███▏                                  | 28.2M/338M [00:13<02:19, 2.33MiB/s] 11%|████                                  | 35.8M/338M [00:19<02:59, 1.76MiB/s] 12%|████▌                                 | 40.4M/338M [00:19<02:27, 2.12MiB/s]  9%|███▍                                  | 31.0M/338M [00:18<02:21, 2.26MiB/s]  8%|███▏                                  | 28.5M/338M [00:13<02:15, 2.40MiB/s] 11%|████                                  | 36.0M/338M [00:19<02:47, 1.89MiB/s] 12%|████▌                                 | 40.6M/338M [00:19<02:20, 2.21MiB/s]  9%|███▌                                  | 31.2M/338M [00:18<02:21, 2.27MiB/s]  9%|███▏                                  | 28.7M/338M [00:13<02:12, 2.44MiB/s] 12%|████▌                                 | 40.9M/338M [00:19<02:11, 2.37MiB/s] 11%|████                                  | 36.2M/338M [00:19<02:32, 2.07MiB/s]  9%|███▌                                  | 31.5M/338M [00:19<02:09, 2.47MiB/s]  9%|███▎                                  | 29.0M/338M [00:13<02:10, 2.48MiB/s] 12%|████▋                                 | 41.1M/338M [00:19<02:11, 2.37MiB/s] 11%|████                                  | 36.4M/338M [00:19<02:38, 2.00MiB/s]  9%|███▌                                  | 31.9M/338M [00:19<01:49, 2.93MiB/s]  9%|███▎                                  | 29.2M/338M [00:14<02:09, 2.49MiB/s] 12%|████▍                                 | 39.2M/338M [00:20<04:29, 1.16MiB/s] 10%|███▉                                   | 34.4M/338M [00:19<06:51, 773kiB/s] 12%|████▋                                 | 41.4M/338M [00:19<02:03, 2.52MiB/s] 11%|████                                  | 36.6M/338M [00:19<02:38, 1.99MiB/s] 10%|███▋                                  | 32.2M/338M [00:19<01:49, 2.93MiB/s] 12%|████▍                                 | 39.4M/338M [00:20<04:05, 1.27MiB/s]  9%|███▎                                  | 29.5M/338M [00:14<02:17, 2.35MiB/s] 10%|███▉                                   | 34.6M/338M [00:19<05:47, 916kiB/s] 12%|████▋                                 | 41.6M/338M [00:20<02:09, 2.41MiB/s] 11%|████▏                                 | 36.9M/338M [00:19<02:30, 2.09MiB/s] 12%|████▍                                 | 39.7M/338M [00:20<03:33, 1.46MiB/s] 10%|███▉                                  | 34.7M/338M [00:19<04:52, 1.08MiB/s]  9%|███▎                                  | 29.7M/338M [00:14<02:30, 2.15MiB/s] 10%|███▋                                  | 32.5M/338M [00:19<02:09, 2.46MiB/s] 11%|████▏                                 | 37.2M/338M [00:19<02:14, 2.34MiB/s] 12%|████▋                                 | 41.9M/338M [00:20<02:25, 2.13MiB/s] 12%|████▍                                 | 39.9M/338M [00:20<03:14, 1.60MiB/s] 10%|███▉                                  | 34.9M/338M [00:19<04:13, 1.25MiB/s] 11%|████▏                                 | 37.5M/338M [00:19<02:01, 2.60MiB/s]  9%|███▎                                  | 29.9M/338M [00:14<02:38, 2.04MiB/s] 12%|████▋                                 | 42.2M/338M [00:20<02:11, 2.35MiB/s] 12%|████▌                                 | 40.1M/338M [00:20<03:01, 1.72MiB/s] 10%|███▉                                  | 35.1M/338M [00:19<03:53, 1.36MiB/s] 10%|███▋                                  | 32.8M/338M [00:19<02:30, 2.12MiB/s] 11%|████▏                                 | 37.7M/338M [00:20<02:06, 2.48MiB/s] 13%|████▊                                 | 42.5M/338M [00:20<01:53, 2.72MiB/s]  9%|███▍                                  | 30.1M/338M [00:14<02:49, 1.90MiB/s] 12%|████▌                                 | 40.3M/338M [00:20<02:58, 1.75MiB/s] 10%|███▉                                  | 35.3M/338M [00:19<03:39, 1.45MiB/s] 10%|███▋                                  | 33.0M/338M [00:19<02:29, 2.14MiB/s] 11%|████▎                                 | 38.0M/338M [00:20<02:07, 2.47MiB/s]  9%|███▍                                  | 30.3M/338M [00:14<02:53, 1.86MiB/s] 13%|████▊                                 | 42.8M/338M [00:20<02:00, 2.56MiB/s] 10%|███▉                                  | 35.4M/338M [00:20<03:30, 1.51MiB/s] 12%|████▌                                 | 40.5M/338M [00:20<02:56, 1.76MiB/s] 10%|███▋                                  | 33.2M/338M [00:19<02:38, 2.01MiB/s] 11%|████▎                                 | 38.2M/338M [00:20<02:16, 2.29MiB/s]  9%|███▍                                  | 30.5M/338M [00:14<02:56, 1.82MiB/s] 11%|████                                  | 35.6M/338M [00:20<03:16, 1.61MiB/s] 12%|████▌                                 | 40.7M/338M [00:21<02:51, 1.82MiB/s] 13%|████▊                                 | 43.1M/338M [00:20<02:15, 2.27MiB/s] 10%|███▊                                  | 33.4M/338M [00:19<02:49, 1.88MiB/s]  9%|███▍                                  | 30.7M/338M [00:14<02:47, 1.92MiB/s] 11%|████                                  | 35.9M/338M [00:20<02:52, 1.83MiB/s] 11%|████▎                                 | 38.4M/338M [00:20<02:31, 2.06MiB/s] 12%|████▌                                 | 40.9M/338M [00:21<02:57, 1.76MiB/s] 10%|███▊                                  | 33.6M/338M [00:20<02:52, 1.84MiB/s] 13%|████▊                                 | 43.3M/338M [00:20<02:26, 2.11MiB/s]  9%|███▍                                  | 30.9M/338M [00:15<02:45, 1.95MiB/s] 11%|████                                  | 36.1M/338M [00:20<02:49, 1.86MiB/s] 11%|████▎                                 | 38.6M/338M [00:20<02:30, 2.08MiB/s] 12%|████▌                                 | 41.0M/338M [00:21<03:06, 1.67MiB/s] 10%|███▊                                  | 33.8M/338M [00:20<02:42, 1.96MiB/s] 13%|████▉                                 | 43.6M/338M [00:20<02:16, 2.25MiB/s]  9%|███▌                                  | 31.1M/338M [00:15<02:32, 2.10MiB/s] 12%|████▎                                 | 38.9M/338M [00:20<02:32, 2.06MiB/s] 11%|████                                  | 36.2M/338M [00:20<03:02, 1.73MiB/s] 12%|████▋                                 | 41.2M/338M [00:21<03:15, 1.59MiB/s] 13%|████▉                                 | 43.8M/338M [00:21<02:19, 2.22MiB/s]  9%|███▌                                  | 31.4M/338M [00:15<02:25, 2.21MiB/s] 10%|███▊                                  | 34.0M/338M [00:20<03:00, 1.76MiB/s] 11%|████                                  | 36.4M/338M [00:20<03:10, 1.66MiB/s] 12%|████▍                                 | 39.1M/338M [00:20<02:53, 1.81MiB/s] 12%|████▋                                 | 41.4M/338M [00:21<03:07, 1.66MiB/s] 13%|████▉                                 | 44.0M/338M [00:21<02:18, 2.23MiB/s]  9%|███▌                                  | 31.6M/338M [00:15<02:26, 2.19MiB/s] 10%|███▊                                  | 34.2M/338M [00:20<03:07, 1.69MiB/s] 11%|████                                  | 36.6M/338M [00:20<03:07, 1.68MiB/s] 12%|████▋                                 | 41.6M/338M [00:21<02:59, 1.73MiB/s] 12%|████▍                                 | 39.2M/338M [00:20<03:03, 1.71MiB/s]  9%|███▌                                  | 31.8M/338M [00:15<02:27, 2.18MiB/s] 13%|████▉                                 | 44.2M/338M [00:21<02:29, 2.06MiB/s] 10%|███▊                                  | 34.4M/338M [00:20<03:04, 1.73MiB/s] 11%|████▏                                 | 36.8M/338M [00:20<03:03, 1.72MiB/s] 12%|████▋                                 | 41.8M/338M [00:21<02:53, 1.79MiB/s] 12%|████▍                                 | 39.4M/338M [00:21<03:05, 1.69MiB/s] 13%|█████                                 | 44.4M/338M [00:21<02:31, 2.03MiB/s]  9%|███▌                                  | 32.0M/338M [00:15<02:34, 2.07MiB/s] 10%|███▉                                  | 34.6M/338M [00:20<02:59, 1.77MiB/s] 11%|████▏                                 | 36.9M/338M [00:20<03:02, 1.73MiB/s] 12%|████▋                                 | 42.0M/338M [00:21<02:50, 1.82MiB/s] 12%|████▍                                 | 39.6M/338M [00:21<02:58, 1.75MiB/s] 13%|█████                                 | 44.7M/338M [00:21<02:24, 2.12MiB/s] 10%|███▋                                  | 32.3M/338M [00:15<02:30, 2.13MiB/s] 10%|███▉                                  | 34.8M/338M [00:20<02:59, 1.77MiB/s] 11%|████▏                                 | 37.1M/338M [00:21<02:52, 1.82MiB/s] 12%|████▋                                 | 42.2M/338M [00:21<02:48, 1.84MiB/s] 12%|████▍                                 | 39.8M/338M [00:21<02:55, 1.78MiB/s] 10%|███▋                                  | 32.5M/338M [00:15<02:22, 2.24MiB/s] 13%|█████                                 | 44.9M/338M [00:21<02:26, 2.10MiB/s] 10%|███▉                                  | 34.9M/338M [00:20<02:55, 1.81MiB/s] 11%|████▏                                 | 37.4M/338M [00:21<02:43, 1.93MiB/s] 13%|████▊                                 | 42.4M/338M [00:22<02:44, 1.89MiB/s] 12%|████▌                                 | 40.0M/338M [00:21<02:51, 1.82MiB/s] 13%|█████                                 | 45.1M/338M [00:21<02:18, 2.21MiB/s] 10%|███▋                                  | 32.7M/338M [00:15<02:22, 2.25MiB/s] 10%|███▉                                  | 35.2M/338M [00:20<02:45, 1.91MiB/s] 11%|████▏                                 | 37.6M/338M [00:21<02:43, 1.92MiB/s] 13%|████▊                                 | 42.6M/338M [00:22<02:31, 2.04MiB/s] 13%|█████                                 | 45.4M/338M [00:21<02:10, 2.35MiB/s] 12%|████▌                                 | 40.2M/338M [00:21<03:09, 1.65MiB/s] 10%|███▋                                  | 33.0M/338M [00:15<02:30, 2.12MiB/s] 11%|████▏                                 | 37.7M/338M [00:21<02:45, 1.90MiB/s] 10%|███▉                                  | 35.4M/338M [00:21<02:53, 1.82MiB/s] 13%|████▊                                 | 42.8M/338M [00:22<02:23, 2.15MiB/s] 14%|█████▏                                | 45.7M/338M [00:21<01:53, 2.69MiB/s] 10%|███▋                                  | 33.2M/338M [00:16<02:32, 2.10MiB/s] 11%|████▎                                 | 38.1M/338M [00:21<02:17, 2.29MiB/s] 12%|████▌                                 | 40.3M/338M [00:21<03:21, 1.55MiB/s] 11%|███▉                                  | 35.5M/338M [00:21<03:01, 1.74MiB/s] 13%|████▊                                 | 43.1M/338M [00:22<02:14, 2.30MiB/s] 14%|█████▏                                | 46.0M/338M [00:21<01:57, 2.60MiB/s] 10%|███▊                                  | 33.4M/338M [00:16<02:25, 2.19MiB/s] 11%|████▎                                 | 38.4M/338M [00:21<02:04, 2.53MiB/s] 12%|████▌                                 | 40.5M/338M [00:21<03:25, 1.52MiB/s] 11%|████                                  | 35.7M/338M [00:21<03:05, 1.70MiB/s] 13%|████▉                                 | 43.3M/338M [00:22<02:12, 2.32MiB/s] 10%|███▊                                  | 33.6M/338M [00:16<02:21, 2.25MiB/s] 11%|████▎                                 | 38.6M/338M [00:21<02:10, 2.40MiB/s] 12%|████▌                                 | 40.6M/338M [00:21<03:21, 1.55MiB/s] 14%|█████▏                                | 46.2M/338M [00:22<02:18, 2.21MiB/s] 11%|████                                  | 35.9M/338M [00:21<03:15, 1.61MiB/s] 13%|████▉                                 | 43.6M/338M [00:22<02:30, 2.04MiB/s] 10%|███▊                                  | 33.9M/338M [00:16<02:21, 2.24MiB/s] 12%|████▌                                 | 40.8M/338M [00:22<03:16, 1.58MiB/s] 12%|████▎                                 | 38.8M/338M [00:21<02:16, 2.29MiB/s] 14%|█████▏                                | 46.5M/338M [00:22<02:19, 2.19MiB/s] 11%|████                                  | 36.0M/338M [00:21<03:14, 1.63MiB/s] 13%|████▉                                 | 43.8M/338M [00:22<02:31, 2.03MiB/s] 10%|███▊                                  | 34.1M/338M [00:16<02:29, 2.13MiB/s] 12%|████▍                                 | 39.1M/338M [00:21<02:20, 2.22MiB/s] 12%|████▌                                 | 41.0M/338M [00:22<03:19, 1.56MiB/s] 11%|████                                  | 36.2M/338M [00:21<03:14, 1.62MiB/s] 13%|████▉                                 | 44.1M/338M [00:22<02:15, 2.27MiB/s] 14%|█████▎                                | 46.7M/338M [00:22<02:42, 1.88MiB/s] 10%|███▊                                  | 34.3M/338M [00:16<02:23, 2.22MiB/s] 12%|████▋                                 | 41.1M/338M [00:22<03:19, 1.56MiB/s] 11%|████                                  | 36.4M/338M [00:21<03:15, 1.61MiB/s] 12%|████▍                                 | 39.3M/338M [00:22<02:28, 2.10MiB/s] 13%|████▉                                 | 44.3M/338M [00:22<02:16, 2.25MiB/s] 14%|█████▎                                | 46.9M/338M [00:22<02:43, 1.86MiB/s] 10%|███▉                                  | 34.5M/338M [00:16<02:33, 2.07MiB/s] 11%|████                                  | 36.5M/338M [00:21<03:17, 1.60MiB/s] 12%|████▋                                 | 41.3M/338M [00:22<03:25, 1.51MiB/s] 12%|████▍                                 | 39.5M/338M [00:22<02:31, 2.06MiB/s] 13%|█████                                 | 44.5M/338M [00:23<02:26, 2.10MiB/s] 14%|█████▎                                | 47.1M/338M [00:22<02:29, 2.04MiB/s] 10%|███▉                                  | 34.7M/338M [00:16<02:39, 2.00MiB/s] 11%|████▏                                 | 36.7M/338M [00:21<03:03, 1.72MiB/s] 12%|████▋                                 | 41.5M/338M [00:22<03:16, 1.58MiB/s] 12%|████▍                                 | 39.7M/338M [00:22<02:33, 2.03MiB/s] 14%|█████▎                                | 47.4M/338M [00:22<02:25, 2.09MiB/s] 13%|█████                                 | 44.7M/338M [00:23<02:34, 1.99MiB/s] 10%|███▉                                  | 34.9M/338M [00:16<02:41, 1.96MiB/s] 12%|████▋                                 | 41.7M/338M [00:22<02:46, 1.86MiB/s] 11%|████▏                                 | 36.9M/338M [00:22<02:49, 1.86MiB/s] 14%|█████▎                                | 47.6M/338M [00:22<02:19, 2.19MiB/s] 13%|█████                                 | 44.9M/338M [00:23<02:31, 2.03MiB/s] 12%|████▍                                 | 39.9M/338M [00:22<03:00, 1.72MiB/s] 12%|████▋                                 | 42.1M/338M [00:22<02:11, 2.35MiB/s] 10%|███▉                                  | 35.1M/338M [00:17<02:45, 1.91MiB/s] 11%|████▏                                 | 37.1M/338M [00:22<02:48, 1.87MiB/s] 14%|█████▍                                | 47.9M/338M [00:22<02:05, 2.42MiB/s] 12%|████▌                                 | 40.1M/338M [00:22<02:58, 1.74MiB/s] 13%|█████                                 | 45.1M/338M [00:23<02:37, 1.95MiB/s] 13%|████▊                                 | 42.4M/338M [00:22<01:56, 2.66MiB/s] 10%|███▉                                  | 35.4M/338M [00:17<02:29, 2.11MiB/s] 11%|████▏                                 | 37.3M/338M [00:22<03:03, 1.71MiB/s] 14%|█████▍                                | 48.2M/338M [00:23<01:54, 2.66MiB/s] 12%|████▌                                 | 40.3M/338M [00:22<02:53, 1.80MiB/s] 13%|█████                                 | 45.3M/338M [00:23<02:39, 1.93MiB/s] 11%|████                                  | 35.6M/338M [00:17<02:27, 2.14MiB/s] 11%|████▏                                 | 37.5M/338M [00:22<03:03, 1.71MiB/s] 14%|█████▍                                | 48.5M/338M [00:23<01:56, 2.60MiB/s] 12%|████▌                                 | 40.5M/338M [00:22<02:39, 1.95MiB/s] 13%|█████                                 | 45.5M/338M [00:23<02:41, 1.90MiB/s] 13%|████▊                                 | 42.7M/338M [00:22<02:37, 1.96MiB/s] 11%|████                                  | 35.8M/338M [00:17<02:35, 2.04MiB/s] 11%|████▏                                 | 37.7M/338M [00:22<03:05, 1.70MiB/s] 12%|████▌                                 | 40.7M/338M [00:22<02:33, 2.02MiB/s] 14%|█████▍                                | 48.7M/338M [00:23<01:57, 2.57MiB/s] 14%|█████▏                                | 45.7M/338M [00:23<02:36, 1.95MiB/s] 11%|████                                  | 36.0M/338M [00:17<02:34, 2.05MiB/s] 11%|████▎                                 | 37.9M/338M [00:22<02:57, 1.77MiB/s] 13%|████▊                                 | 42.9M/338M [00:23<02:45, 1.87MiB/s] 15%|█████▌                                | 49.0M/338M [00:23<01:57, 2.58MiB/s] 12%|████▌                                 | 40.9M/338M [00:22<02:34, 2.02MiB/s] 14%|█████▏                                | 45.9M/338M [00:23<02:33, 1.99MiB/s] 11%|████                                  | 36.2M/338M [00:17<02:34, 2.05MiB/s] 11%|████▎                                 | 38.0M/338M [00:22<03:02, 1.72MiB/s] 13%|████▊                                 | 43.1M/338M [00:23<02:34, 2.00MiB/s] 15%|█████▌                                | 49.2M/338M [00:23<02:00, 2.51MiB/s] 12%|████▋                                 | 41.1M/338M [00:23<02:33, 2.03MiB/s] 14%|█████▏                                | 46.1M/338M [00:23<02:28, 2.05MiB/s] 11%|████                                  | 36.4M/338M [00:17<02:37, 2.00MiB/s] 11%|████▎                                 | 38.2M/338M [00:22<03:01, 1.73MiB/s] 13%|████▉                                 | 43.3M/338M [00:23<02:34, 2.00MiB/s] 12%|████▋                                 | 41.3M/338M [00:23<02:32, 2.03MiB/s] 14%|█████▏                                | 46.4M/338M [00:24<02:19, 2.18MiB/s] 15%|█████▌                                | 49.5M/338M [00:23<02:15, 2.23MiB/s] 11%|████▏                                 | 36.7M/338M [00:17<02:33, 2.06MiB/s] 11%|████▎                                 | 38.4M/338M [00:22<02:56, 1.78MiB/s] 12%|████▋                                 | 41.6M/338M [00:23<02:27, 2.11MiB/s] 13%|████▉                                 | 43.5M/338M [00:23<02:43, 1.89MiB/s] 14%|█████▏                                | 46.6M/338M [00:24<02:26, 2.09MiB/s] 15%|█████▌                                | 49.7M/338M [00:23<02:15, 2.23MiB/s] 11%|████▎                                 | 38.6M/338M [00:23<02:40, 1.95MiB/s] 11%|████▏                                 | 36.9M/338M [00:17<02:42, 1.94MiB/s] 12%|████▋                                 | 41.8M/338M [00:23<02:16, 2.27MiB/s] 13%|████▉                                 | 43.7M/338M [00:23<02:52, 1.78MiB/s] 14%|█████▎                                | 46.8M/338M [00:24<02:30, 2.02MiB/s] 15%|█████▌                                | 49.9M/338M [00:23<02:15, 2.22MiB/s] 11%|████▏                                 | 37.1M/338M [00:18<02:36, 2.01MiB/s] 11%|████▎                                 | 38.8M/338M [00:23<02:53, 1.80MiB/s] 13%|████▉                                 | 43.9M/338M [00:23<02:48, 1.82MiB/s] 15%|█████▋                                | 50.1M/338M [00:23<02:24, 2.08MiB/s] 11%|████▏                                 | 37.3M/338M [00:18<02:40, 1.96MiB/s] 12%|████▍                                 | 39.0M/338M [00:23<03:07, 1.67MiB/s] 15%|█████▋                                | 50.4M/338M [00:24<02:26, 2.05MiB/s] 11%|████▏                                 | 37.5M/338M [00:18<02:47, 1.87MiB/s] 15%|█████▋                                | 50.6M/338M [00:24<02:30, 2.00MiB/s] 11%|████▏                                 | 37.7M/338M [00:18<02:30, 2.09MiB/s] 15%|█████▋                                | 50.8M/338M [00:24<02:37, 1.91MiB/s] 15%|█████▋                                | 51.0M/338M [00:24<02:31, 1.98MiB/s] 12%|████▊                                  | 42.0M/338M [00:27<27:50, 186kiB/s] 14%|█████▍                                 | 47.0M/338M [00:28<29:14, 174kiB/s] 13%|█████                                  | 44.1M/338M [00:27<30:50, 166kiB/s] 12%|████▌                                  | 39.1M/338M [00:27<33:39, 155kiB/s] 11%|████▍                                  | 38.0M/338M [00:22<24:50, 211kiB/s] 15%|█████▉                                 | 51.2M/338M [00:27<25:45, 194kiB/s] 13%|█████                                  | 43.7M/338M [00:27<06:51, 749kiB/s] 12%|████▌                                  | 39.8M/338M [00:22<05:55, 878kiB/s] 13%|█████▎                                 | 45.6M/338M [00:27<07:44, 659kiB/s] 14%|█████▋                                 | 48.8M/338M [00:28<06:28, 780kiB/s] 12%|████▋                                  | 40.9M/338M [00:27<06:38, 780kiB/s] 12%|████▊                                  | 41.5M/338M [00:27<05:21, 967kiB/s] 16%|██████▏                                | 53.5M/338M [00:28<04:59, 994kiB/s] 14%|█████▎                                 | 46.1M/338M [00:28<06:16, 813kiB/s] 13%|█████                                  | 44.3M/338M [00:27<05:42, 898kiB/s] 12%|████▌                                 | 40.5M/338M [00:22<05:00, 1.04MiB/s] 15%|█████▋                                 | 49.4M/338M [00:28<05:27, 921kiB/s] 12%|████▋                                 | 42.0M/338M [00:27<04:37, 1.12MiB/s] 14%|█████▎                                 | 46.5M/338M [00:28<05:21, 951kiB/s] 13%|█████                                 | 44.8M/338M [00:28<04:57, 1.03MiB/s] 12%|████▌                                 | 41.0M/338M [00:22<04:14, 1.22MiB/s] 15%|█████▌                                | 49.9M/338M [00:28<04:40, 1.08MiB/s] 13%|████▊                                 | 42.4M/338M [00:27<04:11, 1.23MiB/s] 12%|████▋                                 | 41.4M/338M [00:22<03:37, 1.43MiB/s] 16%|██████▏                                | 53.8M/338M [00:28<05:14, 946kiB/s] 14%|█████▎                                | 46.9M/338M [00:28<04:50, 1.05MiB/s]WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pthloaded pretrained LPIPS loss from .cache/vgg.pth
+
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channelsmaking attention of type 'vanilla' with 512 in_channels
+
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channelsmaking attention of type 'vanilla' with 512 in_channels
+
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channelsmaking attention of type 'vanilla' with 512 in_channels
+
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pthloaded pretrained LPIPS loss from .cache/vgg.pth
+
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+pre-instantiation
+=> Starting 
+=> Starting 
+pre-instantiation
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+=> Starting 
+pre-instantiation
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pthloaded pretrained LPIPS loss from .cache/vgg.pth
+
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(

@@ -31,13 +31,9 @@ OmegaConf.register_new_resolver("eval", eval)
 def main(cfg: DictConfig):
     # Instantiating config
     print(f"=> Starting [experiment={cfg.task_name}]")
-    
-    time.sleep(20)
+
     print('pre-instantiation')
-    time.sleep(5)
     cfg = instantiate(cfg)
-    
-    time.sleep(20)
     
     print("post instantiation")
 
@@ -69,7 +65,6 @@ def main(cfg: DictConfig):
             )
         ],
     )
-    time.sleep(20)
     accelerator.init_trackers("comprx", config=cfg, init_kwargs={"wandb": logger_kwargs})
 
     # Determine the mode
@@ -97,8 +92,6 @@ def main(cfg: DictConfig):
     # Create model
     model = cfg.model
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    
-    time.sleep(10)
 
     # Set up exponential moving average (EMA) parameter tracking
     use_ema = cfg.get("ema_decay", None) is not None
