@@ -391,7 +391,7 @@ def parse_args(args):
     parser.add_argument(
         "--log-every-n-steps",
         type=int,
-        default=10,
+        default=1,
         help="Log every n steps to tensorboard/console/wandb.",
     )
     parser.add_argument(

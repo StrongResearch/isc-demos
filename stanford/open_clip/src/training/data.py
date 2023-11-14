@@ -19,6 +19,7 @@ from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler, IterableD
 from torch.utils.data.distributed import DistributedSampler
 from webdataset.filters import _shuffle
 from webdataset.tariterators import base_plus_ext, url_opener, tar_file_expander, valid_sample
+from training.distributed import is_master
 from cycling_utils import InterruptableDistributedSampler
 
 from functools import partial
@@ -499,10 +500,10 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
         sampler=sampler,
         drop_last=is_train,
     )
-    logging.info(f"Dataloader created with total num samples = {num_samples} and num batches = {len(dataloader)}")
+    
     dataloader.num_samples = num_samples
     dataloader.num_batches = len(dataloader)
-
+    logging.info(f"Created dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
     return DataInfo(dataloader, sampler)
 
 

@@ -20,8 +20,6 @@ from lavis.datasets.data_utils import concat_datasets, reorg_datasets_by_split
 from lavis.runners.runner_base import RunnerBase
 from torch.utils.data.dataset import ChainDataset
 
-from cycling_utils import atomic_torch_save
-
 
 @registry.register_runner("runner_iter")
 class RunnerIter(RunnerBase):
@@ -44,7 +42,6 @@ class RunnerIter(RunnerBase):
         super().__init__(cfg, task, model, datasets, job_id)
 
         self.start_iters = 0
-        self.eval = False
 
         self.max_iters = int(self.config.run_cfg.get("max_iters", -1))
         assert self.max_iters > 0, "max_iters must be greater than 0."
@@ -71,34 +68,24 @@ class RunnerIter(RunnerBase):
     def _progress(self, cur_iters):
         return "{}_iters={}".format(self.cur_epoch, cur_iters)
 
-    def is_eval(self):
-        if os.path.isfile(self.resume_ckpt_path[:-10] + "status.pth"):
-            a = torch.load(self.resume_ckpt_path[:-10] + "status.pth")
-            self.eval = a["status"] == "eval"
-        return self.eval
-
-
     def train(self):
         start_time = time.time()
         best_agg_metric = 0
         best_iters = 0
 
         self.log_config()
-        
-        self.eval = self.is_eval()
-        logging.info(f"Eval status of job is {self.eval}")
+
         # resume from checkpoint if specified
+        if not self.evaluate_only and self.resume_ckpt_path is not None:
+            self._load_checkpoint(self.resume_ckpt_path)
+
         for start_iters in range(
             self.start_iters, self.max_iters, self.iters_per_inner_epoch
         ):
-            #
             end_iters = start_iters + self.iters_per_inner_epoch
 
             # training phase
-
-            if self.eval:
-                end_iters -= self.iters_per_inner_epoch
-            if not self.evaluate_only and not self.eval:
+            if not self.evaluate_only:
                 logging.info(
                     "Start training, max_iters={}, in total {} inner epochs.".format(
                         self.max_iters, int(self.max_iters / self.iters_per_inner_epoch)
@@ -111,11 +98,9 @@ class RunnerIter(RunnerBase):
                     )
                 train_stats = self.train_iters(self.cur_epoch, start_iters)
                 self.log_stats(split_name="train", stats=train_stats)
-                    
-                # self._save_checkpoint(end_iters, is_best=False, eval=True, path=self.resume_ckpt_path)
-                self.eval = True
+
             # evaluation phase
-            if len(self.valid_splits) > 0 and self.eval:
+            if len(self.valid_splits) > 0:
                 for split_name in self.valid_splits:
                     logging.info("Evaluating on {}.".format(split_name))
 
@@ -131,22 +116,16 @@ class RunnerIter(RunnerBase):
                             agg_metrics = val_log["agg_metrics"]
                             if agg_metrics > best_agg_metric and split_name == "val":
                                 best_iters, best_agg_metric = end_iters, agg_metrics
-                                # Would save here, but since eval takes >1 cycle we must save before regardless
-                                # self._save_checkpoint(end_iters, is_best=True, path=self.resume_ckpt_path)
+
+                                self._save_checkpoint(end_iters, is_best=True)
 
                             val_log.update({"best_iters": best_iters})
                             self.log_stats(val_log, split_name)
-                            logging.info("Removing eval and status checkpoints")
-                            if os.path.isfile(self.resume_ckpt_path[:-4] + "_eval.pth"):  # Remove eval checkpoint so it starts eval from scratch
-                                os.remove(self.resume_ckpt_path[:-4] + "_eval.pth")
-                            if os.path.isfile(self.resume_ckpt_path[:-10] + "status.pth"):  # Remove status file so it will default to train
-                                os.remove(self.resume_ckpt_path[:-10] + "status.pth")
-                self.eval = False
 
-            # else:
-            #     # if no validation split is provided, we just save the checkpoint at the end of each inner epoch.
-            #     if not self.evaluate_only:
-            #         self._save_checkpoint(end_iters, is_best=False)
+            else:
+                # if no validation split is provided, we just save the checkpoint at the end of each inner epoch.
+                if not self.evaluate_only:
+                    self._save_checkpoint(end_iters, is_best=False)
 
             if self.evaluate_only:
                 break
@@ -178,7 +157,7 @@ class RunnerIter(RunnerBase):
         )
 
     @main_process
-    def _save_checkpoint(self, cur_iters, is_best=False, path="None"):
+    def _save_checkpoint(self, cur_iters, is_best=False):
         model_no_ddp = self.unwrap_dist_model(self.model)
         param_grad_dic = {
             k: v.requires_grad for (k, v) in model_no_ddp.named_parameters()
@@ -191,20 +170,18 @@ class RunnerIter(RunnerBase):
                 del state_dict[k]
 
         save_obj = {
-            "model": self.model.state_dict(),
+            "model": state_dict,
             "optimizer": self.optimizer.state_dict(),
-            "train_sampler": self.train_loader._dataloader.sampler.state_dict(),
             "config": self.config.to_dict(),
             "scaler": self.scaler.state_dict() if self.scaler else None,
-            "cur": cur_iters,
+            "iters": cur_iters,
         }
-
-        save_to = path
-        if os.path.exists(save_to):
-            os.remove(save_to)
+        save_to = os.path.join(
+            self.output_dir,
+            "checkpoint_{}.pth".format("best" if is_best else cur_iters),
+        )
         logging.info("Saving checkpoint at iters {} to {}.".format(cur_iters, save_to))
-        atomic_torch_save(save_obj, save_to)
-        
+        torch.save(save_obj, save_to)
 
     def _load_checkpoint(self, url_or_filename):
         """
@@ -218,19 +195,16 @@ class RunnerIter(RunnerBase):
         elif os.path.isfile(url_or_filename):
             checkpoint = torch.load(url_or_filename, map_location=self.device)
         else:
-            logging.info("Checkpoint path specified but empty, starting from scratch instead")
-            return
-            #  raise RuntimeError("checkpoint url or path is invalid")
-            
-        self.model.load_state_dict(checkpoint["model"])
+            raise RuntimeError("checkpoint url or path is invalid")
+
+        state_dict = checkpoint["model"]
+        self.unwrap_dist_model(self.model).load_state_dict(state_dict)
 
         self.optimizer.load_state_dict(checkpoint["optimizer"])
-        self.train_loader._dataloader.sampler.load_state_dict(checkpoint["train_sampler"])
         if self.scaler and "scaler" in checkpoint:
             self.scaler.load_state_dict(checkpoint["scaler"])
 
-        self.start_iters = checkpoint["total_iters"] + 1
-        self.eval = True if checkpoint["eval"] == "1" else False
+        self.start_iters = checkpoint["iters"] + 1
         logging.info("Resume checkpoint from {}".format(url_or_filename))
 
     @property

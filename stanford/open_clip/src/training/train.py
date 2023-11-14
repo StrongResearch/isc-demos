@@ -75,18 +75,22 @@ def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, p
     atomic_torch_save(checkpoint_dict, path)
 
 def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
+    logging.info("inside train loop")
     device = torch.device(args.device)
     autocast = get_autocast(args.precision)
     input_dtype = get_input_dtype(args.precision)
+    logging.info(f"{dist.get_rank()} at -3")
 
     model.train()
     if args.distill:
         dist_model.eval()
+    logging.info(f"{dist.get_rank()} at -2")
 
     data['train'].set_epoch(epoch)  # set epoch in process safe manner via sampler or shared_epoch
     dataloader = data['train'].dataloader
     num_batches_per_epoch = dataloader.num_batches // args.accum_freq
     sample_digits = math.ceil(math.log(dataloader.num_samples + 1, 10))
+    logging.info(f"{dist.get_rank()} at -1")
 
     if args.accum_freq > 1:
         accum_images, accum_texts, accum_features = [], [], {}
@@ -96,9 +100,15 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     data_time_m = AverageMeter()
     end = time.time()
     
-    for i, batch in enumerate(dataloader):
-        
-        i_accum = i // args.accum_freq
+    loss_list = []
+    
+
+    logging.info(f"{dist.get_rank()} at 0")
+
+    for batch in dataloader:
+
+        logging.info(f"{dist.get_rank()} at 1")
+        i_accum = iters - 1 // args.accum_freq
         step = num_batches_per_epoch * epoch + i_accum
 
         if not args.skip_scheduler:
@@ -113,7 +123,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         
         if is_master(args) and iters % 5 == 0:
             logging.info(f"Training - {iters}/{len(dataloader)}")
-
+        logging.info(f"{dist.get_rank()} at 2")
         if args.accum_freq == 1:
             with autocast():
                 model_out = model(images, texts)
@@ -128,6 +138,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 losses["loss"] = total_loss
 
             backward(total_loss, scaler)
+            logging.info(f"{dist.get_rank()} at 3")
         else:
             # First, cache the features without any gradient tracking.
             with torch.no_grad():
@@ -147,7 +158,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 accum_texts.append(texts)
 
             # If (i + 1) % accum_freq is not zero, move on to the next batch.
-            if ((i + 1) % args.accum_freq) > 0:
+            if ((iters) % args.accum_freq) > 0:
                 # FIXME this makes data time logging unreliable when accumulating
                 continue
 
@@ -210,6 +221,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         end = time.time()
         batch_count = i_accum + 1
         dataloader.sampler.advance(args.batch_size)
+        logging.info(f"{dist.get_rank()} at 4")
         if is_master(args):
             if iters >= len(dataloader):
                 #  save checkpoint and break
@@ -220,6 +232,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 logging.info(f"Saving checkpoint at epoch {epoch} and iteration {iters}/{len(dataloader)}")
                 save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
     
+
         if is_master(args) and (i_accum % args.log_every_n_steps == 0 or batch_count == num_batches_per_epoch):
             batch_size = len(images)
             num_samples = batch_count * batch_size * args.accum_freq * args.world_size
@@ -232,6 +245,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 if key not in losses_m:
                     losses_m[key] = AverageMeter()
                 losses_m[key].update(val.item(), batch_size)
+            logging.info(f"Rank {dist.get_rank()} losses: {losses.items()}, losses_m: {losses_m.items()}")
 
             logit_scale_scalar = logit_scale.item()
             loss_log = " ".join(
@@ -263,9 +277,6 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
 
             log_data = {"train/" + name: val for name, val in log_data.items()}
             
-            if tb_writer is not None:
-                for name, val in log_data.items():
-                    tb_writer.add_scalar(name, val, step)
             
             if args.wandb:
                 assert wandb is not None, 'Please install wandb.'
@@ -275,8 +286,10 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
             # resetting batch / data time meters per log window
             batch_time_m.reset()
             data_time_m.reset()
+        logging.info(f"{dist.get_rank()} at 5")
             
         iters += 1
+    logging.info(f"{dist.get_rank()} at end")
     # end for
 
 
