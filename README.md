@@ -193,10 +193,13 @@ The ISC is comprised of a **Rapid Cycling** stage and a **Burst To Cloud ("Burst
 run first in **Rapid Cycling** as a validation step before being **Burst** to the cloud. This provides Users with near-immediate 
 feedback on the viability of their code *before* their experiment is launched in a dedicated cloud cluster and incurs costs.
 
-**Action:** Run `isc experiments` to see all of your historic experiments in the **Experiments Table**. When you first register, 
-this table will be empty. Each time you launch an experiment on the ISC, a record of that experiment will appear in this 
-table. Only *your* experiments will be visible to you in this table. There may be other experiments scheduled to run on 
-the ISC at the same time that will not be visible to you.
+**Action:** Run the following to see all of your historic experiments in the **Experiments Table**. 
+```bash
+isc experiments
+```
+When you first register, this table will be empty. Each time you launch an experiment on the ISC, a record of that experiment will 
+appear in this table. Only *your* experiments will be visible to you in this table. There may be other experiments scheduled to run 
+on the ISC at the same time that will not be visible to you.
 
 ```bash
                                ISC Experiments                                                                                                                          
@@ -256,11 +259,14 @@ The `isc-demos/fashion_mnist` subdirectory contains the following files of inter
 ```bash
 pip install -r requirements.txt
 ```
-2. `prep_data.py` includes commands for downloading the required dataset (Fashion MNIST). Run this with `python -m prep_data` 
+2. `prep_data.py` includes commands for downloading the required dataset (Fashion MNIST). Run this with the following command 
     to download the dataset to the `fashion_mnist` directory, from which it is available to the Rapid Cycling cluster. This will 
     mean that this data is ready to go when the experiment is launched and no cycling time is wasted waiting for the data to 
     download. Preparing your data ahead of time is an essential requirement for running experiments on the ISC and we will cover 
     [**how to transfer your private dataset to our cloud storage**](#data-transfer) for training in a later section.
+```bash
+python -m prep_data
+```
 3. `model.py` includes a description of the neural network model that we will train.
 4. `train.py` describes configuration for distributed training, initialisation, and distributed training loops. Take a 
     few minutes to read and understand the contents of this file, there are lots of notes to explain what's happening. 
