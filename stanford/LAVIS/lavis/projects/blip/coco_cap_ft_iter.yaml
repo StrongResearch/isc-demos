@@ -46,7 +46,7 @@ run:
   num_beams: 3
 
   seed: 42
-  output_dir: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/stanford/LAVIS/output/BLIP/Caption_coco"
+  output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/output/BLIP/Caption_coco"
 
   amp: True
   resume_ckpt_path: null

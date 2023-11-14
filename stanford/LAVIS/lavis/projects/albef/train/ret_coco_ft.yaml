@@ -55,7 +55,7 @@ run:
 
   # misc
   seed: 42
-  output_dir: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/stanford/LAVIS/output/ALBEF/Retrieval_COCO"
+  output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/output/ALBEF/Retrieval_COCO"
 
   amp: False
   resume_ckpt_path: null

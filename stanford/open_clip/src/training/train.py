@@ -243,7 +243,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
             samples_per_second = args.accum_freq * args.batch_size * args.world_size / batch_time_m.val
             samples_per_second_per_gpu = args.accum_freq * args.batch_size / batch_time_m.val
             logging.info(
-                f"Train Epoch: {epoch} [{(iters - 2) * batch_size * get_world_size()}/{samples_per_epoch} ({percent_complete:.0f}%)] "
+                f"Train Epoch: {epoch} [{(iters - 1) * batch_size * get_world_size()}/{samples_per_epoch} ({percent_complete:.0f}%)] "
                 f"Data (t): {data_time_m.avg:.3f} "
                 f"Batch (t): {batch_time_m.avg:.3f}, {samples_per_second:#g}/s, {samples_per_second_per_gpu:#g}/s/gpu "
                 f"LR: {optimizer.param_groups[0]['lr']:5f} "

@@ -48,7 +48,7 @@ run:
 
   seed: 42
   output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint"
-  resume_ckpt_path: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint/caption_latest.pth"
+  resume_ckpt_path: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/checkpoint/caption_latest.pth"
   tensorboard_path: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/logs"
 
   checkpoint_freq: 5

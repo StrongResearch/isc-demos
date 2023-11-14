@@ -141,7 +141,7 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     embeds_total = []
     i = 1
     
-    output_dir = "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/isc-demos/stanford/LAVIS/output/"
+    output_dir = "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/output/"
     c = load_eval(output_dir)
     if c is not None:
         logging.info("Loading eval checkpoint")

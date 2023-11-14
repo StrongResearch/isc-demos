@@ -12,6 +12,7 @@ import torch
 import torch.distributed as dist
 from cycling_utils import atomic_torch_save
 from lavis.common.dist_utils import get_rank, get_world_size, is_main_process, is_dist_avail_and_initialized, main_process
+from lavis.datasets.builders import load_dataset
 from lavis.common.logger import MetricLogger, SmoothedValue
 from torch.utils.data import DataLoader
 from lavis.common.registry import registry
@@ -53,6 +54,8 @@ class BaseTask:
         assert len(datasets_config) > 0, "At least one dataset has to be specified."
 
         for name in datasets_config:
+            if name == "train":
+                datasets["train"] = load_dataset("coco_caption")
             dataset_config = datasets_config[name]
 
             builder = registry.get_builder_class(name)(dataset_config)
@@ -272,7 +275,7 @@ class BaseTask:
             for k, meter in metric_logger.meters.items()
         }
     
-    def save_checkpoint(self, model, optimizer, train_sampler, val_sampler, config, scaler, epoch, iteration, is_best=False):
+    def save_checkpoint(self, model, optimizer, train_sampler, config, scaler, epoch, iteration, is_best=False):
         """
         Save the checkpoint at the current epoch.
         """
@@ -291,7 +294,7 @@ class BaseTask:
             "model": state_dict,
             "optimizer": optimizer.state_dict(),
             "train_sampler" : train_sampler.state_dict(),
-            "val_sampler": None,
+            #"val_sampler": None,
             "config": config.to_dict(),
             "scaler": scaler.state_dict() if scaler else None,
             "epoch": epoch,

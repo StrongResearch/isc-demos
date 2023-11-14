@@ -62,9 +62,9 @@ run:
 
   # misc
   seed: 42
-  output_dir: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/isc-demos/stanford/LAVIS/checkpoint"
+  output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint"
 
   amp: True
-  resume_ckpt_path: "/mnt/Client/Lachlahy4daeusijealkmjsh6qf6mchi/laclacoyiihruvjzhb3kmexw7qlks5yy/isc-demos/stanford/LAVIS/checkpoint/retrieval_latest.pth"
+  resume_ckpt_path: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint/retrieval_latest.pth"
 
   evaluate: False 
