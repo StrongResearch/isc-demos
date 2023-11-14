@@ -159,8 +159,14 @@ Version 0.5.0-alpha of the ISC is now live!
 
 8. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
     is used to authenticate you when you launch experiments on the ISC, and should be saved in the root of your home directory.
+```bash
+isc login
+```
 9. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
     created correctly.
+```bash
+isc ping
+```
 10. Create and activate a virtual environment by running the following commands.
 
 ```bash
