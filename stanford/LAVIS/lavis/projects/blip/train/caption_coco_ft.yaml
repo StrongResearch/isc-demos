@@ -47,9 +47,9 @@ run:
   num_beams: 3
 
   seed: 42
-  output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint"
-  resume_ckpt_path: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/checkpoint/caption_latest.pth"
-  tensorboard_path: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/logs"
+  output_dir: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/checkpoint"
+  resume_ckpt_path: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/caption_latest.pth"
+  tensorboard_path: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/logs"
 
   checkpoint_freq: 5
 
@@ -62,6 +62,6 @@ run:
   test_splits: ["test"]
 
   device: "cuda"
-  world_size: 72
+  world_size: 12
   dist_url: "env://"
   distributed: True

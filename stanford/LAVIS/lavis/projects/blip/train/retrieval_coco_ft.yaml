@@ -19,32 +19,29 @@ datasets:
     vis_processor:
         train:
           name: "blip_image_train"
+          image_size: 384
         eval:
           name: "blip_image_eval"
+          image_size: 384
     text_processor:
         train:
           name: "blip_caption"
         eval:
           name: "blip_caption"
-    build_info:
-            images:
-                storage: '/mnt/.node1/Open-Datasets/coco'
+
 run:
-  runner: runner_iter
-  max_iters: 2e4
-  iters_per_inner_epoch: 3
   task: retrieval
   # optimizer
   lr_sched: "linear_warmup_cosine_lr"
   init_lr: 2e-5
   min_lr: 0
   weight_decay: 0.04
-  # max_epoch: 6
+  max_epoch: 6
 
   # dataloading
-  num_workers: 1
-  batch_size_train: 1
-  batch_size_eval: 1
+  num_workers: 4
+  batch_size_train: 32
+  batch_size_eval: 128
 
   train_splits: ["train"]
   valid_splits: ["val", "test"]
@@ -55,16 +52,16 @@ run:
   world_size: 1
   dist_url: "env://"
   distributed: True
-  use_dist_eval_sampler: True
+  use_dist_eval_sampler: False
 
   # model specific
   k_test: 256
 
   # misc
   seed: 42
-  output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint"
+  output_dir: "output/BLIP/Retrieval_COCO"
 
-  amp: True
-  resume_ckpt_path: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/checkpoint/retrieval_latest.pth"
+  amp: False
+  resume_ckpt_path: null
 
   evaluate: False 

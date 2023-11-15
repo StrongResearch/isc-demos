@@ -99,7 +99,7 @@ def load_dataset(name, cfg_path=None, vis_path=None, data_type=None):
         assert (
             data_type in builder.config.build_info
         ), f"Invalid data_type {data_type} for {name}."
-
+        
         builder.config.build_info.get(data_type).storage = vis_path
 
     dataset = builder.build_datasets()

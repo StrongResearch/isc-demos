@@ -35,9 +35,9 @@ run:
   max_epoch: 5
 
   # dataloading
-  num_workers: 2
-  batch_size_train: 2
-  batch_size_eval: 2
+  num_workers: 4
+  batch_size_train: 32
+  batch_size_eval: 64
 
   train_splits: ["train"]
   valid_splits: ["val"]
@@ -55,9 +55,8 @@ run:
 
   # misc
   seed: 42
-  output_dir: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/output/ALBEF/Retrieval_COCO"
+  output_dir: "output/ALBEF/Retrieval_COCO"
 
   amp: False
-  resume_ckpt_path: null
 
   evaluate: False 

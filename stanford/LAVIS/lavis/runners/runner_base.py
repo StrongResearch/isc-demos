@@ -362,8 +362,11 @@ class RunnerBase:
         self.log_config()
         
         writer = None
-        if self.config.run_cfg.tensorboard_path and os.path.isdir(self.config.run_cfg.tensorboard_path):
-            writer = tensorboard.SummaryWriter(self.config.run_cfg.tensorboard_path)
+        if is_main_process():
+            if self.config.run_cfg.tensorboard_path:
+                if not os.path.isdir(self.config.run_cfg.tensorboard_path):
+                    os.makedirs(self.config.run_cfg.tensorboard_path, exist_ok=True)
+                writer = tensorboard.SummaryWriter(self.config.run_cfg.tensorboard_path)
             
         
         if os.path.isfile(self.resume_ckpt_path):

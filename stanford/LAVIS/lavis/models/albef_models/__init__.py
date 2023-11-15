@@ -14,15 +14,12 @@ import lavis.common.dist_utils as dist_utils
 import torch
 import torch.distributed as dist
 import torch.nn.functional as F
-from lavis.common.dist_utils import download_cached_file, main_process, is_main_process
+from lavis.common.dist_utils import download_cached_file, main_process
 from lavis.common.logger import MetricLogger
 from lavis.common.utils import is_url
 from lavis.models.base_model import BaseModel
 from lavis.models.vit import interpolate_pos_embed
 from transformers import BertTokenizer
-import argparse
-
-from cycling_utils import atomic_torch_save
 
 class AlbefBase(BaseModel):
     @classmethod
@@ -72,29 +69,7 @@ class AlbefBase(BaseModel):
 
         logging.info("Missing keys {}".format(msg.missing_keys))
         logging.info("load checkpoint from %s" % url_or_filename)
-        return
-    
-@main_process
-def save_eval(cur, image_feats, image_embeds, sampler, path):
-    save_obj = {
-        "cur": cur,
-        "image_feats": image_feats,
-        "image_embeds": image_embeds,
-        "eval_sampler": sampler.state_dict()
-    }
-    path = path + "../checkpoint/"
-    save_to = os.path.join(path, "retrieval_latest_eval.pth")
-    if os.path.exists(save_to):
-        os.remove(save_to)
-    atomic_torch_save(save_obj, save_to)
-        
-def load_eval(path):
-    path = path + "../checkpoint/retrieval_latest_eval.pth"
-    if os.path.isfile(path):
-        return torch.load(path, map_location=f"cuda:{dist.get_rank() % torch.cuda.device_count()}")
-    else:
-        logging.info("Checkpoint path specified but empty, starting from scratch instead")
-        return None
+        return msg
 
 def compute_sim_matrix(model, data_loader, **kwargs):
     k_test = kwargs.pop("k_test")
@@ -111,7 +86,6 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     text_ids = []
     text_embeds = []
     text_atts = []
-    
     for i in range(0, num_text, text_bs):
         text = texts[i : min(num_text, i + text_bs)]
         text_input = model.tokenizer(
@@ -137,26 +111,8 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     
     image_feats = []
     image_embeds = []
-    feats_total = []
-    embeds_total = []
-    i = 1
-    
-    output_dir = "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/output/"
-    c = load_eval(output_dir)
-    if c is not None:
-        logging.info("Loading eval checkpoint")
-        i = c["cur"] + 1
-        feats_total = c["image_feats"]
-        embeds_total = c["image_embeds"]
-        image_feats = feats_total[dist.get_rank()]
-        image_embeds = embeds_total[dist.get_rank()]
-        data_loader.sampler.load_state_dict(c["eval_sampler"])
-        logging.info(f"Finished loading eval checkpoint with values i: {i - 1}, len_feats: {len(image_feats)}, len_embeds: {len(image_embeds)}")
-    else:
-        feats_total = [None] * dist.get_world_size()
-        embeds_total = [None] * dist.get_world_size()
 
-    for samples in metric_logger.log_every(data_loader, 10, header, i):
+    for samples in data_loader:
         image = samples["image"]
 
         image = image.to(model.device)
@@ -167,31 +123,6 @@ def compute_sim_matrix(model, data_loader, **kwargs):
         image_feats.append(image_feat.cpu())
         image_embeds.append(image_embed)
 
-        if i > 0 and i % 25 == 0 or i >= len(data_loader):
-
-            dist.all_gather_object(feats_total, image_feats)
-            dist.all_gather_object(embeds_total, image_embeds)
-            
-            logging.info(f"Saving eval checkpoint at image {i}/{len(data_loader)}")
-            if i >= len(data_loader):
-                save_eval(cur=i, image_feats=feats_total, image_embeds=embeds_total, sampler=data_loader.sampler, path=output_dir)
-                data_loader.sampler.advance(1)
-                break
-            save_eval(cur=i, image_feats=feats_total, image_embeds=embeds_total, sampler=data_loader.sampler, path=output_dir)
-            logging.info("Finished saving")
-        data_loader.sampler.advance(1)
-        i += 1
-
-    output_feats = []
-    output_embeds = []
-    for l in feats_total:
-        for item in l:
-            output_feats.append(item)
-    for l in embeds_total:
-        for item in l:
-            output_embeds.append(item)
-    image_feats = output_feats
-    image_embeds = output_embeds
     
     image_feats = torch.cat(image_feats, dim=0)
     image_embeds = torch.cat(image_embeds, dim=0)
@@ -206,7 +137,6 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     step = sims_matrix.size(0) // num_tasks + 1
     start = rank * step
     end = min(sims_matrix.size(0), start + step)
-
 
     for i, sims in enumerate(
         metric_logger.log_every(sims_matrix[start:end], 50, header)
@@ -232,7 +162,6 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     score_matrix_t2i = torch.full(
         (len(texts), len(data_loader.dataset.image)), -100.0
     ).to(model.device)
-    logging.info("5")
     step = sims_matrix.size(0) // num_tasks + 1
     start = rank * step
     end = min(sims_matrix.size(0), start + step)

@@ -15,14 +15,14 @@ datasets:
         train:
           url: https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_train.json
           md5: aa31ac474cf6250ebb81d18348a07ed8
-          storage: coco/annotations/coco_karpathy_train.json
+          storage: coco/annotations/captions_train2014.json
         val:
           url: https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val.json
           md5: b273847456ef5580e33713b1f7de52a0
-          storage:  coco/annotations/coco_karpathy_val.json
+          storage:  coco/annotations/captions_val2014.json
         test:
           url: https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test.json
           md5: 3ff34b0ef2db02d01c37399f6a2a6cd1
-          storage: coco/annotations/coco_karpathy_test.json
+          storage: coco/annotations/captions_test2014.json
       images:
         storage: coco/images/

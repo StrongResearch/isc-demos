@@ -7,4 +7,4 @@ env:
   # For default users
   # cache_root: "cache"
   # For internal use with persistent storage
-  cache_root: "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/LAVIS/.cache/lavis"
+  cache_root: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/.cache/lavis"

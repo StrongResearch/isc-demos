@@ -55,7 +55,14 @@ class BaseTask:
 
         for name in datasets_config:
             if name == "train":
-                datasets["train"] = load_dataset("coco_caption")
+                datasets["train"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/train2014")
+                continue
+            if name == "valid":
+                datasets["valid"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/val2014")
+                continue
+            if name == "test":
+                datasets["test"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/test2014")
+                continue
             dataset_config = datasets_config[name]
 
             builder = registry.get_builder_class(name)(dataset_config)
@@ -209,6 +216,7 @@ class BaseTask:
         
         header = "Train: data epoch: [{}]".format(epoch)
         
+        metric_stuff = []
 
         for i in metric_logger.log_every(range(iters_per_epoch), 1, header, start_iters):
             # if using iter-based runner, we stop after iters_per_epoch iterations.
@@ -250,16 +258,47 @@ class BaseTask:
             else:
                 sampler = data_loader._dataloader.sampler
             sampler.advance(args.run_cfg.batch_size_train)
-            
-            dist.barrier()
+
+            logging.info("Synchronizing...")
+            metric_logger.synchronize_between_processes()
+            if writer is not None:
+                bunch = []
+                for metre, value in metric_logger.meters.items():
+                    if metre == "loss_lm":
+                        new_string = ""
+                        in_bracket = False
+                        for char in str(value):
+                            if char == "(":
+                                in_bracket = True
+                                continue
+                            elif char == ")":
+                                break
+                            if in_bracket:
+                                new_string += char
+                                
+                        value = new_string
+                    bunch.append(("Train/" + str(metre), float(str(value)), start_iters))
+                    #writer.add_scalar("Train/" + str(metre), float(str(value)), start_iters)
+                for tup in bunch:
+                    metric_stuff.append(tup)
+                    
             if is_main_process():
                 if start_iters >= len(data_loader):
                     logging.info(f"Reached the end of the dataloder; Saving checkpoint at iters: {start_iters}")
-                    self.save_checkpoint(model, optimizer, sampler, None, args, scaler, epoch + 1, 1)
+                    self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch + 1, 1)
+                    if writer is not None:
+                        for scalar in metric_stuff:
+                            writer.add_scalar(scalar[0], scalar[1], scalar[2])
+                        metric_stuff = []
                 elif start_iters % args.run_cfg.get("checkpoint_freq", 100) == 0:
                     logging.info(f"Saving checkpoint at iters: {start_iters} and epoch: {epoch}")
-                    self.save_checkpoint(model, optimizer, sampler, None, args, scaler, epoch, start_iters)
+                    self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
+                    if writer is not None:
+                        for scalar in metric_stuff:
+                            writer.add_scalar(scalar[0], scalar[1], scalar[2])
+                        metric_stuff = []
                     logging.info("Averaged stats: " + str(metric_logger.global_avg()))
+                    
             dist.barrier()
             start_iters += 1
 
@@ -294,7 +333,6 @@ class BaseTask:
             "model": state_dict,
             "optimizer": optimizer.state_dict(),
             "train_sampler" : train_sampler.state_dict(),
-            #"val_sampler": None,
             "config": config.to_dict(),
             "scaler": scaler.state_dict() if scaler else None,
             "epoch": epoch,

@@ -101,7 +101,6 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     end = time.time()
     
     loss_list = []
-    
 
     logging.info(f"{dist.get_rank()} at 0")
 
