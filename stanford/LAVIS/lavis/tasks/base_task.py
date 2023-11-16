@@ -206,6 +206,7 @@ class BaseTask:
         metric_logger.add_meter("loss", SmoothedValue(window_size=1, fmt="{value:.4f}"))
 
         # if iter-based runner, schedule lr based on inner epoch.
+        
         logging.info(
             "Start training epoch {}, {} iters per inner epoch.".format(
                 epoch, iters_per_epoch
@@ -253,8 +254,7 @@ class BaseTask:
             else:
                 sampler = data_loader._dataloader.sampler
             sampler.advance(args.run_cfg.batch_size_train)
-
-            logging.info("Synchronizing metrics")
+            
             metric_logger.synchronize_between_processes()
             if writer is not None:
                 metric_data = []

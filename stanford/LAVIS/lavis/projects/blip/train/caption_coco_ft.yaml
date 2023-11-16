@@ -51,7 +51,7 @@ run:
   resume_ckpt_path: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/checkpoints/caption_latest.pth"
   tensorboard_path: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/logs"
 
-  checkpoint_freq: 10
+  checkpoint_freq: 15
 
   amp: True
 
