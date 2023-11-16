@@ -422,6 +422,7 @@ Each example published below is annotated with its degree of completion. Example
 When scaling to more GPUs, it is important to consider the impact this will have on your code. 
 
 One important thing to consider is the potential change in effective batch size. 
+
 `Effective batch size = n_gpus * batch_per_gpu`
 
 Two common approaches to this are as follows:
