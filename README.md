@@ -426,17 +426,17 @@ One important thing to consider is the potential change in effective batch size.
 `Effective batch size = n_gpus * batch_per_gpu`
 
 Two common approaches to this are as follows:
-1. Maintain the original learning rate as well as the original effective batch size
+1. **Maintain the original learning rate as well as the original effective batch size**
 
 To achieve this, you would need to lower the batch size per GPU. For example, if you are scaling from 32 GPUs to 64, halve the batch size per GPU.
 
-2. Scale the original learning rate to the new increased effective batch size
+2. **Scale the original learning rate to the new increased effective batch size**
 
 With increased effective batch size at times there is an opportunity to increase the learning rate to capitalise on a more stable gradient. In general, experimentation is required to determine the optimal increased learning rate. In our experience, a good starting heuristic is to increase the learning rate by the square root of the ratio of the new effective batch size to the original effective batch size.
 
 For example, when scaling from an effective batch size of 32 to 128, the suggested new learning rate can be calculated as follows.
 
-New learning rate = sqrt(128/32) * original learning rate 
+`New learning rate = sqrt(128/32) * original learning rate` 
 
 ## 4. Transferring your dataset <a name="data-transfer"></a>
 The process for transferring large datasets to the ISC for training includes two main steps:
