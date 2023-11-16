@@ -8,6 +8,7 @@
 import json
 import os
 import sys
+import logging
 from lavis.common.dist_utils import main_process
 from lavis.common.registry import registry
 from lavis.tasks.base_task import BaseTask
@@ -65,6 +66,7 @@ class CaptionTask(BaseTask):
         return results
 
     def after_evaluation(self, val_result, split_name, epoch, **kwargs):
+        logging.info("after_eval")
         eval_result_file = self.save_result(
             result=val_result,
             result_dir=registry.get_path("result_dir"),
@@ -73,6 +75,11 @@ class CaptionTask(BaseTask):
         )
 
         if self.report_metric:
+            if "writer" in kwargs and kwargs.get("writer") is not None:
+                metrics = self._report_metrics(
+                eval_result_file=eval_result_file, split_name=split_name, epoch=epoch, writer=kwargs.get("writer")
+            )
+                return metrics
             metrics = self._report_metrics(
                 eval_result_file=eval_result_file, split_name=split_name
             )
@@ -82,20 +89,21 @@ class CaptionTask(BaseTask):
         return metrics
 
     @main_process
-    def _report_metrics(self, eval_result_file, split_name):
-        print("Report metrics stuff:")
+    def _report_metrics(self, eval_result_file, split_name, epoch=0, writer=None):
         # TODO better way to define this
         coco_gt_root = os.path.join(registry.get_path("cache_root"), "coco_gt")
         coco_val = coco_caption_eval(coco_gt_root, eval_result_file, split_name)
-        print("coco_val")
-        print(coco_val)
-        
-        print("eval")
-        print(coco_val.eval)
+
+        if writer is not None:
+            writer.add_scalar("Val/", coco_val.eval["Bleu_1"], epoch)
+            writer.add_scalar("Val/", coco_val.eval["Bleu_2"], epoch)
+            writer.add_scalar("Val/", coco_val.eval["Bleu_3"], epoch)
+            writer.add_scalar("Val/", coco_val.eval["Bleu_4"], epoch)
+            writer.add_scalar("Val/", coco_val.eval["METEOR"], epoch)
+            writer.add_scalar("Val/", coco_val.eval["ROUGE_L"], epoch)
+            writer.add_scalar("Val/", coco_val.eval["CIDEr"], epoch)
         agg_metrics = coco_val.eval["CIDEr"] + coco_val.eval["Bleu_4"]
         log_stats = {split_name: {k: v for k, v in coco_val.eval.items()}}
-        print("log stats")
-        print(log_stats)
         with open(
             os.path.join(registry.get_path("output_dir"), "evaluate.txt"), "a"
         ) as f:

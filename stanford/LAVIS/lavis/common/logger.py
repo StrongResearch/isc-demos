@@ -147,7 +147,7 @@ class MetricLogger(object):
                 eta_seconds = iter_time.global_avg * (len(iterable) - i)
                 eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
                 if torch.cuda.is_available():
-                    print(
+                    logging.info(
                         log_msg.format(
                             i,
                             len(iterable),
@@ -159,7 +159,7 @@ class MetricLogger(object):
                         )
                     )
                 else:
-                    print(
+                    logging.info(
                         log_msg.format(
                             i,
                             len(iterable),
@@ -173,7 +173,7 @@ class MetricLogger(object):
             end = time.time()
         total_time = time.time() - start_time
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-        print(
+        logging.info(
             "{} Total time: {} ({:.4f} s / it)".format(
                 header, total_time_str, total_time / len(iterable)
             )

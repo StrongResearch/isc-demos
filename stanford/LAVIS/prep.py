@@ -1,6 +1,9 @@
 from lavis.common.config import Config
 import argparse
 import lavis.tasks as tasks
+from lavis.common.registry import registry
+from torchvision.datasets.utils import download_url
+import os
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Training")
@@ -20,6 +23,10 @@ def parse_args():
     
     print(args)
     return args
+
+coco_gt_root = os.path.join(registry.get_path("cache_root"), "coco_gt")
+download_url("https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val_gt.json", coco_gt_root),
+download_url("https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test_gt.json", coco_gt_root)
 
 cfg = Config(parse_args())
 task = tasks.setup_task(cfg)

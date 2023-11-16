@@ -35,7 +35,7 @@ class CaptionDataset(BaseDataset, __DisplMixin):
 
         self.img_ids = {}
         n = 0
-        # self.annotation = self.annotation[:100]
+        self.annotation = self.annotation[:1000]
         for ann in self.annotation:
             img_id = ann["image_id"]
             if img_id not in self.img_ids.keys():

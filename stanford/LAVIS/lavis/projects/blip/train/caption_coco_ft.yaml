@@ -38,8 +38,8 @@ run:
   min_lr: 0
   weight_decay: 0.05
   max_epoch: 5
-  batch_size_train: 10
-  batch_size_eval: 10
+  batch_size_train: 9
+  batch_size_eval: 9
   num_workers: 3
 
   max_len: 20
@@ -47,16 +47,16 @@ run:
   num_beams: 3
 
   seed: 42
-  output_dir: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/checkpoint"
-  resume_ckpt_path: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/caption_latest.pth"
-  tensorboard_path: "/mnt/.node1/Open-Datasets/lachlan_checkpoints/LAVIS/logs"
+  output_dir: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/checkpoints"
+  resume_ckpt_path: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/checkpoints/caption_latest.pth"
+  tensorboard_path: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/logs"
 
-  checkpoint_freq: 5
+  checkpoint_freq: 10
 
   amp: True
 
   evaluate: False 
-  eval_freq: 2
+  eval_freq: 1
   train_splits: ["train"]
   valid_splits: ["val"]
   test_splits: ["test"]

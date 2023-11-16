@@ -4,6 +4,7 @@ import logging
 import math
 import os
 import random
+import time
 import sys
 import braceexpand
 from dataclasses import dataclass
@@ -495,7 +496,7 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
         dataset,
         batch_size=args.batch_size,
         shuffle=False,
-        num_workers=0,
+        num_workers=args.workers,
         pin_memory=True,
         sampler=sampler,
         drop_last=is_train,

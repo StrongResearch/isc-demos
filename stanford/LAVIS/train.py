@@ -6,8 +6,9 @@
 """
 
 import argparse
-import os
+import sys
 import random
+import logging
 
 from datetime import datetime
 
@@ -103,4 +104,6 @@ def main():
     runner.train()
 
 if __name__ == "__main__":
+    logging.info("Starting job")
+    sys.path.append("/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.jdk/jdk-11.0.21+9/bin")
     main()

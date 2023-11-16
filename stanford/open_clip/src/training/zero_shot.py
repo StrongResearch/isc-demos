@@ -2,6 +2,7 @@ import logging
 
 import torch
 from tqdm import tqdm
+from training.distributed import is_master
 
 from open_clip import get_input_dtype, get_tokenizer, build_zero_shot_classifier, \
     IMAGENET_CLASSNAMES, OPENAI_IMAGENET_TEMPLATES

@@ -1,6 +1,6 @@
 experiment_name = "blip"
 gpu_type = "24GB VRAM GPU"
-nnodes = 2  
+nnodes = 2
 venv_path = "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/.venv/bin/activate"
 output_path = "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/coutput"
 command = "train.py --cfg-path lavis/projects/blip/train/caption_coco_ft.yaml"

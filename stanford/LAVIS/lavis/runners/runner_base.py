@@ -387,32 +387,33 @@ class RunnerBase:
                     #         model=self.unwrap_dist_model(self.model),
                     #         dataset=self.datasets["train"],
                     #     )
-                    train_stats = self.train_epoch(cur_epoch, writer=writer)
-                    self.log_stats(split_name="train", stats=train_stats)
+                    # train_stats = self.train_epoch(cur_epoch, writer=writer)
+                    self.train_epoch(cur_epoch, writer=writer)
+                    # self.log_stats(split_name="train", stats=train_stats)
+                    self.start_iter = 1
 
                 # evaluation phase
                 if len(self.valid_splits) > 0 and (cur_epoch + 1) % self.eval_freq == 0:
                     for split_name in self.valid_splits:
-                        with self.dataloaders["val"].sampler.in_epoch(cur_epoch):
-                            logging.info("Evaluating on {}.".format(split_name))
+                        logging.info("Evaluating on {}.".format(split_name))
 
-                            val_log = self.eval_epoch(
-                                split_name=split_name, cur_epoch=cur_epoch, skip_reload=True, writer=writer
-                            )
-                            if val_log is not None:
-                                if is_main_process():
-                                    assert (
-                                        "agg_metrics" in val_log
-                                    ), "No agg_metrics found in validation log."
+                        val_log = self.eval_epoch(
+                            split_name=split_name, cur_epoch=cur_epoch, skip_reload=True, writer=writer
+                        )
+                        if val_log is not None:
+                            if is_main_process():
+                                assert (
+                                    "agg_metrics" in val_log
+                                ), "No agg_metrics found in validation log."
 
-                                    agg_metrics = val_log["agg_metrics"]
-                                    if agg_metrics > best_agg_metric and split_name == "val":
-                                        best_epoch, best_agg_metric = cur_epoch, agg_metrics
+                                agg_metrics = val_log["agg_metrics"]
+                                if agg_metrics > best_agg_metric and split_name == "val":
+                                    best_epoch, best_agg_metric = cur_epoch, agg_metrics
 
-                                        self._save_checkpoint(cur_epoch, 1, is_best=True)
+                                    self._save_checkpoint(cur_epoch + 1, 1, is_best=True)
 
-                                    val_log.update({"best_epoch": best_epoch})
-                                    self.log_stats(val_log, split_name)
+                                val_log.update({"best_epoch": best_epoch})
+                                self.log_stats(val_log, split_name)
 
                 else:
                     # if no validation split is provided, we just save the checkpoint at the end of each epoch.
@@ -426,20 +427,20 @@ class RunnerBase:
                 dist.barrier()
 
         # testing phase
-        test_epoch = "best" if len(self.valid_splits) > 0 else cur_epoch
-        self.evaluate(cur_epoch=test_epoch, skip_reload=self.evaluate_only)
+        test_epoch = cur_epoch
+        self.evaluate(cur_epoch=test_epoch, skip_reload=self.evaluate_only, writer=writer)
 
         total_time = time.time() - start_time
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
         logging.info("Training time {}".format(total_time_str))
 
-    def evaluate(self, cur_epoch="best", skip_reload=False):
+    def evaluate(self, cur_epoch="best", skip_reload=True, writer=None):
         test_logs = dict()
 
         if len(self.test_splits) > 0:
             for split_name in self.test_splits:
                 test_logs[split_name] = self.eval_epoch(
-                    split_name=split_name, cur_epoch=cur_epoch, skip_reload=skip_reload
+                    split_name=split_name, cur_epoch=cur_epoch, skip_reload=skip_reload, writer=writer
                 )
 
             return test_logs
@@ -497,6 +498,7 @@ class RunnerBase:
                 val_result=results,
                 split_name=split_name,
                 epoch=cur_epoch,
+                writer=writer
             )
         
 
@@ -595,6 +597,7 @@ class RunnerBase:
                 loader = _create_loader(dataset, num_workers, bsz, is_train, collate_fn)
 
             loaders.append(loader)
+        logging.info("Finished creating dataloaders")
 
         return loaders
 
@@ -617,7 +620,6 @@ class RunnerBase:
             "model": state_dict,
             "optimizer": self.optimizer.state_dict(),
             "train_sampler" : self.train_loader._dataloader.sampler.state_dict(),
-            "val_sampler": self.dataloaders["val"]._dataloader.sampler.state_dict(),
             "config": self.config.to_dict(),
             "scaler": self.scaler.state_dict() if self.scaler else None,
             "epoch": cur_epoch,
@@ -674,7 +676,6 @@ class RunnerBase:
             self.train_loader._dataloader.sampler.load_state_dict(checkpoint["train_sampler"])
         else:
             self.train_loader.sampler.load_state_dict(checkpoint["train_sampler"])
-        # self.dataloaders["val"].sampler.load_state_dict(checkpoint["val_sampler"]),
         self.start_epoch = checkpoint["epoch"]
         self.start_iter = checkpoint["iteration"] + 1
         logging.info("Resume checkpoint from {}".format(url_or_filename))

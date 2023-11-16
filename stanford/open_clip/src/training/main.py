@@ -455,7 +455,8 @@ def main(args):
         with data["train"].dataloader.sampler.in_epoch(epoch):
             # status_path = args.resume[:-9] + "status.pt"
             # if get_status(status_path) == "train": 
-            logging.info(f"Beginning training with tb_writer = {writer} and tensorboard output path {args.logs}")
+            if is_master(args):
+                logging.info(f"Beginning training with tb_writer = {writer} and tensorboard output path {args.logs}")
             train_one_epoch(model, data, loss, epoch, start_iteration, optimizer, scaler, scheduler, dist_model, args, tb_writer=writer)
             start_iteration = 1
                 # if is_master(args):

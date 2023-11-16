@@ -17,7 +17,7 @@ from lavis.common.logger import MetricLogger, SmoothedValue
 from torch.utils.data import DataLoader
 from lavis.common.registry import registry
 from lavis.datasets.data_utils import prepare_sample
-
+import time
 
 class BaseTask:
     def __init__(self, **kwargs):
@@ -105,13 +105,12 @@ class BaseTask:
 
         for samples in metric_logger.log_every(data_loader, print_freq, header):
             samples = prepare_sample(samples, cuda_enabled=cuda_enabled)
-
             eval_output = self.valid_step(model=model, samples=samples)
             results.extend(eval_output)
 
         if is_dist_avail_and_initialized():
             dist.barrier()
-
+        logging.info("Finished eval, will now post_eval")
         return results
 
     def train_epoch(
@@ -198,7 +197,6 @@ class BaseTask:
         training stops after #iters_per_epoch iterations.
         """
         use_amp = scaler is not None
-
         if not hasattr(data_loader, "__next__"):
             # convert to iterator if not already
             data_loader = iter(data_loader)
@@ -216,20 +214,17 @@ class BaseTask:
         
         header = "Train: data epoch: [{}]".format(epoch)
         
-        metric_stuff = []
-
-        for i in metric_logger.log_every(range(iters_per_epoch), 1, header, start_iters):
-            # if using iter-based runner, we stop after iters_per_epoch iterations.
-            samples = next(data_loader)
+        writer_data = []
+        for samples in metric_logger.log_every(data_loader, 1, header, start_iters):
             samples = prepare_sample(samples, cuda_enabled=cuda_enabled)
             samples.update(
                 {
                     "epoch": epoch,
                     "num_iters_per_epoch": iters_per_epoch,
-                    "iters": i,
+                    "iters": start_iters-1,
                 }
             )
-            lr_scheduler.step(cur_epoch=epoch, cur_step=start_iters - 1) #TODO change step?
+            lr_scheduler.step(cur_epoch=epoch, cur_step=start_iters - 1)
 
             with torch.cuda.amp.autocast(enabled=use_amp):
                 loss, loss_dict = self.train_step(model=model, samples=samples)
@@ -259,10 +254,10 @@ class BaseTask:
                 sampler = data_loader._dataloader.sampler
             sampler.advance(args.run_cfg.batch_size_train)
 
-            logging.info("Synchronizing...")
+            logging.info("Synchronizing metrics")
             metric_logger.synchronize_between_processes()
             if writer is not None:
-                bunch = []
+                metric_data = []
                 for metre, value in metric_logger.meters.items():
                     if metre == "loss_lm":
                         new_string = ""
@@ -277,42 +272,35 @@ class BaseTask:
                                 new_string += char
                                 
                         value = new_string
-                    bunch.append(("Train/" + str(metre), float(str(value)), start_iters))
+                    metric_data.append(("Train/" + str(metre), float(str(value)), start_iters))
                     #writer.add_scalar("Train/" + str(metre), float(str(value)), start_iters)
-                for tup in bunch:
-                    metric_stuff.append(tup)
-                    
+                for tup in metric_data:
+                    writer_data.append(tup)
+            
             if is_main_process():
                 if start_iters >= len(data_loader):
                     logging.info(f"Reached the end of the dataloder; Saving checkpoint at iters: {start_iters}")
-                    self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch + 1, 1)
+                    self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
                     if writer is not None:
-                        for scalar in metric_stuff:
+                        for scalar in writer_data:
                             writer.add_scalar(scalar[0], scalar[1], scalar[2])
-                        metric_stuff = []
+                        writer_data = []
+                        logging.info("Finished writing logs")
                 elif start_iters % args.run_cfg.get("checkpoint_freq", 100) == 0:
                     logging.info(f"Saving checkpoint at iters: {start_iters} and epoch: {epoch}")
                     self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
                     if writer is not None:
-                        for scalar in metric_stuff:
+                        for scalar in writer_data:
                             writer.add_scalar(scalar[0], scalar[1], scalar[2])
-                        metric_stuff = []
-                    logging.info("Averaged stats: " + str(metric_logger.global_avg()))
+                        writer_data = []
+                        logging.info("Finished writing logs")
                     
-            dist.barrier()
             start_iters += 1
 
         # after train_epoch()
         # gather the stats from all processes
-        logging.info("Synchronizing...")
         metric_logger.synchronize_between_processes()
-        logging.info("Averaged stats: " + str(metric_logger.global_avg()))
-        if is_main_process():
-            logging.info(metric_logger)
-        return {
-            k: "{:.3f}".format(meter.global_avg)
-            for k, meter in metric_logger.meters.items()
-        }
+        return
     
     def save_checkpoint(self, model, optimizer, train_sampler, config, scaler, epoch, iteration, is_best=False):
         """
