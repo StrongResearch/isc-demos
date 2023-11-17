@@ -95,13 +95,13 @@ class CaptionTask(BaseTask):
         coco_val = coco_caption_eval(coco_gt_root, eval_result_file, split_name)
 
         if writer is not None:
-            writer.add_scalar("Val/", coco_val.eval["Bleu_1"], epoch)
-            writer.add_scalar("Val/", coco_val.eval["Bleu_2"], epoch)
-            writer.add_scalar("Val/", coco_val.eval["Bleu_3"], epoch)
-            writer.add_scalar("Val/", coco_val.eval["Bleu_4"], epoch)
-            writer.add_scalar("Val/", coco_val.eval["METEOR"], epoch)
-            writer.add_scalar("Val/", coco_val.eval["ROUGE_L"], epoch)
-            writer.add_scalar("Val/", coco_val.eval["CIDEr"], epoch)
+            writer.add_scalar("Val/Bleu_1", coco_val.eval["Bleu_1"], epoch)
+            writer.add_scalar("Val/Bleu_2", coco_val.eval["Bleu_2"], epoch)
+            writer.add_scalar("Val/Bleu_3", coco_val.eval["Bleu_3"], epoch)
+            writer.add_scalar("Val/Bleu_4", coco_val.eval["Bleu_4"], epoch)
+            writer.add_scalar("Val/METEOR", coco_val.eval["METEOR"], epoch)
+            writer.add_scalar("Val/ROUGE_L", coco_val.eval["ROUGE_L"], epoch)
+            writer.add_scalar("Val/CIDEr", coco_val.eval["CIDEr"], epoch)
         agg_metrics = coco_val.eval["CIDEr"] + coco_val.eval["Bleu_4"]
         log_stats = {split_name: {k: v for k, v in coco_val.eval.items()}}
         with open(

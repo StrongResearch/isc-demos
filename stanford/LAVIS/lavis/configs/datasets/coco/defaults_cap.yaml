@@ -25,4 +25,4 @@ datasets:
           md5: 3ff34b0ef2db02d01c37399f6a2a6cd1
           storage: coco/annotations/captions_test2014.json
       images:
-        storage: coco/images/
+        storage: coco

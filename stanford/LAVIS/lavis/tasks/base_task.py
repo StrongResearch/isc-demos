@@ -283,6 +283,9 @@ class BaseTask:
                     self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
                     if writer is not None:
                         for scalar in writer_data:
+                            if scalar[0] == "Train/lr":
+                                writer.add("Train/lr", optimizer.param_groups[0]["lr"], scalar[2])
+                                continue
                             writer.add_scalar(scalar[0], scalar[1], scalar[2])
                         writer_data = []
                         logging.info("Finished writing logs")

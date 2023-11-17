@@ -47,16 +47,16 @@ run:
   num_beams: 3
 
   seed: 42
-  output_dir: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/checkpoints"
-  resume_ckpt_path: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/checkpoints/caption_latest.pth"
-  tensorboard_path: "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/LAVIS/logs"
+  output_dir: "./checkpoints"
+  resume_ckpt_path: "./checkpoints/caption_latest.pth"
+  tensorboard_path: "./logs"
 
   checkpoint_freq: 15
 
   amp: True
 
   evaluate: False 
-  eval_freq: 1
+  eval_freq: 50
   train_splits: ["train"]
   valid_splits: ["val"]
   test_splits: ["test"]
