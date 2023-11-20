@@ -132,14 +132,17 @@ class FID_CLIP(Metric):
     fake_features_num_samples: torch.Tensor
 
     def __init__(self, version, reset_real_features=True, normalize=False, **kwargs):
+        
         super().__init__(**kwargs)
-
         if version == "CLIP":
             self.clip, _ = clip.load("ViT-B/32", device="cuda")
             res = self.clip.visual.input_resolution
         elif version == "BiomedCLIP":
+            model_kwargs = {'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 
+                                         'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 
+                                         'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
             self.clip, _, _ = open_clip.create_model_and_transforms(
-                "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
+                "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224", text_cfg=model_kwargs
             )
             res = 224
         for _, param in enumerate(self.clip.parameters()):

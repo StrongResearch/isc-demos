@@ -40,7 +40,7 @@ start_epoch: 0
 max_epoch: 50
 
 # mini-batch size
-batch_size: 12
+batch_size: -3
 
 # gradient accumulation
 gradient_accumulation_steps: 1
@@ -62,4 +62,4 @@ seed: null
 fast_dev_run: false
 
 # For mixed precision training
-mixed_precision: "bf16"
+mixed_precision: "no"

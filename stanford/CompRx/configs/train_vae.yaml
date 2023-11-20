@@ -46,10 +46,10 @@ gradient_accumulation_steps: 1
 resume_from_ckpt: null
 
 # directory to store checkpoints in, same as the global output dir for this run
-ckpt_dir: ${paths.output_dir}/checkpoints
+ckpt_dir: ${paths.output_dir}/
 
 # checkpoint frequency
-ckpt_every_n_steps: 500
+ckpt_every_n_steps: 100
 
 # seed for random number generators in pytorch, numpy and python.random
 # sets cudnn to deterministic too

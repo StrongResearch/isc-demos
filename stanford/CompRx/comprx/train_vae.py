@@ -49,7 +49,8 @@ def main(cfg: DictConfig):
     is_logging = bool(logger_kwargs)
     print(f"=> Instantiate accelerator [logging={is_logging}]")
     
-
+    print("pre-accelerator")
+    time.sleep(20)
     gradient_accumulation_steps = cfg.get("gradient_accumulation_steps", 1)
     accelerator = Accelerator(
         gradient_accumulation_plugin=GradientAccumulationPlugin(
@@ -66,7 +67,7 @@ def main(cfg: DictConfig):
         ],
     )
     accelerator.init_trackers("comprx", config=cfg, init_kwargs={"wandb": logger_kwargs})
-
+    
     # Determine the mode
     print(f"=> Mixed precision: {accelerator.mixed_precision}")
 
