@@ -1,6 +1,0 @@
-entity: aimi
-id: null
-group: null
-name: ${task_name}
-resume: allow
-dir: ${paths.output_dir}

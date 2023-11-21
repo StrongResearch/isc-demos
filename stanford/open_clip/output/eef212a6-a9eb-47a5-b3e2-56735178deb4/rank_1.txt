@@ -1,0 +1,542 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:05:51 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:05:51 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:05:51 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:05:51 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:05:51 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:05:51 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:05:51 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:05:51 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:05:51 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:05:51 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:05:51 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:05:51 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:05:54 | INFO | Model ddp initialized
+2023-11-21,01:05:54 | INFO | Model ddp initialized
+2023-11-21,01:05:54 | INFO | Model ddp initialized
+2023-11-21,01:05:54 | INFO | Model ddp initialized
+2023-11-21,01:05:54 | INFO | Model ddp initialized
+2023-11-21,01:05:54 | INFO | Model ddp initialized
+2023-11-21,01:05:59 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 621)
+2023-11-21,01:05:59 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 621)
+2023-11-21,01:05:59 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 621)
+2023-11-21,01:06:00 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 621)
+2023-11-21,01:06:00 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 621)
+2023-11-21,01:06:00 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 621)
+2023-11-21,01:06:00 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:06:00 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:06:00 | INFO | data loaded
+2023-11-21,01:06:00 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:06:00 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:06:00 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:06:00 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:06:00 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:06:00 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:06:00 | INFO | data loaded
+2023-11-21,01:06:00 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:06:00 | INFO | data loaded
+2023-11-21,01:06:00 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:06:00 | INFO | data loaded
+2023-11-21,01:06:00 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:06:00 | INFO | data loaded
+2023-11-21,01:06:00 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:06:00 | INFO | data loaded
+2023-11-21,01:06:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:06:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:06:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:06:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:06:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:06:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:07:26 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:07:26 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:07:26 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:07:26 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:07:26 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:07:26 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:07:26 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:07:26 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:07:26 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:07:26 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:07:26 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:07:26 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:07:29 | INFO | Model ddp initialized
+2023-11-21,01:07:29 | INFO | Model ddp initialized
+2023-11-21,01:07:29 | INFO | Model ddp initialized
+2023-11-21,01:07:29 | INFO | Model ddp initialized
+2023-11-21,01:07:29 | INFO | Model ddp initialized
+2023-11-21,01:07:29 | INFO | Model ddp initialized
+2023-11-21,01:07:37 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 651)
+2023-11-21,01:07:37 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 651)
+2023-11-21,01:07:37 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 651)
+2023-11-21,01:07:37 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 651)
+2023-11-21,01:07:37 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 651)
+2023-11-21,01:07:37 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 651)
+2023-11-21,01:07:37 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:07:37 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:07:37 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:07:37 | INFO | data loaded
+2023-11-21,01:07:38 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:07:38 | INFO | data loaded
+2023-11-21,01:07:38 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:07:38 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:07:38 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:07:38 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:07:38 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:07:38 | INFO | data loaded
+2023-11-21,01:07:38 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:07:38 | INFO | data loaded
+2023-11-21,01:07:38 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:07:38 | INFO | data loaded
+2023-11-21,01:07:38 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:07:38 | INFO | data loaded
+2023-11-21,01:07:43 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:07:43 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:07:43 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:07:43 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:07:43 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:07:43 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:09:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:09:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:09:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:09:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:09:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:09:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:09:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:09:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:09:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:09:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:09:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:09:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:09:04 | INFO | Model ddp initialized
+2023-11-21,01:09:04 | INFO | Model ddp initialized
+2023-11-21,01:09:04 | INFO | Model ddp initialized
+2023-11-21,01:09:04 | INFO | Model ddp initialized
+2023-11-21,01:09:04 | INFO | Model ddp initialized
+2023-11-21,01:09:04 | INFO | Model ddp initialized
+2023-11-21,01:09:13 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 681)
+2023-11-21,01:09:13 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 681)
+2023-11-21,01:09:13 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 681)
+2023-11-21,01:09:13 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 681)
+2023-11-21,01:09:13 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 681)
+2023-11-21,01:09:13 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 13) (iteration 681)
+2023-11-21,01:09:13 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:09:14 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:09:14 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:09:14 | INFO | data loaded
+2023-11-21,01:09:14 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:09:14 | INFO | data loaded
+2023-11-21,01:09:14 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:09:14 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:09:14 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:09:14 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:09:14 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:09:14 | INFO | data loaded
+2023-11-21,01:09:14 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:09:14 | INFO | data loaded
+2023-11-21,01:09:14 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:09:14 | INFO | data loaded
+2023-11-21,01:09:14 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:09:14 | INFO | data loaded
+2023-11-21,01:09:19 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:09:19 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:09:19 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:09:19 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:09:19 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:09:19 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:10:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:10:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:10:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:10:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:10:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:10:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:10:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:10:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:10:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:10:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:10:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:10:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:10:40 | INFO | Model ddp initialized
+2023-11-21,01:10:40 | INFO | Model ddp initialized
+2023-11-21,01:10:40 | INFO | Model ddp initialized
+2023-11-21,01:10:40 | INFO | Model ddp initialized
+2023-11-21,01:10:40 | INFO | Model ddp initialized
+2023-11-21,01:10:40 | INFO | Model ddp initialized
+2023-11-21,01:10:48 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 21)
+2023-11-21,01:10:48 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 21)
+2023-11-21,01:10:48 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 21)
+2023-11-21,01:10:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 21)
+2023-11-21,01:10:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 21)
+2023-11-21,01:10:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 21)
+2023-11-21,01:10:49 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:10:49 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:10:49 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:10:49 | INFO | data loaded
+2023-11-21,01:10:49 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:10:49 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:10:49 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:10:49 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:10:49 | INFO | data loaded
+2023-11-21,01:10:49 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:10:49 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:10:49 | INFO | data loaded
+2023-11-21,01:10:49 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:10:49 | INFO | data loaded
+2023-11-21,01:10:49 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:10:49 | INFO | data loaded
+2023-11-21,01:10:49 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:10:49 | INFO | data loaded
+2023-11-21,01:10:54 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:10:54 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:10:54 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:10:54 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:10:54 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:10:54 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:12:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:12:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:12:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:12:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:12:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:12:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:12:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:12:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:12:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:12:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:12:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:12:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:12:16 | INFO | Model ddp initialized
+2023-11-21,01:12:16 | INFO | Model ddp initialized
+2023-11-21,01:12:16 | INFO | Model ddp initialized
+2023-11-21,01:12:16 | INFO | Model ddp initialized
+2023-11-21,01:12:16 | INFO | Model ddp initialized
+2023-11-21,01:12:16 | INFO | Model ddp initialized
+2023-11-21,01:12:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 41)
+2023-11-21,01:12:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 41)
+2023-11-21,01:12:25 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:12:25 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:12:26 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 41)
+2023-11-21,01:12:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:12:26 | INFO | data loaded
+2023-11-21,01:12:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:12:26 | INFO | data loaded
+2023-11-21,01:12:26 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 41)
+2023-11-21,01:12:26 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 41)
+2023-11-21,01:12:26 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 41)
+2023-11-21,01:12:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:12:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:12:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:12:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:12:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:12:26 | INFO | data loaded
+2023-11-21,01:12:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:12:26 | INFO | data loaded
+2023-11-21,01:12:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:12:26 | INFO | data loaded
+2023-11-21,01:12:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:12:26 | INFO | data loaded
+2023-11-21,01:12:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:12:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:12:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:12:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:12:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:12:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:13:48 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:13:48 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:13:48 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:13:48 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:13:48 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:13:48 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:13:48 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:13:48 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:13:48 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:13:48 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:13:48 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:13:48 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:13:52 | INFO | Model ddp initialized
+2023-11-21,01:13:52 | INFO | Model ddp initialized
+2023-11-21,01:13:52 | INFO | Model ddp initialized
+2023-11-21,01:13:52 | INFO | Model ddp initialized
+2023-11-21,01:13:52 | INFO | Model ddp initialized
+2023-11-21,01:13:52 | INFO | Model ddp initialized
+2023-11-21,01:14:01 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 71)
+2023-11-21,01:14:01 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 71)
+2023-11-21,01:14:01 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 71)
+2023-11-21,01:14:01 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 71)
+2023-11-21,01:14:01 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 71)
+2023-11-21,01:14:01 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 71)
+2023-11-21,01:14:01 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:14:01 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:14:01 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:14:01 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:14:01 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:14:01 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:14:01 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:14:01 | INFO | data loaded
+2023-11-21,01:14:01 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:14:01 | INFO | data loaded
+2023-11-21,01:14:02 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:14:02 | INFO | data loaded
+2023-11-21,01:14:02 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:14:02 | INFO | data loaded
+2023-11-21,01:14:02 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:14:02 | INFO | data loaded
+2023-11-21,01:14:02 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:14:02 | INFO | data loaded
+2023-11-21,01:14:07 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:14:07 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:14:07 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:14:07 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:14:07 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:14:07 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:15:24 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:15:24 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:15:24 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:15:24 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:15:24 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:15:24 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:15:24 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:15:24 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:15:24 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:15:24 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:15:24 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:15:24 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:15:27 | INFO | Model ddp initialized
+2023-11-21,01:15:27 | INFO | Model ddp initialized
+2023-11-21,01:15:27 | INFO | Model ddp initialized
+2023-11-21,01:15:27 | INFO | Model ddp initialized
+2023-11-21,01:15:27 | INFO | Model ddp initialized
+2023-11-21,01:15:27 | INFO | Model ddp initialized
+2023-11-21,01:15:36 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 101)
+2023-11-21,01:15:36 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 101)
+2023-11-21,01:15:36 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:15:36 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 101)
+2023-11-21,01:15:36 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:15:36 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 101)
+2023-11-21,01:15:36 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 101)
+2023-11-21,01:15:36 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 101)
+2023-11-21,01:15:36 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:15:36 | INFO | data loaded
+2023-11-21,01:15:36 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:15:36 | INFO | data loaded
+2023-11-21,01:15:37 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:15:37 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:15:37 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:15:37 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:15:37 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:15:37 | INFO | data loaded
+2023-11-21,01:15:37 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:15:37 | INFO | data loaded
+2023-11-21,01:15:37 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:15:37 | INFO | data loaded
+2023-11-21,01:15:37 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:15:37 | INFO | data loaded
+2023-11-21,01:15:42 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:15:42 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:15:42 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:15:42 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:15:42 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:15:42 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:17:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:17:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:17:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:17:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:17:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:17:01 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:17:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:17:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:17:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:17:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:17:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:17:01 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:17:05 | INFO | Model ddp initialized
+2023-11-21,01:17:05 | INFO | Model ddp initialized
+2023-11-21,01:17:05 | INFO | Model ddp initialized
+2023-11-21,01:17:05 | INFO | Model ddp initialized
+2023-11-21,01:17:05 | INFO | Model ddp initialized
+2023-11-21,01:17:05 | INFO | Model ddp initialized
+2023-11-21,01:17:14 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 131)
+2023-11-21,01:17:14 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 131)
+2023-11-21,01:17:14 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 131)
+2023-11-21,01:17:14 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 131)
+2023-11-21,01:17:14 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 131)
+2023-11-21,01:17:14 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 131)
+2023-11-21,01:17:15 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:17:15 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:17:15 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:17:15 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:17:15 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:17:15 | INFO | data loaded
+2023-11-21,01:17:15 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:17:15 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:17:15 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:17:15 | INFO | data loaded
+2023-11-21,01:17:15 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:17:15 | INFO | data loaded
+2023-11-21,01:17:15 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:17:15 | INFO | data loaded
+2023-11-21,01:17:15 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:17:15 | INFO | data loaded
+2023-11-21,01:17:15 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:17:15 | INFO | data loaded
+2023-11-21,01:17:21 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:17:21 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:17:21 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:17:21 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:17:21 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:17:21 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:18:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:18:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:18:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:18:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:18:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:18:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:18:37 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:18:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:18:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:18:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:18:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:18:37 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:18:40 | INFO | Model ddp initialized
+2023-11-21,01:18:40 | INFO | Model ddp initialized
+2023-11-21,01:18:40 | INFO | Model ddp initialized
+2023-11-21,01:18:40 | INFO | Model ddp initialized
+2023-11-21,01:18:40 | INFO | Model ddp initialized
+2023-11-21,01:18:40 | INFO | Model ddp initialized
+2023-11-21,01:18:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 161)
+2023-11-21,01:18:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 161)
+2023-11-21,01:18:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 161)
+2023-11-21,01:18:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 161)
+2023-11-21,01:18:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 161)
+2023-11-21,01:18:49 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 161)
+2023-11-21,01:18:50 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:18:50 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:18:50 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:18:50 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:18:50 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:18:50 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:18:50 | INFO | data loaded
+2023-11-21,01:18:50 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:18:50 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:18:50 | INFO | data loaded
+2023-11-21,01:18:50 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:18:50 | INFO | data loaded
+2023-11-21,01:18:50 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:18:50 | INFO | data loaded
+2023-11-21,01:18:50 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:18:50 | INFO | data loaded
+2023-11-21,01:18:50 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:18:50 | INFO | data loaded
+2023-11-21,01:18:56 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:18:56 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:18:56 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:18:56 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:18:56 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:18:56 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:20:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:20:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:20:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:20:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:20:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:20:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:20:13 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:20:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:20:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:20:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:20:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:20:13 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:20:16 | INFO | Model ddp initialized
+2023-11-21,01:20:16 | INFO | Model ddp initialized
+2023-11-21,01:20:16 | INFO | Model ddp initialized
+2023-11-21,01:20:16 | INFO | Model ddp initialized
+2023-11-21,01:20:16 | INFO | Model ddp initialized
+2023-11-21,01:20:16 | INFO | Model ddp initialized
+2023-11-21,01:20:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 181)
+2023-11-21,01:20:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 181)
+2023-11-21,01:20:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 181)
+2023-11-21,01:20:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 181)
+2023-11-21,01:20:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 181)
+2023-11-21,01:20:25 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 14) (iteration 181)
+2023-11-21,01:20:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:20:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:20:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:20:26 | INFO | data loaded
+2023-11-21,01:20:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:20:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:20:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:20:26 | INFO | Created dataloader with 414113 samples and 690 batches
+2023-11-21,01:20:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:20:26 | INFO | data loaded
+2023-11-21,01:20:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:20:26 | INFO | data loaded
+2023-11-21,01:20:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:20:26 | INFO | data loaded
+2023-11-21,01:20:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:20:26 | INFO | data loaded
+2023-11-21,01:20:26 | INFO | Created dataloader with 202654 samples and 338 batches
+2023-11-21,01:20:26 | INFO | data loaded
+2023-11-21,01:20:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:20:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:20:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:20:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:20:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-11-21,01:20:31 | INFO | Reducer buckets have been rebuilt in this iteration.
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+2023-11-21,01:21:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 10, local 4), total 12.
+2023-11-21,01:21:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 9, local 3), total 12.
+2023-11-21,01:21:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 11, local 5), total 12.
+2023-11-21,01:21:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 6, local 0), total 12.
+2023-11-21,01:21:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 8, local 2), total 12.
+2023-11-21,01:21:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 7, local 1), total 12.
+2023-11-21,01:21:50 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:21:50 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:21:50 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:21:50 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:21:50 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:21:50 | INFO | Loaded ViT-L-14 model config.
+2023-11-21,01:21:53 | INFO | Model ddp initialized
+2023-11-21,01:21:53 | INFO | Model ddp initialized
+2023-11-21,01:21:53 | INFO | Model ddp initialized
+2023-11-21,01:21:53 | INFO | Model ddp initialized
+2023-11-21,01:21:53 | INFO | Model ddp initialized
+2023-11-21,01:21:53 | INFO | Model ddp initialized

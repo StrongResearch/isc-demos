@@ -1,3 +1,0 @@
-# the criterion used for the loss function
-_target_: torch.nn.CosineSimilarity
-dim: 1

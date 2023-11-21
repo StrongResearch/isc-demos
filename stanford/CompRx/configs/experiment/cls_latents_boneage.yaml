@@ -1,7 +1,0 @@
-# @package _global_
-
-defaults:
-  - cls_bicubic_boneage.yaml
-  - override /dataloader: cls_latents_boneage.yaml
-
-num_channels: ???

@@ -7,6 +7,8 @@ import time
 import numpy as np
 import torch
 import torch.nn.functional as F
+from torch.distributed import get_world_size
+import torch.distributed as dist
 from torch.nn.parallel.distributed import DistributedDataParallel
 
 try:
@@ -19,6 +21,7 @@ from .distributed import is_master
 from .zero_shot import zero_shot_eval
 from .precision import get_autocast
 
+from cycling_utils import atomic_torch_save
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -59,9 +62,19 @@ def backward(total_loss, scaler):
         scaler.scale(total_loss).backward()
     else:
         total_loss.backward()
+        
+def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, path):
+    checkpoint_dict = {
+                "epoch": epoch,
+                "iteration": iteration,
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "sampler": sampler.state_dict(),
+                "scaler": scaler.state_dict()
+            }
+    atomic_torch_save(checkpoint_dict, path)
 
-
-def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
+def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
     device = torch.device(args.device)
     autocast = get_autocast(args.precision)
     input_dtype = get_input_dtype(args.precision)
@@ -82,8 +95,11 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
     batch_time_m = AverageMeter()
     data_time_m = AverageMeter()
     end = time.time()
-    for i, batch in enumerate(dataloader):
-        i_accum = i // args.accum_freq
+    
+    metric_data = []
+
+    for batch in dataloader:
+        i_accum = iters - 1 // args.accum_freq
         step = num_batches_per_epoch * epoch + i_accum
 
         if not args.skip_scheduler:
@@ -95,7 +111,9 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
 
         data_time_m.update(time.time() - end)
         optimizer.zero_grad()
-
+        
+        if is_master(args) and iters % 5 == 0:
+            logging.info(f"Training - {iters}/{len(dataloader)}")
         if args.accum_freq == 1:
             with autocast():
                 model_out = model(images, texts)
@@ -129,7 +147,7 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
                 accum_texts.append(texts)
 
             # If (i + 1) % accum_freq is not zero, move on to the next batch.
-            if ((i + 1) % args.accum_freq) > 0:
+            if ((iters) % args.accum_freq) > 0:
                 # FIXME this makes data time logging unreliable when accumulating
                 continue
 
@@ -191,11 +209,40 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
         batch_time_m.update(time.time() - end)
         end = time.time()
         batch_count = i_accum + 1
+        dataloader.sampler.advance(args.batch_size)
+        batch_loss = losses["loss"]
+        dist.all_reduce(batch_loss, op=dist.ReduceOp.SUM)
+        batch_loss = torch.div(batch_loss, dist.get_world_size())
+        metric_data.append((batch_loss, iters))
+        if is_master(args):
+            if iters >= len(dataloader):
+                #  save checkpoint and break
+                logging.info("Reached the end of the dataloader - saving checkpoint")
+                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
+                if tb_writer is not None:
+                    for scalar in metric_data:
+                        tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
+                        tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]['lr'], iters)
+                    
+                    metric_data = []
+                    logging.info("Finished writing log data")
+                #break
+            elif iters % args.save_frequency == 0:  # Save checkpoint every n iterations
+                logging.info(f"Saving checkpoint at epoch {epoch} and iteration {iters}/{len(dataloader)}")
+                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
+                if tb_writer is not None:
+                    for scalar in metric_data:
+                        tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
+                    tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]['lr'], iters)
+                    metric_data = []
+                    logging.info("Finished writing log data")
+
         if is_master(args) and (i_accum % args.log_every_n_steps == 0 or batch_count == num_batches_per_epoch):
             batch_size = len(images)
             num_samples = batch_count * batch_size * args.accum_freq * args.world_size
-            samples_per_epoch = dataloader.num_samples
-            percent_complete = 100.0 * batch_count / num_batches_per_epoch
+            samples_per_epoch = len(dataloader) * get_world_size() * batch_size
+
+            percent_complete = ((iters - 1) * batch_size * get_world_size() * 100) / samples_per_epoch
 
             # NOTE loss is coarsely sampled, just master node and per log update
             for key, val in losses.items():
@@ -212,8 +259,9 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
             )
             samples_per_second = args.accum_freq * args.batch_size * args.world_size / batch_time_m.val
             samples_per_second_per_gpu = args.accum_freq * args.batch_size / batch_time_m.val
+            
             logging.info(
-                f"Train Epoch: {epoch} [{num_samples:>{sample_digits}}/{samples_per_epoch} ({percent_complete:.0f}%)] "
+                f"Train Epoch: {epoch} [{(iters - 1) * batch_size * get_world_size()}/{samples_per_epoch} ({percent_complete:.0f}%)] "
                 f"Data (t): {data_time_m.avg:.3f} "
                 f"Batch (t): {batch_time_m.avg:.3f}, {samples_per_second:#g}/s, {samples_per_second_per_gpu:#g}/s/gpu "
                 f"LR: {optimizer.param_groups[0]['lr']:5f} "
@@ -232,10 +280,7 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
             log_data.update({name:val.val for name,val in losses_m.items()})
 
             log_data = {"train/" + name: val for name, val in log_data.items()}
-
-            if tb_writer is not None:
-                for name, val in log_data.items():
-                    tb_writer.add_scalar(name, val, step)
+            
             
             if args.wandb:
                 assert wandb is not None, 'Please install wandb.'
@@ -245,8 +290,30 @@ def train_one_epoch(model, data, loss, epoch, optimizer, scaler, scheduler, dist
             # resetting batch / data time meters per log window
             batch_time_m.reset()
             data_time_m.reset()
+            
+        iters += 1
     # end for
 
+
+def save_eval_checkpoint(sampler, iteration, cum_loss, cum_gen_loss, img_features, txt_features, path):
+    checkpoint_dict = {
+                "sampler": sampler.state_dict(),
+                "iteration": iteration,
+                "cum_loss": cum_loss,
+                "cum_gen_loss": cum_gen_loss,
+                "img_features": img_features,
+                "txt_features": txt_features,
+            }
+    atomic_torch_save(checkpoint_dict, path)
+
+def load_eval_checkpoint(path):
+    if os.path.isfile(path):
+        checkpoint = torch.load(path, map_location="cpu")
+        logging.info(f"Checkpoint loaded with iters = {checkpoint['iteration']}")
+        return ((checkpoint["epoch"], checkpoint["iteration"], checkpoint["cum_loss"], 
+                checkpoint["cum_gen_loss"], checkpoint["img_features"], checkpoint["txt_features"]), checkpoint["sampler"])
+    logging.info("No eval checkpoint found, starting eval from scratch.")
+    return False
 
 def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     metrics = {}
@@ -261,7 +328,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     autocast = get_autocast(args.precision)
     input_dtype = get_input_dtype(args.precision)
 
-    if 'val' in data and (args.val_frequency and ((epoch % args.val_frequency) == 0 or epoch == args.epochs)):
+    if 'val' in data:
         dataloader = data['val'].dataloader
         num_samples = 0
         samples_per_val = dataloader.num_samples
@@ -276,7 +343,10 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 images, texts = batch
                 images = images.to(device=device, dtype=input_dtype, non_blocking=True)
                 texts = texts.to(device=device, non_blocking=True)
-
+                try:
+                    dataloader.sampler.advance(args.batch_size)
+                except Exception:
+                    logging.info("Sampler stepped too far at the end of batch - ignoring")
                 with autocast():
                     model_out = model(images, texts)
                     image_features = model_out["image_features"]
@@ -301,10 +371,22 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
 
                 cumulative_loss += total_loss * batch_size
                 num_samples += batch_size
-                if is_master(args) and (i % 100) == 0:
-                    logging.info(
-                        f"Eval Epoch: {epoch} [{num_samples} / {samples_per_val}]\t"
-                        f"Clip Loss: {cumulative_loss / num_samples:.6f}\t")
+                if (i % 100) == 0:
+                    if args.distributed_evaluation:
+                        total_num_samples = torch.Tensor([num_samples]).to(device)
+                        torch.distributed.all_reduce(total_num_samples)
+                        total_num_samples = total_num_samples.item()
+
+                        total_cumulative_loss = cumulative_loss.clone()
+                        torch.distributed.all_reduce(total_cumulative_loss)
+
+                        loss = total_cumulative_loss / total_num_samples
+                    else:
+                        loss = cumulative_loss / num_samples
+                    if is_master(args):
+                        logging.info(
+                            f"Eval Epoch: {epoch} [{num_samples} / {samples_per_val}]\t"
+                            f"Loss: {loss:.6f}\t")
 
                     if gen_loss is not None:
                         cumulative_gen_loss += gen_loss * batch_size
@@ -315,10 +397,19 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 image_features=torch.cat(all_image_features),
                 text_features=torch.cat(all_text_features),
                 logit_scale=logit_scale.cpu(),
+                args=args,
             )
-            loss = cumulative_loss / num_samples
+            
+            total_num_samples = torch.Tensor([num_samples]).to(device)
+            torch.distributed.all_reduce(total_num_samples)
+            total_num_samples = int(total_num_samples.item())
+
+            total_cumulative_loss = cumulative_loss.clone()
+            torch.distributed.all_reduce(total_cumulative_loss)
+
+            loss = total_cumulative_loss / total_num_samples
             metrics.update(
-                {**val_metrics, "clip_val_loss": loss.item(), "epoch": epoch, "num_samples": num_samples}
+                {**val_metrics, "clip_val_loss": loss.item(), "epoch": epoch, "num_samples": total_num_samples}
             )
             if gen_loss is not None:
                 gen_loss = cumulative_gen_loss / num_samples
@@ -332,7 +423,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
         + "\t".join([f"{k}: {round(v, 4):.4f}" for k, v in metrics.items()])
     )
 
-    log_data = {"val/" + name: val for name, val in metrics.items()}
+    log_data = {"Val/" + name: val for name, val in metrics.items()}
 
     if args.save_logs:
         if tb_writer is not None:
@@ -357,8 +448,11 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     return metrics
 
 
-def get_clip_metrics(image_features, text_features, logit_scale):
+def get_clip_metrics(image_features, text_features, logit_scale, args):
     metrics = {}
+    
+    image_features = varsize_tensor_all_gather(image_features.to(args.device)).cpu()
+    text_features = varsize_tensor_all_gather(text_features.to(args.device)).cpu()
     logits_per_image = (logit_scale * image_features @ text_features.t()).detach().cpu()
     logits_per_text = logits_per_image.t().detach().cpu()
 
@@ -382,3 +476,35 @@ def maybe_compute_generative_loss(model_out):
         token_logits = model_out["logits"]
         token_labels = model_out["labels"]
         return F.cross_entropy(token_logits.permute(0, 2, 1), token_labels)
+def varsize_tensor_all_gather(tensor: torch.Tensor):
+    # https://discuss.pytorch.org/t/how-to-concatenate-different-size-tensors-from-distributed-processes/44819/4
+    # thanks to @mranzinger
+    device = tensor.device
+    size_tens = torch.tensor([tensor.shape[0]], dtype=torch.int64, device=device)
+    size_tens = tensor_all_gather(size_tens).cpu()
+    max_size = size_tens.max()
+
+    padded = torch.empty(max_size, *tensor.shape[1:],
+                         dtype=tensor.dtype,
+                         device=device)
+    padded[:tensor.shape[0]] = tensor
+
+    ag = tensor_all_gather(padded)
+
+    slices = []
+    for i, sz in enumerate(size_tens):
+        start_idx = i * max_size
+        end_idx = start_idx + sz.item()
+
+        if end_idx > start_idx:
+            slices.append(ag[start_idx:end_idx])
+
+    ret = torch.cat(slices, dim=0)
+
+    return ret.to(tensor)
+
+def tensor_all_gather(tensor):
+    world_size = torch.distributed.get_world_size()
+    tensor_list = [torch.ones_like(tensor) for _ in range(world_size)]
+    torch.distributed.all_gather(tensor_list, tensor)
+    return torch.cat(tensor_list, dim=0)

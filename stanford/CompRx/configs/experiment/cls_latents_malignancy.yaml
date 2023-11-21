@@ -1,7 +1,0 @@
-# @package _global_
-
-defaults:
-  - cls_bicubic_malignancy.yaml
-  - override /dataloader: cls_latents_malignancy.yaml
-
-num_channels: ???

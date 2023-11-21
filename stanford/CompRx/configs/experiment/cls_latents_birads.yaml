@@ -1,7 +1,0 @@
-# @package _global_
-
-defaults:
-  - cls_bicubic_birads.yaml
-  - override /dataloader: cls_latents_birads.yaml
-
-num_channels: ???
