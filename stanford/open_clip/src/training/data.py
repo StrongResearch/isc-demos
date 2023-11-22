@@ -4,7 +4,6 @@ import logging
 import math
 import os
 import random
-import time
 import sys
 import braceexpand
 from dataclasses import dataclass
@@ -18,12 +17,13 @@ import webdataset as wds
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler, IterableDataset, get_worker_info
 from torch.utils.data.distributed import DistributedSampler
+from torch.utils.data.dataloader import default_collate
 from webdataset.filters import _shuffle
 from webdataset.tariterators import base_plus_ext, url_opener, tar_file_expander, valid_sample
-from training.distributed import is_master
+
+from collections import OrderedDict
 from cycling_utils import InterruptableDistributedSampler
 
-from functools import partial
 
 
 try:
@@ -56,6 +56,51 @@ class CsvDataset(Dataset):
         texts = self.tokenize([str(self.captions[idx])])[0]
         return images, texts
 
+
+class __DisplMixin:
+    def displ_item(self, index):
+        sample, ann = self.__getitem__(index), self.annotation[index]
+
+        return OrderedDict(
+            {
+                "file": ann["image"],
+                "caption": ann["caption"],
+                "image": sample["image"],
+            }
+        )
+
+
+class CaptionDataset(__DisplMixin):
+    def __init__(self, vis_root, ann_path, split, transforms, tokenizer=None):
+        """
+        vis_root (string): Root directory of images (e.g. coco/images/)
+        ann_root (string): directory to store the annotation file
+        """
+        self.vis_root = vis_root
+        self.split_name = split
+        self.annotation = []
+        
+        j = json.load(open(ann_path, "r"))
+        self.annotation.extend(j["annotations"])
+
+        self.transforms = transforms
+        self.tokenize = tokenizer
+
+    def __getitem__(self, index):
+        
+        # TODO this assumes image input, not general enough
+        ann = self.annotation[index]
+
+        image_path = os.path.join(self.vis_root, "COCO_" + self.split_name + "2014_" + str(ann["image_id"]).zfill(12) + ".jpg")
+        images = Image.open(image_path).convert("RGB")
+        image = self.transforms(images)
+        caption = self.tokenize([str(ann["caption"])])[0]
+
+        return image, caption
+    
+    def __len__(self):
+        return len(self.annotation)
+    
 
 class SharedEpoch:
     def __init__(self, epoch: int = 0):
@@ -405,6 +450,8 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
         wds.batched(args.batch_size, partial=not is_train)
     ])
 
+    dataset = wds.DataPipeline(*pipeline)
+
     if is_train:
         if not resampled:
             num_shards = num_shards or len(expand_urls(input_shards)[0])
@@ -421,12 +468,9 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
     else:
         # last batches are partial, eval is done on single (master) node
         num_batches = math.ceil(num_samples / args.batch_size)
-
-    sampler = InterruptableDistributedSampler(dataset, shuffle=False)
     
     dataloader = wds.WebLoader(
         dataset,
-        sampler=sampler,
         batch_size=None,
         shuffle=False,
         num_workers=args.workers,
@@ -451,7 +495,7 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
     dataloader.num_batches = num_batches
     dataloader.num_samples = num_samples
     
-    return DataInfo(dataloader=dataloader, sampler=sampler, shared_epoch=shared_epoch)
+    return DataInfo(dataloader=dataloader, shared_epoch=shared_epoch)
 
 
 def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
@@ -507,6 +551,37 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     logging.info(f"Created dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
     return DataInfo(dataloader, sampler)
 
+def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
+    root = args.train_data if is_train else args.val_data
+    annotations = os.path.join(root, "annotations/captions_train2014.json") if is_train else os.path.join(root, "annotations/captions_val2014.json")
+    images = os.path.join(root, "train2014") if is_train else os.path.join(root, "val2014")
+    assert root
+    
+    dataset = CaptionDataset(
+        vis_root=images,
+        ann_path=annotations,
+        split="train" if is_train else "val",
+        transforms=preprocess_fn,
+        tokenizer=tokenizer
+    )
+    num_samples = len(dataset)
+    sampler = InterruptableDistributedSampler(dataset) if args.distributed else None
+    shuffle = is_train and sampler is None
+
+    dataloader = DataLoader(
+        dataset,
+        batch_size=args.batch_size,
+        shuffle=False,
+        num_workers=args.workers,
+        pin_memory=True,
+        sampler=sampler,
+        drop_last=is_train,
+    )
+    
+    dataloader.num_samples = num_samples
+    dataloader.num_batches = len(dataloader)
+    logging.info(f"Created dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
+    return DataInfo(dataloader, sampler)
 
 class SyntheticDataset(Dataset):
 
@@ -565,7 +640,11 @@ def get_dataset_fn(data_path, dataset_type):
         return get_csv_dataset
     elif dataset_type == "synthetic":
         return get_synthetic_dataset
+    elif dataset_type == "coco":
+        return get_coco_dataset
     elif dataset_type == "auto":
+        if "coco" in data_path:
+            return get_coco_dataset
         ext = data_path.split('.')[-1]
         if ext in ['csv', 'tsv']:
             return get_csv_dataset
@@ -594,5 +673,4 @@ def get_data(args, preprocess_fns, epoch=0, tokenizer=None):
 
     if args.imagenet_v2 is not None:
         data["imagenet-v2"] = get_imagenet(args, preprocess_fns, "v2")
-
     return data
