@@ -10,14 +10,11 @@ import os
 
 import torch
 import torch.distributed as dist
-from cycling_utils import atomic_torch_save
-from lavis.common.dist_utils import get_rank, get_world_size, is_main_process, is_dist_avail_and_initialized, main_process
-from lavis.datasets.builders import load_dataset
+from lavis.common.dist_utils import get_rank, get_world_size, is_main_process, is_dist_avail_and_initialized
 from lavis.common.logger import MetricLogger, SmoothedValue
-from torch.utils.data import DataLoader
 from lavis.common.registry import registry
 from lavis.datasets.data_utils import prepare_sample
-import time
+
 
 class BaseTask:
     def __init__(self, **kwargs):
@@ -54,15 +51,6 @@ class BaseTask:
         assert len(datasets_config) > 0, "At least one dataset has to be specified."
 
         for name in datasets_config:
-            if name == "train":
-                datasets["train"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/train2014")
-                continue
-            if name == "valid":
-                datasets["valid"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/val2014")
-                continue
-            if name == "test":
-                datasets["test"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/test2014")
-                continue
             dataset_config = datasets_config[name]
 
             builder = registry.get_builder_class(name)(dataset_config)
@@ -95,7 +83,7 @@ class BaseTask:
     def inference_step(self):
         raise NotImplementedError
 
-    def evaluation(self, model, data_loader, cuda_enabled=True, writer=None):
+    def evaluation(self, model, data_loader, cuda_enabled=True):
         metric_logger = MetricLogger(delimiter="  ")
         header = "Evaluation"
         # TODO make it configurable
@@ -105,12 +93,13 @@ class BaseTask:
 
         for samples in metric_logger.log_every(data_loader, print_freq, header):
             samples = prepare_sample(samples, cuda_enabled=cuda_enabled)
+
             eval_output = self.valid_step(model=model, samples=samples)
             results.extend(eval_output)
 
         if is_dist_avail_and_initialized():
             dist.barrier()
-        logging.info("Finished eval, will now post_eval")
+
         return results
 
     def train_epoch(
@@ -124,9 +113,6 @@ class BaseTask:
         cuda_enabled=False,
         log_freq=50,
         accum_grad_iters=1,
-        start_iters=1,
-        args=None,
-        writer=None,
     ):
         return self._train_inner_loop(
             epoch=epoch,
@@ -139,9 +125,6 @@ class BaseTask:
             log_freq=log_freq,
             cuda_enabled=cuda_enabled,
             accum_grad_iters=accum_grad_iters,
-            start_iters=start_iters,
-            args=args,
-            writer=writer,
         )
 
     def train_iters(
@@ -157,7 +140,6 @@ class BaseTask:
         cuda_enabled=False,
         log_freq=50,
         accum_grad_iters=1,
-        args=None,
     ):
         return self._train_inner_loop(
             epoch=epoch,
@@ -171,7 +153,6 @@ class BaseTask:
             log_freq=log_freq,
             cuda_enabled=cuda_enabled,
             accum_grad_iters=accum_grad_iters,
-            args=args,
         )
 
     def _train_inner_loop(
@@ -187,8 +168,6 @@ class BaseTask:
         log_freq=50,
         cuda_enabled=False,
         accum_grad_iters=1,
-        args=None,
-        writer=None,
     ):
         """
         An inner training loop compatible with both epoch-based and iter-based training.
@@ -197,6 +176,7 @@ class BaseTask:
         training stops after #iters_per_epoch iterations.
         """
         use_amp = scaler is not None
+
         if not hasattr(data_loader, "__next__"):
             # convert to iterator if not already
             data_loader = iter(data_loader)
@@ -206,40 +186,50 @@ class BaseTask:
         metric_logger.add_meter("loss", SmoothedValue(window_size=1, fmt="{value:.4f}"))
 
         # if iter-based runner, schedule lr based on inner epoch.
-        
         logging.info(
             "Start training epoch {}, {} iters per inner epoch.".format(
                 epoch, iters_per_epoch
             )
         )
-        
         header = "Train: data epoch: [{}]".format(epoch)
-        
-        writer_data = []
-        for samples in metric_logger.log_every(data_loader, log_freq, header, start_iters):
+        if start_iters is None:
+            # epoch-based runner
+            inner_epoch = epoch
+        else:
+            # In iter-based runner, we schedule the learning rate based on iterations.
+            inner_epoch = start_iters // iters_per_epoch
+            header = header + "; inner epoch [{}]".format(inner_epoch)
+
+        for i in metric_logger.log_every(range(iters_per_epoch), log_freq, header):
+            # if using iter-based runner, we stop after iters_per_epoch iterations.
+            if i >= iters_per_epoch:
+                break
+
+            samples = next(data_loader)
+
             samples = prepare_sample(samples, cuda_enabled=cuda_enabled)
             samples.update(
                 {
-                    "epoch": epoch,
+                    "epoch": inner_epoch,
                     "num_iters_per_epoch": iters_per_epoch,
-                    "iters": start_iters-1,
+                    "iters": i,
                 }
             )
-            lr_scheduler.step(cur_epoch=epoch, cur_step=start_iters - 1)
+
+            lr_scheduler.step(cur_epoch=inner_epoch, cur_step=i)
 
             with torch.cuda.amp.autocast(enabled=use_amp):
                 loss, loss_dict = self.train_step(model=model, samples=samples)
                 loss /= accum_grad_iters #TODO: not affect loss_dict values for logging
 
             # after_train_step()
-
             if use_amp:
                 scaler.scale(loss).backward()
             else:
                 loss.backward()
 
             # update gradients every accum_grad_iters iterations
-            if (start_iters + 1) % accum_grad_iters == 0:
+            if (i + 1) % accum_grad_iters == 0:
                 if use_amp:
                     scaler.step(optimizer)
                     scaler.update()                     
@@ -249,100 +239,15 @@ class BaseTask:
 
             metric_logger.update(**loss_dict)
             metric_logger.update(lr=optimizer.param_groups[0]["lr"])
-            if isinstance(data_loader, DataLoader):
-                sampler = data_loader.sampler
-            else:
-                sampler = data_loader._dataloader.sampler
-            sampler.advance(args.run_cfg.batch_size_train)
-            
-            metric_logger.synchronize_between_processes()
-            if writer is not None:
-                metric_data = []
-                for metre, value in metric_logger.meters.items():
-                    if metre == "loss_lm":
-                        new_string = ""
-                        in_bracket = False
-                        for char in str(value):
-                            if char == "(":
-                                in_bracket = True
-                                continue
-                            elif char == ")":
-                                break
-                            if in_bracket:
-                                new_string += char
-                                
-                        value = new_string
-                    metric_data.append(("Train/" + str(metre), float(str(value)), start_iters))
-                    #writer.add_scalar("Train/" + str(metre), float(str(value)), start_iters)
-                for tup in metric_data:
-                    writer_data.append(tup)
-            
-            if is_main_process():
-                if start_iters >= len(data_loader):
-                    print(f"Reached the end of the dataloder; Saving checkpoint at iters: {start_iters}")
-                    self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
-                    if writer is not None:
-                        for scalar in writer_data:
-                            if scalar[0] == "Train/lr":
-                                writer.add("Train/lr", optimizer.param_groups[0]["lr"], scalar[2])
-                                continue
-                            writer.add_scalar(scalar[0], scalar[1], scalar[2])
-                        writer_data = []
-                        logging.info("Finished writing logs")
-                elif start_iters % args.run_cfg.get("checkpoint_freq", 100) == 0:
-                    print(f"Saving checkpoint at iters: {start_iters} and epoch: {epoch}")
-                    self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
-                    if writer is not None:
-                        for scalar in writer_data:
-                            writer.add_scalar(scalar[0], scalar[1], scalar[2])
-                        writer_data = []
-                        logging.info("Finished writing logs")
-                    
-            start_iters += 1
 
         # after train_epoch()
         # gather the stats from all processes
         metric_logger.synchronize_between_processes()
-        return
-    
-    def save_checkpoint(self, model, optimizer, train_sampler, config, scaler, epoch, iteration, is_best=False):
-        """
-        Save the checkpoint at the current epoch.
-        """
-        
-        model_no_ddp = self.unwrap_dist_model(model, config)
-        param_grad_dic = {
-            k: v.requires_grad for (k, v) in model_no_ddp.named_parameters()
+        logging.info("Averaged stats: " + str(metric_logger.global_avg()))
+        return {
+            k: "{:.3f}".format(meter.global_avg)
+            for k, meter in metric_logger.meters.items()
         }
-        state_dict = model_no_ddp.state_dict()
-        for k in list(state_dict.keys()):
-            if k in param_grad_dic.keys() and not param_grad_dic[k]:
-                # delete parameters that do not require gradient
-                del state_dict[k]
-
-        save_obj = {
-            "model": state_dict,
-            "optimizer": optimizer.state_dict(),
-            "train_sampler" : train_sampler.state_dict(),
-            "config": config.to_dict(),
-            "scaler": scaler.state_dict() if scaler else None,
-            "epoch": epoch,
-            "iteration": iteration,
-        }
-        save_to = os.path.join(
-            config.run_cfg.output_dir,
-            "{}_{}.pth".format(self.name, "best" if is_best else "latest"),
-        )
-        logging.info("Saving checkpoint at epoch {} to {}.".format(epoch, save_to))
-        atomic_torch_save(save_obj, save_to)
-        logging.info("Saved successfully")
-    
-    def unwrap_dist_model(self, model, config):
-        use_dist = config.run_cfg.distributed
-        if use_dist:
-            return model.module
-        else:
-            return model
 
     @staticmethod
     def save_result(result, result_dir, filename, remove_duplicate=""):

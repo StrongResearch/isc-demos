@@ -6,11 +6,8 @@
 """
 
 import argparse
-import sys
+import os
 import random
-import logging
-
-from datetime import datetime
 
 import numpy as np
 import torch
@@ -79,9 +76,6 @@ def main():
     # os.environ["NCCL_BLOCKING_WAIT"] = "1"
 
     # set before init_distributed_mode() to ensure the same job_id shared across all ranks.
-
-    print(f"[{datetime.now()}] Starting job")
-
     job_id = now()
 
     cfg = Config(parse_args())
@@ -94,20 +88,16 @@ def main():
     setup_logger()
 
     cfg.pretty_print()
+
     task = tasks.setup_task(cfg)
     datasets = task.build_datasets(cfg)
     model = task.build_model(cfg)
-    
+
     runner = get_runner_class(cfg)(
         cfg=cfg, job_id=job_id, task=task, model=model, datasets=datasets
     )
     runner.train()
 
+
 if __name__ == "__main__":
-    logging.info("Starting job")
-<<<<<<< Updated upstream
-    sys.path.append("/mnt/Client/Lachladzhvmqo6ibchdo2w56bnfat53a/laclacqrlhxaw3xjcwncdcsqenkcrvaq/.jdk/jdk-11.0.21+9/bin")
-=======
-    sys.path.append("$HOME/.jdk/jdk-11.0.21+9/bin")
->>>>>>> Stashed changes
     main()

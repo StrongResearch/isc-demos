@@ -14,12 +14,13 @@ import lavis.common.dist_utils as dist_utils
 import torch
 import torch.distributed as dist
 import torch.nn.functional as F
-from lavis.common.dist_utils import download_cached_file, main_process
+from lavis.common.dist_utils import download_cached_file
 from lavis.common.logger import MetricLogger
 from lavis.common.utils import is_url
 from lavis.models.base_model import BaseModel
 from lavis.models.vit import interpolate_pos_embed
 from transformers import BertTokenizer
+
 
 class AlbefBase(BaseModel):
     @classmethod
@@ -71,6 +72,7 @@ class AlbefBase(BaseModel):
         logging.info("load checkpoint from %s" % url_or_filename)
         return msg
 
+
 def compute_sim_matrix(model, data_loader, **kwargs):
     k_test = kwargs.pop("k_test")
 
@@ -108,10 +110,9 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     text_atts = torch.cat(text_atts, dim=0)
     if hasattr(model.tokenizer, "enc_token_id"):
         text_ids[:, 0] = model.tokenizer.enc_token_id
-    
+
     image_feats = []
     image_embeds = []
-
     for samples in data_loader:
         image = samples["image"]
 
@@ -123,7 +124,6 @@ def compute_sim_matrix(model, data_loader, **kwargs):
         image_feats.append(image_feat.cpu())
         image_embeds.append(image_embed)
 
-    
     image_feats = torch.cat(image_feats, dim=0)
     image_embeds = torch.cat(image_embeds, dim=0)
 
@@ -162,6 +162,7 @@ def compute_sim_matrix(model, data_loader, **kwargs):
     score_matrix_t2i = torch.full(
         (len(texts), len(data_loader.dataset.image)), -100.0
     ).to(model.device)
+
     step = sims_matrix.size(0) // num_tasks + 1
     start = rank * step
     end = min(sims_matrix.size(0), start + step)

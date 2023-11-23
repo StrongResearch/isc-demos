@@ -21,11 +21,9 @@ sentencepiece
 spacy
 streamlit
 timm==0.4.12
-torch==2.0.1
+torch>=1.10.0
 torchvision
 tqdm
-transformers==4.25.0
+transformers>=4.28.0
 webdataset
 wheel
-tensorboard
-install-jdk
