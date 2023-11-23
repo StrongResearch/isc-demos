@@ -452,6 +452,13 @@ def parse_args(args):
         action="store_true",
         help='Use SigLip (sigmoid) loss.'
     )
+    
+    parser.add_argument(
+        "--distributed-evaluation",
+        default=False,
+        action="store_true",
+        help='Use multi gpu/node in evaluation'
+    )
 
     args = parser.parse_args(args)
 

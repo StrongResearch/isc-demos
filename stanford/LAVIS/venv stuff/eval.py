@@ -50,7 +50,6 @@ class COCOEvalCap:
         # =================================================
         for scorer, method in scorers:
             print('computing %s score...'%(scorer.method()))
-            breakpoint()
             score, scores = scorer.compute_score(gts, res)
             if type(method) == list:
                 for sc, scs, m in zip(score, scores, method):

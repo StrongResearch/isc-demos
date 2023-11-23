@@ -41,7 +41,6 @@ from cycling_utils import atomic_torch_save
 
 LATEST_CHECKPOINT_NAME = "latest.pt"
 
-
 def random_seed(seed=42, rank=0):
     torch.manual_seed(seed + rank)
     np.random.seed(seed + rank)
@@ -123,7 +122,7 @@ def main(args):
     args.checkpoint_path = os.path.join(log_base_path, "checkpoints")
     if is_master(args):
         args.tensorboard_path = os.path.join(args.logs, "tensorboard") if args.tensorboard else ''
-        for dirname in [args.tensorboard_path, args.checkpoint_path]:
+        for dirname in [args.tensorboard_path]:
             if dirname:
                 os.makedirs(dirname, exist_ok=True)
     else:
@@ -246,8 +245,6 @@ def main(args):
         model.set_grad_checkpointing()
 
     if is_master(args):
-        # logging.info("Model:")
-        # logging.info(f"{str(model)}")
         logging.info("Params:")
         params_file = os.path.join(args.logs, args.name, "params.txt")
         with open(params_file, "w") as f:
@@ -267,7 +264,7 @@ def main(args):
     
         if args.distill:
             dist_model = torch.nn.parallel.DistributedDataParallel(dist_model, device_ids=[device], **ddp_args)
-    logging.info(f"Model ddp initialized")
+
     # create optimizer and scaler
     optimizer = None
     scaler = None
@@ -298,18 +295,16 @@ def main(args):
 
         scaler = GradScaler() if args.precision == "amp" else None
 
-    # optionally resume from a checkpoint
+    # init default values if checkpoint isn't loaded
     start_epoch = 0
     start_iteration = 1
     sampler = None
-    checkpoint_exists = os.path.isfile(args.resume)
-    if not checkpoint_exists:
-        logging.info("Checkpoint file specified but not found, starting from scratch instead")
-    if args.resume is not None and checkpoint_exists:
+    # optionally resume from a checkpoint
+    if args.resume is not None and os.path.isfile(args.resume):
         logging.info("Checkpoint file found, attempting to load")
         checkpoint = pt_load(args.resume, map_location='cpu')
         if 'epoch' in checkpoint:
-            # resuming a train checkpoint w/ epoch and optimizer state
+            # resuming a train checkpoint w/ epoch, iteration, optimizer, sampler, scaler
             start_epoch = checkpoint["epoch"]
             start_iteration = checkpoint["iteration"] + 1
             sd = checkpoint["model"]
@@ -320,7 +315,6 @@ def main(args):
                 optimizer.load_state_dict(checkpoint["optimizer"])
             if scaler is not None and 'scaler' in checkpoint:
                 scaler.load_state_dict(checkpoint['scaler'])
-            sampler = checkpoint["sampler"]
             logging.info(f"=> resuming checkpoint '{args.resume}' (epoch {start_epoch}) (iteration {start_iteration})")
         else:
             # loading a bare (model only) checkpoint for fine-tune or evaluation
@@ -334,11 +328,9 @@ def main(args):
             epoch=start_epoch,
             tokenizer=tokenizer,
         )
-        logging.info("data loaded")
         if "sampler" in checkpoint:
+            sampler = checkpoint["sampler"]
             data["train"].dataloader.sampler.load_state_dict(sampler)
-        # if test_sampler is not None:
-        #     data["val"].dataloader.sampler.load_state_dict(test_sampler)
     else:
         tokenizer = get_tokenizer(args.model)
         data = get_data(
@@ -404,7 +396,6 @@ def main(args):
     # weights without the prefix.
     original_model = model
     if args.torchcompile:
-        logging.info('Compiling model...')
         model = torch.compile(original_model)
 
     if 'train' not in data:
@@ -419,22 +410,16 @@ def main(args):
     loss = create_loss(args)
 
     for epoch in range(start_epoch, args.epochs):
+        # Uses the sampler context to exit if the epoch is done
         with data["train"].dataloader.sampler.in_epoch(epoch):
-            # status_path = args.resume[:-9] + "status.pt"
-            # if get_status(status_path) == "train": 
-            if is_master(args):
-                logging.info(f"Beginning training with tb_writer = {writer} and tensorboard output path {args.logs}")
             train_one_epoch(model, data, loss, epoch, start_iteration, optimizer, scaler, scheduler, dist_model, args, tb_writer=writer)
+            
+            # Reset iteration for the next train loop
             start_iteration = 1
-                # if is_master(args):
-                    # set_status("eval", status_path)
-            # else:
-            #     start_epoch = start_epoch - 1
+            
             if any(v in data for v in ('val', 'imagenet-val', 'imagenet-v2')) and ((epoch + 1) % args.val_frequency == 0 or epoch == args.epochs):
                 with data["val"].dataloader.sampler.in_epoch(epoch):
                     evaluate(model, data, epoch, args, tb_writer=writer, tokenizer=tokenizer)
-            # if is_master(args):
-            #     set_status("train", status_path)
 
     if args.wandb and is_master(args):
         wandb.finish()

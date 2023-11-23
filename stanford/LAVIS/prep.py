@@ -25,6 +25,7 @@ def parse_args():
     
     print(args)
     return args
+
 cfg = Config(parse_args())
 jdk.install("11")
 Path(cfg.run_cfg.output_dir).mkdir(parents=True, exist_ok=True)

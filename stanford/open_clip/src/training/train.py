@@ -62,7 +62,8 @@ def backward(total_loss, scaler):
         scaler.scale(total_loss).backward()
     else:
         total_loss.backward()
-        
+
+# This function saves the inner-epoch state of the run so it can be easily resumed
 def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, path):
     checkpoint_dict = {
                 "epoch": epoch,
@@ -98,8 +99,11 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     
     metric_data = []
 
+    # No need to enumerate since we pass in iterations
     for batch in dataloader:
-        i_accum = iters - 1 // args.accum_freq
+        if is_master(args) and iters % 5 == 0:
+            logging.info(f"Training - {iters}/{len(dataloader)}")
+        i_accum = (iters - 1) // args.accum_freq
         step = num_batches_per_epoch * epoch + i_accum
 
         if not args.skip_scheduler:
@@ -112,8 +116,6 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         data_time_m.update(time.time() - end)
         optimizer.zero_grad()
         
-        if is_master(args) and iters % 5 == 0:
-            logging.info(f"Training - {iters}/{len(dataloader)}")
         if args.accum_freq == 1:
             with autocast():
                 model_out = model(images, texts)
@@ -206,14 +208,20 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         with torch.no_grad():
             unwrap_model(model).logit_scale.clamp_(0, math.log(100))
 
+        # Gather metric data from each iteration but only write when checkpointing to avoid writing twice to the same iteration
         batch_time_m.update(time.time() - end)
         end = time.time()
         batch_count = i_accum + 1
-        dataloader.sampler.advance(args.batch_size)
         batch_loss = losses["loss"]
         dist.all_reduce(batch_loss, op=dist.ReduceOp.SUM)
         batch_loss = torch.div(batch_loss, dist.get_world_size())
         metric_data.append((batch_loss, iters))
+        
+        # Advance sampler by batch size before checkpointing
+        dataloader.sampler.advance(args.batch_size)
+        
+        # Save checkpoint if at frequency or end of dataloader
+        # Also writes to tensorboard
         if is_master(args):
             if iters >= len(dataloader):
                 #  save checkpoint and break
@@ -295,25 +303,25 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     # end for
 
 
-def save_eval_checkpoint(sampler, iteration, cum_loss, cum_gen_loss, img_features, txt_features, path):
-    checkpoint_dict = {
-                "sampler": sampler.state_dict(),
-                "iteration": iteration,
-                "cum_loss": cum_loss,
-                "cum_gen_loss": cum_gen_loss,
-                "img_features": img_features,
-                "txt_features": txt_features,
-            }
-    atomic_torch_save(checkpoint_dict, path)
+# def save_eval_checkpoint(sampler, iteration, cum_loss, cum_gen_loss, img_features, txt_features, path):
+#     checkpoint_dict = {
+#                 "sampler": sampler.state_dict(),
+#                 "iteration": iteration,
+#                 "cum_loss": cum_loss,
+#                 "cum_gen_loss": cum_gen_loss,
+#                 "img_features": img_features,
+#                 "txt_features": txt_features,
+#             }
+#     atomic_torch_save(checkpoint_dict, path)
 
-def load_eval_checkpoint(path):
-    if os.path.isfile(path):
-        checkpoint = torch.load(path, map_location="cpu")
-        logging.info(f"Checkpoint loaded with iters = {checkpoint['iteration']}")
-        return ((checkpoint["epoch"], checkpoint["iteration"], checkpoint["cum_loss"], 
-                checkpoint["cum_gen_loss"], checkpoint["img_features"], checkpoint["txt_features"]), checkpoint["sampler"])
-    logging.info("No eval checkpoint found, starting eval from scratch.")
-    return False
+# def load_eval_checkpoint(path):
+#     if os.path.isfile(path):
+#         checkpoint = torch.load(path, map_location="cpu")
+#         logging.info(f"Checkpoint loaded with iters = {checkpoint['iteration']}")
+#         return ((checkpoint["epoch"], checkpoint["iteration"], checkpoint["cum_loss"], 
+#                 checkpoint["cum_gen_loss"], checkpoint["img_features"], checkpoint["txt_features"]), checkpoint["sampler"])
+#     logging.info("No eval checkpoint found, starting eval from scratch.")
+#     return False
 
 def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     metrics = {}
@@ -343,6 +351,8 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 images, texts = batch
                 images = images.to(device=device, dtype=input_dtype, non_blocking=True)
                 texts = texts.to(device=device, non_blocking=True)
+                
+                # Advance the sampler by the batch size - ignore when it steps too far on the last step
                 try:
                     dataloader.sampler.advance(args.batch_size)
                 except Exception:

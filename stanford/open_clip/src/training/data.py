@@ -36,6 +36,7 @@ class CsvDataset(Dataset):
     def __init__(self, input_filename, transforms, img_key, caption_key, samples=None, sep=",", tokenizer=None):
         logging.debug(f'Loading csv data from {input_filename}.')
         
+        # Allows choosing number of samples per epoch 
         if samples is not None:
             df = pd.read_csv(input_filename, sep=sep, nrows=samples)
         else:
@@ -44,7 +45,6 @@ class CsvDataset(Dataset):
         self.images = df[img_key].tolist()
         self.captions = df[caption_key].tolist()
         self.transforms = transforms
-        logging.debug('Done loading data.')
 
         self.tokenize = tokenizer
 
@@ -69,7 +69,7 @@ class __DisplMixin:
             }
         )
 
-
+# This class is added specifically for use with the COCO dataset
 class CaptionDataset(__DisplMixin):
     def __init__(self, vis_root, ann_path, split, transforms, tokenizer=None):
         """
@@ -88,9 +88,9 @@ class CaptionDataset(__DisplMixin):
 
     def __getitem__(self, index):
         
-        # TODO this assumes image input, not general enough
         ann = self.annotation[index]
 
+        # The image path is hardcoded to work with our 2014 COCO dataset
         image_path = os.path.join(self.vis_root, "COCO_" + self.split_name + "2014_" + str(ann["image_id"]).zfill(12) + ".jpg")
         images = Image.open(image_path).convert("RGB")
         image = self.transforms(images)
@@ -116,6 +116,8 @@ class SharedEpoch:
 @dataclass
 class DataInfo:
     dataloader: DataLoader
+    
+    # Use our sampler for easy cycling
     sampler: InterruptableDistributedSampler = None
     shared_epoch: SharedEpoch = None
 
@@ -533,6 +535,8 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
                 tokenizer=tokenizer
             )
     num_samples = len(dataset)
+    
+    # Use our sampler for easy cycling
     sampler = InterruptableDistributedSampler(dataset) if args.distributed else None
     shuffle = is_train and sampler is None
 
@@ -552,6 +556,7 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     return DataInfo(dataloader, sampler)
 
 def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
+    # Values are all hardcoded for the 2014 coco dataset
     root = args.train_data if is_train else args.val_data
     annotations = os.path.join(root, "annotations/captions_train2014.json") if is_train else os.path.join(root, "annotations/captions_val2014.json")
     images = os.path.join(root, "train2014") if is_train else os.path.join(root, "val2014")
@@ -565,6 +570,8 @@ def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
         tokenizer=tokenizer
     )
     num_samples = len(dataset)
+    
+    # Use our sampler for easy cycling
     sampler = InterruptableDistributedSampler(dataset) if args.distributed else None
     shuffle = is_train and sampler is None
 
@@ -640,8 +647,6 @@ def get_dataset_fn(data_path, dataset_type):
         return get_csv_dataset
     elif dataset_type == "synthetic":
         return get_synthetic_dataset
-    elif dataset_type == "coco":
-        return get_coco_dataset
     elif dataset_type == "auto":
         if "coco" in data_path:
             return get_coco_dataset

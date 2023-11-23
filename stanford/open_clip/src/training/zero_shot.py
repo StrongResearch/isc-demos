@@ -2,7 +2,6 @@ import logging
 
 import torch
 from tqdm import tqdm
-from training.distributed import is_master
 
 from open_clip import get_input_dtype, get_tokenizer, build_zero_shot_classifier, \
     IMAGENET_CLASSNAMES, OPENAI_IMAGENET_TEMPLATES
@@ -16,18 +15,15 @@ def accuracy(output, target, topk=(1,)):
 
 
 def run(model, classifier, dataloader, args):
-    logging.info("getting autocast")
     autocast = get_autocast(args.precision)
-    logging.info("getting dtype")
     input_dtype = get_input_dtype(args.precision)
 
     with torch.no_grad():
         top1, top5, n = 0., 0., 0.
-        logging.info("iterating...")
         i = 0
         for images, target in tqdm(dataloader, unit_scale=args.batch_size):
-            if i % 100 == 0:
-                logging.info("progres: " + str(i) + "/" + str(args.batch_size))
+            if i % 50 == 0:
+                logging.info("progress: " + str(i) + "/" + str(args.batch_size))
             
             images = images.to(device=args.device, dtype=input_dtype)
             target = target.to(args.device)

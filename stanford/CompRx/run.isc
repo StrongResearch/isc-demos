@@ -1,6 +1,0 @@
-experiment_name = "comprx"
-gpu_type = "24GB VRAM GPU"
-nnodes = 12
-venv_path = "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/.venv/bin/activate"
-output_path = "/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/isc-demos/stanford/CompRx/boutput"
-command = "comprx/train_vae.py experiment=vae"

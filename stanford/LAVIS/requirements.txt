@@ -28,3 +28,4 @@ transformers==4.25.0
 webdataset
 wheel
 tensorboard
+install-jdk
