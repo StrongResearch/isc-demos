@@ -108,8 +108,12 @@ class LPIPSWithDiscriminator(nn.Module):
                 except RuntimeError:
                     assert not self.training
                     d_weight = torch.tensor(0.0)
+                    
+            reconstruction_loss = nll_loss
+            kldivergence_loss = self.kl_weight * kl_loss
+            discriminator_loss = d_weight * d_valid * g_loss
 
-            loss = nll_loss + self.kl_weight * kl_loss + d_weight * d_valid * g_loss
+            loss = reconstruction_loss + kldivergence_loss + discriminator_loss
 
             log = {
                 f"{split}/total_loss": loss.clone().detach().mean(),
@@ -121,7 +125,7 @@ class LPIPSWithDiscriminator(nn.Module):
                 f"{split}/g_loss": g_loss.detach().mean(),
             }
 
-            return loss, log
+            return loss, log, reconstruction_loss, kldivergence_loss, discriminator_loss
 
         elif optimizer_idx == 1:
             # Discriminator loss (log D_phi(x)): Forces discriminator logits to be high (+1) for inputs and low (-1) for reconstructions

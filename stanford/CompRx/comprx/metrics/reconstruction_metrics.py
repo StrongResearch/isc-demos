@@ -1,10 +1,9 @@
 from copy import deepcopy
 
 import clip
-import numpy as np
 import open_clip
 import torch
-import torchvision
+import os
 from torchmetrics import (
     Metric,
     MultiScaleStructuralSimilarityIndexMeasure,
@@ -135,7 +134,7 @@ class FID_CLIP(Metric):
         
         super().__init__(**kwargs)
         if version == "CLIP":
-            self.clip, _ = clip.load("ViT-B/32", device="cuda")
+            self.clip, _ = clip.load("ViT-B/32", device=f"cuda:{os.environ.get('LOCAL_RANK',-1)}")
             res = self.clip.visual.input_resolution
         elif version == "BiomedCLIP":
             model_kwargs = {'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 

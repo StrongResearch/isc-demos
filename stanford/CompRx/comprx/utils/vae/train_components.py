@@ -9,6 +9,9 @@ from torch import nn
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from torchmetrics import Metric
+from torch.utils.tensorboard import SummaryWriter
+import torchvision
+import shutil
 
 from comprx.utils.extras import get_weight_dtype
 from comprx.utils.transforms import to_dict
@@ -42,8 +45,10 @@ def training_epoch(
     model.train()
     epoch_start, batch_start = time(), time()
     dtype = get_weight_dtype(accelerator)
+    if accelerator.is_main_process:
+        writer = SummaryWriter(log_dir='./checkpoints/tb')
 
-    for i, batch in enumerate(dataloader):
+    for batch in dataloader:
     
         data_time = time() - batch_start
 
@@ -51,10 +56,11 @@ def training_epoch(
             batch = to_dict(batch)
 
             # Train the encoder and decoder
-            images = batch["img"].to(dtype)
+            images = batch["img"].to(dtype=dtype)
             reconstructions, posterior = model(images)
+            dataloader.sampler.advance(len(images))
 
-            aeloss, log_dict_ae = criterion(
+            aeloss, log_dict_ae, reconstruction_loss, kldivergence_loss, discriminator_loss = criterion(
                 inputs=images,
                 reconstructions=reconstructions,
                 posteriors=posterior,
@@ -103,16 +109,16 @@ def training_epoch(
 
         # Logging values
         print(
-            f"\r[Epoch <{epoch:03}/{options['max_epoch']}>: Step <{i:03}/{len(dataloader)}>] - "
+            f"\r[Epoch <{epoch:03}/{options['max_epoch']}>: Step <{(global_step-(epoch*len(dataloader))):03}/{len(dataloader)}>] - "
             + f"Data(s): {data_time:.3f} ({metric_data.compute():.3f}) - "
             + f"Batch(s): {batch_time:.3f} ({metric_batch.compute():.3f}) - "
             + f"AE Loss: {aeloss.item():.3f} ({metric_aeloss.compute():.3f}) - "
             + f"AE Rec Loss: {log_dict_ae['train/rec_loss'].item():.3f} ({metric_ae_recloss.compute():.3f}) - "
             + f"Disc Loss: {discloss.item():.3f} ({metric_discloss.compute():.3f}) - "
-            + f"{(((time() - epoch_start) / (i + 1)) * (len(dataloader) - i)) / 60:.2f} m remaining\n"
+            + f"{(((time() - epoch_start) / (global_step + 1)) * (len(dataloader) - global_step)) / 60:.2f} m remaining\n"
         )
 
-        if options["is_logging"] and i % options["log_every_n_steps"] == 0:
+        if options["is_logging"] and global_step % options["log_every_n_steps"] == 0:
             log_data = {
                 "epoch": epoch,
                 "mean_aeloss": metric_aeloss.compute(),
@@ -120,7 +126,7 @@ def training_epoch(
                 "mean_discloss": metric_discloss.compute(),
                 "mean_data": metric_data.compute(),
                 "mean_batch": metric_batch.compute(),
-                "step": i,
+                "step": global_step,
                 "step_global": global_step,
                 "step_aeloss": aeloss,
                 "step_ae_recloss": log_dict_ae["train/rec_loss"],
@@ -133,18 +139,67 @@ def training_epoch(
                 log_data[name] = metric.compute()
 
             accelerator.log(log_data)
-        global_step += 1
+        
+        if accelerator.is_main_process and global_step % 10 == 0:
+            print("bouta write to tb")
+            batch_images = list(torch.cat([images, reconstructions], dim=0))
+            grid = torchvision.utils.make_grid(batch_images, nrow=len(images))
+            writer.add_image(f"examples rank{os.environ['RANK']}", grid, global_step)
+            writer.add_scalar("Train/reconstruction_loss", reconstruction_loss, global_step)
+            writer.add_scalar("Train/kldivergence_loss", kldivergence_loss, global_step)
+            writer.add_scalar("Train/discriminator_loss", discriminator_loss, global_step)
+            writer.add_scalar("Train/loss", aeloss, global_step)
+            writer.close()
+            print("wrote to tb")
 
-        if global_step % options["ckpt_every_n_steps"] == 0:
-            try:
-                accelerator.save_state(os.path.join(options["ckpt_dir"], f"step_{global_step}.pt"))
-            except Exception as e:
-                print(e)
-
+        if global_step % options["ckpt_every_n_steps"] == 0 and global_step > 0 and accelerator.is_main_process:
+            print("attempting to save")
+            save_dir_1 = os.path.join(options["ckpt_dir"], f"state_1.pt")
+            save_dir_2 = os.path.join(options["ckpt_dir"], f"state_2.pt")
+            if os.path.isdir(os.path.join(options["ckpt_dir"], "latest.pt")):
+                old = os.path.realpath(os.path.join(options['ckpt_dir'], 'latest.pt'))
+                new = save_dir_1 if save_dir_1 != old else save_dir_2
+                shutil.rmtree(new, ignore_errors=True)
+                accelerator.save_state(new)
+                print("done saving state")
+                torch.save({"train_sampler": dataloader.sampler.state_dict(),
+                            "step": global_step,
+                            "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
+                os.symlink(new, os.path.join(options["ckpt_dir"], "temp.pt"))
+                os.replace(os.path.join(options["ckpt_dir"], "temp.pt"), os.path.join(options["ckpt_dir"], "latest.pt"))
+            else:
+                new = os.path.join(options["ckpt_dir"], f"state_1.pt")
+                shutil.rmtree(new, ignore_errors=True)
+                accelerator.save_state(new)
+                print("done saving state")
+                torch.save({"train_sampler": dataloader.sampler.state_dict(),
+                            "step": global_step,
+                            "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
+                os.symlink(new, os.path.join(options["ckpt_dir"], "latest.pt"))
+                
+            # if os.path.isdir(os.path.join(options["ckpt_dir"], "latest.pt")):
+            #     accelerator.save_state(save_dir)
+            #     print("done saving state")
+            #     torch.save({"train_sampler": dataloader.sampler.state_dict(),
+            #                 "step": global_step,
+            #                 "epoch": epoch}, os.path.join(save_dir, "train_sampler.bin"))
+            #     os.symlink(save_dir, os.path.join(options["ckpt_dir"], "temp.pt"))
+            #     os.replace(os.path.join(options["ckpt_dir"], "temp.pt"), os.path.join(options["ckpt_dir"], "latest.pt"))
+            #     print(f"Saved checkpoint to {os.path.realpath(os.path.join(options['ckpt_dir'], 'latest.pt'))}")
+            # else:
+            #     accelerator.save_state(save_dir)
+            #     print("done saving state")
+            #     torch.save({"train_sampler": dataloader.sampler.state_dict(),
+            #                 "step": global_step,
+            #                 "epoch": epoch}, os.path.join(save_dir, "train_sampler.bin"))
+            #     os.symlink(save_dir, os.path.join(options["ckpt_dir"], "latest.pt"))
+    
         batch_start = time()
 
         if options["fast_dev_run"]:
             break
+        
+        global_step += 1
 
     return global_step
 

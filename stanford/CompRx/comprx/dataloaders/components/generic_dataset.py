@@ -89,7 +89,7 @@ class GenericDataset(Dataset):
 
         self.df = pl.read_csv(split_path)
         if isinstance(split_column, str) and isinstance(split_name, str):
-            self.df = self.df.filter(pl.col("image_id") != -22222)  # This image is evil
+            self.df = self.df.filter(pl.col("image_id") != None)
 
         # Generate image paths
         if img_column is not None:

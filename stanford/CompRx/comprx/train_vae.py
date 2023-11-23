@@ -11,13 +11,17 @@ from rich import print
 from torch.utils.data import DataLoader
 from torchmetrics import MeanMetric
 
+import matplotlib
+
 import time
 
 from comprx.utils.extras import sanitize_dataloader_kwargs, set_seed
 from comprx.utils.vae.litema import LitEma, ema_scope
 from comprx.utils.vae.train_components import training_epoch, validation_epoch
+from accelerate.data_loader import DataLoaderShard
 
 from cycling_utils import InterruptableDistributedSampler
+
 
 # Set the project root
 root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
@@ -32,11 +36,8 @@ def main(cfg: DictConfig):
     # Instantiating config
     print(f"=> Starting [experiment={cfg.task_name}]")
 
-    print('pre-instantiation')
     cfg = instantiate(cfg)
-    
-    print("post instantiation")
-
+    # breakpoint()
     # Seeding
     if cfg.get("seed", None) is not None:
         print(f"=> Setting seed [seed={cfg.seed}]")
@@ -49,8 +50,6 @@ def main(cfg: DictConfig):
     is_logging = bool(logger_kwargs)
     print(f"=> Instantiate accelerator [logging={is_logging}]")
     
-    print("pre-accelerator")
-    time.sleep(20)
     gradient_accumulation_steps = cfg.get("gradient_accumulation_steps", 1)
     accelerator = Accelerator(
         gradient_accumulation_plugin=GradientAccumulationPlugin(
@@ -82,13 +81,15 @@ def main(cfg: DictConfig):
     train_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["train"]), sampler=train_sampler)
 
     print(f"=> Instantiating valid dataloader [device={accelerator.device}]")
-    val_dataset = cfg["dataloader"]["valid"]["dataset"]
-    val_sampler = InterruptableDistributedSampler(val_dataset)
-    valid_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["valid"]), sampler=val_sampler)
+    valid_dataset = cfg["dataloader"]["valid"]["dataset"]
+    valid_sampler = InterruptableDistributedSampler(valid_dataset)
+    valid_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["valid"]), sampler=valid_sampler)
 
     # Create loss function
     criterion = cfg.criterion
     discriminator_iter_start = criterion.discriminator_iter_start
+    
+    print(f"discriminator_iter_start: {discriminator_iter_start}")
 
     # Create model
     model = cfg.model
@@ -119,14 +120,40 @@ def main(cfg: DictConfig):
     opt_disc = torch.optim.Adam(criterion.discriminator.parameters(), lr=lr, betas=(0.5, 0.9))
 
     # Prepare components for multi-gpu/mixed precision training
-    (train_dataloader, valid_dataloader, model, opt_ae, opt_disc, criterion) = accelerator.prepare(
-        train_dataloader,
-        valid_dataloader,
+
+    (model, opt_ae, opt_disc, criterion) = accelerator.prepare(
         model,
         opt_ae,
         opt_disc,
         criterion,
     )
+    
+    # Resume from checkpoint
+    start_epoch = cfg.start_epoch
+    global_step = None
+    if cfg.resume_from_ckpt is not None and os.path.isdir(cfg.resume_from_ckpt):
+        sampler = torch.load(os.path.join(cfg.resume_from_ckpt, "train_sampler.bin"))
+        train_sampler.load_state_dict(sampler["train_sampler"])
+        start_epoch = sampler["epoch"]
+        global_step = sampler["step"] + 1
+        print(f"Loaded from checkpoint at epoch {start_epoch} and step {global_step}")
+    
+    train_kwargs = {"num_workers": cfg.dataloader.train.num_workers,
+                    "pin_memory": True}
+    train_dataloader = DataLoaderShard(
+            train_dataset,
+            device=f"cuda:{os.environ['LOCAL_RANK']}",
+            sampler=train_sampler,
+            batch_size=batch_size,
+            rng_types=None,
+            synchronized_generator=None,
+            _drop_last=train_dataloader.drop_last,
+            **train_kwargs,
+        )
+
+    accelerator._dataloaders.append(train_dataloader)
+
+    accelerator._dataloaders.append(valid_dataloader)
 
     # Create metrics: aeloss, discloss, recloss, data(time), batch(time)
     default_metrics = accelerator.prepare(*[MeanMetric() for _ in range(5)])
@@ -136,11 +163,6 @@ def main(cfg: DictConfig):
     else:
         metrics = []
 
-    # Resume from checkpoint
-    start_epoch = cfg.start_epoch
-    if cfg.resume_from_ckpt is not None:
-        accelerator.load_state(cfg.resume_from_ckpt)
-
     options = {
         "max_epoch": cfg["max_epoch"],
         "is_logging": is_logging,
@@ -149,6 +171,10 @@ def main(cfg: DictConfig):
         "ckpt_dir": cfg["ckpt_dir"],
         "fast_dev_run": cfg["fast_dev_run"],
     }
+    
+    if cfg.resume_from_ckpt is not None and os.path.isdir(cfg.resume_from_ckpt):
+        accelerator.load_state(cfg.resume_from_ckpt)
+        print("Loaded from checkpoint")
 
     if inference_mode:
         print("=> Inference mode: saving latents")
@@ -170,7 +196,7 @@ def main(cfg: DictConfig):
                     output_path = os.path.join(out_path, path + ".pt")
                     torch.save(arr, output_path)
 
-            for step, batch in enumerate(valid_dataloader):
+            for step, batch in enumerate(valid_dataloader): 
                 if accelerator.is_main_process:
                     print(f"=> Step: {step}/{len(valid_dataloader)}")
 
@@ -187,69 +213,70 @@ def main(cfg: DictConfig):
     else:
         print(f"=> Starting model training [epochs={cfg['max_epoch']}]")
         min_loss = None
-        global_step = cfg.get("global_step", 0)
+        global_step = cfg.get("global_step", 0) if global_step is None else global_step # uses other thing atm
         for epoch in range(start_epoch, cfg["max_epoch"]):
-            global_step = training_epoch(
-                options=options,
-                epoch=epoch,
-                global_step=global_step,
-                accelerator=accelerator,
-                dataloader=train_dataloader,
-                model=model,
-                criterion=criterion,
-                discriminator_iter_start=discriminator_iter_start,
-                default_metrics=default_metrics,
-                rec_metrics=metrics,
-                optimizer_ae=opt_ae,
-                optimizer_disc=opt_disc,
-            )
+            with train_dataloader.sampler.in_epoch(epoch):
+                global_step = training_epoch(
+                    options=options,
+                    epoch=epoch,
+                    global_step=global_step,
+                    accelerator=accelerator,
+                    dataloader=train_dataloader,
+                    model=model,
+                    criterion=criterion,
+                    discriminator_iter_start=discriminator_iter_start,
+                    default_metrics=default_metrics,
+                    rec_metrics=metrics,
+                    optimizer_ae=opt_ae,
+                    optimizer_disc=opt_disc,
+                )
 
-            accelerator.wait_for_everyone()
-            if use_ema:
-                model_ema([model, criterion])
+                accelerator.wait_for_everyone()
+                if use_ema:
+                    model_ema([model, criterion])
 
-            loss = validation_epoch(
-                options=options,
-                epoch=epoch,
-                accelerator=accelerator,
-                dataloader=valid_dataloader,
-                model=model,
-                criterion=criterion,
-                default_metrics=default_metrics,
-                rec_metrics=metrics,
-                global_step=global_step,
-            )
+                loss = validation_epoch(
+                    options=options,
+                    epoch=epoch,
+                    accelerator=accelerator,
+                    dataloader=valid_dataloader,
+                    model=model,
+                    criterion=criterion,
+                    default_metrics=default_metrics,
+                    rec_metrics=metrics,
+                    global_step=global_step,
+                )
 
-            if use_ema:
-                with ema_scope(use_ema, model_ema, [model, criterion]):
-                    validation_epoch(
-                        options=options,
-                        epoch=epoch,
-                        accelerator=accelerator,
-                        dataloader=valid_dataloader,
-                        model=model,
-                        criterion=criterion,
-                        default_metrics=default_metrics,
-                        rec_metrics=metrics,
-                        global_step=global_step,
-                        postfix="_ema",
-                    )
+                if use_ema:
+                    with ema_scope(use_ema, model_ema, [model, criterion]):
+                        validation_epoch(
+                            options=options,
+                            epoch=epoch,
+                            accelerator=accelerator,
+                            dataloader=valid_dataloader,
+                            model=model,
+                            criterion=criterion,
+                            default_metrics=default_metrics,
+                            rec_metrics=metrics,
+                            global_step=global_step,
+                            postfix="_ema",
+                        )
 
-            # save the best model
-            if min_loss is None or loss < min_loss:
-                try:
-                    accelerator.save_state(os.path.join(cfg.ckpt_dir, "best.pt"))
-                except Exception as e:
-                    print(e)
-                min_loss = loss
+                # save the best model
+                if min_loss is None or loss < min_loss:
+                    try:
+                        accelerator.save_state(os.path.join(cfg.ckpt_dir, "best.pt"))
+                    except Exception as e:
+                        print(e)
+                    min_loss = loss
 
-            # save checkpoint
-            if (epoch + 1) % cfg.get("ckpt_every_n_epochs", 1) == 0:
-                print(f"=> Saving checkpoint [epoch={epoch}]")
-                try:
-                    accelerator.save_state(os.path.join(cfg.ckpt_dir, f"epoch-{epoch:04d}.pt"))
-                except Exception as e:
-                    print(e)
+                # save checkpoint
+                if (epoch + 1) % cfg.get("ckpt_every_n_epochs", 1) == 0:
+                    print(f"=> Saving checkpoint [epoch={epoch}]")
+                    try:
+                        accelerator.save_state(os.path.join(cfg.ckpt_dir, f"epoch-{epoch:04d}.pt"))
+                    except Exception as e:
+                        print(e)
 
         # save last model
         accelerator.save_state(os.path.join(cfg.ckpt_dir, "last.pt"))
