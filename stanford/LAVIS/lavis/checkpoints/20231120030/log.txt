@@ -1,0 +1,238 @@
+{
+    "run": {
+        "task": "captioning",
+        "runner": "runner_base",
+        "lr_sched": "linear_warmup_cosine_lr",
+        "init_lr": 1e-05,
+        "min_lr": 0,
+        "weight_decay": 0.05,
+        "max_epoch": 50,
+        "batch_size_train": 9,
+        "batch_size_eval": 9,
+        "num_workers": 3,
+        "max_len": 20,
+        "min_len": 5,
+        "num_beams": 3,
+        "seed": 42,
+        "output_dir": "./checkpoints",
+        "resume_ckpt_path": "./checkpoints/caption_latest.pth",
+        "tensorboard_path": "./logs",
+        "checkpoint_freq": 15,
+        "amp": true,
+        "evaluate": false,
+        "eval_freq": 50,
+        "train_splits": [
+            "train"
+        ],
+        "valid_splits": [
+            "val"
+        ],
+        "test_splits": [
+            "test"
+        ],
+        "device": "cuda",
+        "world_size": 12,
+        "dist_url": "env://",
+        "distributed": true,
+        "rank": 0,
+        "gpu": 0,
+        "dist_backend": "nccl"
+    },
+    "model": {
+        "arch": "blip_caption",
+        "load_finetuned": false,
+        "pretrained": "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large.pth",
+        "finetuned": "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_caption.pth",
+        "vit_type": "large",
+        "vit_grad_ckpt": true,
+        "vit_ckpt_layer": 5,
+        "image_size": 384,
+        "med_config_path": "configs/models/med_large_config.json",
+        "prompt": "a picture of ",
+        "model_type": "large_coco",
+        "load_pretrained": false
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip_image_train"
+            },
+            "eval": {
+                "name": "blip_image_eval"
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption",
+                "prompt": "a picture of "
+            },
+            "eval": {
+                "name": "blip_caption"
+            }
+        }
+    },
+    "datasets": {
+        "coco_caption": {
+            "dataset_card": "dataset_card/coco_caption.md",
+            "data_type": "images",
+            "build_info": {
+                "annotations": {
+                    "train": {
+                        "url": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_train.json",
+                        "md5": "aa31ac474cf6250ebb81d18348a07ed8",
+                        "storage": "coco/annotations/captions_train2014.json"
+                    },
+                    "val": {
+                        "url": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val.json",
+                        "md5": "b273847456ef5580e33713b1f7de52a0",
+                        "storage": "coco/annotations/captions_val2014.json"
+                    },
+                    "test": {
+                        "url": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test.json",
+                        "md5": "3ff34b0ef2db02d01c37399f6a2a6cd1",
+                        "storage": "coco/annotations/captions_test2014.json"
+                    }
+                },
+                "images": {
+                    "storage": "/mnt/.node1/Open-Datasets/coco"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip_image_train"
+                },
+                "eval": {
+                    "name": "blip_image_eval"
+                }
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption",
+                    "prompt": "a picture of "
+                },
+                "eval": {
+                    "name": "blip_caption"
+                }
+            }
+        }
+    }
+}
+{
+    "run": {
+        "task": "captioning",
+        "runner": "runner_base",
+        "lr_sched": "linear_warmup_cosine_lr",
+        "init_lr": 1e-05,
+        "min_lr": 0,
+        "weight_decay": 0.05,
+        "max_epoch": 50,
+        "batch_size_train": 9,
+        "batch_size_eval": 9,
+        "num_workers": 3,
+        "max_len": 20,
+        "min_len": 5,
+        "num_beams": 3,
+        "seed": 42,
+        "output_dir": "./checkpoints",
+        "resume_ckpt_path": "./checkpoints/caption_latest.pth",
+        "tensorboard_path": "./logs",
+        "checkpoint_freq": 15,
+        "amp": true,
+        "evaluate": false,
+        "eval_freq": 50,
+        "train_splits": [
+            "train"
+        ],
+        "valid_splits": [
+            "val"
+        ],
+        "test_splits": [
+            "test"
+        ],
+        "device": "cuda",
+        "world_size": 12,
+        "dist_url": "env://",
+        "distributed": true,
+        "rank": 0,
+        "gpu": 0,
+        "dist_backend": "nccl"
+    },
+    "model": {
+        "arch": "blip_caption",
+        "load_finetuned": false,
+        "pretrained": "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large.pth",
+        "finetuned": "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_caption.pth",
+        "vit_type": "large",
+        "vit_grad_ckpt": true,
+        "vit_ckpt_layer": 5,
+        "image_size": 384,
+        "med_config_path": "configs/models/med_large_config.json",
+        "prompt": "a picture of ",
+        "model_type": "large_coco",
+        "load_pretrained": false
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip_image_train"
+            },
+            "eval": {
+                "name": "blip_image_eval"
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption",
+                "prompt": "a picture of "
+            },
+            "eval": {
+                "name": "blip_caption"
+            }
+        }
+    },
+    "datasets": {
+        "coco_caption": {
+            "dataset_card": "dataset_card/coco_caption.md",
+            "data_type": "images",
+            "build_info": {
+                "annotations": {
+                    "train": {
+                        "url": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_train.json",
+                        "md5": "aa31ac474cf6250ebb81d18348a07ed8",
+                        "storage": "coco/annotations/captions_train2014.json"
+                    },
+                    "val": {
+                        "url": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val.json",
+                        "md5": "b273847456ef5580e33713b1f7de52a0",
+                        "storage": "coco/annotations/captions_val2014.json"
+                    },
+                    "test": {
+                        "url": "https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test.json",
+                        "md5": "3ff34b0ef2db02d01c37399f6a2a6cd1",
+                        "storage": "coco/annotations/captions_test2014.json"
+                    }
+                },
+                "images": {
+                    "storage": "/mnt/.node1/Open-Datasets/coco"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip_image_train"
+                },
+                "eval": {
+                    "name": "blip_image_eval"
+                }
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption",
+                    "prompt": "a picture of "
+                },
+                "eval": {
+                    "name": "blip_caption"
+                }
+            }
+        }
+    }
+}

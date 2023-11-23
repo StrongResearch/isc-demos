@@ -216,7 +216,7 @@ class BaseTask:
         header = "Train: data epoch: [{}]".format(epoch)
         
         writer_data = []
-        for samples in metric_logger.log_every(data_loader, 1, header, start_iters):
+        for samples in metric_logger.log_every(data_loader, log_freq, header, start_iters):
             samples = prepare_sample(samples, cuda_enabled=cuda_enabled)
             samples.update(
                 {
@@ -279,7 +279,7 @@ class BaseTask:
             
             if is_main_process():
                 if start_iters >= len(data_loader):
-                    logging.info(f"Reached the end of the dataloder; Saving checkpoint at iters: {start_iters}")
+                    print(f"Reached the end of the dataloder; Saving checkpoint at iters: {start_iters}")
                     self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
                     if writer is not None:
                         for scalar in writer_data:
@@ -290,7 +290,7 @@ class BaseTask:
                         writer_data = []
                         logging.info("Finished writing logs")
                 elif start_iters % args.run_cfg.get("checkpoint_freq", 100) == 0:
-                    logging.info(f"Saving checkpoint at iters: {start_iters} and epoch: {epoch}")
+                    print(f"Saving checkpoint at iters: {start_iters} and epoch: {epoch}")
                     self.save_checkpoint(model, optimizer, sampler, args, scaler, epoch, start_iters)
                     if writer is not None:
                         for scalar in writer_data:
