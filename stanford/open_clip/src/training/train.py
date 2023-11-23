@@ -221,7 +221,9 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
                 if tb_writer is not None:
                     for scalar in metric_data:
-                        tb_writer.add_scalar("Test/avg_loss", scalar[0], scalar[1])
+                        tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
+                        tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]['lr'], iters)
+                    
                     metric_data = []
                     logging.info("Finished writing log data")
                 #break
@@ -230,7 +232,8 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
                 if tb_writer is not None:
                     for scalar in metric_data:
-                        tb_writer.add_scalar("Test/avg_loss", scalar[0], scalar[1])
+                        tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
+                    tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]['lr'], iters)
                     metric_data = []
                     logging.info("Finished writing log data")
 

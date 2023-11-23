@@ -166,7 +166,7 @@ def parse_args(args):
         help="Power for polynomial cooldown schedule. Default: 1.0 (linear decay)"
     )
     parser.add_argument(
-        "--save-frequency", type=int, default=20, help="How often to save checkpoints."
+        "--save-frequency", type=int, default=10, help="How often to save checkpoints."
     )
     parser.add_argument(
         "--save-most-recent",

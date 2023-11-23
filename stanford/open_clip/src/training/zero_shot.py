@@ -25,7 +25,6 @@ def run(model, classifier, dataloader, args):
         top1, top5, n = 0., 0., 0.
         logging.info("iterating...")
         i = 0
-        t = tqdm(dataloader, unit_scale=args.batch_size)
         for images, target in tqdm(dataloader, unit_scale=args.batch_size):
             if i % 100 == 0:
                 logging.info("progres: " + str(i) + "/" + str(args.batch_size))
