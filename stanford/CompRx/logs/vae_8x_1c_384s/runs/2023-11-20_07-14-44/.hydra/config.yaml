@@ -1,0 +1,129 @@
+task_name: vae_${downsize_factor}x_${num_latent_channels}c_${img_size}s
+tags: []
+log_every_n_steps: 1
+start_epoch: 0
+max_epoch: 100
+batch_size: 24
+gradient_accumulation_steps: 1
+resume_from_ckpt: ${paths.output_dir}/latest.pt
+ckpt_dir: ${paths.output_dir}/
+ckpt_every_n_steps: 25
+seed: null
+fast_dev_run: false
+mixed_precision: 'no'
+inference: false
+paths:
+  project_dir: /mnt/Client/Lachladzhvmqo6ibchdo2w56bnfat53a/laclacqrlhxaw3xjcwncdcsqenkcrvaq/isc-demos/stanford/CompRx
+  data_dir: ${paths.project_dir}/data
+  mg_data_dir: ${paths.data_dir}/MG
+  log_dir: ${paths.project_dir}/logs
+  output_dir: ${paths.project_dir}/checkpoints
+  work_dir: ${hydra:runtime.cwd}
+model:
+  _target_: comprx.models.AutoencoderKL
+  embed_dim: ${num_latent_channels}
+  ddconfig:
+    double_z: true
+    z_channels: ${model.embed_dim}
+    resolution: ${img_size}
+    in_channels: 1
+    out_ch: 1
+    ch: 128
+    ch_mult:
+    - 1
+    - 2
+    - 4
+    - 4
+    num_res_blocks: 2
+    attn_resolutions: []
+    dropout: 0.0
+criterion:
+  _target_: comprx.losses.LPIPSWithDiscriminator
+  disc_start: 3125
+  kl_weight: 1.0e-06
+  disc_weight: 0.5
+  num_channels: 1
+dataloader:
+  train:
+    dataset:
+      _target_: comprx.dataloaders.ConcatDataset
+      datasets:
+      - _partial_: true
+        _target_: comprx.dataloaders.GenericDataset
+        split_path: ${paths.data_dir}/mg/train.csv
+        split_column: split
+        split_name: train
+        data_dir: ${paths.data_dir}/mg/train_images
+        dataset_id: 1
+        img_column: image_id
+        img_suffix: .dcm
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+          - _target_: torchvision.transforms.Resize
+            size:
+            - ${img_size}
+            - ${img_size}
+            interpolation: 3
+            antialias: true
+          - _target_: torchvision.transforms.Normalize
+            mean:
+            - 0.5
+            std:
+            - 0.5
+    batch_size: ${batch_size}
+    shuffle: true
+    num_workers: 3
+    pin_memory: true
+    drop_last: true
+  valid:
+    dataset:
+      _target_: comprx.dataloaders.ConcatDataset
+      datasets:
+      - _partial_: true
+        _target_: comprx.dataloaders.GenericDataset
+        split_path: ${paths.data_dir}/mg/test.csv
+        split_column: split
+        split_name: test
+        data_dir: ${paths.data_dir}/mg/test_images
+        dataset_id: 1
+        img_column: image_id
+        img_suffix: .dcm
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+          - _target_: torchvision.transforms.Resize
+            size:
+            - ${img_size}
+            - ${img_size}
+            interpolation: 3
+            antialias: true
+          - _target_: torchvision.transforms.Normalize
+            mean:
+            - 0.5
+            std:
+            - 0.5
+    batch_size: ${batch_size}
+    shuffle: false
+    num_workers: 3
+    pin_memory: true
+    drop_last: false
+metrics:
+- - PSNR
+  - _target_: comprx.metrics.PSNR
+- - MSE
+  - _target_: comprx.metrics.MSE
+- - FID-Inception
+  - _target_: comprx.metrics.FID_Inception
+- - FID-CLIP
+  - _target_: comprx.metrics.FID_CLIP
+    version: CLIP
+- - FID_BiomedCLIP
+  - _target_: comprx.metrics.FID_CLIP
+    version: BiomedCLIP
+metrics_slice: {}
+num_latent_channels: 1
+downsize_factor: ${eval:'2 ** (len(${model.ddconfig.ch_mult})-1)'}
+img_size: 384
+base_learning_rate: 4.5e-06
+ema_decay: null

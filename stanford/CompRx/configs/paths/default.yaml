@@ -1,7 +1,7 @@
 # path to root directory
 # this requires PROJECT_ROOT environment variable to exist
 # PROJECT_ROOT is inferred and set by pyrootutils package in `train.py` and `eval.py`
-project_dir: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx
+project_dir: /mnt/Client/Lachladzhvmqo6ibchdo2w56bnfat53a/laclacqrlhxaw3xjcwncdcsqenkcrvaq/isc-demos/stanford/CompRx
 
 # path to data directory
 data_dir: ${paths.project_dir}/data

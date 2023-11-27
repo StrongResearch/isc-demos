@@ -3,5 +3,5 @@ gpu_type = "24GB VRAM GPU"
 nnodes = 2
 venv_path = "~/isc-demos/stanford/LAVIS/.venv/bin/activate"
 output_path = "~/isc-demos/stanford/LAVIS/coutput"
-_dataset_id="0c0811e3-af73-4518-b052-2c8ced83bf19"
+_cycle_count = -1000
 command = "train.py --cfg-path lavis/projects/blip/train/caption_coco_ft.yaml"

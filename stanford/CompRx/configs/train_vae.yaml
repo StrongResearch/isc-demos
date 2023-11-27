@@ -37,13 +37,13 @@ start_epoch: 0
 max_epoch: 50
 
 # mini-batch size
-batch_size: 72
+batch_size: -1
 
 # gradient accumulation
 gradient_accumulation_steps: 1
 
 # checkpoint path to the accelerator state (this should be a directory)
-resume_from_ckpt: null
+resume_from_ckpt: ${paths.output_dir}/latest.pt
 
 # directory to store checkpoints in, same as the global output dir for this run
 ckpt_dir: ${paths.output_dir}/

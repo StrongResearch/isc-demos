@@ -79,6 +79,7 @@ class LPIPSWithDiscriminator(nn.Module):
             # Perceptual loss
             # Absolute Error
             rec_loss = torch.abs(inputs.contiguous() - reconstructions.contiguous())
+            og_rec_loss = rec_loss
             # Perceptual Error (dim = [bsz x 1 x 1 x1])
             p_loss = self.perceptual_loss(inputs.contiguous(), reconstructions.contiguous())
             rec_loss = rec_loss + self.perceptual_weight * p_loss
@@ -123,6 +124,11 @@ class LPIPSWithDiscriminator(nn.Module):
                 f"{split}/rec_loss": rec_loss.detach().mean(),
                 f"{split}/d_weight": d_weight.detach(),
                 f"{split}/g_loss": g_loss.detach().mean(),
+                f"{split}/p_loss": p_loss.detach(),
+                f"{split}/og_rec": og_rec_loss.detach().mean(),
+                f"{split}/p_weight": self.perceptual_weight,
+                
+                
             }
 
             return loss, log, reconstruction_loss, kldivergence_loss, discriminator_loss

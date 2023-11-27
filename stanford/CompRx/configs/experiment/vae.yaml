@@ -15,7 +15,7 @@ task_name: vae_${downsize_factor}x_${num_latent_channels}c_${img_size}s
 gradient_accumulation_steps: 1
 mixed_precision: "no"
 max_epoch: 100
-batch_size: 12
+batch_size: 2
 log_every_n_steps: 1
 base_learning_rate: 4.5e-6
 ema_decay: null

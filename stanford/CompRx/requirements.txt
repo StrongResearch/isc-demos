@@ -36,4 +36,4 @@ git+https://github.com/openai/CLIP.git
 pylibjpeg
 pylibjpeg-libjpeg
 GDCM
-git+https://github.com/StrongResearch/cycling_utils.git
+cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
