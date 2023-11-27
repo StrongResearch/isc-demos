@@ -244,14 +244,15 @@ def main(args):
     if args.grad_checkpointing:
         model.set_grad_checkpointing()
 
-    if is_master(args):
-        logging.info("Params:")
-        params_file = os.path.join(args.logs, args.name, "params.txt")
-        with open(params_file, "w") as f:
-            for name in sorted(vars(args)):
-                val = getattr(args, name)
-                logging.info(f"  {name}: {val}")
-                f.write(f"{name}: {val}\n")
+    # Params are printed every cycle, this is not needed
+    # if is_master(args):
+    #     logging.info("Params:")
+    #     params_file = os.path.join(args.logs, args.name, "params.txt")
+    #     with open(params_file, "w") as f:
+    #         for name in sorted(vars(args)):
+    #             val = getattr(args, name)
+    #             logging.info(f"  {name}: {val}")
+    #             f.write(f"{name}: {val}\n")
 
     if args.distributed and not args.horovod:
         if args.use_bn_sync:
@@ -345,7 +346,7 @@ def main(args):
     # create scheduler if train
     scheduler = None
     if 'train' in data and optimizer is not None:
-        total_steps = (data["train"].dataloader.num_batches // args.accum_freq) * args.epochs
+        total_steps = ((data["train"].dataloader.num_batches // args.accum_freq) * args.epochs)
         if args.lr_scheduler == "cosine":
             scheduler = cosine_lr(optimizer, args.lr, args.warmup, total_steps)
         elif args.lr_scheduler == "const":

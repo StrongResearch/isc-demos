@@ -215,10 +215,15 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         batch_loss = losses["loss"]
         dist.all_reduce(batch_loss, op=dist.ReduceOp.SUM)
         batch_loss = torch.div(batch_loss, dist.get_world_size())
-        metric_data.append((batch_loss, iters))
+        metric_data.append((batch_loss, (len(dataloader) * epoch) + iters))
         
         # Advance sampler by batch size before checkpointing
         dataloader.sampler.advance(args.batch_size)
+        
+        checkpoint_steps = [int(args.accum_freq * (int(512000/3672)/args.accum_freq)),int(args.accum_freq * (int(1024000/3672)/args.accum_freq)),int(args.accum_freq * (int(2048000/3672)/args.accum_freq)),int(args.accum_freq * (int(33000000/3672)/args.accum_freq)),int(args.accum_freq * (int(67000000/3672)/args.accum_freq)),int(args.accum_freq * (int(134000000/3672)/args.accum_freq))]
+        if is_master(args) and (len(dataloader) * epoch) + iters in checkpoint_steps:
+            save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume + str((len(dataloader) * epoch) + iters))
+            
         
         # Save checkpoint if at frequency or end of dataloader
         # Also writes to tensorboard
@@ -230,7 +235,8 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 if tb_writer is not None:
                     for scalar in metric_data:
                         tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
-                        tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]['lr'], iters)
+                        
+                    tb_writer.add_scalar("Train/lr", optimizer.param_groups[0]['lr'], (len(dataloader) * epoch) + iters)
                     
                     metric_data = []
                     logging.info("Finished writing log data")

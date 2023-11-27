@@ -82,7 +82,7 @@ class CaptionDataset(__DisplMixin):
         
         j = json.load(open(ann_path, "r"))
         self.annotation.extend(j["annotations"])
-
+        
         self.transforms = transforms
         self.tokenize = tokenizer
 
@@ -552,7 +552,7 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     
     dataloader.num_samples = num_samples
     dataloader.num_batches = len(dataloader)
-    logging.info(f"Created dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
+    logging.info(f"Created csv dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
     return DataInfo(dataloader, sampler)
 
 def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
@@ -587,7 +587,8 @@ def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     
     dataloader.num_samples = num_samples
     dataloader.num_batches = len(dataloader)
-    logging.info(f"Created dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
+    logging.info(f"Length of dataset is {len(dataset)}")
+    logging.info(f"Created coco dataloader with {dataloader.num_samples} samples and {dataloader.num_batches} batches")
     return DataInfo(dataloader, sampler)
 
 class SyntheticDataset(Dataset):
