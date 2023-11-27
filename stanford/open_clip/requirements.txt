@@ -8,3 +8,4 @@ sentencepiece
 protobuf
 timm
 braceexpand
+cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
