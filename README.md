@@ -334,8 +334,8 @@ overloaded, please further tune the variable for optimal performance in your app
  Lastly you will find a subdirectory called `tb` which contains tensorboard event logs. Refer to the `train.py` file to 
  understand where and how these event logs are created.
 
- Returning to the command line, you can launch a tensorboard instance to track the training and performance metrics of 
- the experiment with the following command.
+You can launch a tensorboard instance to track the training and performance metrics of the experiment with the following 
+command (**Note:** for this you will need to be accessing the ISC from an IDE such as VSCode which can handle automatic port-forwarding).
 
  ```bash
  tensorboard --logdir <Output Path from ISC Experiments table>
