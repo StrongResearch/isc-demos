@@ -98,7 +98,7 @@ associated with your User and Organisation.
 **Instructions for all users continue from here:***
    
 1. On Control Plane click on the menu at the top right of the page and click on **"Settings"**.
-2. At the bottom of the page, click on **"NEW SSH KEY"**.
+2. At the bottom of the page, click on **"ADD SSH KEY"**.
 3. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
     provide a filename in which to save the key. You can also optionally enter a passphrase (or just press enter twice). This will 
     generate two files containing your public and private keys. Your public key will be saved in the file ending in `.pub`.
