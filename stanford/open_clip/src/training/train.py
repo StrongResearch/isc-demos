@@ -4,6 +4,8 @@ import math
 import os
 import time
 
+import socket
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -65,13 +67,16 @@ def backward(total_loss, scaler):
 
 # This function saves the inner-epoch state of the run so it can be easily resumed
 def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, path):
+    scaler_dict = None
+    if scaler is not None:
+        scaler_dict = scaler.state_dict()
     checkpoint_dict = {
                 "epoch": epoch,
                 "iteration": iteration,
                 "model": model.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "sampler": sampler.state_dict(),
-                "scaler": scaler.state_dict()
+                "scaler": scaler_dict
             }
     atomic_torch_save(checkpoint_dict, path)
 
@@ -101,6 +106,10 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
 
     # No need to enumerate since we pass in iterations
     for batch in dataloader:
+        
+        # Advance sampler by batch size before checkpointing
+        dataloader.sampler.advance(args.batch_size)
+        iters += 1
         if is_master(args) and iters % 5 == 0:
             logging.info(f"Training - {iters}/{len(dataloader)}")
         i_accum = (iters - 1) // args.accum_freq
@@ -125,11 +134,20 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                         dist_model_out = dist_model(images, texts)
                     model_out.update({f'dist_{k}': v for k, v in dist_model_out.items()})
                 losses = loss(**model_out, output_dict=True)
+                if torch.isnan(losses["contrastive_loss"]).any():
+                    print(f"Nan on {device} + {socket.gethostname()}")
+                if torch.isinf(losses["contrastive_loss"]).any():
+                    print(f"Inf on {device} + {socket.gethostname()}")
 
                 total_loss = sum(losses.values())
                 losses["loss"] = total_loss
 
             backward(total_loss, scaler)
+            for param in model.parameters():
+                if torch.isinf(param.grad).any():
+                    print(f"inf at {device} + {socket.gethostname()}")
+                if torch.isnan(param.grad).any():
+                    print(f"nan at {device} + {socket.gethostname()}")
         else:
             # First, cache the features without any gradient tracking.
             with torch.no_grad():
@@ -174,12 +192,22 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                         inputs[key] = torch.cat(accumulated[:j] + [model_out[key]] + accumulated[j + 1:])
 
                     losses = loss(**inputs, **inputs_no_accum, output_dict=True)
+                    if torch.isnan(losses["contrastive_loss"]).any():
+                        print(f"Nan on {device} + {socket.gethostname()}")
+                    if torch.isinf(losses["contrastive_loss"]).any():
+                        print(f"Inf on {device} + {socket.gethostname()}")
+
                     del inputs
                     del inputs_no_accum
                     total_loss = sum(losses.values())
                     losses["loss"] = total_loss
 
                 backward(total_loss, scaler)
+                for param in model.parameters():
+                    if torch.isinf(param.grad).any():
+                        print(f"inf at {device} + {socket.gethostname()}")
+                    if torch.isnan(param.grad).any():
+                        print(f"nan at {device} + {socket.gethostname()}")
 
         if scaler is not None:
             if args.horovod:
@@ -187,6 +215,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 scaler.unscale_(optimizer)
                 if args.grad_clip_norm is not None:
                     torch.nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip_norm, norm_type=2.0)
+                    
                 with optimizer.skip_synchronize():
                     scaler.step(optimizer)
             else:
@@ -217,10 +246,8 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         batch_loss = torch.div(batch_loss, dist.get_world_size())
         metric_data.append((batch_loss, (len(dataloader) * epoch) + iters))
         
-        # Advance sampler by batch size before checkpointing
-        dataloader.sampler.advance(args.batch_size)
-        
-        checkpoint_steps = [int(args.accum_freq * (int(512000/3672)/args.accum_freq)),int(args.accum_freq * (int(1024000/3672)/args.accum_freq)),int(args.accum_freq * (int(2048000/3672)/args.accum_freq)),int(args.accum_freq * (int(33000000/3672)/args.accum_freq)),int(args.accum_freq * (int(67000000/3672)/args.accum_freq)),int(args.accum_freq * (int(134000000/3672)/args.accum_freq))]
+        denom = 72*35
+        checkpoint_steps = [int(args.accum_freq * (int(512000/denom)/args.accum_freq)),int(args.accum_freq * (int(1024000/denom)/args.accum_freq)),int(args.accum_freq * (int(2048000/denom)/args.accum_freq)),int(args.accum_freq * (int(33000000/denom)/args.accum_freq)),int(args.accum_freq * (int(67000000/denom)/args.accum_freq)),int(args.accum_freq * (int(134000000/denom)/args.accum_freq)),int(args.accum_freq * (int(150000000/denom)/args.accum_freq))]
         if is_master(args) and (len(dataloader) * epoch) + iters in checkpoint_steps:
             save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume + str((len(dataloader) * epoch) + iters))
             
@@ -305,7 +332,6 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
             batch_time_m.reset()
             data_time_m.reset()
             
-        iters += 1
     # end for
 
 

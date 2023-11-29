@@ -70,7 +70,8 @@ def get_latest_checkpoint(path: str, remote : bool):
 
 def main(args):
     args = parse_args(args)
-
+    logging.info(f"Args: {args}")
+    torch.autograd.set_detect_anomaly(True)
     if torch.cuda.is_available():
         # This enables tf32 on Ampere GPUs which is only 8% slower than
         # float16 and almost as accurate as float32
@@ -205,6 +206,7 @@ def main(args):
         output_dict=True,
         **model_kwargs,
     )
+    logging.info("Model loaded")
     if args.distill:
         # FIXME: currently assumes the model you're distilling from has the same tokenizer & transforms.
         dist_model, _, _ = create_model_and_transforms(
@@ -298,7 +300,7 @@ def main(args):
 
     # init default values if checkpoint isn't loaded
     start_epoch = 0
-    start_iteration = 1
+    start_iteration = 0
     sampler = None
     # optionally resume from a checkpoint
     if args.resume is not None and os.path.isfile(args.resume):
@@ -307,7 +309,7 @@ def main(args):
         if 'epoch' in checkpoint:
             # resuming a train checkpoint w/ epoch, iteration, optimizer, sampler, scaler
             start_epoch = checkpoint["epoch"]
-            start_iteration = checkpoint["iteration"] + 1
+            start_iteration = checkpoint["iteration"]
             sd = checkpoint["model"]
             if not args.distributed and next(iter(sd.items()))[0].startswith('module'):
                 sd = {k[len('module.'):]: v for k, v in sd.items()}
@@ -412,11 +414,12 @@ def main(args):
 
     for epoch in range(start_epoch, args.epochs):
         # Uses the sampler context to exit if the epoch is done
+        logging.info(f"Begging training at epoch {start_epoch}/{args.epochs}")
         with data["train"].dataloader.sampler.in_epoch(epoch):
             train_one_epoch(model, data, loss, epoch, start_iteration, optimizer, scaler, scheduler, dist_model, args, tb_writer=writer)
             
             # Reset iteration for the next train loop
-            start_iteration = 1
+            start_iteration = 0
             
             if any(v in data for v in ('val', 'imagenet-val', 'imagenet-v2')) and ((epoch + 1) % args.val_frequency == 0 or epoch == args.epochs):
                 with data["val"].dataloader.sampler.in_epoch(epoch):
