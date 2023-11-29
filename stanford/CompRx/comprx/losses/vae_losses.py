@@ -79,6 +79,7 @@ class LPIPSWithDiscriminator(nn.Module):
             # Perceptual loss
             # Absolute Error
             rec_loss = torch.abs(inputs.contiguous() - reconstructions.contiguous())
+            og_rec_loss = rec_loss
             # Perceptual Error (dim = [bsz x 1 x 1 x1])
             p_loss = self.perceptual_loss(inputs.contiguous(), reconstructions.contiguous())
             rec_loss = rec_loss + self.perceptual_weight * p_loss
@@ -108,20 +109,26 @@ class LPIPSWithDiscriminator(nn.Module):
                 except RuntimeError:
                     assert not self.training
                     d_weight = torch.tensor(0.0)
+                    
+            reconstruction_loss = nll_loss
+            kldivergence_loss = self.kl_weight * kl_loss
+            discriminator_loss = d_weight * d_valid * g_loss
 
-            loss = nll_loss + self.kl_weight * kl_loss + d_weight * d_valid * g_loss
+            loss = reconstruction_loss + kldivergence_loss + discriminator_loss
 
             log = {
                 f"{split}/total_loss": loss.clone().detach().mean(),
-                f"{split}/logvar": self.logvar.detach(),
                 f"{split}/kl_loss": kl_loss.detach().mean(),
                 f"{split}/nll_loss": nll_loss.detach().mean(),
                 f"{split}/rec_loss": rec_loss.detach().mean(),
                 f"{split}/d_weight": d_weight.detach(),
                 f"{split}/g_loss": g_loss.detach().mean(),
+                f"{split}/p_loss": p_loss.detach(),
+                f"{split}/og_rec": og_rec_loss.detach().mean(),
+                f"{split}/p_weight": self.perceptual_weight,
             }
 
-            return loss, log
+            return loss, log, reconstruction_loss, kldivergence_loss, discriminator_loss
 
         elif optimizer_idx == 1:
             # Discriminator loss (log D_phi(x)): Forces discriminator logits to be high (+1) for inputs and low (-1) for reconstructions

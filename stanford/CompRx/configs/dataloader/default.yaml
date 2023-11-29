@@ -2,7 +2,7 @@ train:
   dataset: ???
   batch_size: ${batch_size} # total amount across gpus and nodes
   shuffle: true
-  num_workers: 10 # total amount across nodes
+  num_workers: 3 # total amount across nodes
   pin_memory: true
   drop_last: true
 
@@ -11,6 +11,6 @@ valid:
   dataset: null
   batch_size: ${batch_size}
   shuffle: false
-  num_workers: 10
+  num_workers: 3
   pin_memory: true
   drop_last: false

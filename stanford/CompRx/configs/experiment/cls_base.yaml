@@ -25,7 +25,7 @@ model:
 
 # Training settings
 gradient_accumulation_steps: 1
-mixed_precision: "no"
+mixed_precision: "bf16"
 max_epoch: 100
 batch_size: 256
 log_every_n_steps: 20

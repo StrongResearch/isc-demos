@@ -12,9 +12,9 @@ task_name: vae_resizedcrop_${num_latent_channels}_${img_size}
 
 # Training settings
 gradient_accumulation_steps: 2
-mixed_precision: "no"
+mixed_precision: "bf16"
 max_epoch: 30
-batch_size: 240
+batch_size: 12
 log_every_n_steps: 20
 base_learning_rate: 4.5e-6
 ema_decay: null

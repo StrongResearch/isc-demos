@@ -124,6 +124,7 @@ def main(cfg: DictConfig):
         accelerator.load_state(cfg["resume_from_ckpt"])
         custom_ckpt = torch.load(os.path.join(cfg["resume_from_ckpt"], "custom_checkpoint_0.pkl"))
         start_epoch = custom_ckpt["last_epoch"]
+        print("Loaded from checkpoint at epoch " + str(start_epoch))
 
     # setup metrics
     max_metric = None
