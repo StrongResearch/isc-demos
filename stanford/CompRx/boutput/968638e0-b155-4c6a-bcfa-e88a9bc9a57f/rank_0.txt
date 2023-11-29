@@ -1,0 +1,1314 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+[[36m2023-11-29 02:05:13,198[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:05:13,221[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:05:13,364[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:05:13,368[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:05:13,370[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:05:13,411[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+[[36m2023-11-29 02:05:15,343[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:05:15,348[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:05:15,503[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:05:15,507[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:05:15,544[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:05:15,699[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:05:16,014[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 2[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:05:16,025[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 3[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:05:16,162[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 5[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:05:16,171[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 4[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:05:16,201[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 0[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:05:16,282[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 1[0m
+[[36m2023-11-29 02:05:16,920[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-11-29 02:05:16,920[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 4: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-11-29 02:05:16,920[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Mixed precision: no
+=> Mixed precision: no
+=> Running in inference mode: False
+=> Mixed precision: no
+=> Instantiating train dataloader 
+=> Running in inference mode: False
+[[36m2023-11-29 02:05:16,922[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 5: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Running in inference mode: False
+=> Instantiating train dataloader 
+len(train_dataset) = 54706
+=> Instantiating train dataloader 
+len(train_dataset) = 54706
+=> Mixed precision: no
+len(train_dataset) = 54706
+=> Running in inference mode: False
+len(train_dataloader) = 2279
+=> Instantiating train dataloader 
+=> Instantiating valid dataloader 
+len(train_dataloader) = 2279
+len(train_dataloader) = 2279
+len(valid_dataset) = 4
+len(train_dataset) = 54706
+=> Instantiating valid dataloader 
+=> Instantiating valid dataloader 
+len(valid_dataset) = 4
+len(valid_dataset) = 4
+len(valid_dataloader) = 1
+len(train_dataloader) = 2279
+len(valid_dataloader) = 1
+len(valid_dataloader) = 1
+=> Instantiating valid dataloader 
+[[36m2023-11-29 02:05:16,925[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-11-29 02:05:16,925[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+len(valid_dataset) = 4
+=> Instantiating the optimizer 
+=> Mixed precision: no
+len(valid_dataloader) = 1
+=> Mixed precision: no
+batch_size = 2, learning rate = 4.5e-06
+=> Instantiating the optimizer 
+=> Instantiating the optimizer 
+=> Running in inference mode: False
+=> Running in inference mode: False
+batch_size = 2, learning rate = 4.5e-06
+batch_size = 2, learning rate = 4.5e-06
+=> Instantiating train dataloader 
+=> Instantiating train dataloader 
+len(train_dataset) = 54706
+len(train_dataset) = 54706
+=> Instantiating the optimizer 
+=> Preparing opt_disc 
+batch_size = 2, learning rate = 4.5e-06
+=> Preparing opt_disc 
+=> Preparing model 
+=> Preparing opt_disc 
+len(train_dataloader) = 2279
+len(train_dataloader) = 2279
+=> Preparing model 
+=> Preparing model 
+=> Instantiating valid dataloader 
+=> Instantiating valid dataloader 
+len(valid_dataset) = 4
+len(valid_dataset) = 4
+=> Preparing opt_disc 
+=> Preparing model 
+len(valid_dataloader) = 1
+len(valid_dataloader) = 1
+=> Instantiating the optimizer 
+=> Instantiating the optimizer 
+batch_size = 2, learning rate = 4.5e-06
+batch_size = 2, learning rate = 4.5e-06
+=> Preparing opt_disc 
+=> Preparing opt_disc 
+=> Preparing model 
+=> Preparing model 
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+Working with z of shape (1, 1, 48, 48) = 2304 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=train ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/train_images
+            Number of samples: 54706
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 4
+        
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+[[36m2023-11-29 02:12:45,532[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:12:45,616[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:12:45,689[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:12:45,817[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:12:45,879[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-11-29 02:12:46,223[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+[[36m2023-11-29 02:12:47,708[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:12:47,740[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:12:47,844[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:12:47,997[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-11-29 02:12:48,025[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:12:48,195[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 2[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:12:48,338[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 3[0m
+[[36m2023-11-29 02:12:48,416[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:12:48,436[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 1[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:12:48,573[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 0[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:12:48,626[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 4[0m
+=> Instantiate accelerator 
+[[36m2023-11-29 02:12:48,848[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 5[0m
+[[36m2023-11-29 02:12:49,237[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Mixed precision: no
+=> Running in inference mode: False
+=> Instantiating train dataloader 
+[[36m2023-11-29 02:12:49,239[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+len(train_dataset) = 54706
+len(train_dataloader) = 2279
+=> Instantiating valid dataloader 
+[[36m2023-11-29 02:12:49,240[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+len(valid_dataset) = 4
+[[36m2023-11-29 02:12:49,241[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+len(valid_dataloader) = 1
+[[36m2023-11-29 02:12:49,243[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 5: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Instantiating the optimizer 
+[[36m2023-11-29 02:12:49,243[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 4: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+batch_size = 2, learning rate = 4.5e-06
+=> Preparing opt_disc 
+=> Preparing model 
+=> Mixed precision: no
+=> Mixed precision: no
+=> Mixed precision: no
+=> Mixed precision: no
+=> Mixed precision: no
+=> Running in inference mode: False
+=> Running in inference mode: False
+=> Running in inference mode: False
+=> Running in inference mode: False
+=> Running in inference mode: False
+=> Instantiating train dataloader 
+=> Instantiating train dataloader 
+=> Instantiating train dataloader 
+=> Instantiating train dataloader 
+=> Instantiating train dataloader 
+len(train_dataset) = 54706
+len(train_dataset) = 54706
+len(train_dataset) = 54706
+len(train_dataset) = 54706
+len(train_dataset) = 54706
+len(train_dataloader) = 2279
+len(train_dataloader) = 2279
+len(train_dataloader) = 2279
+len(train_dataloader) = 2279
+len(train_dataloader) = 2279
+=> Instantiating valid dataloader 
+=> Instantiating valid dataloader 
+=> Instantiating valid dataloader 
+=> Instantiating valid dataloader 
+=> Instantiating valid dataloader 
+len(valid_dataset) = 4
+len(valid_dataset) = 4
+len(valid_dataset) = 4
+len(valid_dataset) = 4
+len(valid_dataset) = 4
+len(valid_dataloader) = 1
+len(valid_dataloader) = 1
+len(valid_dataloader) = 1
+len(valid_dataloader) = 1
+len(valid_dataloader) = 1
+=> Instantiating the optimizer 
+=> Instantiating the optimizer 
+=> Instantiating the optimizer 
+=> Instantiating the optimizer 
+=> Instantiating the optimizer 
+batch_size = 2, learning rate = 4.5e-06
+batch_size = 2, learning rate = 4.5e-06
+batch_size = 2, learning rate = 4.5e-06
+batch_size = 2, learning rate = 4.5e-06
+batch_size = 2, learning rate = 4.5e-06
+=> Preparing opt_disc 
+=> Preparing opt_disc 
+=> Preparing opt_disc 
+=> Preparing opt_disc 
+=> Preparing opt_disc 
+=> Preparing model 
+=> Preparing model 
+=> Preparing model 
+=> Preparing model 
+=> Preparing model 
+=> Preparing opt_ae 
+=> Preparing opt_ae 
+=> Preparing opt_ae 
+=> Preparing criterion 
+=> Preparing opt_ae 
+=> Preparing opt_ae 
+=> Preparing criterion 
+=> Preparing criterion 
+=> Preparing criterion 
+=> Preparing opt_ae 
+=> Preparing criterion 
+=> Preparing criterion 
+len(train_dataloader) AGAIN = 2280
+len(train_dataloader) AGAIN = 2280
+len(train_dataloader) AGAIN = 2280
+len(train_dataloader) AGAIN = 2280
+len(train_dataloader) AGAIN = 2280
+len(train_dataloader) AGAIN = 2280
+=> Starting model training 
+=> Starting model training 
+=> Starting model training 
+=> Starting model training 
+=> Starting model training 
+=> Starting model training 
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchvision/transforms/functional.py:1603: UserWarning: The default value of the antialias parameter of all the resizing transforms (Resize(), RandomResizedCrop(), etc.) will change from None to True in v0.17, in order to be consistent across the PIL and Tensor backends. To suppress this warning, directly pass antialias=True (recommended, future default), antialias=None (current default, which means False for Tensors and True for PIL), or antialias=False (only works on Tensors - PIL will still use antialiasing). This also applies if you are using the inference transforms from the models weights: update the call to weights.transforms(antialias=True).
+  warnings.warn(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchvision/transforms/functional.py:1603: UserWarning: The default value of the antialias parameter of all the resizing transforms (Resize(), RandomResizedCrop(), etc.) will change from None to True in v0.17, in order to be consistent across the PIL and Tensor backends. To suppress this warning, directly pass antialias=True (recommended, future default), antialias=None (current default, which means False for Tensors and True for PIL), or antialias=False (only works on Tensors - PIL will still use antialiasing). This also applies if you are using the inference transforms from the models weights: update the call to weights.transforms(antialias=True).
+  warnings.warn(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchvision/transforms/functional.py:1603: UserWarning: The default value of the antialias parameter of all the resizing transforms (Resize(), RandomResizedCrop(), etc.) will change from None to True in v0.17, in order to be consistent across the PIL and Tensor backends. To suppress this warning, directly pass antialias=True (recommended, future default), antialias=None (current default, which means False for Tensors and True for PIL), or antialias=False (only works on Tensors - PIL will still use antialiasing). This also applies if you are using the inference transforms from the models weights: update the call to weights.transforms(antialias=True).
+  warnings.warn(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchvision/transforms/functional.py:1603: UserWarning: The default value of the antialias parameter of all the resizing transforms (Resize(), RandomResizedCrop(), etc.) will change from None to True in v0.17, in order to be consistent across the PIL and Tensor backends. To suppress this warning, directly pass antialias=True (recommended, future default), antialias=None (current default, which means False for Tensors and True for PIL), or antialias=False (only works on Tensors - PIL will still use antialiasing). This also applies if you are using the inference transforms from the models weights: update the call to weights.transforms(antialias=True).
+  warnings.warn(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchvision/transforms/functional.py:1603: UserWarning: The default value of the antialias parameter of all the resizing transforms (Resize(), RandomResizedCrop(), etc.) will change from None to True in v0.17, in order to be consistent across the PIL and Tensor backends. To suppress this warning, directly pass antialias=True (recommended, future default), antialias=None (current default, which means False for Tensors and True for PIL), or antialias=False (only works on Tensors - PIL will still use antialiasing). This also applies if you are using the inference transforms from the models weights: update the call to weights.transforms(antialias=True).
+  warnings.warn(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchvision/transforms/functional.py:1603: UserWarning: The default value of the antialias parameter of all the resizing transforms (Resize(), RandomResizedCrop(), etc.) will change from None to True in v0.17, in order to be consistent across the PIL and Tensor backends. To suppress this warning, directly pass antialias=True (recommended, future default), antialias=None (current default, which means False for Tensors and True for PIL), or antialias=False (only works on Tensors - PIL will still use antialiasing). This also applies if you are using the inference transforms from the models weights: update the call to weights.transforms(antialias=True).
+  warnings.warn(
+[Epoch <000/100>: Step <000/2280>] - Data(s): 7.881 (5.610) - Batch(s): 10.058 
+(10.109) - AE Loss: 2014215.250 (862391.062) - AE Rec Loss: 13.660 (5.848) - 
+Disc Loss: 0.000 (0.000) - 393.02 m remaining
+
+[Epoch <000/100>: Step <000/2280>] - Data(s): 7.494 (5.610) - Batch(s): 10.150 
+(10.109) - AE Loss: 502222.906 (862391.062) - AE Rec Loss: 3.406 (5.848) - Disc 
+Loss: 0.000 (0.000) - 397.06 m remaining
+
+bouta write to tb
+[Epoch <000/100>: Step <000/2280>] - Data(s): 5.079 (5.610) - Batch(s): 10.053 
+(10.109) - AE Loss: 583221.750 (862391.062) - AE Rec Loss: 3.955 (5.848) - Disc 
+Loss: 0.000 (0.000) - 393.02 m remaining
+
+[Epoch <000/100>: Step <000/2280>] - Data(s): 5.534 (5.610) - Batch(s): 10.056 
+(10.109) - AE Loss: 899993.000 (862391.062) - AE Rec Loss: 6.103 (5.848) - Disc 
+Loss: 0.000 (0.000) - 393.38 m remaining
+
+[Epoch <000/100>: Step <000/2280>] - Data(s): 8.727 (5.610) - Batch(s): 10.057 
+(10.109) - AE Loss: 1978670.125 (862391.062) - AE Rec Loss: 13.419 (5.848) - 
+Disc Loss: 0.000 (0.000) - 393.39 m remaining
+
+[Epoch <000/100>: Step <000/2280>] - Data(s): 2.882 (5.610) - Batch(s): 10.138 
+(10.109) - AE Loss: 711365.875 (862391.062) - AE Rec Loss: 4.824 (5.848) - Disc 
+Loss: 0.000 (0.000) - 396.42 m remaining
+
+wrote to tb
+[Epoch <000/100>: Step <001/2280>] - Data(s): 0.001 (2.805) - Batch(s): 0.569 
+(6.384) - AE Loss: 2113180.000 (1133588.125) - AE Rec Loss: 14.331 (7.688) - 
+Disc Loss: 0.000 (0.000) - 255.63 m remaining
+
+[Epoch <000/100>: Step <001/2280>] - Data(s): 0.000 (2.805) - Batch(s): 2.852 
+(6.384) - AE Loss: 2124145.500 (1133588.125) - AE Rec Loss: 14.405 (7.688) - 
+Disc Loss: 0.000 (0.000) - 253.80 m remaining
+
+[Epoch <000/100>: Step <001/2280>] - Data(s): 0.000 (2.805) - Batch(s): 2.851 
+(6.384) - AE Loss: 2003843.000 (1133588.125) - AE Rec Loss: 13.589 (7.688) - 
+Disc Loss: 0.000 (0.000) - 253.61 m remaining
+
+[Epoch <000/100>: Step <001/2280>] - Data(s): 0.000 (2.805) - Batch(s): 2.853 
+(6.384) - AE Loss: 801757.125 (1133588.125) - AE Rec Loss: 5.437 (7.688) - Disc 
+Loss: 0.000 (0.000) - 253.61 m remaining
+
+[Epoch <000/100>: Step <001/2280>] - Data(s): 0.000 (2.805) - Batch(s): 2.853 
+(6.384) - AE Loss: 2214534.000 (1133588.125) - AE Rec Loss: 15.018 (7.688) - 
+Disc Loss: 0.000 (0.000) - 253.79 m remaining
+
+[Epoch <000/100>: Step <001/2280>] - Data(s): 0.000 (2.805) - Batch(s): 2.848 
+(6.384) - AE Loss: 681618.938 (1133588.125) - AE Rec Loss: 4.623 (7.688) - Disc 
+Loss: 0.000 (0.000) - 255.31 m remaining
+
+[W reducer.cpp:1300] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1300] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1300] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1300] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1300] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[W reducer.cpp:1300] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[Epoch <000/100>: Step <002/2280>] - Data(s): 0.000 (1.870) - Batch(s): 0.629 
+(4.462) - AE Loss: 445262.188 (1051420.250) - AE Rec Loss: 3.020 (7.130) - Disc 
+Loss: 0.000 (0.000) - 179.35 m remaining
+
+[Epoch <000/100>: Step <002/2280>] - Data(s): 0.000 (1.870) - Batch(s): 0.620 
+(4.462) - AE Loss: 1628870.500 (1051420.250) - AE Rec Loss: 11.046 (7.130) - 
+Disc Loss: 0.000 (0.000) - 179.23 m remaining
+
+[Epoch <000/100>: Step <002/2280>] - Data(s): 0.000 (1.870) - Batch(s): 0.629 
+(4.462) - AE Loss: 1893299.500 (1051420.250) - AE Rec Loss: 12.840 (7.130) - 
+Disc Loss: 0.000 (0.000) - 180.57 m remaining
+
+[Epoch <000/100>: Step <002/2280>] - Data(s): 0.001 (1.870) - Batch(s): 0.626 
+(4.462) - AE Loss: 609120.125 (1051420.250) - AE Rec Loss: 4.131 (7.130) - Disc 
+Loss: 0.000 (0.000) - 179.23 m remaining
+
+[Epoch <000/100>: Step <002/2280>] - Data(s): 0.000 (1.870) - Batch(s): 0.620 
+(4.462) - AE Loss: 1041055.125 (1051420.250) - AE Rec Loss: 7.060 (7.130) - Disc
+Loss: 0.000 (0.000) - 179.34 m remaining
+
+[Epoch <000/100>: Step <002/2280>] - Data(s): 0.000 (1.870) - Batch(s): 0.618 
+(4.462) - AE Loss: 686627.625 (1051420.250) - AE Rec Loss: 4.656 (7.130) - Disc 
+Loss: 0.000 (0.000) - 180.36 m remaining
+
+[Epoch <000/100>: Step <003/2280>] - Data(s): 0.000 (1.491) - Batch(s): 4.440 
+(4.523) - AE Loss: 388087.875 (1024468.312) - AE Rec Loss: 2.632 (6.948) - Disc 
+Loss: 0.000 (0.000) - 182.35 m remaining
+
+[Epoch <000/100>: Step <003/2280>] - Data(s): 0.000 (1.491) - Batch(s): 4.791 
+(4.523) - AE Loss: 1859049.750 (1024468.312) - AE Rec Loss: 12.607 (6.948) - 
+Disc Loss: 0.000 (0.000) - 182.19 m remaining
+
+[Epoch <000/100>: Step <003/2280>] - Data(s): 0.001 (1.491) - Batch(s): 4.439 
+(4.523) - AE Loss: 161959.828 (1024468.312) - AE Rec Loss: 1.098 (6.948) - Disc 
+Loss: 0.000 (0.000) - 181.34 m remaining
+
+[Epoch <000/100>: Step <003/2280>] - Data(s): 4.224 (1.491) - Batch(s): 4.799 
+(4.523) - AE Loss: 739175.250 (1024468.312) - AE Rec Loss: 5.013 (6.948) - Disc 
+Loss: 0.000 (0.000) - 181.43 m remaining
+
+[Epoch <000/100>: Step <003/2280>] - Data(s): 0.000 (1.491) - Batch(s): 4.439 
+(4.523) - AE Loss: 542520.875 (1024468.312) - AE Rec Loss: 3.679 (6.948) - Disc 
+Loss: 0.000 (0.000) - 181.34 m remaining
+
+[Epoch <000/100>: Step <003/2280>] - Data(s): 0.000 (1.491) - Batch(s): 4.795 
+(4.523) - AE Loss: 167177.500 (1024468.312) - AE Rec Loss: 1.134 (6.948) - Disc 
+Loss: 0.000 (0.000) - 181.43 m remaining
+
+[Epoch <000/100>: Step <004/2280>] - Data(s): 0.000 (1.193) - Batch(s): 0.568 
+(3.731) - AE Loss: 2417073.250 (991699.312) - AE Rec Loss: 16.392 (6.725) - Disc
+Loss: 0.000 (0.000) - 150.58 m remaining
+
+[Epoch <000/100>: Step <004/2280>] - Data(s): 0.000 (1.193) - Batch(s): 0.563 
+(3.731) - AE Loss: 329496.688 (991699.312) - AE Rec Loss: 2.235 (6.725) - Disc 
+Loss: 0.000 (0.000) - 150.51 m remaining
+
+[Epoch <000/100>: Step <004/2280>] - Data(s): 0.000 (1.193) - Batch(s): 0.563 
+(3.731) - AE Loss: 779485.250 (991699.312) - AE Rec Loss: 5.286 (6.725) - Disc 
+Loss: 0.000 (0.000) - 151.18 m remaining
+
+[Epoch <000/100>: Step <004/2280>] - Data(s): 0.000 (1.193) - Batch(s): 0.568 
+(3.731) - AE Loss: 2159220.750 (991699.312) - AE Rec Loss: 14.643 (6.725) - Disc
+Loss: 0.000 (0.000) - 150.58 m remaining
+
+[Epoch <000/100>: Step <004/2280>] - Data(s): 0.000 (1.193) - Batch(s): 0.569 
+(3.731) - AE Loss: 255487.562 (991699.312) - AE Rec Loss: 1.733 (6.725) - Disc 
+Loss: 0.000 (0.000) - 150.51 m remaining
+
+[Epoch <000/100>: Step <004/2280>] - Data(s): 0.000 (1.193) - Batch(s): 0.563 
+(3.731) - AE Loss: 744020.625 (991699.312) - AE Rec Loss: 5.046 (6.725) - Disc 
+Loss: 0.000 (0.000) - 151.31 m remaining
+
+[Epoch <000/100>: Step <005/2280>] - Data(s): 0.001 (1.009) - Batch(s): 1.306 
+(3.343) - AE Loss: 431254.562 (904266.500) - AE Rec Loss: 2.925 (6.132) - Disc 
+Loss: 0.000 (0.000) - 137.27 m remaining
+
+[Epoch <000/100>: Step <005/2280>] - Data(s): 0.000 (1.009) - Batch(s): 1.308 
+(3.343) - AE Loss: 388384.469 (904266.500) - AE Rec Loss: 2.634 (6.132) - Disc 
+Loss: 0.000 (0.000) - 137.33 m remaining
+
+[Epoch <000/100>: Step <005/2280>] - Data(s): 0.000 (1.009) - Batch(s): 1.308 
+(3.343) - AE Loss: 353107.438 (904266.500) - AE Rec Loss: 2.395 (6.132) - Disc 
+Loss: 0.000 (0.000) - 137.32 m remaining
+
+[Epoch <000/100>: Step <005/2280>] - Data(s): 0.000 (1.009) - Batch(s): 1.307 
+(3.343) - AE Loss: 465051.719 (904266.500) - AE Rec Loss: 3.154 (6.132) - Disc 
+Loss: 0.000 (0.000) - 137.27 m remaining
+
+[Epoch <000/100>: Step <005/2280>] - Data(s): 0.000 (1.009) - Batch(s): 1.309 
+(3.343) - AE Loss: 220148.703 (904266.500) - AE Rec Loss: 1.493 (6.132) - Disc 
+Loss: 0.000 (0.000) - 137.83 m remaining
+
+[Epoch <000/100>: Step <005/2280>] - Data(s): 0.000 (1.009) - Batch(s): 1.309 
+(3.343) - AE Loss: 2006111.500 (904266.500) - AE Rec Loss: 13.605 (6.132) - Disc
+Loss: 0.000 (0.000) - 137.94 m remaining
+
+[Epoch <000/100>: Step <006/2280>] - Data(s): 1.615 (0.884) - Batch(s): 2.181 
+(3.163) - AE Loss: 616747.125 (971420.688) - AE Rec Loss: 4.183 (6.588) - Disc 
+Loss: 0.000 (0.000) - 130.31 m remaining
+
+[Epoch <000/100>: Step <006/2280>] - Data(s): 0.000 (0.884) - Batch(s): 1.822 
+(3.163) - AE Loss: 141801.031 (971420.688) - AE Rec Loss: 0.962 (6.588) - Disc 
+Loss: 0.000 (0.000) - 130.26 m remaining
+
+[Epoch <000/100>: Step <006/2280>] - Data(s): 0.000 (0.884) - Batch(s): 2.175 
+(3.163) - AE Loss: 445575.469 (971420.688) - AE Rec Loss: 3.022 (6.588) - Disc 
+Loss: 0.000 (0.000) - 130.74 m remaining
+
+[Epoch <000/100>: Step <006/2280>] - Data(s): 0.001 (0.884) - Batch(s): 1.822 
+(3.163) - AE Loss: 2122512.500 (971420.688) - AE Rec Loss: 14.394 (6.588) - Disc
+Loss: 0.000 (0.000) - 130.26 m remaining
+
+[Epoch <000/100>: Step <006/2280>] - Data(s): 0.001 (0.884) - Batch(s): 1.821 
+(3.163) - AE Loss: 342379.531 (971420.688) - AE Rec Loss: 2.322 (6.588) - Disc 
+Loss: 0.000 (0.000) - 130.83 m remaining
+
+[Epoch <000/100>: Step <006/2280>] - Data(s): 0.000 (0.884) - Batch(s): 2.179 
+(3.163) - AE Loss: 406308.062 (971420.688) - AE Rec Loss: 2.755 (6.588) - Disc 
+Loss: 0.000 (0.000) - 130.31 m remaining
+
+[Epoch <000/100>: Step <007/2280>] - Data(s): 0.000 (0.774) - Batch(s): 0.568 
+(2.839) - AE Loss: 332195.688 (987569.188) - AE Rec Loss: 2.253 (6.697) - Disc 
+Loss: 0.000 (0.000) - 117.43 m remaining
+
+[Epoch <000/100>: Step <007/2280>] - Data(s): 0.000 (0.774) - Batch(s): 0.567 
+(2.839) - AE Loss: 2529211.500 (987569.188) - AE Rec Loss: 17.152 (6.697) - Disc
+Loss: 0.000 (0.000) - 117.43 m remaining
+
+[Epoch <000/100>: Step <007/2280>] - Data(s): 0.000 (0.774) - Batch(s): 0.564 
+(2.839) - AE Loss: 324628.188 (987569.188) - AE Rec Loss: 2.202 (6.697) - Disc 
+Loss: 0.000 (0.000) - 117.89 m remaining
+
+[Epoch <000/100>: Step <007/2280>] - Data(s): 0.000 (0.774) - Batch(s): 0.563 
+(2.839) - AE Loss: 674523.562 (987569.188) - AE Rec Loss: 4.574 (6.697) - Disc 
+Loss: 0.000 (0.000) - 117.38 m remaining
+
+[Epoch <000/100>: Step <007/2280>] - Data(s): 0.000 (0.774) - Batch(s): 0.564 
+(2.839) - AE Loss: 898590.375 (987569.188) - AE Rec Loss: 6.094 (6.697) - Disc 
+Loss: 0.000 (0.000) - 117.81 m remaining
+
+[Epoch <000/100>: Step <007/2280>] - Data(s): 0.000 (0.774) - Batch(s): 0.568 
+(2.839) - AE Loss: 3462666.500 (987569.188) - AE Rec Loss: 23.483 (6.697) - Disc
+Loss: 0.000 (0.000) - 117.38 m remaining
+
+[Epoch <000/100>: Step <008/2280>] - Data(s): 0.000 (0.692) - Batch(s): 0.681 
+(2.609) - AE Loss: 2711717.250 (1013218.375) - AE Rec Loss: 18.390 (6.871) - 
+Disc Loss: 0.000 (0.000) - 109.93 m remaining
+
+[Epoch <000/100>: Step <008/2280>] - Data(s): 0.000 (0.692) - Batch(s): 0.684 
+(2.609) - AE Loss: 795117.500 (1013218.375) - AE Rec Loss: 5.392 (6.871) - Disc 
+Loss: 0.000 (0.000) - 110.00 m remaining
+
+[Epoch <000/100>: Step <008/2280>] - Data(s): 0.000 (0.692) - Batch(s): 0.683 
+(2.609) - AE Loss: 321948.281 (1013218.375) - AE Rec Loss: 2.183 (6.871) - Disc 
+Loss: 0.000 (0.000) - 109.60 m remaining
+
+[Epoch <000/100>: Step <008/2280>] - Data(s): 0.000 (0.692) - Batch(s): 0.683 
+(2.609) - AE Loss: 3565134.500 (1013218.375) - AE Rec Loss: 24.178 (6.871) - 
+Disc Loss: 0.000 (0.000) - 109.56 m remaining
+
+[Epoch <000/100>: Step <008/2280>] - Data(s): 0.000 (0.692) - Batch(s): 0.683 
+(2.609) - AE Loss: 577733.750 (1013218.375) - AE Rec Loss: 3.918 (6.871) - Disc 
+Loss: 0.000 (0.000) - 109.56 m remaining
+
+[Epoch <000/100>: Step <008/2280>] - Data(s): 0.000 (0.692) - Batch(s): 0.684 
+(2.609) - AE Loss: 378778.062 (1013218.375) - AE Rec Loss: 2.569 (6.871) - Disc 
+Loss: 0.000 (0.000) - 109.60 m remaining
+
+[Epoch <000/100>: Step <009/2280>] - Data(s): 0.000 (0.623) - Batch(s): 0.564 
+(2.405) - AE Loss: 2050133.375 (1007490.750) - AE Rec Loss: 13.903 (6.832) - 
+Disc Loss: 0.000 (0.000) - 101.39 m remaining
+
+[Epoch <000/100>: Step <009/2280>] - Data(s): 0.000 (0.623) - Batch(s): 0.565 
+(2.405) - AE Loss: 749628.625 (1007490.750) - AE Rec Loss: 5.084 (6.832) - Disc 
+Loss: 0.000 (0.000) - 101.73 m remaining
+
+[Epoch <000/100>: Step <009/2280>] - Data(s): 0.000 (0.623) - Batch(s): 0.569 
+(2.405) - AE Loss: 493574.438 (1007490.750) - AE Rec Loss: 3.347 (6.832) - Disc 
+Loss: 0.000 (0.000) - 101.42 m remaining
+
+[Epoch <000/100>: Step <009/2280>] - Data(s): 0.000 (0.623) - Batch(s): 0.566 
+(2.405) - AE Loss: 753507.875 (1007490.750) - AE Rec Loss: 5.110 (6.832) - Disc 
+Loss: 0.000 (0.000) - 101.79 m remaining
+
+[Epoch <000/100>: Step <009/2280>] - Data(s): 0.000 (0.623) - Batch(s): 0.568 
+(2.405) - AE Loss: 368556.406 (1007490.750) - AE Rec Loss: 2.499 (6.832) - Disc 
+Loss: 0.000 (0.000) - 101.42 m remaining
+
+[Epoch <000/100>: Step <009/2280>] - Data(s): 0.000 (0.623) - Batch(s): 0.569 
+(2.405) - AE Loss: 2472033.000 (1007490.750) - AE Rec Loss: 16.765 (6.832) - 
+Disc Loss: 0.000 (0.000) - 101.39 m remaining
+
+[Epoch <000/100>: Step <010/2280>] - Data(s): 0.000 (0.602) - Batch(s): 5.266 
+(2.662) - AE Loss: 162669.422 (1003915.312) - AE Rec Loss: 1.103 (6.808) - Disc 
+Loss: 0.000 (0.000) - 110.82 m remaining
+
+[Epoch <000/100>: Step <010/2280>] - Data(s): 0.000 (0.602) - Batch(s): 5.268 
+(2.662) - AE Loss: 954309.312 (1003915.312) - AE Rec Loss: 6.472 (6.808) - Disc 
+Loss: 0.000 (0.000) - 110.79 m remaining
+
+[Epoch <000/100>: Step <010/2280>] - Data(s): 0.000 (0.602) - Batch(s): 5.263 
+(2.662) - AE Loss: 499597.000 (1003915.312) - AE Rec Loss: 3.388 (6.808) - Disc 
+Loss: 0.000 (0.000) - 111.09 m remaining
+
+[Epoch <000/100>: Step <010/2280>] - Data(s): 4.697 (0.602) - Batch(s): 5.267 
+(2.662) - AE Loss: 3559993.500 (1003915.312) - AE Rec Loss: 24.143 (6.808) - 
+Disc Loss: 0.000 (0.000) - 110.79 m remaining
+
+[Epoch <000/100>: Step <010/2280>] - Data(s): 0.001 (0.602) - Batch(s): 4.911 
+(2.662) - AE Loss: 274850.281 (1003915.312) - AE Rec Loss: 1.864 (6.808) - Disc 
+Loss: 0.000 (0.000) - 111.15 m remaining
+
+[Epoch <000/100>: Step <010/2280>] - Data(s): 0.060 (0.602) - Batch(s): 5.267 
+(2.662) - AE Loss: 159949.500 (1003915.312) - AE Rec Loss: 1.085 (6.808) - Disc 
+Loss: 0.000 (0.000) - 110.82 m remaining
+
+bouta write to tb
+wrote to tb
+[Epoch <000/100>: Step <011/2280>] - Data(s): 0.000 (0.552) - Batch(s): 1.719 
+(2.576) - AE Loss: 712090.375 (1033828.312) - AE Rec Loss: 4.829 (7.011) - Disc 
+Loss: 0.000 (0.000) - 107.55 m remaining
+
+[Epoch <000/100>: Step <011/2280>] - Data(s): 0.000 (0.552) - Batch(s): 1.720 
+(2.576) - AE Loss: 3633076.000 (1033828.312) - AE Rec Loss: 24.638 (7.011) - 
+Disc Loss: 0.000 (0.000) - 107.52 m remaining
+
+[Epoch <000/100>: Step <011/2280>] - Data(s): 0.001 (0.552) - Batch(s): 1.726 
+(2.576) - AE Loss: 2227906.500 (1033828.312) - AE Rec Loss: 15.109 (7.011) - 
+Disc Loss: 0.000 (0.000) - 107.52 m remaining
+
+[Epoch <000/100>: Step <011/2280>] - Data(s): 0.000 (0.552) - Batch(s): 1.710 
+(2.576) - AE Loss: 1727430.500 (1033828.312) - AE Rec Loss: 11.715 (7.011) - 
+Disc Loss: 0.000 (0.000) - 107.80 m remaining
+
+[Epoch <000/100>: Step <011/2280>] - Data(s): 0.000 (0.552) - Batch(s): 1.711 
+(2.576) - AE Loss: 1790939.375 (1033828.312) - AE Rec Loss: 12.146 (7.011) - 
+Disc Loss: 0.000 (0.000) - 107.55 m remaining
+
+[Epoch <000/100>: Step <011/2280>] - Data(s): 0.000 (0.552) - Batch(s): 0.603 
+(2.576) - AE Loss: 2320315.500 (1033828.312) - AE Rec Loss: 15.736 (7.011) - 
+Disc Loss: 0.000 (0.000) - 107.86 m remaining
+
+[Epoch <000/100>: Step <012/2280>] - Data(s): 0.000 (0.510) - Batch(s): 0.566 
+(2.421) - AE Loss: 654818.500 (1023823.312) - AE Rec Loss: 4.441 (6.943) - Disc 
+Loss: 0.000 (0.000) - 101.32 m remaining
+
+[Epoch <000/100>: Step <012/2280>] - Data(s): 0.001 (0.510) - Batch(s): 0.569 
+(2.421) - AE Loss: 657669.438 (1023823.312) - AE Rec Loss: 4.460 (6.943) - Disc 
+Loss: 0.000 (0.000) - 101.35 m remaining
+
+[Epoch <000/100>: Step <012/2280>] - Data(s): 0.000 (0.510) - Batch(s): 0.569 
+(2.421) - AE Loss: 390230.312 (1023823.312) - AE Rec Loss: 2.646 (6.943) - Disc 
+Loss: 0.000 (0.000) - 101.35 m remaining
+
+[Epoch <000/100>: Step <012/2280>] - Data(s): 0.000 (0.510) - Batch(s): 0.567 
+(2.421) - AE Loss: 336404.188 (1023823.312) - AE Rec Loss: 2.281 (6.943) - Disc 
+Loss: 0.000 (0.000) - 101.63 m remaining
+
+[Epoch <000/100>: Step <012/2280>] - Data(s): 0.001 (0.510) - Batch(s): 0.569 
+(2.421) - AE Loss: 436083.688 (1023823.312) - AE Rec Loss: 2.957 (6.943) - Disc 
+Loss: 0.000 (0.000) - 101.32 m remaining
+
+[Epoch <000/100>: Step <012/2280>] - Data(s): 0.000 (0.510) - Batch(s): 0.565 
+(2.421) - AE Loss: 1895108.750 (1023823.312) - AE Rec Loss: 12.852 (6.943) - 
+Disc Loss: 0.000 (0.000) - 101.58 m remaining
+
+[Epoch <000/100>: Step <013/2280>] - Data(s): 0.000 (0.487) - Batch(s): 2.479 
+(2.448) - AE Loss: 501663.438 (996491.438) - AE Rec Loss: 3.402 (6.758) - Disc 
+Loss: 0.000 (0.000) - 102.42 m remaining
+
+[Epoch <000/100>: Step <013/2280>] - Data(s): 0.001 (0.487) - Batch(s): 2.836 
+(2.448) - AE Loss: 1828528.125 (996491.438) - AE Rec Loss: 12.401 (6.758) - Disc
+Loss: 0.000 (0.000) - 102.16 m remaining
+
+[Epoch <000/100>: Step <013/2280>] - Data(s): 2.266 (0.487) - Batch(s): 2.836 
+(2.448) - AE Loss: 496290.125 (996491.438) - AE Rec Loss: 3.366 (6.758) - Disc 
+Loss: 0.000 (0.000) - 102.13 m remaining
+
+[Epoch <000/100>: Step <013/2280>] - Data(s): 0.000 (0.487) - Batch(s): 2.836 
+(2.448) - AE Loss: 553192.750 (996491.438) - AE Rec Loss: 3.752 (6.758) - Disc 
+Loss: 0.000 (0.000) - 102.16 m remaining
+
+[Epoch <000/100>: Step <013/2280>] - Data(s): 0.000 (0.487) - Batch(s): 2.831 
+(2.448) - AE Loss: 280142.875 (996491.438) - AE Rec Loss: 1.900 (6.758) - Disc 
+Loss: 0.000 (0.000) - 102.37 m remaining
+
+[Epoch <000/100>: Step <013/2280>] - Data(s): 0.000 (0.487) - Batch(s): 2.837 
+(2.448) - AE Loss: 337436.438 (996491.438) - AE Rec Loss: 2.288 (6.758) - Disc 
+Loss: 0.000 (0.000) - 102.13 m remaining
+
+[Epoch <000/100>: Step <014/2280>] - Data(s): 0.000 (0.455) - Batch(s): 0.592 
+(2.325) - AE Loss: 277140.844 (985985.000) - AE Rec Loss: 1.879 (6.687) - Disc 
+Loss: 0.000 (0.000) - 97.33 m remaining
+
+[Epoch <000/100>: Step <014/2280>] - Data(s): 0.000 (0.455) - Batch(s): 0.597 
+(2.325) - AE Loss: 2330267.250 (985985.000) - AE Rec Loss: 15.803 (6.687) - Disc
+Loss: 0.000 (0.000) - 97.33 m remaining
+
+[Epoch <000/100>: Step <014/2280>] - Data(s): 0.000 (0.455) - Batch(s): 0.596 
+(2.325) - AE Loss: 246066.156 (985985.000) - AE Rec Loss: 1.669 (6.687) - Disc 
+Loss: 0.000 (0.000) - 97.36 m remaining
+
+[Epoch <000/100>: Step <014/2280>] - Data(s): 0.001 (0.455) - Batch(s): 0.597 
+(2.325) - AE Loss: 886448.125 (985985.000) - AE Rec Loss: 6.012 (6.687) - Disc 
+Loss: 0.000 (0.000) - 97.60 m remaining
+
+[Epoch <000/100>: Step <014/2280>] - Data(s): 0.000 (0.455) - Batch(s): 0.589 
+(2.325) - AE Loss: 1848258.500 (985985.000) - AE Rec Loss: 12.534 (6.687) - Disc
+Loss: 0.000 (0.000) - 97.56 m remaining
+
+[Epoch <000/100>: Step <014/2280>] - Data(s): 0.000 (0.455) - Batch(s): 0.589 
+(2.325) - AE Loss: 612972.125 (985985.000) - AE Rec Loss: 4.157 (6.687) - Disc 
+Loss: 0.000 (0.000) - 97.36 m remaining
+
+[Epoch <000/100>: Step <015/2280>] - Data(s): 0.000 (0.426) - Batch(s): 0.566 
+(2.215) - AE Loss: 1723150.750 (967682.062) - AE Rec Loss: 11.686 (6.563) - Disc
+Loss: 0.000 (0.000) - 93.19 m remaining
+
+[Epoch <000/100>: Step <015/2280>] - Data(s): 0.001 (0.426) - Batch(s): 0.565 
+(2.215) - AE Loss: 846300.125 (967682.062) - AE Rec Loss: 5.739 (6.563) - Disc 
+Loss: 0.000 (0.000) - 92.94 m remaining
+
+[Epoch <000/100>: Step <015/2280>] - Data(s): 0.000 (0.426) - Batch(s): 0.569 
+(2.215) - AE Loss: 152174.375 (967682.062) - AE Rec Loss: 1.032 (6.563) - Disc 
+Loss: 0.000 (0.000) - 92.96 m remaining
+
+[Epoch <000/100>: Step <015/2280>] - Data(s): 0.000 (0.426) - Batch(s): 0.565 
+(2.215) - AE Loss: 1826138.750 (967682.062) - AE Rec Loss: 12.384 (6.563) - Disc
+Loss: 0.000 (0.000) - 93.15 m remaining
+
+[Epoch <000/100>: Step <015/2280>] - Data(s): 0.000 (0.426) - Batch(s): 0.569 
+(2.215) - AE Loss: 302816.844 (967682.062) - AE Rec Loss: 2.054 (6.563) - Disc 
+Loss: 0.000 (0.000) - 92.96 m remaining
+
+[Epoch <000/100>: Step <015/2280>] - Data(s): 0.000 (0.426) - Batch(s): 0.570 
+(2.215) - AE Loss: 578312.938 (967682.062) - AE Rec Loss: 3.922 (6.563) - Disc 
+Loss: 0.000 (0.000) - 92.94 m remaining
+
+[Epoch <000/100>: Step <016/2280>] - Data(s): 0.000 (0.413) - Batch(s): 3.091 
+(2.264) - AE Loss: 282844.219 (950565.562) - AE Rec Loss: 1.918 (6.446) - Disc 
+Loss: 0.000 (0.000) - 94.65 m remaining
+
+[Epoch <000/100>: Step <016/2280>] - Data(s): 0.000 (0.413) - Batch(s): 3.090 
+(2.264) - AE Loss: 382487.938 (950565.562) - AE Rec Loss: 2.594 (6.446) - Disc 
+Loss: 0.000 (0.000) - 94.67 m remaining
+
+[Epoch <000/100>: Step <016/2280>] - Data(s): 0.000 (0.413) - Batch(s): 2.733 
+(2.264) - AE Loss: 298921.688 (950565.562) - AE Rec Loss: 2.027 (6.446) - Disc 
+Loss: 0.000 (0.000) - 94.88 m remaining
+
+[Epoch <000/100>: Step <016/2280>] - Data(s): 2.520 (0.413) - Batch(s): 3.089 
+(2.264) - AE Loss: 1822311.250 (950565.562) - AE Rec Loss: 12.358 (6.446) - Disc
+Loss: 0.000 (0.000) - 94.65 m remaining
+
+[Epoch <000/100>: Step <016/2280>] - Data(s): 0.000 (0.413) - Batch(s): 3.085 
+(2.264) - AE Loss: 153691.875 (950565.562) - AE Rec Loss: 1.042 (6.446) - Disc 
+Loss: 0.000 (0.000) - 94.84 m remaining
+
+[Epoch <000/100>: Step <016/2280>] - Data(s): 0.000 (0.413) - Batch(s): 3.090 
+(2.264) - AE Loss: 1717721.500 (950565.562) - AE Rec Loss: 11.649 (6.446) - Disc
+Loss: 0.000 (0.000) - 94.67 m remaining
+
+[Epoch <000/100>: Step <017/2280>] - Data(s): 0.001 (0.391) - Batch(s): 0.597 
+(2.171) - AE Loss: 237284.812 (966321.125) - AE Rec Loss: 1.609 (6.553) - Disc 
+Loss: 0.000 (0.000) - 91.01 m remaining
+
+[Epoch <000/100>: Step <017/2280>] - Data(s): 0.000 (0.391) - Batch(s): 0.594 
+(2.171) - AE Loss: 2974131.500 (966321.125) - AE Rec Loss: 20.170 (6.553) - Disc
+Loss: 0.000 (0.000) - 91.23 m remaining
+
+[Epoch <000/100>: Step <017/2280>] - Data(s): 0.001 (0.391) - Batch(s): 0.599 
+(2.171) - AE Loss: 1097223.000 (966321.125) - AE Rec Loss: 7.441 (6.553) - Disc 
+Loss: 0.000 (0.000) - 91.03 m remaining
+
+[Epoch <000/100>: Step <017/2280>] - Data(s): 0.000 (0.391) - Batch(s): 0.585 
+(2.171) - AE Loss: 428153.562 (966321.125) - AE Rec Loss: 2.904 (6.553) - Disc 
+Loss: 0.000 (0.000) - 91.20 m remaining
+
+[Epoch <000/100>: Step <017/2280>] - Data(s): 0.000 (0.391) - Batch(s): 0.589 
+(2.171) - AE Loss: 1669690.000 (966321.125) - AE Rec Loss: 11.323 (6.553) - Disc
+Loss: 0.000 (0.000) - 91.03 m remaining
+
+[Epoch <000/100>: Step <017/2280>] - Data(s): 0.000 (0.391) - Batch(s): 0.591 
+(2.171) - AE Loss: 1668515.500 (966321.125) - AE Rec Loss: 11.315 (6.553) - Disc
+Loss: 0.000 (0.000) - 91.01 m remaining
+
+[Epoch <000/100>: Step <018/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.570 
+(2.087) - AE Loss: 284847.625 (947034.062) - AE Rec Loss: 1.932 (6.422) - Disc 
+Loss: 0.000 (0.000) - 87.85 m remaining
+
+[Epoch <000/100>: Step <018/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.570 
+(2.087) - AE Loss: 413517.188 (947034.062) - AE Rec Loss: 2.804 (6.422) - Disc 
+Loss: 0.000 (0.000) - 87.64 m remaining
+
+[Epoch <000/100>: Step <018/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.570 
+(2.087) - AE Loss: 154391.156 (947034.062) - AE Rec Loss: 1.047 (6.422) - Disc 
+Loss: 0.000 (0.000) - 87.66 m remaining
+
+[Epoch <000/100>: Step <018/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.565 
+(2.087) - AE Loss: 268942.219 (947034.062) - AE Rec Loss: 1.824 (6.422) - Disc 
+Loss: 0.000 (0.000) - 87.64 m remaining
+
+[Epoch <000/100>: Step <018/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.566 
+(2.087) - AE Loss: 210833.531 (947034.062) - AE Rec Loss: 1.430 (6.422) - Disc 
+Loss: 0.000 (0.000) - 87.81 m remaining
+
+[Epoch <000/100>: Step <018/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.568 
+(2.087) - AE Loss: 720289.000 (947034.062) - AE Rec Loss: 4.885 (6.422) - Disc 
+Loss: 0.000 (0.000) - 87.66 m remaining
+
+[Epoch <000/100>: Step <019/2280>] - Data(s): 0.000 (0.389) - Batch(s): 7.063 
+(2.334) - AE Loss: 483010.438 (932868.188) - AE Rec Loss: 3.276 (6.326) - Disc 
+Loss: 0.000 (0.000) - 96.82 m remaining
+
+[Epoch <000/100>: Step <019/2280>] - Data(s): 0.000 (0.389) - Batch(s): 7.061 
+(2.334) - AE Loss: 453408.375 (932868.188) - AE Rec Loss: 3.075 (6.326) - Disc 
+Loss: 0.000 (0.000) - 96.84 m remaining
+
+[Epoch <000/100>: Step <019/2280>] - Data(s): 0.000 (0.389) - Batch(s): 6.705 
+(2.334) - AE Loss: 340615.688 (932868.188) - AE Rec Loss: 2.310 (6.326) - Disc 
+Loss: 0.000 (0.000) - 97.02 m remaining
+
+[Epoch <000/100>: Step <019/2280>] - Data(s): 6.489 (0.389) - Batch(s): 7.060 
+(2.334) - AE Loss: 452879.875 (932868.188) - AE Rec Loss: 3.071 (6.326) - Disc 
+Loss: 0.000 (0.000) - 96.82 m remaining
+
+[Epoch <000/100>: Step <019/2280>] - Data(s): 0.001 (0.389) - Batch(s): 7.056 
+(2.334) - AE Loss: 422866.312 (932868.188) - AE Rec Loss: 2.868 (6.326) - Disc 
+Loss: 0.000 (0.000) - 96.99 m remaining
+
+[Epoch <000/100>: Step <019/2280>] - Data(s): 0.000 (0.389) - Batch(s): 7.060 
+(2.334) - AE Loss: 289363.188 (932868.188) - AE Rec Loss: 1.962 (6.326) - Disc 
+Loss: 0.000 (0.000) - 96.84 m remaining
+
+[Epoch <000/100>: Step <020/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.597 
+(2.251) - AE Loss: 718614.375 (950441.188) - AE Rec Loss: 4.873 (6.446) - Disc 
+Loss: 0.000 (0.000) - 93.82 m remaining
+
+[Epoch <000/100>: Step <020/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.599 
+(2.251) - AE Loss: 2176256.750 (950441.188) - AE Rec Loss: 14.759 (6.446) - Disc
+Loss: 0.000 (0.000) - 93.63 m remaining
+
+[Epoch <000/100>: Step <020/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.596 
+(2.251) - AE Loss: 705408.875 (950441.188) - AE Rec Loss: 4.784 (6.446) - Disc 
+Loss: 0.000 (0.000) - 93.65 m remaining
+
+[Epoch <000/100>: Step <020/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.594 
+(2.251) - AE Loss: 1536168.250 (950441.188) - AE Rec Loss: 10.418 (6.446) - Disc
+Loss: 0.000 (0.000) - 93.63 m remaining
+
+[Epoch <000/100>: Step <020/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.592 
+(2.251) - AE Loss: 418231.844 (950441.188) - AE Rec Loss: 2.836 (6.446) - Disc 
+Loss: 0.000 (0.000) - 93.65 m remaining
+
+[Epoch <000/100>: Step <020/2280>] - Data(s): 0.000 (0.370) - Batch(s): 0.587 
+(2.251) - AE Loss: 1904107.625 (950441.188) - AE Rec Loss: 12.913 (6.446) - Disc
+Loss: 0.000 (0.000) - 93.79 m remaining
+
+bouta write to tb
+wrote to tb
+attempting to save
+[[36m2023-11-29 02:13:44,115[0m][[34maccelerate.accelerator[0m][[32mINFO[0m] - Saving current state to /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt[0m
+[[36m2023-11-29 02:13:49,091[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model.bin[0m
+[[36m2023-11-29 02:13:49,423[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_1.bin[0m
+[[36m2023-11-29 02:13:49,432[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_2.bin[0m
+[[36m2023-11-29 02:13:49,438[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_3.bin[0m
+[[36m2023-11-29 02:13:49,455[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_4.bin[0m
+[[36m2023-11-29 02:13:49,468[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_5.bin[0m
+[[36m2023-11-29 02:13:49,473[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_6.bin[0m
+[[36m2023-11-29 02:13:49,482[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_7.bin[0m
+[[36m2023-11-29 02:13:49,487[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_8.bin[0m
+[[36m2023-11-29 02:13:49,879[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_9.bin[0m
+[[36m2023-11-29 02:13:53,444[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_10.bin[0m
+[[36m2023-11-29 02:13:56,338[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Model weights saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/pytorch_model_11.bin[0m
+[[36m2023-11-29 02:13:56,344[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Optimizer state saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/optimizer.bin[0m
+[[36m2023-11-29 02:13:59,435[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Optimizer state saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/optimizer_1.bin[0m
+[[36m2023-11-29 02:13:59,435[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Sampler state for dataloader 0 saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/sampler.bin[0m
+[[36m2023-11-29 02:13:59,435[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Sampler state for dataloader 1 saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/sampler_1.bin[0m
+[[36m2023-11-29 02:13:59,446[0m][[34maccelerate.checkpointing[0m][[32mINFO[0m] - Random states saved in /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/checkpoints/state_1.pt/random_states_0.pkl[0m
+done saving state
+[Epoch <000/100>: Step <021/2280>] - Data(s): 0.000 (0.353) - Batch(s): 16.846 
+(2.853) - AE Loss: 657646.750 (932943.250) - AE Rec Loss: 4.460 (6.327) - Disc 
+Loss: 0.000 (0.000) - 118.44 m remaining
+
+[Epoch <000/100>: Step <021/2280>] - Data(s): 0.000 (0.353) - Batch(s): 16.842 
+(2.853) - AE Loss: 432564.625 (932943.250) - AE Rec Loss: 2.934 (6.327) - Disc 
+Loss: 0.000 (0.000) - 118.44 m remaining
+
+[Epoch <000/100>: Step <021/2280>] - Data(s): 0.000 (0.353) - Batch(s): 16.844 
+(2.853) - AE Loss: 3167534.000 (932943.250) - AE Rec Loss: 21.481 (6.327) - Disc
+Loss: 0.000 (0.000) - 118.45 m remaining
+
+[Epoch <000/100>: Step <021/2280>] - Data(s): 0.001 (0.353) - Batch(s): 0.575 
+(2.853) - AE Loss: 127866.094 (932943.250) - AE Rec Loss: 0.867 (6.327) - Disc 
+Loss: 0.000 (0.000) - 118.62 m remaining
+
+[Epoch <000/100>: Step <021/2280>] - Data(s): 0.000 (0.353) - Batch(s): 16.841 
+(2.853) - AE Loss: 335286.062 (932943.250) - AE Rec Loss: 2.274 (6.327) - Disc 
+Loss: 0.000 (0.000) - 118.59 m remaining
+
+[Epoch <000/100>: Step <021/2280>] - Data(s): 0.000 (0.353) - Batch(s): 16.845 
+(2.853) - AE Loss: 136391.875 (932943.250) - AE Rec Loss: 0.925 (6.327) - Disc 
+Loss: 0.000 (0.000) - 118.45 m remaining
+
+[Epoch <000/100>: Step <022/2280>] - Data(s): 0.000 (0.338) - Batch(s): 0.568 
+(2.753) - AE Loss: 315576.000 (929198.875) - AE Rec Loss: 2.140 (6.302) - Disc 
+Loss: 0.000 (0.000) - 114.45 m remaining
+
+[Epoch <000/100>: Step <022/2280>] - Data(s): 0.000 (0.338) - Batch(s): 0.567 
+(2.753) - AE Loss: 607774.250 (929198.875) - AE Rec Loss: 4.122 (6.302) - Disc 
+Loss: 0.000 (0.000) - 114.43 m remaining
+
+[Epoch <000/100>: Step <022/2280>] - Data(s): 0.001 (0.338) - Batch(s): 0.570 
+(2.753) - AE Loss: 1882714.125 (929198.875) - AE Rec Loss: 12.768 (6.302) - Disc
+Loss: 0.000 (0.000) - 114.43 m remaining
+
+[Epoch <000/100>: Step <022/2280>] - Data(s): 0.000 (0.338) - Batch(s): 0.566 
+(2.753) - AE Loss: 297725.812 (929198.875) - AE Rec Loss: 2.019 (6.302) - Disc 
+Loss: 0.000 (0.000) - 114.58 m remaining
+
+[Epoch <000/100>: Step <022/2280>] - Data(s): 0.000 (0.338) - Batch(s): 0.569 
+(2.753) - AE Loss: 456335.938 (929198.875) - AE Rec Loss: 3.095 (6.302) - Disc 
+Loss: 0.000 (0.000) - 114.60 m remaining
+
+[Epoch <000/100>: Step <022/2280>] - Data(s): 0.000 (0.338) - Batch(s): 0.569 
+(2.753) - AE Loss: 639922.625 (929198.875) - AE Rec Loss: 4.340 (6.302) - Disc 
+Loss: 0.000 (0.000) - 114.45 m remaining
+
+[Epoch <000/100>: Step <023/2280>] - Data(s): 0.001 (0.324) - Batch(s): 0.601 
+(2.664) - AE Loss: 351334.625 (919842.688) - AE Rec Loss: 2.383 (6.238) - Disc 
+Loss: 0.000 (0.000) - 110.91 m remaining
+
+[Epoch <000/100>: Step <023/2280>] - Data(s): 0.000 (0.324) - Batch(s): 0.598 
+(2.664) - AE Loss: 135598.156 (919842.688) - AE Rec Loss: 0.920 (6.238) - Disc 
+Loss: 0.000 (0.000) - 110.92 m remaining
+
+[Epoch <000/100>: Step <023/2280>] - Data(s): 0.000 (0.324) - Batch(s): 0.602 
+(2.664) - AE Loss: 494053.031 (919842.688) - AE Rec Loss: 3.351 (6.238) - Disc 
+Loss: 0.000 (0.000) - 111.07 m remaining
+
+[Epoch <000/100>: Step <023/2280>] - Data(s): 0.000 (0.324) - Batch(s): 0.616 
+(2.664) - AE Loss: 1882561.000 (919842.688) - AE Rec Loss: 12.767 (6.238) - Disc
+Loss: 0.000 (0.000) - 110.92 m remaining
+
+[Epoch <000/100>: Step <023/2280>] - Data(s): 0.000 (0.324) - Batch(s): 0.597 
+(2.664) - AE Loss: 268799.312 (919842.688) - AE Rec Loss: 1.823 (6.238) - Disc 
+Loss: 0.000 (0.000) - 110.91 m remaining
+
+[Epoch <000/100>: Step <023/2280>] - Data(s): 0.000 (0.324) - Batch(s): 0.590 
+(2.664) - AE Loss: 353637.125 (919842.688) - AE Rec Loss: 2.398 (6.238) - Disc 
+Loss: 0.000 (0.000) - 111.05 m remaining
+
+[Epoch <000/100>: Step <024/2280>] - Data(s): 0.000 (0.311) - Batch(s): 0.570 
+(2.580) - AE Loss: 1713247.250 (912334.312) - AE Rec Loss: 11.619 (6.187) - Disc
+Loss: 0.000 (0.000) - 107.55 m remaining
+
+[Epoch <000/100>: Step <024/2280>] - Data(s): 0.000 (0.311) - Batch(s): 0.567 
+(2.580) - AE Loss: 288430.531 (912334.312) - AE Rec Loss: 1.956 (6.187) - Disc 
+Loss: 0.000 (0.000) - 107.53 m remaining
+
+[Epoch <000/100>: Step <024/2280>] - Data(s): 0.000 (0.311) - Batch(s): 0.570 
+(2.580) - AE Loss: 461671.875 (912334.312) - AE Rec Loss: 3.131 (6.187) - Disc 
+Loss: 0.000 (0.000) - 107.55 m remaining
+
+[Epoch <000/100>: Step <024/2280>] - Data(s): 0.001 (0.311) - Batch(s): 0.571 
+(2.580) - AE Loss: 319849.094 (912334.312) - AE Rec Loss: 2.169 (6.187) - Disc 
+Loss: 0.000 (0.000) - 107.53 m remaining
+
+[Epoch <000/100>: Step <024/2280>] - Data(s): 0.000 (0.311) - Batch(s): 0.567 
+(2.580) - AE Loss: 146621.234 (912334.312) - AE Rec Loss: 0.994 (6.187) - Disc 
+Loss: 0.000 (0.000) - 107.67 m remaining
+
+[Epoch <000/100>: Step <024/2280>] - Data(s): 0.000 (0.311) - Batch(s): 0.570 
+(2.580) - AE Loss: 3596164.000 (912334.312) - AE Rec Loss: 24.388 (6.187) - Disc
+Loss: 0.000 (0.000) - 107.69 m remaining
+
+[Epoch <000/100>: Step <025/2280>] - Data(s): 0.000 (0.299) - Batch(s): 0.571 
+(2.502) - AE Loss: 2075782.000 (908690.688) - AE Rec Loss: 14.077 (6.162) - Disc
+Loss: 0.000 (0.000) - 104.42 m remaining
+
+[Epoch <000/100>: Step <025/2280>] - Data(s): 0.001 (0.299) - Batch(s): 0.567 
+(2.502) - AE Loss: 163842.859 (908690.688) - AE Rec Loss: 1.111 (6.162) - Disc 
+Loss: 0.000 (0.000) - 104.54 m remaining
+
+[Epoch <000/100>: Step <025/2280>] - Data(s): 0.001 (0.299) - Batch(s): 0.570 
+(2.502) - AE Loss: 141969.234 (908690.688) - AE Rec Loss: 0.963 (6.162) - Disc 
+Loss: 0.000 (0.000) - 104.56 m remaining
+
+[Epoch <000/100>: Step <025/2280>] - Data(s): 0.000 (0.299) - Batch(s): 0.572 
+(2.502) - AE Loss: 267230.562 (908690.688) - AE Rec Loss: 1.812 (6.162) - Disc 
+Loss: 0.000 (0.000) - 104.41 m remaining
+
+[Epoch <000/100>: Step <025/2280>] - Data(s): 0.000 (0.299) - Batch(s): 0.570 
+(2.502) - AE Loss: 326858.875 (908690.688) - AE Rec Loss: 2.217 (6.162) - Disc 
+Loss: 0.000 (0.000) - 104.42 m remaining
+
+[Epoch <000/100>: Step <025/2280>] - Data(s): 0.000 (0.299) - Batch(s): 0.567 
+(2.502) - AE Loss: 379599.375 (908690.688) - AE Rec Loss: 2.574 (6.162) - Disc 
+Loss: 0.000 (0.000) - 104.41 m remaining
+
+[Epoch <000/100>: Step <026/2280>] - Data(s): 0.001 (0.288) - Batch(s): 0.611 
+(2.432) - AE Loss: 137051.859 (915908.125) - AE Rec Loss: 0.929 (6.211) - Disc 
+Loss: 0.000 (0.000) - 101.68 m remaining
+
+[Epoch <000/100>: Step <026/2280>] - Data(s): 0.001 (0.288) - Batch(s): 0.607 
+(2.432) - AE Loss: 886366.312 (915908.125) - AE Rec Loss: 6.011 (6.211) - Disc 
+Loss: 0.000 (0.000) - 101.67 m remaining
+
+[Epoch <000/100>: Step <026/2280>] - Data(s): 0.001 (0.288) - Batch(s): 0.612 
+(2.432) - AE Loss: 3390536.000 (915908.125) - AE Rec Loss: 22.994 (6.211) - Disc
+Loss: 0.000 (0.000) - 101.67 m remaining
+
+[Epoch <000/100>: Step <026/2280>] - Data(s): 0.001 (0.288) - Batch(s): 0.600 
+(2.432) - AE Loss: 609990.500 (915908.125) - AE Rec Loss: 4.137 (6.211) - Disc 
+Loss: 0.000 (0.000) - 101.68 m remaining
+
+[Epoch <000/100>: Step <026/2280>] - Data(s): 0.001 (0.288) - Batch(s): 0.594 
+(2.432) - AE Loss: 234884.906 (915908.125) - AE Rec Loss: 1.593 (6.211) - Disc 
+Loss: 0.000 (0.000) - 101.79 m remaining
+
+[Epoch <000/100>: Step <026/2280>] - Data(s): 0.001 (0.288) - Batch(s): 0.613 
+(2.432) - AE Loss: 459395.062 (915908.125) - AE Rec Loss: 3.115 (6.211) - Disc 
+Loss: 0.000 (0.000) - 101.82 m remaining
+
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/comprx/train_vae.py", line 6, in <module>
+    from accelerate import Accelerator, DistributedDataParallelKwargs
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/__init__.py", line 3, in <module>
+    from .accelerator import Accelerator
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/accelerator.py", line 1317
+    print(f"Reached end on node {os.environ["RANK"]} with result {result}")
+                                             ^^^^
+SyntaxError: f-string: unmatched '['
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/comprx/train_vae.py", line 6, in <module>
+    from accelerate import Accelerator, DistributedDataParallelKwargs
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/__init__.py", line 3, in <module>
+    from .accelerator import Accelerator
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/accelerator.py", line 1317
+    print(f"Reached end on node {os.environ["RANK"]} with result {result}")
+                                             ^^^^
+SyntaxError: f-string: unmatched '['
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/comprx/train_vae.py", line 6, in <module>
+    from accelerate import Accelerator, DistributedDataParallelKwargs
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/__init__.py", line 3, in <module>
+    from .accelerator import Accelerator
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/accelerator.py", line 1317
+    print(f"Reached end on node {os.environ["RANK"]} with result {result}")
+                                             ^^^^
+SyntaxError: f-string: unmatched '['
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/comprx/train_vae.py", line 6, in <module>
+    from accelerate import Accelerator, DistributedDataParallelKwargs
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/__init__.py", line 3, in <module>
+    from .accelerator import Accelerator
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/accelerator.py", line 1317
+    print(f"Reached end on node {os.environ["RANK"]} with result {result}")
+                                             ^^^^
+SyntaxError: f-string: unmatched '['
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/comprx/train_vae.py", line 6, in <module>
+Traceback (most recent call last):
+    from accelerate import Accelerator, DistributedDataParallelKwargs
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/__init__.py", line 3, in <module>
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/comprx/train_vae.py", line 6, in <module>
+    from .accelerator import Accelerator
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/accelerator.py", line 1317
+    print(f"Reached end on node {os.environ["RANK"]} with result {result}")
+                                             ^^^^
+SyntaxError: f-string: unmatched '['
+    from accelerate import Accelerator, DistributedDataParallelKwargs
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/__init__.py", line 3, in <module>
+    from .accelerator import Accelerator
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/accelerate/accelerator.py", line 1317
+    print(f"Reached end on node {os.environ["RANK"]} with result {result}")
+                                             ^^^^
+SyntaxError: f-string: unmatched '['
+ERROR:torch.distributed.elastic.multiprocessing.api:failed (exitcode: 1) local_rank: 0 (pid: 405186) of binary: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/bin/python
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 346, in wrapper
+    return f(*args, **kwargs)
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/run.py", line 794, in main
+    run(args)
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/run.py", line 785, in run
+    elastic_launch(
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 134, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 250, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+comprx/train_vae.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2023-11-29_02:23:20
+  host      : sc1
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 405187)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2023-11-29_02:23:20
+  host      : sc1
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 405188)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[3]:
+  time      : 2023-11-29_02:23:20
+  host      : sc1
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 405189)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[4]:
+  time      : 2023-11-29_02:23:20
+  host      : sc1
+  rank      : 4 (local_rank: 4)
+  exitcode  : 1 (pid: 405190)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[5]:
+  time      : 2023-11-29_02:23:20
+  host      : sc1
+  rank      : 5 (local_rank: 5)
+  exitcode  : 1 (pid: 405191)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2023-11-29_02:23:20
+  host      : sc1
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 405186)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

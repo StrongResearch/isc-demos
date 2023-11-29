@@ -118,7 +118,6 @@ class LPIPSWithDiscriminator(nn.Module):
 
             log = {
                 f"{split}/total_loss": loss.clone().detach().mean(),
-                f"{split}/logvar": self.logvar.detach(),
                 f"{split}/kl_loss": kl_loss.detach().mean(),
                 f"{split}/nll_loss": nll_loss.detach().mean(),
                 f"{split}/rec_loss": rec_loss.detach().mean(),
@@ -127,8 +126,6 @@ class LPIPSWithDiscriminator(nn.Module):
                 f"{split}/p_loss": p_loss.detach(),
                 f"{split}/og_rec": og_rec_loss.detach().mean(),
                 f"{split}/p_weight": self.perceptual_weight,
-                
-                
             }
 
             return loss, log, reconstruction_loss, kldivergence_loss, discriminator_loss

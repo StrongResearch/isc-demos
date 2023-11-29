@@ -76,21 +76,23 @@ def main(cfg: DictConfig):
     
     print(f"=> Instantiating train dataloader [device={accelerator.device}]")
     train_dataset = cfg["dataloader"]["train"]["dataset"]
+    print(f"len(train_dataset) = {len(train_dataset)}")
     cfg["dataloader"]["train"]["shuffle"] = False
     train_sampler = InterruptableDistributedSampler(train_dataset)
     train_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["train"]), sampler=train_sampler)
+    print(f"len(train_dataloader) = {len(train_dataloader)}")
 
     print(f"=> Instantiating valid dataloader [device={accelerator.device}]")
     valid_dataset = cfg["dataloader"]["valid"]["dataset"]
+    print(f"len(valid_dataset) = {len(valid_dataset)}")
     valid_sampler = InterruptableDistributedSampler(valid_dataset)
     valid_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["valid"]), sampler=valid_sampler)
+    print(f"len(valid_dataloader) = {len(valid_dataloader)}")
 
     # Create loss function
     criterion = cfg.criterion
     discriminator_iter_start = criterion.discriminator_iter_start
     
-    print(f"discriminator_iter_start: {discriminator_iter_start}")
-
     # Create model
     model = cfg.model
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
@@ -106,6 +108,7 @@ def main(cfg: DictConfig):
     print(f"=> Instantiating the optimizer [device={accelerator.device}]")
 
     batch_size, lr = cfg.batch_size, cfg.base_learning_rate
+    print(f"batch_size = {batch_size}, learning rate = {lr}")
     lr = gradient_accumulation_steps * batch_size * lr
 
     ae_params = (
@@ -115,31 +118,45 @@ def main(cfg: DictConfig):
         + list(model.post_quant_conv.parameters())
     )
     if criterion.learn_logvar:
+        print("Learning logvar...")
         ae_params.append(criterion.logvar)
     opt_ae = torch.optim.Adam(ae_params, lr=lr, betas=(0.5, 0.9))
     opt_disc = torch.optim.Adam(criterion.discriminator.parameters(), lr=lr, betas=(0.5, 0.9))
 
     # Prepare components for multi-gpu/mixed precision training
-
-    (model, opt_ae, opt_disc, criterion) = accelerator.prepare(
-        model,
-        opt_ae,
-        opt_disc,
-        criterion,
+    print(f"=> Preparing opt_disc [device={accelerator.device}]")
+    opt_disc = accelerator.prepare(
+        opt_disc
     )
+    print(f"=> Preparing model [device={accelerator.device}]")
+    model = accelerator.prepare(
+        model
+    )
+    print(f"=> Preparing opt_ae [device={accelerator.device}]")
+    opt_ae = accelerator.prepare(
+        opt_ae
+    )
+    print(f"=> Preparing criterion [device={accelerator.device}]")
+    criterion = accelerator.prepare(
+        criterion
+    )
+    
     
     # Resume from checkpoint
     start_epoch = cfg.start_epoch
     global_step = None
+    local_step = 0
     if cfg.resume_from_ckpt is not None and os.path.isdir(cfg.resume_from_ckpt):
+        print(f"=> Loading from checkpoint [device={accelerator.device}]")
         sampler = torch.load(os.path.join(cfg.resume_from_ckpt, "train_sampler.bin"))
         train_sampler.load_state_dict(sampler["train_sampler"])
         start_epoch = sampler["epoch"]
-        global_step = sampler["step"] + 1
-        print(f"Loaded from checkpoint at epoch {start_epoch} and step {global_step}")
+        local_step = sampler["step"] + 1
+        print(f"Loaded checkpoint at epoch {start_epoch} and step {local_step}")
     
     train_kwargs = {"num_workers": cfg.dataloader.train.num_workers,
                     "pin_memory": True}
+    
     train_dataloader = DataLoaderShard(
             train_dataset,
             device=f"cuda:{os.environ['LOCAL_RANK']}",
@@ -150,6 +167,8 @@ def main(cfg: DictConfig):
             _drop_last=train_dataloader.drop_last,
             **train_kwargs,
         )
+    
+    print(f"len(train_dataloader) AGAIN = {len(train_dataloader)}")
 
     accelerator._dataloaders.append(train_dataloader)
 
@@ -213,6 +232,7 @@ def main(cfg: DictConfig):
     else:
         print(f"=> Starting model training [epochs={cfg['max_epoch']}]")
         min_loss = None
+        global_step = start_epoch * len(train_dataloader) + local_step
         global_step = cfg.get("global_step", 0) if global_step is None else global_step # uses other thing atm
         for epoch in range(start_epoch, cfg["max_epoch"]):
             with train_dataloader.sampler.in_epoch(epoch):
@@ -220,6 +240,7 @@ def main(cfg: DictConfig):
                     options=options,
                     epoch=epoch,
                     global_step=global_step,
+                    local_step=local_step,
                     accelerator=accelerator,
                     dataloader=train_dataloader,
                     model=model,

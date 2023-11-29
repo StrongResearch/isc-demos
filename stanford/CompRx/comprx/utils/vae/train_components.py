@@ -22,6 +22,7 @@ __all__ = ["training_epoch", "validation_epoch"]
 def training_epoch(
     epoch: int,
     global_step: int,
+    local_step: int,
     accelerator: Accelerator,
     dataloader: DataLoader,
     model: nn.Module,
@@ -109,13 +110,13 @@ def training_epoch(
 
         # Logging values
         print(
-            f"\r[Epoch <{epoch:03}/{options['max_epoch']}>: Step <{(global_step-(epoch*len(dataloader))):03}/{len(dataloader)}>] - "
+            f"\r[Epoch <{epoch:03}/{options['max_epoch']}>: Step <{(local_step):03}/{len(dataloader)}>] - "
             + f"Data(s): {data_time:.3f} ({metric_data.compute():.3f}) - "
             + f"Batch(s): {batch_time:.3f} ({metric_batch.compute():.3f}) - "
             + f"AE Loss: {aeloss.item():.3f} ({metric_aeloss.compute():.3f}) - "
             + f"AE Rec Loss: {log_dict_ae['train/rec_loss'].item():.3f} ({metric_ae_recloss.compute():.3f}) - "
             + f"Disc Loss: {discloss.item():.3f} ({metric_discloss.compute():.3f}) - "
-            + f"{(((time() - epoch_start) / (global_step + 1)) * (len(dataloader) - global_step)) / 60:.2f} m remaining\n"
+            + f"{(((time() - epoch_start) / (local_step + 1)) * (len(dataloader) - local_step)) / 60:.2f} m remaining\n"
         )
 
         if options["is_logging"] and global_step % options["log_every_n_steps"] == 0:
@@ -126,7 +127,7 @@ def training_epoch(
                 "mean_discloss": metric_discloss.compute(),
                 "mean_data": metric_data.compute(),
                 "mean_batch": metric_batch.compute(),
-                "step": global_step,
+                "step": local_step,
                 "step_global": global_step,
                 "step_aeloss": aeloss,
                 "step_ae_recloss": log_dict_ae["train/rec_loss"],
@@ -141,21 +142,21 @@ def training_epoch(
             accelerator.log(log_data)
         
         if accelerator.is_main_process and global_step % 10 == 0:
-            print("bouta write to tb")
             batch_images = list(torch.cat([images, reconstructions], dim=0))
             grid = torchvision.utils.make_grid(batch_images, nrow=len(images))
             writer.add_image(f"examples rank{os.environ['RANK']}", grid, global_step)
-            writer.add_scalar("Train/reconstruction_loss", log_dict_ae["train/rec_loss"], global_step)
+            writer.add_scalar("Train/reconstruction_loss", metric_ae_recloss.compute(), global_step)
             writer.add_scalar("Train/kldivergence_loss", log_dict_ae["train/kl_loss"], global_step)
-            writer.add_scalar("Train/discriminator_loss", discriminator_loss, global_step)
-            writer.add_scalar("Train/logvar", log_dict_ae["train/logvar"], global_step)
+            writer.add_scalar("Train/discriminator_loss", metric_discloss.compute(), global_step)
             writer.add_scalar("Train/nll_loss", log_dict_ae["train/nll_loss"], global_step)
             writer.add_scalar("Train/d_weight", log_dict_ae["train/d_weight"], global_step)
             writer.add_scalar("Train/g_loss", log_dict_ae["train/g_loss"], global_step)
             writer.add_scalar("Train/og_rec", log_dict_ae["train/og_rec"], global_step)
             writer.add_scalar("Train/p_weight", log_dict_ae["train/p_weight"], global_step)
+            writer.add_scalar("Train/total_loss", metric_aeloss.compute(), global_step)
+            writer.add_scalar("Train/ae_lr", optimizer_ae.param_groups[-1]['lr'], global_step)
+            writer.add_scalar("Train/disc_lr", optimizer_disc.param_groups[-1]['lr'], global_step)
             writer.close()
-            print("wrote to tb")
 
         if global_step % options["ckpt_every_n_steps"] == 0 and global_step > 0 and accelerator.is_main_process:
             print("attempting to save")
@@ -205,6 +206,7 @@ def training_epoch(
             break
         
         global_step += 1
+        local_step += 1
 
     return global_step
 
