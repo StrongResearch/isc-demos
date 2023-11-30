@@ -334,6 +334,7 @@ def main(args):
         if "sampler" in checkpoint:
             sampler = checkpoint["sampler"]
             data["train"].dataloader.sampler.load_state_dict(sampler)
+            data["val"].dataloader.sampler.load_state_dict(checkpoint["val_sampler"])
     else:
         tokenizer = get_tokenizer(args.model)
         data = get_data(
@@ -414,7 +415,6 @@ def main(args):
 
     for epoch in range(start_epoch, args.epochs):
         # Uses the sampler context to exit if the epoch is done
-        logging.info(f"Begging training at epoch {start_epoch}/{args.epochs}")
         with data["train"].dataloader.sampler.in_epoch(epoch):
             train_one_epoch(model, data, loss, epoch, start_iteration, optimizer, scaler, scheduler, dist_model, args, tb_writer=writer)
             

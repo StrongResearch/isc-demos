@@ -66,7 +66,7 @@ def backward(total_loss, scaler):
         total_loss.backward()
 
 # This function saves the inner-epoch state of the run so it can be easily resumed
-def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, path):
+def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, val_sampler, scaler, path):
     scaler_dict = None
     if scaler is not None:
         scaler_dict = scaler.state_dict()
@@ -76,6 +76,7 @@ def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, p
                 "model": model.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "sampler": sampler.state_dict(),
+                "val_sampler": val_sampler.state_dict(),
                 "scaler": scaler_dict
             }
     atomic_torch_save(checkpoint_dict, path)
@@ -246,19 +247,13 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         batch_loss = torch.div(batch_loss, dist.get_world_size())
         metric_data.append((batch_loss, (len(dataloader) * epoch) + iters))
         
-        denom = 72*35
-        checkpoint_steps = [int(args.accum_freq * (int(512000/denom)/args.accum_freq)),int(args.accum_freq * (int(1024000/denom)/args.accum_freq)),int(args.accum_freq * (int(2048000/denom)/args.accum_freq)),int(args.accum_freq * (int(33000000/denom)/args.accum_freq)),int(args.accum_freq * (int(67000000/denom)/args.accum_freq)),int(args.accum_freq * (int(134000000/denom)/args.accum_freq)),int(args.accum_freq * (int(150000000/denom)/args.accum_freq))]
-        if is_master(args) and (len(dataloader) * epoch) + iters in checkpoint_steps:
-            save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume + str((len(dataloader) * epoch) + iters))
-            
-        
         # Save checkpoint if at frequency or end of dataloader
         # Also writes to tensorboard
         if is_master(args):
             if iters >= len(dataloader):
                 #  save checkpoint and break
                 logging.info("Reached the end of the dataloader - saving checkpoint")
-                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
+                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, data["val"].dataloader.sampler, scaler, args.resume)
                 if tb_writer is not None:
                     for scalar in metric_data:
                         tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
@@ -270,7 +265,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 #break
             elif iters % args.save_frequency == 0:  # Save checkpoint every n iterations
                 logging.info(f"Saving checkpoint at epoch {epoch} and iteration {iters}/{len(dataloader)}")
-                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
+                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, data["val"].dataloader.sampler, scaler, args.resume)
                 if tb_writer is not None:
                     for scalar in metric_data:
                         tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
