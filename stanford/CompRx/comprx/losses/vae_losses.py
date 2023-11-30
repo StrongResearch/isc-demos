@@ -128,7 +128,7 @@ class LPIPSWithDiscriminator(nn.Module):
                 f"{split}/p_weight": self.perceptual_weight,
             }
 
-            return loss, log, reconstruction_loss, kldivergence_loss, discriminator_loss
+            return loss, log
 
         elif optimizer_idx == 1:
             # Discriminator loss (log D_phi(x)): Forces discriminator logits to be high (+1) for inputs and low (-1) for reconstructions

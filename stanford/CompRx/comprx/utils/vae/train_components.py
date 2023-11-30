@@ -50,7 +50,9 @@ def training_epoch(
         writer = SummaryWriter(log_dir='./checkpoints/tb')
 
     for batch in dataloader:
-    
+        if batch is None:
+            return global_step
+
         data_time = time() - batch_start
 
         with accelerator.accumulate(model):
@@ -61,7 +63,7 @@ def training_epoch(
             reconstructions, posterior = model(images)
             dataloader.sampler.advance(len(images))
 
-            aeloss, log_dict_ae, reconstruction_loss, kldivergence_loss, discriminator_loss = criterion(
+            aeloss, log_dict_ae = criterion(
                 inputs=images,
                 reconstructions=reconstructions,
                 posteriors=posterior,
@@ -158,7 +160,7 @@ def training_epoch(
             writer.add_scalar("Train/disc_lr", optimizer_disc.param_groups[-1]['lr'], global_step)
             writer.close()
 
-        if global_step % options["ckpt_every_n_steps"] == 0 and global_step > 0 and accelerator.is_main_process:
+        if (global_step % options["ckpt_every_n_steps"] == 0 or (local_step >= len(dataloader) - 1)) and local_step > 0 and accelerator.is_main_process:
             print("attempting to save")
             save_dir_1 = os.path.join(options["ckpt_dir"], f"state_1.pt")
             save_dir_2 = os.path.join(options["ckpt_dir"], f"state_2.pt")
@@ -169,7 +171,7 @@ def training_epoch(
                 accelerator.save_state(new)
                 print("done saving state")
                 torch.save({"train_sampler": dataloader.sampler.state_dict(),
-                            "step": global_step,
+                            "step": local_step,
                             "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
                 os.symlink(new, os.path.join(options["ckpt_dir"], "temp.pt"))
                 os.replace(os.path.join(options["ckpt_dir"], "temp.pt"), os.path.join(options["ckpt_dir"], "latest.pt"))
@@ -179,7 +181,7 @@ def training_epoch(
                 accelerator.save_state(new)
                 print("done saving state")
                 torch.save({"train_sampler": dataloader.sampler.state_dict(),
-                            "step": global_step,
+                            "step": local_step,
                             "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
                 os.symlink(new, os.path.join(options["ckpt_dir"], "latest.pt"))
                 

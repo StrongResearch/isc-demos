@@ -155,7 +155,7 @@ def main(cfg: DictConfig):
         print(f"Loaded checkpoint at epoch {start_epoch} and step {local_step}")
     
     train_kwargs = {"num_workers": cfg.dataloader.train.num_workers,
-                    "pin_memory": True}
+                    "pin_memory": cfg.dataloader.train.pin_memory}
     
     train_dataloader = DataLoaderShard(
             train_dataset,
@@ -166,6 +166,18 @@ def main(cfg: DictConfig):
             synchronized_generator=None,
             _drop_last=train_dataloader.drop_last,
             **train_kwargs,
+        )
+    val_kwargs = {"num_workers": cfg.dataloader.valid.num_workers,
+                    "pin_memory": cfg.dataloader.valid.pin_memory}
+    valid_dataloader = DataLoaderShard(
+            valid_dataset,
+            device=f"cuda:{os.environ['LOCAL_RANK']}",
+            sampler=valid_sampler,
+            batch_size=batch_size,
+            rng_types=None,
+            synchronized_generator=None,
+            _drop_last=valid_dataloader.drop_last,
+            **val_kwargs,
         )
     
     print(f"len(train_dataloader) AGAIN = {len(train_dataloader)}")
@@ -251,6 +263,7 @@ def main(cfg: DictConfig):
                     optimizer_ae=opt_ae,
                     optimizer_disc=opt_disc,
                 )
+                local_step = 0
 
                 accelerator.wait_for_everyone()
                 if use_ema:
