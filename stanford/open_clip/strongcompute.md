@@ -17,8 +17,9 @@ Install the dependencies with these commands:
 ```bash
 cd ~/isc-demos/stanford/open_clip
 pip install -e .
-make install-training
-make install-test
+pip install -r requirements.txt
+pip install -r requirements-training.txt
+pip install -r requirements-test.txt
 ```
 
 ## 2. Update the ISC file

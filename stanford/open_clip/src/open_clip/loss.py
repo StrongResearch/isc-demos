@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-
+import socket
 try:
     import torch.distributed.nn
     from torch import distributed as dist
@@ -117,12 +117,19 @@ class ClipLoss(nn.Module):
         
         return logits_per_image, logits_per_text
 
+    def check_invalid(self, tensor, name, device):
+        if torch.isinf(tensor).any():
+            print(f'{name} inf at gpu rank {socket.gethostname()} {device}')
+        if torch.isnan(tensor).any():
+            print(f'{name} nan at gpu rank {socket.gethostname()} {device}')
+
     def forward(self, image_features, text_features, logit_scale, output_dict=False):
         device = image_features.device
         logits_per_image, logits_per_text = self.get_logits(image_features, text_features, logit_scale)
 
         labels = self.get_ground_truth(device, logits_per_image.shape[0])
-
+        self.check_invalid(logits_per_text, "text", device)
+        self.check_invalid(logits_per_image, "image", device)
         total_loss = (
             F.cross_entropy(logits_per_image, labels) +
             F.cross_entropy(logits_per_text, labels)

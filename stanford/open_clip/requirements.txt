@@ -8,4 +8,7 @@ sentencepiece
 protobuf
 timm
 braceexpand
+pandas
+webdataset
+tensorboard
 cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
