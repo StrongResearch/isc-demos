@@ -58,7 +58,7 @@ mv train-other-500/* train-960
 The following command is used to generate the train and validation splits.
 
 ```bash
-cd ~/fairseq
+cd ~/isc-demos/fairseq
 
 python3 examples/wav2vec/wav2vec_manifest.py /mnt/.node1/Open-Datasets/librispeech/LibriSpeech/train-960 --dest /mnt/.node1/Open-Datasets/librispeech/LibriSpeech/train-960 --ext flac --valid-percent 0.01
 ```
@@ -68,7 +68,7 @@ python3 examples/wav2vec/wav2vec_manifest.py /mnt/.node1/Open-Datasets/librispee
 To generate the train and validation features for the first HuBERT pre-training iteration, use the following command:
 
 ```bash
-cd ~/fairseq/examples/hubert/simple_kmeans/
+cd ~/isc-demos/fairseq/examples/hubert/simple_kmeans/
 python dump_mfcc_feature.py train 1 0 /mnt/.node1/Open-Datasets/librispeech/LibriSpeech/features
 python dump_mfcc_feature.py valid 1 0 /mnt/.node1/Open-Datasets/librispeech/LibriSpeech/features
 ```
