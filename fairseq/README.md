@@ -18,7 +18,7 @@ source ~/.fairseq/bin/activate
 Install the required version of Pytorch with the following command.
 
 ```bash
-pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu118
+pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
 ```
 
 Navigate into the fairseq repository and install fairseq and soundfile.
