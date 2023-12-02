@@ -111,7 +111,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
         # Advance sampler by batch size before checkpointing
         dataloader.sampler.advance(args.batch_size)
         iters += 1
-        if is_master(args) and iters % 5 == 0:
+        if is_master(args) and iters % 1 == 0:
             logging.info(f"Training - {iters}/{len(dataloader)}")
         i_accum = (iters - 1) // args.accum_freq
         step = num_batches_per_epoch * epoch + i_accum
