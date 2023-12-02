@@ -26,7 +26,7 @@ Navigate into the fairseq repository and install fairseq and soundfile.
 ```bash
 cd ~/isc-demos/fairseq
 pip install -e .
-pip install soundfile
+pip install soundfile==0.12.1
 ```
 
 ## 2. Pre-process the dataset
