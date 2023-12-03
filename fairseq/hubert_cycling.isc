@@ -1,0 +1,6 @@
+experiment_name = "hubert_example_cycling"
+gpu_type = "24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.fairseq_new/bin/activate"
+output_path = "~/outputs/hubert"
+command = "fairseq_cli/hydra_train.py --config-dir examples/hubert/config/pretrain --config-name hubert_base_librispeech dataset.max_tokens=622222 task.data=/mnt/.node1/Open-Datasets/librispeech/LibriSpeech/train-960/ task.label_dir=/mnt/.node1/Open-Datasets/librispeech/LibriSpeech/labels task.labels='[\"km\"]' checkpoint.save_dir=$OUTPUT_PATH/checkpoints checkpoint.save_interval_updates=50 checkpoint.no_epoch_checkpoints=true  model.label_rate=100"
