@@ -1,4 +1,4 @@
-experiment_name = "hubert_example"
+experiment_name = "hubert_example_cycling"
 gpu_type = "24GB VRAM GPU"
 nnodes = 12
 venv_path = "~/.fairseq_new/bin/activate"
