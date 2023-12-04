@@ -124,5 +124,5 @@ Launch the experiment on the ISC with the following command.
 
 ```bash
 cd ~/isc-demos/fairseq
-isc train hubert.isc
+isc train hubert_cycling.isc
 ```
