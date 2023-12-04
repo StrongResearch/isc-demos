@@ -130,8 +130,8 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    dataset_train = torch.utils.data.Subset(dataset_train, range(12 * 6 * 10))
-    dataset_test = torch.utils.data.Subset(dataset_test, range(12 * 6 * 5))
+    # dataset_train = torch.utils.data.Subset(dataset_train, range(12 * 6 * 10))
+    # dataset_test = torch.utils.data.Subset(dataset_test, range(12 * 6 * 5))
 
     timer.report('loading data')
 
