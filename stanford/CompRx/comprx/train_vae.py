@@ -8,12 +8,7 @@ from accelerate.utils import GradientAccumulationPlugin
 from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 from rich import print
-from torch.utils.data import DataLoader
 from torchmetrics import MeanMetric
-
-import matplotlib
-
-import time
 
 from comprx.utils.extras import sanitize_dataloader_kwargs, set_seed
 from comprx.utils.vae.litema import LitEma, ema_scope
@@ -76,18 +71,11 @@ def main(cfg: DictConfig):
     
     print(f"=> Instantiating train dataloader [device={accelerator.device}]")
     train_dataset = cfg["dataloader"]["train"]["dataset"]
-    print(f"len(train_dataset) = {len(train_dataset)}")
-    cfg["dataloader"]["train"]["shuffle"] = False
     train_sampler = InterruptableDistributedSampler(train_dataset)
-    train_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["train"]), sampler=train_sampler)
-    print(f"len(train_dataloader) = {len(train_dataloader)}")
 
     print(f"=> Instantiating valid dataloader [device={accelerator.device}]")
     valid_dataset = cfg["dataloader"]["valid"]["dataset"]
-    print(f"len(valid_dataset) = {len(valid_dataset)}")
     valid_sampler = InterruptableDistributedSampler(valid_dataset)
-    valid_dataloader = DataLoader(**sanitize_dataloader_kwargs(cfg["dataloader"]["valid"]), sampler=valid_sampler)
-    print(f"len(valid_dataloader) = {len(valid_dataloader)}")
 
     # Create loss function
     criterion = cfg.criterion
@@ -152,7 +140,9 @@ def main(cfg: DictConfig):
         train_sampler.load_state_dict(sampler["train_sampler"])
         start_epoch = sampler["epoch"]
         local_step = sampler["step"] + 1
-        print(f"Loaded checkpoint at epoch {start_epoch} and step {local_step}")
+        print(f"=> Loaded checkpoint at epoch {start_epoch} and step {local_step}")
+    else:
+        print(f"=> No checkpoint found at {cfg.resume_from_ckpt}")
     
     train_kwargs = {"num_workers": cfg.dataloader.train.num_workers,
                     "pin_memory": cfg.dataloader.train.pin_memory}
@@ -164,7 +154,7 @@ def main(cfg: DictConfig):
             batch_size=batch_size,
             rng_types=None,
             synchronized_generator=None,
-            _drop_last=train_dataloader.drop_last,
+            _drop_last=True,
             **train_kwargs,
         )
     val_kwargs = {"num_workers": cfg.dataloader.valid.num_workers,
@@ -176,11 +166,9 @@ def main(cfg: DictConfig):
             batch_size=batch_size,
             rng_types=None,
             synchronized_generator=None,
-            _drop_last=valid_dataloader.drop_last,
+            _drop_last=False,
             **val_kwargs,
         )
-    
-    print(f"len(train_dataloader) AGAIN = {len(train_dataloader)}")
 
     accelerator._dataloaders.append(train_dataloader)
 

@@ -30,7 +30,7 @@ cd ~/isc-demos/stanford/open_clip/src
 ```
 Open the ISC file at `~/isc-demos/stanford/open_clip/src/clip.isc` and configure the parameters for your job. Parameters specific to this job (python args) go on the 'command' line, a full list of these can be found in the `./training/params.py` file.
 
-Note that path to the --resume directory must exist before training.
+Note that file path specified --resume is where the checkpoints will be saved as well as resumed from.
 
 ## 3. Launch the experiment on the ISC
 Launch the experiment on the ISC with the following command.
@@ -38,6 +38,14 @@ Launch the experiment on the ISC with the following command.
 ```bash
 isc train clip.isc
 ```
+
+## 4. Running tensorboard
+Launch tensorboard with the following command.
+```bash
+tensorboard --host 192.168.127.70 --logdir ./src/logs/tensorboard
+```
+
+On your local machine, navigate to the link it outputs in the terminal.
 
 ### Changes:
 Updated requirements to include more specific torch version and additional requirement (braceexpand)
@@ -66,7 +74,7 @@ Changed some default values (logging, checkpointing)
 
 Checkpointing now refers to iterations/steps instead of epochs
 
-//Added distributed-evaluation
+Added distributed-evaluation
 
 #### (train.py)
 
@@ -76,4 +84,4 @@ Updated the loop and items inside loop to use the loaded iters variable so loadi
 
 Writes loss and learning rate data to tensorboard log directory
 
-//Evaluation is now distributed if distributed-evaluation is true in args
+Evaluation is now distributed if distributed-evaluation is true in args

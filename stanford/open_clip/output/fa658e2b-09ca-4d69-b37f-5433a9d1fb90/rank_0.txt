@@ -1,0 +1,2612 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 2, local 2), total 12.
+2023-12-04,04:24:17 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 2, local 2), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 1, local 1), total 12.
+2023-12-04,04:24:17 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 1, local 1), total 12.
+INFO:root:Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:24:17 | INFO | Loaded RN50 model config.
+2023-12-04,04:24:17 | INFO | Loaded RN50 model config.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 5, local 5), total 12.
+2023-12-04,04:24:17 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 5, local 5), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 3, local 3), total 12.
+2023-12-04,04:24:17 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 3, local 3), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 4, local 4), total 12.
+2023-12-04,04:24:17 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 4, local 4), total 12.
+INFO:root:Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:24:17 | INFO | Loaded RN50 model config.
+2023-12-04,04:24:17 | INFO | Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:24:17 | INFO | Loaded RN50 model config.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 0, local 0), total 12.
+2023-12-04,04:24:17 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 0, local 0), total 12.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:24:17 | INFO | Loaded RN50 model config.
+INFO:root:Model loaded
+2023-12-04,04:24:17 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:24:17 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:24:17 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:24:17 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:24:17 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:24:17 | INFO | Model loaded
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:24:18 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:24:18 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:24:18 | INFO | Checkpoint file found, attempting to load
+2023-12-04,04:24:18 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:24:18 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:24:18 | INFO | Checkpoint file found, attempting to load
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+2023-12-04,04:24:19 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+2023-12-04,04:24:19 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+2023-12-04,04:24:19 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+2023-12-04,04:24:19 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+2023-12-04,04:24:19 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+2023-12-04,04:24:19 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 0) (iteration 1)
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 0 [64 / 1500]	Loss: 4.171418	
+2023-12-04,04:24:23 | INFO | Eval Epoch: 0 [64 / 1500]	Loss: 4.171418	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+2
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+2
+3
+2
+4
+5
+6
+Eval - 1/2
+3
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+2023-12-04,04:24:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+2023-12-04,04:24:25 | INFO | Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+2023-12-04,04:24:25 | INFO | Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+2023-12-04,04:24:25 | INFO | Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+2023-12-04,04:24:25 | INFO | Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+2023-12-04,04:24:25 | INFO | Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+2023-12-04,04:24:25 | INFO | Eval Epoch: 0 image_to_text_mean_rank: 751.2640	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.5033	text_to_image_median_rank: 737.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1494	epoch: 0.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:25 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:28 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+Eval - 0/2
+1
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 1 [0/768 (0%)] Data (t): 0.817 Batch (t): 3.588, 214.024/s, 17.8353/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6906 (6.6906) Loss: 80.287 (80.287)
+2023-12-04,04:24:30 | INFO | Train Epoch: 1 [0/768 (0%)] Data (t): 0.817 Batch (t): 3.588, 214.024/s, 17.8353/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6906 (6.6906) Loss: 80.287 (80.287)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+3
+3
+4
+5
+6
+4
+35
+
+6
+2
+4
+5
+6
+Eval - 1/2
+4
+1
+5Eval - 1/2
+
+Eval - 1/2
+6
+1
+1
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 1 [64 / 1500]	Loss: 4.174473	
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 [64 / 1500]	Loss: 4.174473	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+22
+
+3
+3
+4
+5
+6
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+2023-12-04,04:24:31 | INFO | Eval Epoch: 1 image_to_text_mean_rank: 751.3547	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 759.0353	text_to_image_median_rank: 750.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1494	epoch: 1.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:32 | INFO | Training - 1/1
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:24:32 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:24:32 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:24:32 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:24:32 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:24:32 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:24:32 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:32 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 2 [0/768 (0%)] Data (t): 0.627 Batch (t): 1.162, 660.948/s, 55.0790/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6840 (6.6840) Loss: 80.207 (80.207)
+2023-12-04,04:24:34 | INFO | Train Epoch: 2 [0/768 (0%)] Data (t): 0.627 Batch (t): 1.162, 660.948/s, 55.0790/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6840 (6.6840) Loss: 80.207 (80.207)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+2
+4
+3
+5
+6
+3
+3
+Eval - 1/2
+4
+5
+6
+1
+4
+4
+5
+5
+6
+6
+Eval - 1/2
+Eval - 1/2Eval - 1/2
+
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:24:35 | INFO | Sampler stepped too far at the end of batch - ignoring
+11
+
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+4
+5
+2023-12-04,04:24:35 | INFO | Sampler stepped too far at the end of batch - ignoring
+6
+2023-12-04,04:24:35 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:35 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:35 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 2 [64 / 1500]	Loss: 4.170634	
+2023-12-04,04:24:35 | INFO | Eval Epoch: 2 [64 / 1500]	Loss: 4.170634	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:35 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+3
+4
+5
+6
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+2023-12-04,04:24:36 | INFO | Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+2023-12-04,04:24:36 | INFO | Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+2023-12-04,04:24:36 | INFO | Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+2023-12-04,04:24:36 | INFO | Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+2023-12-04,04:24:36 | INFO | Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+2023-12-04,04:24:36 | INFO | Eval Epoch: 2 image_to_text_mean_rank: 751.5640	image_to_text_median_rank: 751.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.9067	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1493	epoch: 2.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:36 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:37 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 3 [0/768 (0%)] Data (t): 0.630 Batch (t): 1.186, 647.815/s, 53.9846/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6820 (6.6820) Loss: 80.184 (80.184)
+2023-12-04,04:24:39 | INFO | Train Epoch: 3 [0/768 (0%)] Data (t): 0.630 Batch (t): 1.186, 647.815/s, 53.9846/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6820 (6.6820) Loss: 80.184 (80.184)
+Eval - 0/2
+1
+2
+22
+
+2
+3
+4
+5
+6
+3
+23
+
+3
+Eval - 1/2
+1
+4
+5
+6
+4
+4
+55
+
+6
+6
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:24:39 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+Eval - 1/2
+3
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:39 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:39 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:39 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:39 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 3 [64 / 1500]	Loss: 4.168988	
+2023-12-04,04:24:39 | INFO | Eval Epoch: 3 [64 / 1500]	Loss: 4.168988	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:39 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+3
+4
+5
+6
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+2023-12-04,04:24:40 | INFO | Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+2023-12-04,04:24:40 | INFO | Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+2023-12-04,04:24:40 | INFO | Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+2023-12-04,04:24:40 | INFO | Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+2023-12-04,04:24:40 | INFO | Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+2023-12-04,04:24:40 | INFO | Eval Epoch: 3 image_to_text_mean_rank: 751.7807	image_to_text_median_rank: 749.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 772.8207	text_to_image_median_rank: 789.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1490	epoch: 3.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:41 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:41 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 4 [0/768 (0%)] Data (t): 0.635 Batch (t): 1.195, 642.420/s, 53.5350/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6764 (6.6764) Loss: 80.117 (80.117)
+2023-12-04,04:24:43 | INFO | Train Epoch: 4 [0/768 (0%)] Data (t): 0.635 Batch (t): 1.195, 642.420/s, 53.5350/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6764 (6.6764) Loss: 80.117 (80.117)
+Eval - 0/2
+1
+2
+22
+
+2
+3
+3
+3
+3
+4
+5
+6
+4
+25
+
+6
+44
+
+5
+5
+6
+6
+Eval - 1/2
+Eval - 1/2
+1
+1
+Eval - 1/2Eval - 1/2
+
+1
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:44 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:44 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:44 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:44 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:44 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 4 [64 / 1500]	Loss: 4.169741	
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 [64 / 1500]	Loss: 4.169741	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:44 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+2023-12-04,04:24:44 | INFO | Eval Epoch: 4 image_to_text_mean_rank: 751.9220	image_to_text_median_rank: 754.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 776.9140	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0053	clip_val_loss: 4.1488	epoch: 4.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:45 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:45 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 5 [0/768 (0%)] Data (t): 0.626 Batch (t): 1.177, 652.302/s, 54.3585/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6783 (6.6783) Loss: 80.139 (80.139)
+2023-12-04,04:24:47 | INFO | Train Epoch: 5 [0/768 (0%)] Data (t): 0.626 Batch (t): 1.177, 652.302/s, 54.3585/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6783 (6.6783) Loss: 80.139 (80.139)
+Eval - 0/2
+1
+2
+2
+2
+3
+2
+4
+5
+6
+2
+3
+Eval - 1/2
+1
+3
+4
+5
+3
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:48 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+3
+Eval - 1/2
+1
+4
+5
+6
+Eval - 1/2
+4
+5
+6
+1
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:48 | INFO | Sampler stepped too far at the end of batch - ignoring
+1
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:48 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:48 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:48 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 5 [64 / 1500]	Loss: 4.175279	
+2023-12-04,04:24:48 | INFO | Eval Epoch: 5 [64 / 1500]	Loss: 4.175279	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:48 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+2023-12-04,04:24:49 | INFO | Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+2023-12-04,04:24:49 | INFO | Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+2023-12-04,04:24:49 | INFO | Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+2023-12-04,04:24:49 | INFO | Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+2023-12-04,04:24:49 | INFO | Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+2023-12-04,04:24:49 | INFO | Eval Epoch: 5 image_to_text_mean_rank: 752.1747	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2767	text_to_image_median_rank: 794.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1487	epoch: 5.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:49 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:50 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 6 [0/768 (0%)] Data (t): 0.619 Batch (t): 1.205, 637.404/s, 53.1170/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6749 (6.6749) Loss: 80.099 (80.099)
+2023-12-04,04:24:52 | INFO | Train Epoch: 6 [0/768 (0%)] Data (t): 0.619 Batch (t): 1.205, 637.404/s, 53.1170/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6749 (6.6749) Loss: 80.099 (80.099)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+3
+2
+3
+3
+4
+5
+6
+4
+5
+6
+Eval - 1/2
+44
+
+Eval - 1/25
+
+5
+66
+
+1
+1
+Eval - 1/2
+Eval - 1/2
+1
+3
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:52 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:52 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+4INFO:root:Sampler stepped too far at the end of batch - ignoring
+
+5
+6
+2023-12-04,04:24:52 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:52 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:52 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 6 [64 / 1500]	Loss: 4.171994	
+2023-12-04,04:24:52 | INFO | Eval Epoch: 6 [64 / 1500]	Loss: 4.171994	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:52 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+3
+4
+5
+6
+4
+5
+6
+2
+3
+4
+5
+26
+
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+2023-12-04,04:24:53 | INFO | Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+2023-12-04,04:24:53 | INFO | Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+2023-12-04,04:24:53 | INFO | Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+2023-12-04,04:24:53 | INFO | Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+2023-12-04,04:24:53 | INFO | Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+2023-12-04,04:24:53 | INFO | Eval Epoch: 6 image_to_text_mean_rank: 752.2507	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0027	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 777.2300	text_to_image_median_rank: 800.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0060	clip_val_loss: 4.1484	epoch: 6.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:54 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:54 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 7 [0/768 (0%)] Data (t): 0.647 Batch (t): 1.170, 656.221/s, 54.6851/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6703 (6.6703) Loss: 80.044 (80.044)
+2023-12-04,04:24:56 | INFO | Train Epoch: 7 [0/768 (0%)] Data (t): 0.647 Batch (t): 1.170, 656.221/s, 54.6851/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6703 (6.6703) Loss: 80.044 (80.044)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+2
+4
+5
+6
+3
+3
+Eval - 1/2
+3
+1
+4
+5
+4
+6
+5
+6
+3
+4INFO:root:Sampler stepped too far at the end of batch - ignoring
+
+5
+6
+2023-12-04,04:24:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+Eval - 1/2
+1
+1Eval - 1/2
+
+4
+5
+6
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 7 [64 / 1500]	Loss: 4.174532	
+2023-12-04,04:24:57 | INFO | Eval Epoch: 7 [64 / 1500]	Loss: 4.174532	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:24:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+2023-12-04,04:24:58 | INFO | Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+2023-12-04,04:24:58 | INFO | Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+2023-12-04,04:24:58 | INFO | Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+2023-12-04,04:24:58 | INFO | Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+2023-12-04,04:24:58 | INFO | Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+2023-12-04,04:24:58 | INFO | Eval Epoch: 7 image_to_text_mean_rank: 752.2920	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 773.8793	text_to_image_median_rank: 781.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0080	clip_val_loss: 4.1481	epoch: 7.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:24:58 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:24:59 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 8 [0/768 (0%)] Data (t): 0.610 Batch (t): 1.165, 659.463/s, 54.9553/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6671 (6.6671) Loss: 80.006 (80.006)
+2023-12-04,04:25:00 | INFO | Train Epoch: 8 [0/768 (0%)] Data (t): 0.610 Batch (t): 1.165, 659.463/s, 54.9553/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6671 (6.6671) Loss: 80.006 (80.006)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+3
+4
+5
+6
+3
+4
+Eval - 1/252
+
+
+6
+1
+3
+4
+5
+6
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:01 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+Eval - 1/2
+1
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:01 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:01 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:01 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:01 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 8 [64 / 1500]	Loss: 4.169808	
+2023-12-04,04:25:01 | INFO | Eval Epoch: 8 [64 / 1500]	Loss: 4.169808	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:01 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+22
+
+33
+
+44
+
+55
+
+66
+
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+2023-12-04,04:25:02 | INFO | Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+2023-12-04,04:25:02 | INFO | Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+2023-12-04,04:25:02 | INFO | Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+2023-12-04,04:25:02 | INFO | Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+2023-12-04,04:25:02 | INFO | Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+2023-12-04,04:25:02 | INFO | Eval Epoch: 8 image_to_text_mean_rank: 752.4060	image_to_text_median_rank: 757.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 769.4573	text_to_image_median_rank: 767.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0067	clip_val_loss: 4.1480	epoch: 8.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:02 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:03 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 9 [0/768 (0%)] Data (t): 0.628 Batch (t): 1.171, 655.910/s, 54.6592/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6642 (6.6642) Loss: 79.970 (79.970)
+2023-12-04,04:25:05 | INFO | Train Epoch: 9 [0/768 (0%)] Data (t): 0.628 Batch (t): 1.171, 655.910/s, 54.6592/s/gpu LR: 0.000000 Logit Scale: 14.286 Contrastive_loss: 6.6642 (6.6642) Loss: 79.970 (79.970)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+3
+4
+5
+6
+3
+Eval - 1/2
+2
+4
+5
+1
+6
+4
+5
+6
+3
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:05 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:05 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:05 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+4
+5
+1
+6
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:05 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:05 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 9 [64 / 1500]	Loss: 4.174638	
+2023-12-04,04:25:05 | INFO | Eval Epoch: 9 [64 / 1500]	Loss: 4.174638	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:05 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+2023-12-04,04:25:06 | INFO | Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+2023-12-04,04:25:06 | INFO | Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+2023-12-04,04:25:06 | INFO | Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+2023-12-04,04:25:06 | INFO | Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+2023-12-04,04:25:06 | INFO | Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+2023-12-04,04:25:06 | INFO | Eval Epoch: 9 image_to_text_mean_rank: 752.5353	image_to_text_median_rank: 755.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 765.3967	text_to_image_median_rank: 768.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0040	text_to_image_R@10: 0.0053	clip_val_loss: 4.1477	epoch: 9.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:07 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:07 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 10 [0/768 (0%)] Data (t): 0.637 Batch (t): 1.151, 667.273/s, 55.6061/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6657 (6.6657) Loss: 79.989 (79.989)
+2023-12-04,04:25:09 | INFO | Train Epoch: 10 [0/768 (0%)] Data (t): 0.637 Batch (t): 1.151, 667.273/s, 55.6061/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6657 (6.6657) Loss: 79.989 (79.989)
+Eval - 0/2
+1
+2
+2
+22
+
+3
+3
+2
+4
+4
+5
+5
+6
+6
+33
+
+Eval - 1/2
+1Eval - 1/2
+
+44
+
+5
+5
+6
+6
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+3Eval - 1/2
+
+Eval - 1/2
+2023-12-04,04:25:10 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+1
+2023-12-04,04:25:10 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:10 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:10 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:10 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 10 [64 / 1500]	Loss: 4.171215	
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 [64 / 1500]	Loss: 4.171215	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:10 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+2023-12-04,04:25:10 | INFO | Eval Epoch: 10 image_to_text_mean_rank: 752.5080	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 761.5987	text_to_image_median_rank: 772.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1476	epoch: 10.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:11 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:12 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 11 [0/768 (0%)] Data (t): 0.608 Batch (t): 1.215, 632.088/s, 52.6740/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6585 (6.6585) Loss: 79.903 (79.903)
+2023-12-04,04:25:13 | INFO | Train Epoch: 11 [0/768 (0%)] Data (t): 0.608 Batch (t): 1.215, 632.088/s, 52.6740/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6585 (6.6585) Loss: 79.903 (79.903)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+3
+3
+42
+
+5
+6
+3
+4
+5
+46
+
+5
+6
+Eval - 1/2
+1
+4
+5
+6
+Eval - 1/2
+Eval - 1/2
+1
+1
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:14 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:14 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:14 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:14 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:14 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 11 [64 / 1500]	Loss: 4.170901	
+2023-12-04,04:25:14 | INFO | Eval Epoch: 11 [64 / 1500]	Loss: 4.170901	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:14 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+2
+4
+5
+6
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+2023-12-04,04:25:15 | INFO | Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+2023-12-04,04:25:15 | INFO | Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+2023-12-04,04:25:15 | INFO | Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+2023-12-04,04:25:15 | INFO | Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+2023-12-04,04:25:15 | INFO | Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+2023-12-04,04:25:15 | INFO | Eval Epoch: 11 image_to_text_mean_rank: 752.5687	image_to_text_median_rank: 752.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 757.8633	text_to_image_median_rank: 756.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0053	clip_val_loss: 4.1472	epoch: 11.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:15 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:16 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 12 [0/768 (0%)] Data (t): 0.619 Batch (t): 1.134, 677.531/s, 56.4609/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6595 (6.6595) Loss: 79.914 (79.914)
+2023-12-04,04:25:18 | INFO | Train Epoch: 12 [0/768 (0%)] Data (t): 0.619 Batch (t): 1.134, 677.531/s, 56.4609/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6595 (6.6595) Loss: 79.914 (79.914)
+Eval - 0/2
+1
+2
+2
+22
+
+3
+3
+2
+3
+3
+4
+5
+6
+4
+4
+54
+
+5
+Eval - 1/25
+
+6
+6
+6
+1
+Eval - 1/2
+Eval - 1/2
+Eval - 1/2
+1
+1
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:18 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:18 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:18 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:18 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:18 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 12 [64 / 1500]	Loss: 4.172218	
+2023-12-04,04:25:18 | INFO | Eval Epoch: 12 [64 / 1500]	Loss: 4.172218	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:18 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+2
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+2023-12-04,04:25:19 | INFO | Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+2023-12-04,04:25:19 | INFO | Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+2023-12-04,04:25:19 | INFO | Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+2023-12-04,04:25:19 | INFO | Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+2023-12-04,04:25:19 | INFO | Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+2023-12-04,04:25:19 | INFO | Eval Epoch: 12 image_to_text_mean_rank: 752.6127	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0013	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 756.4360	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 12.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:20 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:20 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 13 [0/768 (0%)] Data (t): 0.598 Batch (t): 1.138, 674.601/s, 56.2168/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6517 (6.6517) Loss: 79.820 (79.820)
+2023-12-04,04:25:22 | INFO | Train Epoch: 13 [0/768 (0%)] Data (t): 0.598 Batch (t): 1.138, 674.601/s, 56.2168/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6517 (6.6517) Loss: 79.820 (79.820)
+Eval - 0/2
+1
+2
+2
+2
+2
+2
+3
+3
+4
+5
+6
+4
+5
+3
+6
+3
+Eval - 1/2
+1
+Eval - 1/2
+4
+15
+
+6
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+Eval - 1/2
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+2023-12-04,04:25:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 13 [64 / 1500]	Loss: 4.178138	
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 [64 / 1500]	Loss: 4.178138	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:23 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+2
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+2023-12-04,04:25:23 | INFO | Eval Epoch: 13 image_to_text_mean_rank: 752.6913	image_to_text_median_rank: 750.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0073	text_to_image_mean_rank: 755.8860	text_to_image_median_rank: 759.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0047	text_to_image_R@10: 0.0060	clip_val_loss: 4.1470	epoch: 13.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:24 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:24 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 14 [0/768 (0%)] Data (t): 0.656 Batch (t): 1.174, 654.302/s, 54.5252/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6506 (6.6506) Loss: 79.808 (79.808)
+2023-12-04,04:25:26 | INFO | Train Epoch: 14 [0/768 (0%)] Data (t): 0.656 Batch (t): 1.174, 654.302/s, 54.5252/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6506 (6.6506) Loss: 79.808 (79.808)
+Eval - 0/2
+1
+2
+2
+2
+2
+2
+3
+3
+3
+4
+5
+6
+3
+4
+5
+4
+6
+5
+6
+Eval - 1/2
+1
+4
+5
+Eval - 1/2
+6
+3
+Eval - 1/2
+1
+1
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+4
+5
+1
+2023-12-04,04:25:27 | INFO | Sampler stepped too far at the end of batch - ignoring
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:27 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:27 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:27 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:27 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 14 [64 / 1500]	Loss: 4.170040	
+2023-12-04,04:25:27 | INFO | Eval Epoch: 14 [64 / 1500]	Loss: 4.170040	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:27 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+2
+4
+5
+6
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+2023-12-04,04:25:28 | INFO | Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+2023-12-04,04:25:28 | INFO | Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+2023-12-04,04:25:28 | INFO | Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+2023-12-04,04:25:28 | INFO | Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+2023-12-04,04:25:28 | INFO | Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+2023-12-04,04:25:28 | INFO | Eval Epoch: 14 image_to_text_mean_rank: 752.7373	image_to_text_median_rank: 746.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0080	text_to_image_mean_rank: 755.2313	text_to_image_median_rank: 762.0000	text_to_image_R@1: 0.0013	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1467	epoch: 14.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:28 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:29 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 15 [0/768 (0%)] Data (t): 0.605 Batch (t): 1.172, 655.366/s, 54.6138/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6478 (6.6478) Loss: 79.773 (79.773)
+2023-12-04,04:25:31 | INFO | Train Epoch: 15 [0/768 (0%)] Data (t): 0.605 Batch (t): 1.172, 655.366/s, 54.6138/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6478 (6.6478) Loss: 79.773 (79.773)
+Eval - 0/2
+1
+2
+22
+
+2
+3
+3
+3
+4
+5
+6
+4
+4
+55
+
+66
+
+Eval - 1/2
+3
+1
+Eval - 1/2
+Eval - 1/2
+11
+
+4
+2
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+2023-12-04,04:25:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2
+2023-12-04,04:25:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+4
+5
+6
+INFO:root:Eval Epoch: 15 [64 / 1500]	Loss: 4.172466	
+2023-12-04,04:25:31 | INFO | Eval Epoch: 15 [64 / 1500]	Loss: 4.172466	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:31 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+2023-12-04,04:25:32 | INFO | Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+2023-12-04,04:25:32 | INFO | Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+2023-12-04,04:25:32 | INFO | Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+2023-12-04,04:25:32 | INFO | Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+2023-12-04,04:25:32 | INFO | Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+2023-12-04,04:25:32 | INFO | Eval Epoch: 15 image_to_text_mean_rank: 752.7520	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 754.4980	text_to_image_median_rank: 764.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0033	text_to_image_R@10: 0.0060	clip_val_loss: 4.1464	epoch: 15.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:33 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:33 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 16 [0/768 (0%)] Data (t): 0.620 Batch (t): 1.134, 677.430/s, 56.4525/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6457 (6.6457) Loss: 79.749 (79.749)
+2023-12-04,04:25:35 | INFO | Train Epoch: 16 [0/768 (0%)] Data (t): 0.620 Batch (t): 1.134, 677.430/s, 56.4525/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6457 (6.6457) Loss: 79.749 (79.749)
+Eval - 0/2
+1
+22
+
+2
+2
+33
+
+3
+2
+4
+4
+5
+5
+6
+6
+4
+Eval - 1/2
+Eval - 1/2
+5
+3
+6
+1
+1
+Eval - 1/2
+4
+5
+1
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:36 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:36 | INFO | Sampler stepped too far at the end of batch - ignoring
+3
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+2023-12-04,04:25:36 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:36 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:36 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 16 [64 / 1500]	Loss: 4.172585	
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 [64 / 1500]	Loss: 4.172585	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:36 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+2023-12-04,04:25:36 | INFO | Eval Epoch: 16 image_to_text_mean_rank: 752.5527	image_to_text_median_rank: 753.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0067	text_to_image_mean_rank: 752.9447	text_to_image_median_rank: 758.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0053	clip_val_loss: 4.1463	epoch: 16.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:37 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:25:37 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 17 [0/768 (0%)] Data (t): 0.614 Batch (t): 1.165, 659.146/s, 54.9288/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6364 (6.6364) Loss: 79.636 (79.636)
+2023-12-04,04:25:39 | INFO | Train Epoch: 17 [0/768 (0%)] Data (t): 0.614 Batch (t): 1.165, 659.146/s, 54.9288/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6364 (6.6364) Loss: 79.636 (79.636)
+Eval - 0/2
+1
+2
+22
+
+2
+3
+3
+3
+2
+44
+
+5
+5
+6
+6
+3
+4
+5
+6
+Eval - 1/2
+Eval - 1/2
+1
+1
+4
+5
+6
+Eval - 1/2
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:40 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/22023-12-04,04:25:40 | INFO | Sampler stepped too far at the end of batch - ignoring
+
+1
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:40 | INFO | Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:40 | INFO | Sampler stepped too far at the end of batch - ignoring
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:40 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 17 [64 / 1500]	Loss: 4.169395	
+2023-12-04,04:25:40 | INFO | Eval Epoch: 17 [64 / 1500]	Loss: 4.169395	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:40 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+2
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 1, local 1), total 12.
+2023-12-04,04:25:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:1.Process (global: 1, local 1), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 5, local 5), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 4, local 4), total 12.
+2023-12-04,04:25:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:4.Process (global: 4, local 4), total 12.
+2023-12-04,04:25:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:5.Process (global: 5, local 5), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 2, local 2), total 12.
+2023-12-04,04:25:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:2.Process (global: 2, local 2), total 12.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 3, local 3), total 12.
+2023-12-04,04:25:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:3.Process (global: 3, local 3), total 12.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:25:50 | INFO | Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:25:50 | INFO | Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:25:50 | INFO | Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:25:50 | INFO | Loaded RN50 model config.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:25:50 | INFO | Loaded RN50 model config.
+INFO:root:Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 0, local 0), total 12.
+2023-12-04,04:25:50 | INFO | Running in distributed mode with multiple processes. Device: cuda:0.Process (global: 0, local 0), total 12.
+INFO:root:Loaded RN50 model config.
+2023-12-04,04:25:50 | INFO | Loaded RN50 model config.
+INFO:root:Model loaded
+2023-12-04,04:25:51 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:25:51 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:25:51 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:25:51 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:25:51 | INFO | Model loaded
+INFO:root:Model loaded
+2023-12-04,04:25:51 | INFO | Model loaded
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:25:51 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:25:51 | INFO | Checkpoint file found, attempting to load
+2023-12-04,04:25:51 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:25:51 | INFO | Checkpoint file found, attempting to load
+2023-12-04,04:25:51 | INFO | Checkpoint file found, attempting to load
+INFO:root:Checkpoint file found, attempting to load
+2023-12-04,04:25:51 | INFO | Checkpoint file found, attempting to load
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+2023-12-04,04:25:53 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+2023-12-04,04:25:53 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+2023-12-04,04:25:53 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+2023-12-04,04:25:53 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+2023-12-04,04:25:53 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+INFO:root:=> resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+2023-12-04,04:25:53 | INFO | => resuming checkpoint '/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/checkpoints/latest.pt' (epoch 17) (iteration 1)
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Dataset created with 1500 samples.
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 17 [64 / 1500]	Loss: 4.169395	
+2023-12-04,04:25:57 | INFO | Eval Epoch: 17 [64 / 1500]	Loss: 4.169395	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+2
+2
+3
+4
+5
+6
+3
+Eval - 1/2
+1
+4
+5
+6
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/open_clip/.venv/lib/python3.10/site-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+2
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:25:57 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+2023-12-04,04:25:58 | INFO | Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+2023-12-04,04:25:58 | INFO | Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+2023-12-04,04:25:58 | INFO | Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+2023-12-04,04:25:58 | INFO | Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+2023-12-04,04:25:58 | INFO | Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+2023-12-04,04:25:58 | INFO | Eval Epoch: 17 image_to_text_mean_rank: 752.5700	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 750.6413	text_to_image_median_rank: 763.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0047	clip_val_loss: 4.1462	epoch: 17.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:25:59 | INFO | Training - 1/1
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:26:02 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 18 [0/768 (0%)] Data (t): 0.610 Batch (t): 3.328, 230.797/s, 19.2331/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6301 (6.6301) Loss: 79.561 (79.561)
+2023-12-04,04:26:03 | INFO | Train Epoch: 18 [0/768 (0%)] Data (t): 0.610 Batch (t): 3.328, 230.797/s, 19.2331/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6301 (6.6301) Loss: 79.561 (79.561)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+3
+3
+4
+5
+6
+4
+5
+6
+2
+4
+3
+5
+Eval - 1/2
+6
+1
+Eval - 1/2
+1
+Eval - 1/2
+4
+5
+6
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:04 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+2023-12-04,04:26:04 | INFO | Sampler stepped too far at the end of batch - ignoring
+1
+3
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:04 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+4
+5
+2023-12-04,04:26:04 | INFO | Sampler stepped too far at the end of batch - ignoring
+6
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:04 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 18 [64 / 1500]	Loss: 4.172626	
+2023-12-04,04:26:04 | INFO | Eval Epoch: 18 [64 / 1500]	Loss: 4.172626	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:04 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+2023-12-04,04:26:05 | INFO | Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+2023-12-04,04:26:05 | INFO | Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+2023-12-04,04:26:05 | INFO | Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+2023-12-04,04:26:05 | INFO | Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+2023-12-04,04:26:05 | INFO | Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+2023-12-04,04:26:05 | INFO | Eval Epoch: 18 image_to_text_mean_rank: 751.9960	image_to_text_median_rank: 744.0000	image_to_text_R@1: 0.0000	image_to_text_R@5: 0.0033	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 748.8947	text_to_image_median_rank: 751.0000	text_to_image_R@1: 0.0000	text_to_image_R@5: 0.0020	text_to_image_R@10: 0.0040	clip_val_loss: 4.1459	epoch: 18.0000	num_samples: 1500.0000
+INFO:root:Training - 1/1
+2023-12-04,04:26:05 | INFO | Training - 1/1
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:26:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:26:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:26:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:26:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:26:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:torch.nn.parallel.distributed:Reducer buckets have been rebuilt in this iteration.
+2023-12-04,04:26:05 | INFO | Reducer buckets have been rebuilt in this iteration.
+INFO:root:Reached the end of the dataloader - saving checkpoint
+2023-12-04,04:26:06 | INFO | Reached the end of the dataloader - saving checkpoint
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+Eval - 0/2
+1
+INFO:root:Train Epoch: 19 [0/768 (0%)] Data (t): 0.627 Batch (t): 1.173, 654.742/s, 54.5618/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6363 (6.6363) Loss: 79.635 (79.635)
+2023-12-04,04:26:08 | INFO | Train Epoch: 19 [0/768 (0%)] Data (t): 0.627 Batch (t): 1.173, 654.742/s, 54.5618/s/gpu LR: 0.000001 Logit Scale: 14.286 Contrastive_loss: 6.6363 (6.6363) Loss: 79.635 (79.635)
+Eval - 0/2
+1
+2
+2
+2
+2
+3
+2
+3
+34
+
+5
+6
+3
+4
+5
+6
+Eval - 1/2
+4
+5
+16
+
+Eval - 1/2
+4
+5
+6
+Eval - 1/2
+1
+3
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:08 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+4
+1
+5
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+6
+2023-12-04,04:26:08 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:08 | INFO | Sampler stepped too far at the end of batch - ignoring
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:08 | INFO | Sampler stepped too far at the end of batch - ignoring
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:08 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 19 [64 / 1500]	Loss: 4.176542	
+2023-12-04,04:26:08 | INFO | Eval Epoch: 19 [64 / 1500]	Loss: 4.176542	
+Eval - 1/2
+1
+INFO:root:Sampler stepped too far at the end of batch - ignoring
+2023-12-04,04:26:08 | INFO | Sampler stepped too far at the end of batch - ignoring
+2
+2
+3
+4
+5
+6
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+2
+3
+4
+5
+6
+INFO:root:Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+INFO:root:Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+2023-12-04,04:26:09 | INFO | Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+2023-12-04,04:26:09 | INFO | Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+2023-12-04,04:26:09 | INFO | Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+2023-12-04,04:26:09 | INFO | Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+2023-12-04,04:26:09 | INFO | Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
+2023-12-04,04:26:09 | INFO | Eval Epoch: 19 image_to_text_mean_rank: 751.4420	image_to_text_median_rank: 745.0000	image_to_text_R@1: 0.0007	image_to_text_R@5: 0.0040	image_to_text_R@10: 0.0060	text_to_image_mean_rank: 747.5340	text_to_image_median_rank: 753.0000	text_to_image_R@1: 0.0007	text_to_image_R@5: 0.0027	text_to_image_R@10: 0.0040	clip_val_loss: 4.1454	epoch: 19.0000	num_samples: 1500.0000
