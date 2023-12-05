@@ -1,0 +1,6 @@
+experiment_name="brats_mri_2d_gen"
+gpu_type="24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.brats/bin/activate"
+output_path = "~/outputs/brats_mri_2d_gen"
+command="train_cycling_gen.py --nepochs 10000 --lr 0.0001 --batch-size 4 --data-path=/mnt/.node2/Adamstn3rh22tykvgyhdkclook3rnk7q/dataset.h5 --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
