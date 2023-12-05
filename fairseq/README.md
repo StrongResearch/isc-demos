@@ -115,7 +115,7 @@ Ensure that you use 500 clusters instead of 100 clusters.
 
 
 ## 4. Creating an ISC file
-There is an example ISC file at `~/isc-demos/fairseq/hubert.isc`
+There is an example ISC file at `~/isc-demos/fairseq/hubert_cycling.isc`
 
 To modify the entry point, change the command to your specificatinos
 
