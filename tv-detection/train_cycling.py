@@ -18,7 +18,7 @@ import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
 from torchvision.models.detection import MaskRCNN, RetinaNet
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
-from engine import evaluate, train_one_epoch
+from engine_v2 import evaluate, train_one_epoch
 from group_by_aspect_ratio import create_aspect_ratio_groups, InterruptableDistributedGroupedBatchSampler
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
@@ -130,8 +130,8 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    # dataset_train = torch.utils.data.Subset(dataset_train, range(12 * 6 * 10))
-    # dataset_test = torch.utils.data.Subset(dataset_test, range(12 * 6 * 5))
+    dataset_train = torch.utils.data.Subset(dataset_train, range(12 * 6 * 20))
+    dataset_test = torch.utils.data.Subset(dataset_test, range(12 * 6 * 10))
 
     timer.report('loading data')
 
@@ -148,10 +148,10 @@ def main(args, timer):
         print_rank0("Using copypaste_collate_fn for train_collate_fn")
         train_collate_fn = copypaste_collate_fn
 
-    data_loader_train = torch.utils.data.DataLoader(
+    dataloader_train = torch.utils.data.DataLoader(
         dataset_train, batch_sampler=train_sampler, num_workers=args.workers, collate_fn=train_collate_fn
     )
-    data_loader_test = torch.utils.data.DataLoader(
+    dataloader_test = torch.utils.data.DataLoader(
         dataset_test, batch_size=1, sampler=test_sampler, num_workers=args.workers, collate_fn=utils.collate_fn
     )
 
@@ -215,7 +215,7 @@ def main(args, timer):
 
     timer.report(f'optimizer and scaler: {scaler}')
 
-    steps_per_epoch = len(data_loader_train)
+    steps_per_epoch = len(dataloader_train)
 
     ## WARMUP LR_SCHEDULER
     warmup_lr_scheduler = torch.optim.lr_scheduler.LinearLR(
@@ -244,13 +244,13 @@ def main(args, timer):
 
     timer.report('learning rate schedulers')
 
-    coco = get_coco_api_from_dataset(data_loader_test.dataset)
+    coco = get_coco_api_from_dataset(dataloader_test.dataset)
     iou_types = _get_iou_types(model)
     coco_evaluator = CocoEvaluator(coco, iou_types)
 
     timer.report('init coco evaluator')
 
-    metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
+    # metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
 
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
@@ -273,7 +273,7 @@ def main(args, timer):
         # Evaluator and metrics
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
-        metrics = checkpoint["metrics"]
+        # metrics = checkpoint["metrics"]
 
     timer.report('retrieving checkpoint')
 
@@ -284,7 +284,7 @@ def main(args, timer):
         epoch = 0
         # coco_evaluator, timer, metrics = evaluate(
         evaluate(
-            model, data_loader_test, epoch, test_sampler, args, coco_evaluator, optimizer, 
+            model, dataloader_test, epoch, test_sampler, args, coco_evaluator, optimizer, 
             lr_scheduler, train_sampler, device, scaler, timer, metrics
         )
         return
@@ -297,20 +297,26 @@ def main(args, timer):
 
         with train_sampler.in_epoch(epoch):
             # timer = TimestampedTimer() # obtain time trial for each epoch
-            model, timer, metrics = train_one_epoch(
+            model, timer = train_one_epoch(
             # train_one_epoch(
-                model, optimizer, data_loader_train, train_sampler, test_sampler, 
+                # model, optimizer, data_loader_train, train_sampler, test_sampler, 
+                # lr_scheduler, args, device, coco_evaluator, 
+                # epoch, scaler, timer, metrics
+                model, optimizer, dataloader_train, dataloader_test,
                 lr_scheduler, args, device, coco_evaluator, 
-                epoch, scaler, timer, metrics
+                epoch, scaler, timer #, metrics
             )
 
             with test_sampler.in_epoch(epoch):
                 # timer = TimestampedTimer() # obtain time trial for each epoch
-                coco_evaluator, timer, metrics = evaluate(
+                coco_evaluator, timer = evaluate(
                 # evaluate(
-                    model, data_loader_test, epoch, test_sampler, args, coco_evaluator, 
-                    optimizer, lr_scheduler, train_sampler, device, 
-                    scaler, timer, metrics
+                    # model, data_loader_test, epoch, test_sampler, args, coco_evaluator, 
+                    # optimizer, lr_scheduler, train_sampler, device, 
+                    # scaler, timer, metrics
+                    model, optimizer, dataloader_train, dataloader_test,
+                    lr_scheduler, args, device, coco_evaluator, 
+                    epoch, scaler, timer #, metrics
                 )
                 
 
@@ -335,13 +341,16 @@ def get_args_parser(add_help=True):
     parser.add_argument("--lr-step-size", default=8, type=int, help="decrease lr every step-size epochs (multisteplr scheduler only)")
     parser.add_argument("--lr-steps",default=[16, 22],nargs="+",type=int,help="decrease lr every step-size epochs (multisteplr scheduler only)")
     parser.add_argument("--lr-gamma", default=0.1, type=float, help="decrease lr by a factor of lr-gamma (multisteplr scheduler only)")
-    parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
-    parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
+    parser.add_argument("--grad-clip-norm", default=0.1, type=float, help="gradient clipping norm (using 'inf' norm)")
+    parser.add_argument("--accumulation-steps", default=1, type=int, help="training gradient accumulation steps")
+    
 
     parser.add_argument("--start_epoch", default=0, type=int, help="start epoch")
     parser.add_argument("--resume", default="", type=str, help="path of checkpoint")
     parser.add_argument("--prev-resume", default=None, help="path of previous job checkpoint for strong fail resume", dest="prev_resume") # for checkpointing
+    parser.add_argument("--output-dir", default=".", type=str, help="path to save outputs")
     parser.add_argument("--tboard-path", default=None, help="path for saving tensorboard logs", dest="tboard_path") # for checkpointing
+    parser.add_argument("--print-freq", default=1, type=int, help="print frequency")
     
     parser.add_argument("--aspect-ratio-group-factor", default=3, type=int)
     parser.add_argument("--rpn-score-thresh", default=None, type=float, help="rpn score threshold for faster-rcnn")
