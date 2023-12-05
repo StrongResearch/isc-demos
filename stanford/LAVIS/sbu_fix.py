@@ -24,4 +24,5 @@ for item in o:
 string = string[:-2]
 string += "]"
 fo.write(string)
+os.replace(".cache/lavis/sbu_captions/sbu.json", ".cache/lavis/sbu_captions/sbu_new.json")
 print(len(o))

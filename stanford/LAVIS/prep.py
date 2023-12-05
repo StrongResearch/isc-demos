@@ -34,6 +34,5 @@ coco_gt_root = os.path.join(registry.get_path("cache_root"), "coco_gt")
 download_url("https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val_gt.json", coco_gt_root),
 download_url("https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test_gt.json", coco_gt_root)
 
-
 task = tasks.setup_task(cfg)
 datasets = task.build_datasets(cfg)

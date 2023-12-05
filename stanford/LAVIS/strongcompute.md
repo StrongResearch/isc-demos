@@ -27,6 +27,13 @@ This demo requires some data to be downloaded from the internet that is best don
 ./prep.sh
 ```
 
+Due to the short time a job may have on the cluster, it is recommended that the SPICE evaluation is removed from the evaluation step. To do this, navigate the the following file:
+```
+~/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/pycocoevalcap/eval.py
+```
+
+and comment out line 45. This change should be reverted if you expect to have more time for your job.
+
 
 ## 3. Update the ISC file
 Open the ISC file at `~/isc-demos/stanford/LAVIS/blip.isc` to configure the parameters for you job.
@@ -38,6 +45,14 @@ Launch the experiment on the ISC with the following command.
 ```bash
 isc train blip.isc
 ```
+
+## 5. Running tensorboard
+Launch tensorboard with the following command.
+```bash
+tensorboard --host 192.168.127.70 --logdir ./logs
+```
+
+On your local machine, navigate to the link it outputs in the terminal.
 
 (runner_base.py)
 Added eval_freq argument
@@ -71,4 +86,3 @@ updated requirements to include specific torch version + compatible transformers
 added a prep.sh script that should be run before training to pre-load files that would waste time on the isc
 
 added/updated various paths (cache path, checkpoint path)
-changed config values (batch size, log frequency, amp, world size)

@@ -47,8 +47,8 @@ run:
   num_beams: 3
 
   seed: 42
-  output_dir: "./checkpoints"
-  resume_ckpt_path: "./checkpoints/caption_latest.pth"
+  output_dir: "/mnt/.node2/Lachlan/blip/"
+  resume_ckpt_path: "/mnt/.node2/Lachlan/blip/caption_latest.pth"
   tensorboard_path: "./logs"
 
   checkpoint_freq: 50
