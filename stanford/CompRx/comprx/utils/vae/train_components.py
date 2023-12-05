@@ -16,6 +16,8 @@ import shutil
 from comprx.utils.extras import get_weight_dtype
 from comprx.utils.transforms import to_dict
 
+from cycling_utils import AtomicDirectory
+
 __all__ = ["training_epoch", "validation_epoch"]
 
 
@@ -35,6 +37,10 @@ def training_epoch(
     options: Dict[str, Any],
 ):
     """Train a single epoch of a VAE model."""
+    
+    saver = AtomicDirectory(options["ckpt_dir"], symlink_name="latest.pt", chk_dir_prefix="checkpoint_")
+    
+    
     for metric in default_metrics:
         metric.reset()
 
@@ -50,6 +56,9 @@ def training_epoch(
         writer = SummaryWriter(log_dir='./checkpoints/tb')
 
     for batch in dataloader:
+        
+        save_dir = saver.prepare_checkpoint_directory()
+        
         if batch is None:
             return global_step
 
@@ -161,29 +170,36 @@ def training_epoch(
             writer.close()
 
         if (global_step % options["ckpt_every_n_steps"] == 0 or (local_step >= len(dataloader) - 1)) and local_step > 0 and accelerator.is_main_process:
-            print("attempting to save")
-            save_dir_1 = os.path.join(options["ckpt_dir"], f"state_1.pt")
-            save_dir_2 = os.path.join(options["ckpt_dir"], f"state_2.pt")
-            if os.path.isdir(os.path.join(options["ckpt_dir"], "latest.pt")):
-                old = os.path.realpath(os.path.join(options['ckpt_dir'], 'latest.pt'))
-                new = save_dir_1 if save_dir_1 != old else save_dir_2
-                shutil.rmtree(new, ignore_errors=True)
-                accelerator.save_state(new)
-                print("done saving state")
-                torch.save({"train_sampler": dataloader.sampler.state_dict(),
-                            "step": local_step,
-                            "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
-                os.symlink(new, os.path.join(options["ckpt_dir"], "temp.pt"))
-                os.replace(os.path.join(options["ckpt_dir"], "temp.pt"), os.path.join(options["ckpt_dir"], "latest.pt"))
-            else:
-                new = os.path.join(options["ckpt_dir"], f"state_1.pt")
-                shutil.rmtree(new, ignore_errors=True)
-                accelerator.save_state(new)
-                print("done saving state")
-                torch.save({"train_sampler": dataloader.sampler.state_dict(),
-                            "step": local_step,
-                            "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
-                os.symlink(new, os.path.join(options["ckpt_dir"], "latest.pt"))
+            accelerator.save_state(save_dir)
+            torch.save({"train_sampler": dataloader.sampler.state_dict(),
+                             "step": local_step,
+                             "epoch": epoch}, os.path.join(save_dir, "train_sampler.bin"))
+            
+            saver.atomic_symlink(save_dir)
+
+            # print("attempting to save")
+            # save_dir_1 = os.path.join(options["ckpt_dir"], f"state_1.pt")
+            # save_dir_2 = os.path.join(options["ckpt_dir"], f"state_2.pt")
+            # if os.path.isdir(os.path.join(options["ckpt_dir"], "latest.pt")):
+            #     old = os.path.realpath(os.path.join(options['ckpt_dir'], 'latest.pt'))
+            #     new = save_dir_1 if save_dir_1 != old else save_dir_2
+            #     shutil.rmtree(new, ignore_errors=True)
+            #     accelerator.save_state(new)
+            #     print("done saving state")
+            #     torch.save({"train_sampler": dataloader.sampler.state_dict(),
+            #                 "step": local_step,
+            #                 "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
+            #     os.symlink(new, os.path.join(options["ckpt_dir"], "temp.pt"))
+            #     os.replace(os.path.join(options["ckpt_dir"], "temp.pt"), os.path.join(options["ckpt_dir"], "latest.pt"))
+            # else:
+            #     new = os.path.join(options["ckpt_dir"], f"state_1.pt")
+            #     shutil.rmtree(new, ignore_errors=True)
+            #     accelerator.save_state(new)
+            #     print("done saving state")
+            #     torch.save({"train_sampler": dataloader.sampler.state_dict(),
+            #                 "step": local_step,
+            #                 "epoch": epoch}, os.path.join(new, "train_sampler.bin"))
+            #     os.symlink(new, os.path.join(options["ckpt_dir"], "latest.pt"))
                 
             # if os.path.isdir(os.path.join(options["ckpt_dir"], "latest.pt")):
             #     accelerator.save_state(save_dir)
@@ -209,7 +225,7 @@ def training_epoch(
         
         global_step += 1
         local_step += 1
-
+    print("returning for some reason")
     return global_step
 
 

@@ -7,7 +7,7 @@ train:
     datasets:
       # RSNA Mammography
       - _partial_: true
-        _target_: comprx.dataloaders.GenericDataset
+        _target_: comprx.dataloaders.MGDataset
         split_path: ${paths.data_dir}/mg/train.csv
         split_column: split
         split_name: train
@@ -34,7 +34,7 @@ valid:
     datasets:
       # RSNA Mammography
       - _partial_: true
-        _target_: comprx.dataloaders.GenericDataset
+        _target_: comprx.dataloaders.MGDataset
         split_path: ${paths.data_dir}/mg/test.csv
         split_column: split
         split_name: test
