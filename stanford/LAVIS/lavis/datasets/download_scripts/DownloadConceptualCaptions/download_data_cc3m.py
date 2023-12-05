@@ -201,9 +201,9 @@ storage_dir = OmegaConf.load(
 storage_dir = Path(get_cache_path(storage_dir))
 
 os.makedirs(storage_dir, exist_ok=True)
-
+print(f"Downloading to {storage_dir}")
 # number of processes in the pool can be larger than cores
-num_processes = 32
+num_processes = 128
 # chunk_size is how many images per chunk per process - changing this resets progress when restarting.
 images_per_part = 100
 

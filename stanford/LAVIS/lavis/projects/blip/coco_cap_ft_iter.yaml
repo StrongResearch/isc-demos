@@ -47,6 +47,7 @@ run:
   output_dir: "output/BLIP/Caption_coco"
 
   amp: False
+  resume_ckpt_path: null
 
   evaluate: False 
   train_splits: ["train"]

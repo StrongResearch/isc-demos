@@ -21,22 +21,6 @@ datasets:
     text_processor:
         train:
           name: "blip_caption"
-  conceptual_caption_3m: # name of the dataset builder
-    vis_processor:
-        train:
-          name: "blip_image_train"
-          image_size: 224
-    text_processor:
-        train:
-          name: "blip_caption"
-  conceptual_caption_12m: # name of the dataset builder
-    vis_processor:
-        train:
-          name: "blip_image_train"
-          image_size: 224
-    text_processor:
-        train:
-          name: "blip_caption"
   vg_caption: # name of the dataset builder
     vis_processor:
         train:
@@ -64,23 +48,30 @@ run:
   warmup_lr: 1e-6
   lr_decay_rate: 0.9
 
+
   weight_decay: 0.05
-  max_epoch: 20
-  batch_size_train: 75
-  batch_size_eval: 75
+  accum_grad_iters: 6 #5
+  max_epoch: 35
+  batch_size_train: 40
+  batch_size_eval: 40
   num_workers: 4
-  warmup_steps: 3000
+  warmup_steps: 18000
 
   seed: 42
-  output_dir: "output/BLIP/Pretrain"
 
   amp: False
-  resume_ckpt_path: null
 
   evaluate: False 
   train_splits: ["train"]
 
+  output_dir: "./checkpoints/pretrain"
+  resume_ckpt_path: "./checkpoints/image_text_pretrain_latest.pth"
+  tensorboard_path: "./logs"
+
+  checkpoint_freq: 30
+  log_freq: 1
+
   device: "cuda"
-  world_size: 1
+  world_size: 6
   dist_url: "env://"
   distributed: True

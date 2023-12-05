@@ -17,7 +17,6 @@ from lavis.common.logger import MetricLogger, SmoothedValue
 from torch.utils.data import DataLoader
 from lavis.common.registry import registry
 from lavis.datasets.data_utils import prepare_sample
-import time
 
 class BaseTask:
     def __init__(self, **kwargs):
@@ -64,6 +63,7 @@ class BaseTask:
                 datasets["test"] = load_dataset("coco_caption", vis_path="/mnt/.node1/Open-Datasets/coco/test2014")
                 continue
             dataset_config = datasets_config[name]
+            
 
             builder = registry.get_builder_class(name)(dataset_config)
             dataset = builder.build_datasets()
@@ -183,7 +183,7 @@ class BaseTask:
         optimizer,
         lr_scheduler,
         scaler=None,
-        start_iters=None,
+        start_iters=1,
         log_freq=50,
         cuda_enabled=False,
         accum_grad_iters=1,
@@ -196,6 +196,11 @@ class BaseTask:
         When using epoch-based, training stops after one epoch; when using iter-based,
         training stops after #iters_per_epoch iterations.
         """
+        
+        # start_iters is loaded from a saved checkpoint, otherwise it defaults to 0
+        # start_iters is used instead of enumerating the dataloader for when training is
+        # interrupted mid-epoch
+        
         use_amp = scaler is not None
         if not hasattr(data_loader, "__next__"):
             # convert to iterator if not already
@@ -239,7 +244,7 @@ class BaseTask:
                 loss.backward()
 
             # update gradients every accum_grad_iters iterations
-            if (start_iters + 1) % accum_grad_iters == 0:
+            if (start_iters) % accum_grad_iters == 0:
                 if use_amp:
                     scaler.step(optimizer)
                     scaler.update()                     
@@ -255,11 +260,13 @@ class BaseTask:
                 sampler = data_loader._dataloader.sampler
             sampler.advance(args.run_cfg.batch_size_train)
             
+            # Metrics are gathered every iteration, but only saved when checkpointing to avoid
+            # Multiple metrics for the same step in the case of interruptions
             metric_logger.synchronize_between_processes()
             if writer is not None:
                 metric_data = []
                 for metre, value in metric_logger.meters.items():
-                    if metre == "loss_lm":
+                    if "(" in str(value):
                         new_string = ""
                         in_bracket = False
                         for char in str(value):
@@ -272,11 +279,12 @@ class BaseTask:
                                 new_string += char
                                 
                         value = new_string
-                    metric_data.append(("Train/" + str(metre), float(str(value)), start_iters))
+                    metric_data.append(("Train/" + str(metre), float(str(value)), (epoch * len(data_loader)) + start_iters))
                     #writer.add_scalar("Train/" + str(metre), float(str(value)), start_iters)
                 for tup in metric_data:
                     writer_data.append(tup)
             
+            # Save on rank 0 when it is the last iteration of the epoch or at checkpoint frequency
             if is_main_process():
                 if start_iters >= len(data_loader):
                     print(f"Reached the end of the dataloder; Saving checkpoint at iters: {start_iters}")
@@ -307,7 +315,7 @@ class BaseTask:
     
     def save_checkpoint(self, model, optimizer, train_sampler, config, scaler, epoch, iteration, is_best=False):
         """
-        Save the checkpoint at the current epoch.
+        Save the checkpoint at the current epoch. Also saves sampler state and iteration for resuming mid-epoch
         """
         
         model_no_ddp = self.unwrap_dist_model(model, config)

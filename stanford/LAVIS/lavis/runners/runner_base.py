@@ -32,7 +32,7 @@ from lavis.datasets.datasets.dataloader_utils import (
     PrefetchLoader,
 )
 from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.utils.data import DataLoader, DistributedSampler
+from torch.utils.data import DataLoader
 from torch.utils.data.dataset import ChainDataset
 
 from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
@@ -79,6 +79,7 @@ class RunnerBase:
     def use_distributed(self):
         return self.config.run_cfg.distributed
     
+    # How many epochs per eval, defaults to 1
     @property
     def eval_freq(self):
         eval_freq = self.config.run_cfg.get("eval_freq", 1)
@@ -361,6 +362,7 @@ class RunnerBase:
 
         self.log_config()
         
+        # Setup tensorboard
         writer = None
         if is_main_process():
             if self.config.run_cfg.tensorboard_path:
@@ -368,15 +370,15 @@ class RunnerBase:
                     os.makedirs(self.config.run_cfg.tensorboard_path, exist_ok=True)
                 writer = tensorboard.SummaryWriter(self.config.run_cfg.tensorboard_path)
             
-        
+        # Load checkpoint if it exists
         if os.path.isfile(self.resume_ckpt_path):
             self._load_checkpoint(self.resume_ckpt_path)
         else:
-            logging.info(f"Checkpoint path is: {self.resume_ckpt_path}")
             logging.info("Checkpoint path specified but not found, starting from scratch instead.")
             
 
         for cur_epoch in range(self.start_epoch, self.max_epoch):
+            # Uses the sampler context to continue and reset sampler progress at end of epoch
             with self.train_loader._dataloader.sampler.in_epoch(cur_epoch):
                 # training phase
                 if not self.evaluate_only:
@@ -390,6 +392,8 @@ class RunnerBase:
                     # train_stats = self.train_epoch(cur_epoch, writer=writer)
                     self.train_epoch(cur_epoch, writer=writer)
                     # self.log_stats(split_name="train", stats=train_stats)
+                    
+                    # Reset start iter after epoch is finished
                     self.start_iter = 1
 
                 # evaluation phase

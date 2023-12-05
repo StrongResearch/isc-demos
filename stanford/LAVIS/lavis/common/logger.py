@@ -119,6 +119,7 @@ class MetricLogger(object):
     def add_meter(self, name, meter):
         self.meters[name] = meter
 
+    # i parameter allows logging to start at a specific index - useful for inner-epoch resuming
     def log_every(self, iterable, print_freq, header=None, i=0):
         if not header:
             header = ""

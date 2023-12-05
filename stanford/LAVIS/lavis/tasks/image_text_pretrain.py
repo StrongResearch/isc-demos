@@ -13,6 +13,7 @@ from lavis.tasks.base_task import BaseTask
 class ImageTextPretrainTask(BaseTask):
     def __init__(self):
         super().__init__()
+        self.name = "image_text_pretrain"
 
     def evaluation(self, model, data_loader, cuda_enabled=True):
         pass

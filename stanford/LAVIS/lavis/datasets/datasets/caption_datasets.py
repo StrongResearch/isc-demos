@@ -40,6 +40,8 @@ class CaptionDataset(BaseDataset, __DisplMixin):
             if img_id not in self.img_ids.keys():
                 self.img_ids[img_id] = n
                 n += 1
+                
+            
 
     def __getitem__(self, index):
 
