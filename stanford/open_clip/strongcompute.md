@@ -39,6 +39,14 @@ Launch the experiment on the ISC with the following command.
 isc train clip.isc
 ```
 
+## 4. Running tensorboard
+Launch tensorboard with the following command.
+```bash
+tensorboard --host 192.168.127.70 --logdir ./src/logs/tensorboard
+```
+
+On your local machine, navigate to the link it outputs in the terminal.
+
 ### Changes:
 Updated requirements to include more specific torch version and additional requirement (braceexpand)
 

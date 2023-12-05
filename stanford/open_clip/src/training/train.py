@@ -79,6 +79,8 @@ def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, val_sampl
                 "val_sampler": val_sampler.state_dict(),
                 "scaler": scaler_dict
             }
+    parent_dir = os.path.dirname(path)
+    os.makedirs(parent_dir, exist_ok=True)
     atomic_torch_save(checkpoint_dict, path)
 
 def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
@@ -352,8 +354,8 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
 
 def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     metrics = {}
-    if not is_master(args):
-        return metrics
+    # if not is_master(args):
+    #     return metrics
     device = torch.device(args.device)
     model.eval()
 
@@ -375,6 +377,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
         all_image_features, all_text_features = [], []
         with torch.no_grad():
             for i, batch in enumerate(dataloader):
+                print(f"Eval - {i}/{len(dataloader)}")
                 images, texts = batch
                 images = images.to(device=device, dtype=input_dtype, non_blocking=True)
                 texts = texts.to(device=device, non_blocking=True)
@@ -403,7 +406,6 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                         F.cross_entropy(logits_per_image, labels) +
                         F.cross_entropy(logits_per_text, labels)
                     ) / 2
-
                     gen_loss = maybe_compute_generative_loss(model_out)
 
                 cumulative_loss += total_loss * batch_size
@@ -411,7 +413,9 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 if (i % 100) == 0:
                     if args.distributed_evaluation:
                         total_num_samples = torch.Tensor([num_samples]).to(device)
+                        print(7)
                         torch.distributed.all_reduce(total_num_samples)
+                        print(8)
                         total_num_samples = total_num_samples.item()
 
                         total_cumulative_loss = cumulative_loss.clone()
@@ -466,7 +470,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
         if tb_writer is not None:
             for name, val in log_data.items():
                 tb_writer.add_scalar(name, val, epoch)
-
+        os.makedirs(args.checkpoint_path, exist_ok=True)
         with open(os.path.join(args.checkpoint_path, "results.jsonl"), "a+") as f:
             f.write(json.dumps(metrics))
             f.write("\n")

@@ -37,10 +37,7 @@ class CsvDataset(Dataset):
         logging.debug(f'Loading csv data from {input_filename}.')
         
         # Allows choosing number of samples per epoch 
-        if samples is not None:
-            df = pd.read_csv(input_filename, sep=sep, nrows=samples)
-        else:
-            df = pd.read_csv(input_filename, sep=sep)
+        df = pd.read_csv(input_filename, sep=sep, nrows=samples) if samples else pd.read_csv(input_filename, sep=sep)
 
         self.images = df[img_key].tolist()
         self.captions = df[caption_key].tolist()
@@ -71,7 +68,7 @@ class __DisplMixin:
 
 # This class is added specifically for use with the COCO dataset
 class CaptionDataset(__DisplMixin):
-    def __init__(self, vis_root, ann_path, split, transforms, tokenizer=None):
+    def __init__(self, vis_root, ann_path, split, transforms, tokenizer=None, samples=None):
         """
         vis_root (string): Root directory of images (e.g. coco/images/)
         ann_root (string): directory to store the annotation file
@@ -82,6 +79,8 @@ class CaptionDataset(__DisplMixin):
         
         j = json.load(open(ann_path, "r"))
         self.annotation.extend(j["annotations"])
+        self.annotation = self.annotation[:samples] if samples is not None else self.annotation
+        print(f"Dataset created with {len(self.annotation)} samples.")
         
         self.transforms = transforms
         self.tokenize = tokenizer
@@ -503,37 +502,17 @@ def get_wds_dataset(args, preprocess_img, is_train, epoch=0, floor=False, tokeni
 def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     input_filename = args.train_data if is_train else args.val_data
     assert input_filename
-    if is_train:
-        dataset = CsvDataset(
-            input_filename,
-            preprocess_fn,
-            img_key=args.csv_img_key,
-            caption_key=args.csv_caption_key,
-            samples=args.train_num_samples,
-            sep=args.csv_separator,
-            tokenizer=tokenizer
-        )
-    else:
-        if args.val_num_samples:
-            dataset = CsvDataset(
-            input_filename,
-            preprocess_fn,
-            img_key=args.csv_img_key,
-            caption_key=args.csv_caption_key,
-            samples=args.val_num_samples,
-            sep=args.csv_separator,
-            tokenizer=tokenizer
-        )
-            
-        else:
-            dataset = CsvDataset(
-                input_filename,
-                preprocess_fn,
-                img_key=args.csv_img_key,
-                caption_key=args.csv_caption_key,
-                sep=args.csv_separator,
-                tokenizer=tokenizer
-            )
+
+    dataset = CsvDataset(
+        input_filename,
+        preprocess_fn,
+        img_key=args.csv_img_key,
+        caption_key=args.csv_caption_key,
+        sep=args.csv_separator,
+        samples=args.train_num_samples if is_train else args.val_num_samples,
+        tokenizer=tokenizer
+    )
+        
     num_samples = len(dataset)
     
     # Use our sampler for easy cycling
@@ -566,7 +545,8 @@ def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
         ann_path=annotations,
         split="train" if is_train else "val",
         transforms=preprocess_fn,
-        tokenizer=tokenizer
+        tokenizer=tokenizer,
+        samples=args.train_num_samples if is_train else args.val_num_samples
     )
     num_samples = len(dataset)
     
@@ -583,7 +563,6 @@ def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
         sampler=sampler,
         drop_last=is_train,
     )
-    
     dataloader.num_samples = num_samples
     dataloader.num_batches = len(dataloader)
     return DataInfo(dataloader, sampler)
