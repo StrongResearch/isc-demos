@@ -18,7 +18,7 @@ import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
 from torchvision.models.detection import MaskRCNN, RetinaNet
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
-from engine_v2 import evaluate, train_one_epoch
+from engine import evaluate, train_one_epoch
 from group_by_aspect_ratio import create_aspect_ratio_groups, InterruptableDistributedGroupedBatchSampler
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
@@ -86,10 +86,13 @@ def get_optim(model, args):
             parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay,
             nesterov="nesterov" in opt_name,
         )
+        print(f"Optimizer: SGD-Nesterov, lr: {args.lr}, momentum: {args.momentum}, weight_decay: {args.weight_decay}")
     elif opt_name.startswith("sgd"):
         optimizer = torch.optim.SGD(parameters, lr=args.lr)
+        print(f"Optimizer: SGD, lr: {args.lr}")
     elif opt_name == "adamw":
         optimizer = torch.optim.AdamW(parameters, lr=args.lr, weight_decay=args.weight_decay)
+        print(f"Optimizer: AdamW, lr: {args.lr}, weight_decay: {args.weight_decay}")
     return optimizer
 
 # def init_params(model, scale=1e-2, path=[], name="root"):
@@ -130,8 +133,8 @@ def main(args, timer):
     dataset_train, num_classes = get_dataset(is_train=True, args=args)
     dataset_test, _ = get_dataset(is_train=False, args=args)
 
-    dataset_train = torch.utils.data.Subset(dataset_train, range(12 * 6 * 20))
-    dataset_test = torch.utils.data.Subset(dataset_test, range(12 * 6 * 10))
+    # dataset_train = torch.utils.data.Subset(dataset_train, range(12 * 6 * 20))
+    # dataset_test = torch.utils.data.Subset(dataset_test, range(12 * 6 * 10))
 
     timer.report('loading data')
 
@@ -216,6 +219,7 @@ def main(args, timer):
     timer.report(f'optimizer and scaler: {scaler}')
 
     steps_per_epoch = len(dataloader_train)
+    lr_step_size = args.lr_step_size*steps_per_epoch
 
     ## WARMUP LR_SCHEDULER
     warmup_lr_scheduler = torch.optim.lr_scheduler.LinearLR(
@@ -224,7 +228,7 @@ def main(args, timer):
     )
 
     ## LONG-TERM LR_SCHEDULER
-    long_lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=steps_per_epoch, gamma=0.9)
+    long_lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=lr_step_size, gamma=args.lr_gamma)
     # args.lr_scheduler = args.lr_scheduler.lower()
     # if args.lr_scheduler == "multisteplr":
     #     long_lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.lr_steps * steps_per_epoch, gamma=args.lr_gamma)
@@ -250,8 +254,6 @@ def main(args, timer):
 
     timer.report('init coco evaluator')
 
-    # metrics = {"train": MetricsTracker(), "val": MetricsTracker()}
-
     # RETRIEVE CHECKPOINT
     Path(args.resume).parent.mkdir(parents=True, exist_ok=True)
     checkpoint = None
@@ -270,10 +272,9 @@ def main(args, timer):
         test_sampler.load_state_dict(checkpoint["test_sampler"])
         if args.amp:
             scaler.load_state_dict(checkpoint["scaler"])
-        # Evaluator and metrics
+        # Evaluator
         coco_evaluator.img_ids = checkpoint["img_ids"]
         coco_evaluator.eval_imgs = checkpoint["eval_imgs"]
-        # metrics = checkpoint["metrics"]
 
     timer.report('retrieving checkpoint')
 
@@ -282,10 +283,9 @@ def main(args, timer):
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
         epoch = 0
-        # coco_evaluator, timer, metrics = evaluate(
-        evaluate(
+        coco_evaluator, timer = evaluate(
             model, dataloader_test, epoch, test_sampler, args, coco_evaluator, optimizer, 
-            lr_scheduler, train_sampler, device, scaler, timer, metrics
+            lr_scheduler, train_sampler, device, scaler, timer
         )
         return
 
@@ -296,27 +296,17 @@ def main(args, timer):
         coco_evaluator = CocoEvaluator(coco, iou_types)
 
         with train_sampler.in_epoch(epoch):
-            # timer = TimestampedTimer() # obtain time trial for each epoch
             model, timer = train_one_epoch(
-            # train_one_epoch(
-                # model, optimizer, data_loader_train, train_sampler, test_sampler, 
-                # lr_scheduler, args, device, coco_evaluator, 
-                # epoch, scaler, timer, metrics
                 model, optimizer, dataloader_train, dataloader_test,
                 lr_scheduler, args, device, coco_evaluator, 
-                epoch, scaler, timer #, metrics
+                epoch, scaler, timer
             )
 
             with test_sampler.in_epoch(epoch):
-                # timer = TimestampedTimer() # obtain time trial for each epoch
                 coco_evaluator, timer = evaluate(
-                # evaluate(
-                    # model, data_loader_test, epoch, test_sampler, args, coco_evaluator, 
-                    # optimizer, lr_scheduler, train_sampler, device, 
-                    # scaler, timer, metrics
                     model, optimizer, dataloader_train, dataloader_test,
                     lr_scheduler, args, device, coco_evaluator, 
-                    epoch, scaler, timer #, metrics
+                    epoch, scaler, timer
                 )
                 
 
@@ -338,9 +328,9 @@ def get_args_parser(add_help=True):
     parser.add_argument("--wd","--weight-decay",default=1e-4,type=float,metavar="W",help="weight decay (default: 1e-4)",dest="weight_decay",)
     parser.add_argument("--norm-weight-decay",default=None,type=float,help="weight decay for Normalization layers (default: None, same value as --wd)")
     parser.add_argument("--lr-scheduler", default="multisteplr", type=str, help="name of lr scheduler (default: multisteplr)")
-    parser.add_argument("--lr-step-size", default=8, type=int, help="decrease lr every step-size epochs (multisteplr scheduler only)")
+    parser.add_argument("--lr-step-size", default=4, type=int, help="decrease lr every step-size epochs")
     parser.add_argument("--lr-steps",default=[16, 22],nargs="+",type=int,help="decrease lr every step-size epochs (multisteplr scheduler only)")
-    parser.add_argument("--lr-gamma", default=0.1, type=float, help="decrease lr by a factor of lr-gamma (multisteplr scheduler only)")
+    parser.add_argument("--lr-gamma", default=0.9, type=float, help="decrease lr by a factor of lr-gamma (multisteplr scheduler only)")
     parser.add_argument("--grad-clip-norm", default=0.1, type=float, help="gradient clipping norm (using 'inf' norm)")
     parser.add_argument("--accumulation-steps", default=1, type=int, help="training gradient accumulation steps")
     
