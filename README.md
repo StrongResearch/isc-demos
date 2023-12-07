@@ -301,6 +301,7 @@ train on the ISC using the following command.
 
 ```bash
 isc train fashion_mnist.isc
+isc experiments # view a list of your experiments
 ```
 
 You should recieve the response `Success: Experiment created`. Running `isc experiments` you should be able to see your 
