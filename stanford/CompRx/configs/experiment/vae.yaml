@@ -12,7 +12,7 @@ img_size: 384
 task_name: vae_${downsize_factor}x_${num_latent_channels}c_${img_size}s
 
 # Training settings
-gradient_accumulation_steps: 1
+gradient_accumulation_steps: 3
 mixed_precision: "no"
 max_epoch: 100
 batch_size: 2
