@@ -1,0 +1,6 @@
+experiment_name = "lightning_example"
+gpu_type = "24GB VRAM GPU"
+nnodes = 10
+venv_path = "~/.venv/bin/activate"
+output_path = "~/output_lightning_example"
+command = "small_language_model.py --save-dir $OUTPUT_PATH --epochs 50 --save-freq 5"

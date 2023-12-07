@@ -894,7 +894,6 @@ def train_one_epoch(
     assert args.distributed and hasattr(loader.sampler, 'set_epoch')
     for (input, target) in (loader):
         batch_idx = loader.sampler.progress // loader.loader.batch_size
-        print(f"EPOCH: {epoch}, BATCH: {batch_idx}")
 
         last_batch = batch_idx == last_batch_idx
         need_update = last_batch or (batch_idx + 1) % accum_steps == 0
@@ -1008,7 +1007,7 @@ def train_one_epoch(
         data_start_time = time.time()
 
 
-        if need_update and utils.is_primary(args) and (batch_idx % 25 == 0):
+        if need_update and utils.is_primary(args) and (batch_idx % 2 == 0):
             _logger.info(f'Step finished, saving checkpoint')
             saver._save(args.resume, epoch)
 
