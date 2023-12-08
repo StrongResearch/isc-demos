@@ -106,10 +106,12 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     end = time.time()
     
     metric_data = []
-
+    torch.cuda.cudart().cudaProfilerStart()
     # No need to enumerate since we pass in iterations
     for batch in dataloader:
-        
+        if iters >= 200:
+            torch.cuda.cudart().cudaProfilerStop()
+            return
         # Advance sampler by batch size before checkpointing
         dataloader.sampler.advance(args.batch_size)
         iters += 1
@@ -146,6 +148,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 losses["loss"] = total_loss
 
             backward(total_loss, scaler)
+            
             for param in model.parameters():
                 if torch.isinf(param.grad).any():
                     print(f"inf at {device} + {socket.gethostname()}")
@@ -328,7 +331,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
             # resetting batch / data time meters per log window
             batch_time_m.reset()
             data_time_m.reset()
-            
+
     # end for
 
 
