@@ -49,7 +49,7 @@ resume_from_ckpt: /mnt/.node2/Lachlan/comprx/latest.pt
 ckpt_dir: /mnt/.node2/Lachlan/comprx/
 
 # checkpoint frequency
-ckpt_every_n_steps: 21
+ckpt_every_n_steps: 27
 
 # seed for random number generators in pytorch, numpy and python.random
 # sets cudnn to deterministic too

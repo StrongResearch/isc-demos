@@ -27,6 +27,28 @@ train:
             - _target_: torchvision.transforms.Normalize
               mean: [0.5]
               std: [0.5]
+      # CN Mammography
+      - _partial_: true
+        _target_: comprx.dataloaders.CNMGDataset
+        split_path: ${paths.data_dir}/CMMD/dataset.csv
+        split_column: split
+        split_name: path
+        data_dir: ${paths.data_dir}/CMMD
+        dataset_id: 2
+        img_column: path
+        img_suffix: .dcm
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+            - _target_: torchvision.transforms.Resize
+              size:
+                - ${img_size}
+                - ${img_size}
+              interpolation: 3
+              antialias: True
+            - _target_: torchvision.transforms.Normalize
+              mean: [0.5]
+              std: [0.5]
 
 valid:
   dataset:
