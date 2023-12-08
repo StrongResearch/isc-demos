@@ -163,10 +163,7 @@ def training_epoch(
             writer.add_scalar("Train/d_weight", log_dict_ae["train/d_weight"], global_step)
             writer.add_scalar("Train/g_loss", log_dict_ae["train/g_loss"], global_step)
             writer.add_scalar("Train/og_rec", log_dict_ae["train/og_rec"], global_step)
-            writer.add_scalar("Train/p_weight", log_dict_ae["train/p_weight"], global_step)
             writer.add_scalar("Train/total_loss", metric_aeloss.compute(), global_step)
-            writer.add_scalar("Train/ae_lr", optimizer_ae.param_groups[-1]['lr'], global_step)
-            writer.add_scalar("Train/disc_lr", optimizer_disc.param_groups[-1]['lr'], global_step)
             writer.close()
 
         if (global_step % options["ckpt_every_n_steps"] == 0 or (local_step >= len(dataloader) - 1)) and local_step > 0 and accelerator.is_main_process:

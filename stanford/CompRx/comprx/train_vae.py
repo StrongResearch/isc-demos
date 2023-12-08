@@ -14,6 +14,7 @@ from comprx.utils.extras import sanitize_dataloader_kwargs, set_seed
 from comprx.utils.vae.litema import LitEma, ema_scope
 from comprx.utils.vae.train_components import training_epoch, validation_epoch
 from accelerate.data_loader import DataLoaderShard
+from torchsummary import summary
 
 from cycling_utils import InterruptableDistributedSampler
 
@@ -32,7 +33,6 @@ def main(cfg: DictConfig):
     print(f"=> Starting [experiment={cfg.task_name}]")
 
     cfg = instantiate(cfg)
-    # breakpoint()
     # Seeding
     if cfg.get("seed", None) is not None:
         print(f"=> Setting seed [seed={cfg.seed}]")
@@ -84,7 +84,7 @@ def main(cfg: DictConfig):
     # Create model
     model = cfg.model
     model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-
+    
     # Set up exponential moving average (EMA) parameter tracking
     use_ema = cfg.get("ema_decay", None) is not None
     if use_ema:

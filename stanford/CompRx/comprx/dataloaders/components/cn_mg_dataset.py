@@ -9,10 +9,7 @@ import torch
 import torchvision
 from torch.utils.data import Dataset
 
-__all__ = ["GenericDataset", "MGDataset", "CNMGDataset",]
-
-
-class GenericDataset(Dataset):
+class CNMGDataset(Dataset):
     def __init__(
         self,
         split_path: Union[os.PathLike, str],
@@ -38,28 +35,6 @@ class GenericDataset(Dataset):
         com_transform: Callable = None,
         **kwargs,
     ):
-        """A Generic Dataset implementation.
-
-        The generic dataset can be used to create any dataset from a given CSV "split" and a data
-        directory. The dataset aims to be as flexible as possible, allowing the user to specify
-        the columns to use for images, labels, and text. The user can also specify the transforms
-        to apply to each of these components.
-
-        Args:
-            split_path (Union[os.PathLike, str]): Path to the split file.
-            data_dir (Union[os.PathLike, str]): Path to the data directory.
-            img_column (str, optional): Image column. Defaults to "image_uuid".
-            img_suffix (str, optional): Image suffix. Defaults to ".npy".
-            img_transform (Callable, optional): Image transform. Defaults to None.
-            lbl_columns (List[str], optional): Label columns. Defaults to None.
-            lbl_transform (Callable, optional): Label transform. Defaults to None.
-            txt_column (str, optional): Text column. Defaults to None.
-            txt_transform (Callable, optional): Text transform. Defaults to None.
-            com_transform (Callable, optional): Composite transform. Defaults to None.
-            dataset_id (int, optional): Dataset ID. Defaults to None.
-        """
-
-        # Store arguments
         self.split_path = split_path
         self.split_column = split_column
         self.split_name = split_name
@@ -89,17 +64,14 @@ class GenericDataset(Dataset):
 
         self.df = pl.read_csv(split_path)
         if isinstance(split_column, str) and isinstance(split_name, str):
-            self.df = self.df.filter(pl.col(split_column) == split_name)
+            self.df = self.df.filter(pl.col("path") != None)
 
         # Generate image paths
         if img_column is not None:
             self.samples["img"] = []
             for row in self.df.rows(named=True):
-                self.samples["img"] = (
-                self.df.get_column(img_column)
-                .apply(lambda x: os.path.join(self.img_dir, f"{x}{img_suffix or ''}"))
-                .to_list()
-                )
+                path = os.path.join(self.img_dir, str(row["path"])) + self.img_suffix
+                self.samples["img"].append(path)
 
         # Extract the columns with labels
         if lbl_columns is not None:
@@ -118,14 +90,17 @@ class GenericDataset(Dataset):
             )
 
         self.print_stats()
-
+        
     def __getitem__(self, idx: int):
         """Return a dictionary with the requested sample."""
         sample = {"group_id": self.dataset_id}
 
         # Image
         if "img" in self.samples:
-            sample["img"] = self.samples["img"][idx]
+            print(f"looking for sample in {self.samples['img'][idx]}")
+            sample["img"] = torch.from_numpy(np.array(pydicom.dcmread(self.samples["img"][idx]).pixel_array, dtype=np.float32)).apply_(lambda x: x / 255)
+            if sample["img"].dim() < 4:
+                sample["img"] = sample["img"].unsqueeze(0)
 
             if callable(self.img_transform):
                 sample["img"] = self.img_transform(sample["img"])
