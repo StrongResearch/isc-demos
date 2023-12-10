@@ -8,9 +8,9 @@ defaults:
 task_name: vae_metrics
 
 # General settings
-num_latent_channels: 1
+num_latent_channels: 4
 ch_mult: [1, 2, 4]
-dataset_ids: [10]
+dataset_ids: [1, 2]
 fine_grained: False
 
 img_size: 768

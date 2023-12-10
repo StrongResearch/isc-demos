@@ -3,4 +3,4 @@ gpu_type = "24GB VRAM GPU"
 nnodes = 12
 venv_path = "~/isc-demos/stanford/open_clip/.venv/bin/activate"
 output_path = "~/isc-demos/stanford/open_clip/output"
-command = "-m training.main --epochs 20 --grad-checkpointing --accum-freq 1 --precision amp --save-frequency 5 --batch-size 228 --dataset-type auto --train-data '/mnt/.node1/Open-Datasets/coco' --val-data '/mnt/.node1/Open-Datasets/coco' --resume '/mnt/.node2/Lachlan/clip/latest.pt' "
+command = "-m training.main --epochs 2000 --grad-checkpointing --accum-freq 1 --precision amp --save-frequency 5 --val-frequency 2000 --batch-size 228 --dataset-type auto --train-data '/mnt/.node1/Open-Datasets/coco' --val-data '/mnt/.node1/Open-Datasets/coco' --resume '/mnt/.node2/Lachlan/clip/latest.pt' "

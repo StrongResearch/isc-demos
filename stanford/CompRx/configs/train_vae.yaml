@@ -34,13 +34,13 @@ log_every_n_steps: 1
 start_epoch: 0
 
 # stop training at epoch n
-max_epoch: 20
+max_epoch: 18
 
 # mini-batch size
 batch_size: -1
 
 # gradient accumulation
-gradient_accumulation_steps: 1
+gradient_accumulation_steps: 3
 
 # checkpoint path to the accelerator state (this should be a directory)
 resume_from_ckpt: /mnt/.node2/Lachlan/comprx/latest.pt

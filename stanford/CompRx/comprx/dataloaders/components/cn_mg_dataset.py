@@ -90,14 +90,13 @@ class CNMGDataset(Dataset):
             )
 
         self.print_stats()
-        
+    
     def __getitem__(self, idx: int):
         """Return a dictionary with the requested sample."""
         sample = {"group_id": self.dataset_id}
 
         # Image
         if "img" in self.samples:
-            print(f"looking for sample in {self.samples['img'][idx]}")
             sample["img"] = torch.from_numpy(np.array(pydicom.dcmread(self.samples["img"][idx]).pixel_array, dtype=np.float32)).apply_(lambda x: x / 255)
             if sample["img"].dim() < 4:
                 sample["img"] = sample["img"].unsqueeze(0)

@@ -29,7 +29,7 @@ OmegaConf.register_new_resolver("eval", eval)
 
 
 def get_dataset_cat(dataset_ids, fine_grained):
-    if dataset_ids == [1, 2, 3, 4, 5, 6, 7, 8]:
+    if dataset_ids == [1, 2]:
         dataset_cat = "all"
     elif dataset_ids == [1, 2, 3, 4, 5, 6]:
         dataset_cat = "mg"
@@ -86,7 +86,7 @@ def main(cfg: DictConfig):
 
     torch.backends.cuda.matmul.allow_tf32 = True
 
-    model_type = cfg.resume_from_ckpt.split("-")[0]
+    model_type = "ours" #cfg.resume_from_ckpt.split("-")[0]
     if model_type == "kl":  # e.g. kl-f8
         print(f"=> Generating metrics for Stable Diffusion model {cfg.resume_from_ckpt}")
         mode = "sd_kl"
@@ -113,28 +113,28 @@ def main(cfg: DictConfig):
     dataset_cat = get_dataset_cat(dataset_ids, cfg.fine_grained)
 
     if mode == "sd_kl":
-        conf = OmegaConf.load(f"{root_dir}/vae-weights/{cfg.resume_from_ckpt}.yaml")
+        conf = OmegaConf.load(f"{root}/vae-weights/{cfg.resume_from_ckpt}.yaml")
         model = AutoencoderKL(
             ddconfig=conf.model.params.ddconfig,
             embed_dim=conf.model.params.embed_dim,
-            ckpt_path=f"{root_dir}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
+            ckpt_path=f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
         ).cuda()
         model.requires_grad_(False)
     elif mode == "sd_vq":
-        conf = OmegaConf.load(f"{root_dir}/vae-weights/{cfg.resume_from_ckpt}.yaml")
+        conf = OmegaConf.load(f"{root}/vae-weights/{cfg.resume_from_ckpt}.yaml")
         model = AutoencoderVQ(
             ddconfig=conf.model.params.ddconfig,
             embed_dim=conf.model.params.embed_dim,
             n_embed=conf.model.params.n_embed,
-            ckpt_path=f"{root_dir}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
+            ckpt_path=f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
         ).cuda()
         model.requires_grad_(False)
     elif mode == "ours":
-        conf = OmegaConf.load(f"{root_dir}/vae-weights/{cfg.resume_from_ckpt}.yaml")
+        conf = OmegaConf.load(f"{root}/vae-weights/{cfg.resume_from_ckpt}.yaml")
         model = AutoencoderKL(
             ddconfig=conf.ddconfig,
             embed_dim=conf.embed_dim,
-            ckpt_path=f"{root_dir}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
+            ckpt_path=f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
         ).cuda()
         model.requires_grad_(False)
     elif mode in ["bicubic", "bilinear", "nearest"]:
