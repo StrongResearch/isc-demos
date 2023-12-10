@@ -130,11 +130,11 @@ def main(cfg: DictConfig):
         ).cuda()
         model.requires_grad_(False)
     elif mode == "ours":
-        conf = OmegaConf.load(f"{root}/vae-weights/{cfg.resume_from_ckpt}.yaml")
+        conf = OmegaConf.load(f"{root}/configs/experiment/vae_metrics.yaml")
         model = AutoencoderKL(
             ddconfig=conf.ddconfig,
             embed_dim=conf.embed_dim,
-            ckpt_path=f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
+            ckpt_path=cfg.resume_from_ckpt#f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
         ).cuda()
         model.requires_grad_(False)
     elif mode in ["bicubic", "bilinear", "nearest"]:
