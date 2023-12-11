@@ -38,3 +38,4 @@ pylibjpeg-libjpeg
 GDCM
 cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
 matplotlib
+pandas
