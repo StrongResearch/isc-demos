@@ -1,3 +1,0 @@
-- experiment=vae_metrics
-- resume_from_ckpt=/mnt/.node2/Lachlan/comprx/last.pt/epoch-0000.pt/pytorch_model.bin
-- seed=0
