@@ -76,3 +76,25 @@ valid:
             - _target_: torchvision.transforms.Normalize
               mean: [0.5]
               std: [0.5]
+
+      - _partial_: true
+        _target_: comprx.dataloaders.IBDataset
+        split_path: ${paths.data_dir}/mg/test.csv
+        split_column: split
+        split_name: test
+        data_dir: ${paths.data_dir}/INB/AllDICOMs
+        dataset_id: 2
+        img_column: image_id
+        img_suffix: .dcm
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+            - _target_: torchvision.transforms.Resize
+              size:
+                - ${img_size}
+                - ${img_size}
+              interpolation: 3
+              antialias: True
+            - _target_: torchvision.transforms.Normalize
+              mean: [0.5]
+              std: [0.5]

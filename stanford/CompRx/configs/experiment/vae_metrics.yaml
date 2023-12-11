@@ -23,6 +23,12 @@ model:
     in_channels: 1
     out_ch: 1
     ch_mult: ${ch_mult}
+    double_z: True
+    z_channels: ${model.embed_dim}
+    resolution: ${img_size}
+    num_res_blocks: 2
+    attn_resolutions: []
+    dropout: 0.0
 
 criterion:
   num_channels: 1

@@ -9,7 +9,7 @@ import torch
 import torchvision
 from torch.utils.data import Dataset
 
-__all__ = ["GenericDataset", "MGDataset", "CNMGDataset",]
+__all__ = ["GenericDataset", "MGDataset", "CNMGDataset", "IBDataset"]
 
 
 class GenericDataset(Dataset):

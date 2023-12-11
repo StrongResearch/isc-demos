@@ -6,6 +6,7 @@
 # from comprx.dataloaders.components.mimic_dataset import MimicDataset
 from comprx.dataloaders.components.mg_dataset import MGDataset
 from comprx.dataloaders.components.cn_mg_dataset import CNMGDataset
+from comprx.dataloaders.components.ib_dataset import IBDataset
 from comprx.dataloaders.components.generic_dataset import GenericDataset
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     #    "BreastSegDataset",
     "MGDataset",
     "CNMGDataset",
+    "IBDataset",
     
 ]

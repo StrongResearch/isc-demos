@@ -18,7 +18,9 @@ from torchvision.transforms import Resize
 from comprx.models import AutoencoderKL, AutoencoderVQ
 from comprx.utils.extras import sanitize_dataloader_kwargs, set_seed
 
-NUM_SAMPLES = 1000
+from torch.utils.tensorboard import SummaryWriter
+
+NUM_SAMPLES = 414
 
 # Set the project root
 root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
@@ -131,10 +133,11 @@ def main(cfg: DictConfig):
         model.requires_grad_(False)
     elif mode == "ours":
         conf = OmegaConf.load(f"{root}/configs/experiment/vae_metrics.yaml")
+        print(f"bb{cfg.resume_from_ckpt}")
         model = AutoencoderKL(
-            ddconfig=conf.ddconfig,
-            embed_dim=conf.embed_dim,
-            ckpt_path=cfg.resume_from_ckpt#f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
+            ddconfig=conf.model.ddconfig,
+            embed_dim=conf.model.embed_dim,
+            ckpt_path=f"{cfg.resume_from_ckpt}"#f"{root}/vae-weights/{cfg.resume_from_ckpt}.ckpt",
         ).cuda()
         model.requires_grad_(False)
     elif mode in ["bicubic", "bilinear", "nearest"]:
@@ -152,6 +155,7 @@ def main(cfg: DictConfig):
         metric.cuda().reset()
 
     with torch.no_grad():
+        writer = SummaryWriter(log_dir='./checkpoints/test_tb')
         num_batches = int(NUM_SAMPLES / cfg.dataloader.valid.batch_size)
         total_images = 0
         for step, batch in enumerate(valid_dataloader):
@@ -167,6 +171,10 @@ def main(cfg: DictConfig):
                 rec, _ = model(img)
             elif mode in ["bicubic", "bilinear", "nearest"]:
                 rec = decode_transform(encode_transform(img)).cuda()
+            
+            batch_images = list(torch.cat([img, rec], dim=0))
+            grid = torchvision.utils.make_grid(batch_images, nrow=len(img))
+            writer.add_image(f"examples", grid, total_images)
 
             if cfg.fine_grained:
                 box = get_bbox(dataset_cat, cfg.img_size, batch["txt"])
@@ -186,7 +194,7 @@ def main(cfg: DictConfig):
     rec_metrics["Samples"] = total_images
     print(rec_metrics)
 
-    out_path = f"metrics_rec/{cfg.img_size}_{cfg.resume_from_ckpt}_{dataset_cat}_{cfg.seed}.json"
+    out_path = f"metrics_rec/{cfg.img_size}_{dataset_cat}_{cfg.seed}.json"#{cfg.resume_from_ckpt}_{dataset_cat}_{cfg.seed}.json"
     with open(out_path, "w") as f:
         json.dump(rec_metrics, f)
 
