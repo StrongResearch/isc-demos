@@ -167,22 +167,6 @@ isc login
 ```bash
 isc ping
 ```
-10. Create and activate a virtual environment by running the following commands.
-
-```bash
-python3 -m virtualenv ~/.venv
-source ~/.venv/bin/activate
-```
-11. You will need to ensure that you have activated your virtual environment when installing 
-    dependencies for your experiments, and that the path to your virtual environment directory is included correctly in your [ISC
-    Config file(s)](#isc-config).
-12. Only Pytorch models are currently supported on the ISC and distributed training is coordinated using torchrun, so install pytorch 
-    by running the following. Note if your project requires a specific version of pytorch, adapt the following install command to suit.
-
-```bash
-pip install torch==2.0.1
-```
-
 Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
 is "interruptible" (including what this means).
@@ -217,20 +201,21 @@ on the ISC at the same time that will not be visible to you.
 ```
 
 Experiments share time on the **Rapid Cycling** cluster by means of a queue which is cycled at fixed time intervals. The 
-queue is comprised of two sub-queues, indicated by status `enqueued` and `paused` respectively. All `enqueued` 
-experiments are cycled before any `paused` experiment is cycled.
+queue is comprised of two sub-queues, a **rapid cycling** queue and an **interruptible** queue.
 
-When a new experiment is launched onto the Rapid Cycling cluster, it joins the `enqueued` queue. While the experiment is 
-running, its status will be recorded as `running`, and it will be permitted to run for a fixed period of **90 seconds**. 
-If the experiment **fails** during its running cycle (for example if there was an error in the experiment code) then the 
-experiment status will be recorded as `failed` and the experiment will be removed from the queue. Otherwise, at the end 
-of this period, the experiment will be **paused** to allow other experiments to cycle, and it will join the `paused` queue. 
-Experiments from the `paused` queue are cycled when there are no experiments waiting in the `enqueued` queue. 
+When a new experiment is launched onto the Rapid Cycling cluster, it joins the **rapid cycling** queue. When it is this
+experiment's turn to run, its status will be recorded as `running` in the **Experiments Table**. It will run for **90 seconds**
+and then will be paused and placed at the back of the **rapid cycling** queue, allowing the next experiment to run. Experiments 
+in the **rapid cycling** queue cycle in this fashion until they have been run 5 times, and then are moved into the **interruptible** 
+queue. Experiments in the **interruptible** queue are cycled when there are no experiments waiting in the **rapid cycling** 
+queue, and are at this point considered ready to be scheduled for **Burst**.
 
-Once an experiment has **completed 5 cycles** it will be scheduled for **Burst**. This means a dedicated cluster will be
-created for the experiment in the cloud, and the experiment will be launched on this dedicated cluster to train. In case of 
-cloud interruption (for example due to blackout or hardware failure), another dedicated cluster will be created and the 
-experiment resumed on the new dedicated cluster.
+If the experiment **fails** during any running cycle (for example if there was an error in the experiment code) then the 
+experiment status will be recorded as `failed` and the experiment will be dropped from the queue it was in.
+
+When an experiment is scheduled for **Burst**, a dedicated cluster will be created for the experiment in the cloud, and 
+the experiment will be launched on this dedicated cluster to train. In case of cloud interruption (for example due to blackout 
+or hardware failure), another dedicated cluster will be created and the experiment resumed on the new dedicated cluster.
 
 The ability to abruptly interrupt experiments or **"interruptibility"** is crucial for the purpose of **Rapid Cycling**, pausing 
 and resuming. The main approach to achieve interruptibility is **robust and frequent checkpointing** which we will 
@@ -238,14 +223,26 @@ demonstrate with the example project that follows.
 
 ### 2.2. Hello World with Fashion MNIST <a name="hello-world-with-fashion-mnist"></a>
 
-To follow this demonstration, first ensure you have activated your virtual environment, cloned this repo in your home 
-directory on the ISC, and installed the necessary requirements with the following commands. You will also need to clone the 
-`cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package in editable mode.
+To follow this demonstration, first ensure you have cloned this repository in your home directory on the ISC.
 
 ```bash
 cd ~
-source ~/.venv/bin/activate
 git clone https://github.com/StrongResearch/isc-demos.git
+```
+
+The first step when commencing a new project on the ISC is to create and activate a virtual environment as follows.
+
+```bash
+cd ~
+python3 -m virtualenv ~/.fashion
+source ~/.fashion/bin/activate
+```
+
+Next we will clone the `cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package 
+in editable mode.
+
+```bash
+cd ~
 git clone https://github.com/StrongResearch/cycling_utils.git
 pip install -e cycling_utils
 ```
@@ -261,7 +258,9 @@ ls
 ```
 
 The `isc-demos/fashion_mnist` subdirectory contains the following files of interest.
-1. `requirements.txt` includes dependencies necessary for this specific demo. Install these by running the following.
+1. `requirements.txt` includes dependencies necessary for this specific demo, including the version of `pytorch` necessary 
+for our project. Install these by running the following. Note, only Pytorch models are currently supported on the ISC and 
+distributed training is coordinated using torchrun. 
 ```bash
 pip install -r requirements.txt
 ```
@@ -343,7 +342,10 @@ command (**Note:** for this you will need to be accessing the ISC from an IDE su
  tensorboard --logdir <Output Path from ISC Experiments table>
  ```
 
-Tensorboard will attempt to launch on a default port (typically 6006). If this port is unavailable, you can manually set an alternative port of your chosing with the flag `--port <port>`. You can then view the tensorboard at `http://localhost:<port>/`. Tensorboard recursively searches for tensorboard event logs in the directory passed after the `--logdir` flag, so it will discover the event logs in the `/tb` subdirectory.
+Tensorboard will attempt to launch on a default port (typically 6006). If this port is unavailable, you can manually set 
+an alternative port of your chosing with the flag `--port <port>`. You can then view the tensorboard at `http://localhost:<port>/`. 
+Tensorboard recursively searches for tensorboard event logs in the directory passed after the `--logdir` flag, so it will 
+discover the event logs in the `/tb` subdirectory.
 
 ![fashion_mnist_tensorboard](https://github.com/StrongResearch/isc-demos/blob/main/fashion_mnist/fashionmnist_tensorboard.png?raw=true)
 

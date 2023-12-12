@@ -1,34 +1,32 @@
 from torch import nn
 
+class ConvBlock(nn.Module):
+    def __init__(self, inch, ouch, krnl, strd, padd, drop):
+        super(ConvBlock, self).__init__()
+        self.model = nn.Sequential(
+            nn.Conv2d(in_channels=inch, out_channels=ouch, kernel_size=krnl, stride=strd, padding=padd),
+            nn.Dropout(p=drop),
+            nn.MaxPool2d(kernel_size=3, stride=1, padding=0),
+            nn.ReLU(),
+        )
+    def forward(self, x):
+        return self.model(x)
+
 class ConvNet(nn.Module):
     def __init__(self, dropout):
         super(ConvNet, self).__init__()
         self.model = nn.Sequential(
-            # (B, C, H, W) = (B, 1, 28, 28) -> (B, 10, 26, 26), Feature map 784 -> 6,760
-            nn.Conv2d(in_channels=1, out_channels=10, kernel_size=3, stride=1, padding=0),
-            nn.Dropout(p=dropout),
-            # (B, C, H, W) = (B, 10, 26, 26) -> (B, 10, 24, 24) Feature map 6,760 -> 5,760
-            nn.MaxPool2d(kernel_size=3, stride=1, padding=0),
-            nn.ReLU(),
-            # (B, C, H, W) = (B, 10, 24, 24) -> (B, 30, 10, 10) Feature map 5,760 -> 3,000
-            nn.Conv2d(in_channels=10, out_channels=30, kernel_size=5, stride=2, padding=0),
-            nn.Dropout(p=dropout),
-            # (B, C, H, W) = (B, 30, 10, 10) -> (B, 30, 8, 8) Feature map 3,000 -> 1,920
-            nn.MaxPool2d(kernel_size=3, stride=1, padding=0),
-            nn.ReLU(),
-            # (B, C, H, W) = (B, 30, 8, 8) -> (B, 50, 3, 3) Feature map 1,920 -> 450
-            nn.Conv2d(in_channels=30, out_channels=50, kernel_size=4, stride=2, padding=0),
-            nn.Dropout(p=dropout),
-            # (B, C, H, W) = (B, 50, 3, 3) -> (B, 50, 1, 1) Feature map 450 -> 50
-            nn.MaxPool2d(kernel_size=3, stride=1, padding=0),
-            nn.ReLU(),
+            # (B, C, H, W) = (B, 1, 28, 28) -> (B, 50, 24, 24)
+            ConvBlock(inch=1, ouch=50, krnl=3, strd=1, padd=0, drop=dropout),
+            # (B, C, H, W) = (B, 50, 24, 24) -> (B, 100, 8, 8)
+            ConvBlock(inch=50, ouch=100, krnl=5, strd=2, padd=0, drop=dropout),
+            # (B, C, H, W) = (B, 100, 8, 8) -> (B, 500, 1, 1)
+            ConvBlock(inch=100, ouch=500, krnl=4, strd=2, padd=0, drop=dropout),
             nn.Flatten(),
-            nn.Linear(50, 50),
+            nn.Linear(500, 100),
             nn.ReLU(),
             nn.Dropout(p=dropout),
-            nn.Linear(50, 10)
+            nn.Linear(100, 10)
         )
-
     def forward(self, x):
-        logits = self.model(x)
-        return logits
+        return self.model(x)

@@ -3,4 +3,4 @@ gpu_type = "24GB VRAM GPU"
 nnodes = 12
 venv_path = "~/.venv/bin/activate"
 output_path = "~/outputs/fashion_mnist"
-command = "train.py --epochs 1000 --test-epochs 5 --lr 0.01 --lr-step-epochs 100 --lr-decay-rate 0.8 --batch-size 16 --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"
+command = "train.py --epochs 1000 --test-epochs 5 --lr 0.001 --lr-step-epochs 100 --lr-decay-rate 0.8 --batch-size 16 --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"

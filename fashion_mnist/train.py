@@ -42,7 +42,6 @@ timer.report("Completed imports")
 #  - **Learning Rate** - how much to update models parameters at each batch/epoch. Smaller values yield slow learning
 #       speed, while large values may result in unpredictable behavior during training.
 
-
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser()
     # ---------------------------------------
@@ -75,7 +74,6 @@ def get_args_parser(add_help=True):
     # saved in the "tboard-path" directory.
     return parser
 
-
 #####################################
 # We define ``train_loop`` that loops over our optimization code, and ``test_loop`` that evaluates the model's
 # performance against our test data. Inside the training loop, optimization happens in three steps:
@@ -85,7 +83,6 @@ def get_args_parser(add_help=True):
 #       w.r.t. each parameter.
 #  * Once we have our gradients, we call ``optimizer.step()`` to adjust the parameters by the gradients collected in the
 #       backward pass.
-
 
 def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, args):
     epoch = train_dataloader.sampler.epoch
@@ -125,7 +122,7 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         metrics["train"].reset_local()
 
         if is_last_batch:
-            lr_scheduler.step()  # Step scheduler at the end of the epoch
+            lr_scheduler.step()  # Step learning rate scheduler at the end of the epoch
             metrics["train"].end_epoch()  # Store epoch aggregates and reset local aggregate for next epoch
 
         # Saving and reporting
@@ -146,7 +143,6 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
                 args.checkpoint_path,
             )
             timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - save checkpoint")
-
 
 def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, args):
     epoch = test_dataloader.sampler.epoch
@@ -207,9 +203,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                     args.checkpoint_path,
                 )
 
-
 timer.report("Defined helper function/s, loops, and model")
-
 
 def main(args, timer):
     ##############################################
@@ -281,7 +275,7 @@ def main(args, timer):
     # the validity of the metric summarisation strategy when using distributed training.
 
     loss_fn = nn.CrossEntropyLoss(reduction="sum")
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_epochs, gamma=args.lr_decay_rate)
     timer.report(
         f"Ready for training with hyper-parameters: \ninitial learning_rate: {args.lr}, \nbatch_size: \
@@ -324,7 +318,7 @@ def main(args, timer):
 
             # An inner context is also set from the testing sampler. This ensures that both training and testing can be
             # interrupted and resumed from checkpoint.
-
+            
             if epoch % args.test_epochs == 0:
                 with test_dataloader.sampler.in_epoch(epoch):
                     test_loop(
@@ -340,7 +334,6 @@ def main(args, timer):
                     )
 
     print("Done!")
-
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
