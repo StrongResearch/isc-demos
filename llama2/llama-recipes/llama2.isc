@@ -1,0 +1,6 @@
+experiment_name = "llama2-7b-lora-fsdp"
+gpu_type = "24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.llama2env/bin/activate"
+output_path = "~/outputs/llama2/"
+command = "examples/finetuning.py --enable_fsdp --low_cpu_fsdp --fsdp_config.pure_bf16 --use_peft --peft_method='lora' --use_fp16 --mixed_precision --model_name <path-to-your-model> --batch_size_training 1 --dist_checkpoint_root_folder $OUTPUT_PATH --dist_checkpoint_folder llama2"

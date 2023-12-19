@@ -1,0 +1,15 @@
+# torch>=2.0.1
+accelerate==0.24.1
+appdirs==1.4.4
+loralib==0.1.2
+bitsandbytes==0.41.2
+black==23.11.0
+black[jupyter]
+datasets==2.14.6
+fire==0.5.0
+peft==0.6.1
+transformers==4.35.0
+sentencepiece==0.1.99
+py7zr==0.20.8
+scipy==1.11.3
+optimum==1.14.0
