@@ -155,7 +155,7 @@ class GenericDataset(Dataset):
         return sample
 
     def __len__(self):
-        return len(self.df)
+        return 1#len(self.df)
 
     def print_stats(self):
         print(

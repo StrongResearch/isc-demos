@@ -38,4 +38,8 @@ pylibjpeg-libjpeg
 GDCM
 cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
 matplotlib
+<<<<<<< Updated upstream
 pandas
+=======
+pandas
+>>>>>>> Stashed changes

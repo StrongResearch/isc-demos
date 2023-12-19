@@ -12,9 +12,7 @@ datasets:
       # Be careful not to append minus sign (-) before split to avoid itemizing
       annotations:
         train:
-          url:
-              - /export/home/workspace/datasets/cc12m.json
-          storage:
-              - conceptual_caption/annotations/cc12m.json
+          url: /mnt/.node1/Open-Datasets/cc/cc12m.json
+          storage: /mnt/.node1/Open-Datasets/cc/cc3m.json
       images:
           storage: conceptual_caption/images_12m

@@ -29,3 +29,5 @@ webdataset
 wheel
 tensorboard
 install-jdk
+cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
+

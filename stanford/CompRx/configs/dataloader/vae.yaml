@@ -49,6 +49,28 @@ train:
             - _target_: torchvision.transforms.Normalize
               mean: [0.5]
               std: [0.5]
+      # Vindr
+      - _partial_: true
+        _target_: comprx.dataloaders.VindrDataset
+        split_path: ${paths.data_dir}/vindr/train.csv
+        split_column: split
+        split_name: training
+        data_dir: ${paths.data_dir}/vindr/images
+        dataset_id: 3
+        img_column: image_id
+        img_suffix: .dicom
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+            - _target_: torchvision.transforms.Resize
+              size:
+                - ${img_size}
+                - ${img_size}
+              interpolation: 3
+              antialias: True
+            - _target_: torchvision.transforms.Normalize
+              mean: [0.5]
+              std: [0.5]
 
 valid:
   dataset:
@@ -76,7 +98,30 @@ valid:
             - _target_: torchvision.transforms.Normalize
               mean: [0.5]
               std: [0.5]
-
+      
+      # CMMD
+      - _partial_: true
+        _target_: comprx.dataloaders.CNMGDataset
+        split_path: ${paths.data_dir}/CMMD/dataset_test.csv
+        split_column: split
+        split_name: path
+        data_dir: ${paths.data_dir}/CMMD
+        dataset_id: 2
+        img_column: path
+        img_suffix: .dcm
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+            - _target_: torchvision.transforms.Resize
+              size:
+                - ${img_size}
+                - ${img_size}
+              interpolation: 3
+              antialias: True
+            - _target_: torchvision.transforms.Normalize
+              mean: [0.5]
+              std: [0.5]
+      # IB
       - _partial_: true
         _target_: comprx.dataloaders.IBDataset
         split_path: ${paths.data_dir}/mg/test.csv
@@ -86,6 +131,28 @@ valid:
         dataset_id: 2
         img_column: image_id
         img_suffix: .dcm
+        img_transform:
+          _target_: torchvision.transforms.Compose
+          transforms:
+            - _target_: torchvision.transforms.Resize
+              size:
+                - ${img_size}
+                - ${img_size}
+              interpolation: 3
+              antialias: True
+            - _target_: torchvision.transforms.Normalize
+              mean: [0.5]
+              std: [0.5]
+      # Vindr
+      - _partial_: true
+        _target_: comprx.dataloaders.VindrDataset
+        split_path: ${paths.data_dir}/vindr/val.csv
+        split_column: split
+        split_name: test
+        data_dir: ${paths.data_dir}/vindr/images
+        dataset_id: 3
+        img_column: image_id
+        img_suffix: .dicom
         img_transform:
           _target_: torchvision.transforms.Compose
           transforms:

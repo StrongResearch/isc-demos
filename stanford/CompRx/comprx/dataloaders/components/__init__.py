@@ -8,6 +8,7 @@ from comprx.dataloaders.components.mg_dataset import MGDataset
 from comprx.dataloaders.components.cn_mg_dataset import CNMGDataset
 from comprx.dataloaders.components.ib_dataset import IBDataset
 from comprx.dataloaders.components.generic_dataset import GenericDataset
+from comprx.dataloaders.components.vindr_dataset import VindrDataset
 
 __all__ = [
     #    "ImageNetDataset",
@@ -19,5 +20,6 @@ __all__ = [
     "MGDataset",
     "CNMGDataset",
     "IBDataset",
+    "VindrDataset"
     
 ]

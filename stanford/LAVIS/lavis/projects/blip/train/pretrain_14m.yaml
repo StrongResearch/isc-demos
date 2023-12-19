@@ -13,6 +13,22 @@ model:
   alpha: 0.4
 
 datasets:
+  conceptual_caption_3m:
+    vis_processor:
+        train:
+          name: "blip_image_train"
+          image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+  conceptual_caption_12m:
+    vis_processor:
+        train:
+          name: "blip_image_train"
+          image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
   coco_caption:
     vis_processor:
         train:
@@ -46,16 +62,16 @@ run:
   init_lr: 3e-4
   min_lr: 1e-6
   warmup_lr: 1e-6
-  lr_decay_rate: 0.9
+  lr_decay_rate: 0.85
 
 
   weight_decay: 0.05
-  accum_grad_iters: 6 #5
-  max_epoch: 35
+  accum_grad_iters: 1
+  max_epoch: 20
   batch_size_train: 40
   batch_size_eval: 40
   num_workers: 4
-  warmup_steps: 18000
+  warmup_steps: 3000
 
   seed: 42
 
@@ -65,13 +81,13 @@ run:
   train_splits: ["train"]
 
   output_dir: "./checkpoints/pretrain"
-  resume_ckpt_path: "./checkpoints/image_text_pretrain_latest.pth"
-  tensorboard_path: "./logs"
+  resume_ckpt_path: "/mnt/.node2/Lachlan/blip/checkpoints/image_text_pretrain_latest.pth"
+  tensorboard_path: "/mnt/.node2/Lachlan/blip/logs"
 
-  checkpoint_freq: 30
+  checkpoint_freq: 5000
   log_freq: 1
 
   device: "cuda"
-  world_size: 6
+  world_size: 1
   dist_url: "env://"
   distributed: True

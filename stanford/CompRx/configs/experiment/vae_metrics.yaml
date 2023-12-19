@@ -37,4 +37,4 @@ criterion:
 dataloader:
   valid:
     batch_size: 1
-    shuffle: True
+    shuffle: False

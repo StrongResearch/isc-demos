@@ -1,0 +1,606 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+[[36m2023-12-14 21:55:40,523[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 8[0m
+[[36m2023-12-14 21:55:40,530[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 7[0m
+[[36m2023-12-14 21:55:40,539[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 11[0m
+[[36m2023-12-14 21:55:40,541[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 6[0m
+[[36m2023-12-14 21:55:40,544[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 9[0m
+[[36m2023-12-14 21:55:40,545[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 10[0m
+[[36m2023-12-14 21:55:40,545[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 7: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-12-14 21:55:40,546[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 9: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Starting 
+[[36m2023-12-14 21:55:40,548[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 10: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Starting 
+[[36m2023-12-14 21:55:40,551[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 8: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Starting 
+=> Starting 
+[[36m2023-12-14 21:55:40,555[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 11: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-12-14 21:55:40,556[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 6: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Starting 
+=> Starting 
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+[[36m2023-12-14 21:55:47,005[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:55:47,126[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:55:47,202[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:55:47,400[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:55:47,745[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+[[36m2023-12-14 21:55:48,040[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+[[36m2023-12-14 21:55:49,758[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-12-14 21:55:49,764[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-12-14 21:55:49,854[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-12-14 21:55:50,063[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+[[36m2023-12-14 21:55:50,484[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+Loaded from checkpoint
+[[36m2023-12-14 21:55:50,862[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+making attention of type 'vanilla' with 512 in_channels
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+making attention of type 'vanilla' with 512 in_channels
+Loaded from checkpoint
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Loaded from checkpoint
+Loaded from checkpoint
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Loaded from checkpoint
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+Loaded from checkpoint
+ERROR:torch.distributed.elastic.agent.server.api:Error waiting on exit barrier. Elapsed: 68.98514866828918 seconds
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/agent/server/api.py", line 920, in _exit_barrier
+    store_util.barrier(
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/utils/store.py", line 78, in barrier
+    synchronize(store, data, rank, world_size, key_prefix, barrier_timeout)
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/utils/store.py", line 64, in synchronize
+    agent_data = get_all(store, rank, key_prefix, world_size)
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/utils/store.py", line 34, in get_all
+    data = store.get(f"{prefix}{idx}")
+RuntimeError: Connection reset by peer
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+[[36m2023-12-14 21:57:11,806[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 6[0m
+[[36m2023-12-14 21:57:11,813[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 7[0m
+[[36m2023-12-14 21:57:11,814[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 10[0m
+[[36m2023-12-14 21:57:11,824[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 9[0m
+[[36m2023-12-14 21:57:11,825[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 11[0m
+[[36m2023-12-14 21:57:11,826[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Added key: store_based_barrier_key:1 to store for rank: 8[0m
+[[36m2023-12-14 21:57:11,827[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 11: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-12-14 21:57:11,827[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 9: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-12-14 21:57:11,828[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 8: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-12-14 21:57:11,828[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 7: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+[[36m2023-12-14 21:57:11,830[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 10: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+=> Starting 
+[[36m2023-12-14 21:57:11,834[0m][[34mtorch.distributed.distributed_c10d[0m][[32mINFO[0m] - Rank 6: Completed store-based barrier for key:store_based_barrier_key:1 with 12 nodes.[0m
+=> Starting 
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+making attention of type 'vanilla' with 512 in_channels
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+loaded pretrained LPIPS loss from .cache/vgg.pth
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test_images
+            Number of samples: 5000
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+
+            === Dataset stats for split=path ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD/dataset_test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/CMMD
+            Number of samples: 500
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/mg/test.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/INB/AllDICOMs
+            Number of samples: 410
+        
+
+            === Dataset stats for split=test ===
+            CSV file: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/val.csv
+            Data directory: /mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/data/vindr/images
+            Number of samples: 504
+        
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `PeakSignalNoiseRatio` from `torchmetrics` was deprecated and will be removed in 2.0. Import `PeakSignalNoiseRatio` from `torchmetrics.image` instead.
+  _future_warning(
+/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:62: FutureWarning: Importing `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics` was deprecated and will be removed in 2.0. Import `MultiScaleStructuralSimilarityIndexMeasure` from `torchmetrics.image` instead.
+  _future_warning(
+[[36m2023-12-14 21:57:17,989[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:57:18,288[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:57:18,482[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:57:18,772[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+[[36m2023-12-14 21:57:18,799[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+[[36m2023-12-14 21:57:19,150[0m][[34mroot[0m][[32mINFO[0m] - Loaded hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 model config.[0m
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+{'hf_model_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_tokenizer_name': 'microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract', 'hf_proj_type': 'mlp', 'hf_pooler_type': 'cls_last_hidden_state_pooler', 'context_length': 256, 'hf_model_pretrained': False}
+[[36m2023-12-14 21:57:20,479[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-12-14 21:57:20,774[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+[[36m2023-12-14 21:57:20,993[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Loaded from checkpoint
+[[36m2023-12-14 21:57:21,486[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+[[36m2023-12-14 21:57:21,516[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Loaded from checkpoint
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+making attention of type 'vanilla' with 512 in_channels
+Loaded from checkpoint
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+[[36m2023-12-14 21:57:22,557[0m][[34mroot[0m][[32mINFO[0m] - Loading pretrained hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 weights (/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/.cache/huggingface/hub/models--microsoft--BiomedCLIP-PubMedBERT_256-vit_base_patch16_224/snapshots/f42acd8c27f580f7cdedd60945977fb8111cca09/open_clip_pytorch_model.bin).[0m
+Loaded from checkpoint
+Loaded from checkpoint
+=> Setting seed 
+=> Setting seed [seed=0]
+=> Setting a seed slows down training considerably!
+=> Generating metrics for our VAEs /mnt/.node2/Lachlan/comprx/last.pt
+=> Instantiating valid dataloader
+making attention of type 'vanilla' with 512 in_channels
+Working with z of shape (1, 4, 192, 192) = 147456 dimensions.
+making attention of type 'vanilla' with 512 in_channels
+Restored from /mnt/.node2/Lachlan/comprx/last.pt/model.safetensors with 0 missing and 0 unexpected keys
+Loaded from checkpoint
+ERROR:torch.distributed.elastic.agent.server.api:Error waiting on exit barrier. Elapsed: 32.37551736831665 seconds
+Traceback (most recent call last):
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/agent/server/api.py", line 920, in _exit_barrier
+    store_util.barrier(
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/utils/store.py", line 78, in barrier
+    synchronize(store, data, rank, world_size, key_prefix, barrier_timeout)
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/utils/store.py", line 64, in synchronize
+    agent_data = get_all(store, rank, key_prefix, world_size)
+  File "/mnt/Client/Lachlai6mf74jkmjamzpg5ro3q3jvo3e/laclactagnpqiwtzcuvd76qfflxevkxu/isc-demos/stanford/CompRx/.venv/lib/python3.10/site-packages/torch/distributed/elastic/utils/store.py", line 34, in get_all
+    data = store.get(f"{prefix}{idx}")
+RuntimeError: Connection reset by peer

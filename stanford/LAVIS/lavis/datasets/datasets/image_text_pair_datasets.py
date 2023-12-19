@@ -7,7 +7,7 @@
 
 import os
 from collections import OrderedDict
-
+import time
 from lavis.datasets.datasets.base_dataset import BaseDataset
 from PIL import Image
 
@@ -34,10 +34,8 @@ class ImageTextPairDataset(BaseDataset, __DisplMixin):
         super().__init__(vis_processor, text_processor, vis_root, ann_paths)
 
     def __getitem__(self, index):
-
         # TODO this assumes image input, not general enough
         ann = self.annotation[index]
-
         image_path = os.path.join(self.vis_root, ann["image"])
         image = Image.open(image_path).convert("RGB")
 

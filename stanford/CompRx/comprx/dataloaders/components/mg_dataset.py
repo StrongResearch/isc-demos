@@ -2,11 +2,9 @@ import os
 from typing import Callable, List, Union
 
 import polars as pl
-from PIL import Image
 import pydicom
 import numpy as np
 import torch
-import torchvision
 from torch.utils.data import Dataset
 
 class MGDataset(Dataset):
