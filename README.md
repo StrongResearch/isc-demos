@@ -357,7 +357,7 @@ Tensorboard can then be viewed by entering `192.168.127.70:<port>` in the addres
 
 Continue to track the progress of your experiment while it cycles by checking in on the `rank_0.txt` file and the 
 tensorboard. You can also view the contents of the `rank_0.txt` file by visiting the **Experiments** tab on 
-**Control Plane** (https://cp.strongcompute.ai/) and clicking on the **Logs** button, and cancel the experiment
+**Control Plane** (https://cp.strongcompute.ai/) and clicking on the **Logs** button, or cancel the experiment
 by clicking on the **Cancel** button.
 
 Congratulations, you have successfully launched your first experiment on the ISC!
