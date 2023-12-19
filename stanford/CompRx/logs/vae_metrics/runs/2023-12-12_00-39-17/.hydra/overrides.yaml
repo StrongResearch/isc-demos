@@ -1,3 +1,0 @@
-- experiment=vae_metrics
-- resume_from_ckpt=/mnt/.node2/Lachlan/comprx/last.pt/model.safetensors
-- seed=0
