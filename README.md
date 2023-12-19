@@ -339,18 +339,26 @@ You can launch a tensorboard instance to track the training and performance metr
 command (**Note:** for this you will need to be accessing the ISC from an IDE such as VSCode which can handle automatic port-forwarding).
 
  ```bash
- tensorboard --logdir <Output Path from ISC Experiments table>
+ tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
  ```
 
-Tensorboard will attempt to launch on a default port (typically 6006). If this port is unavailable, you can manually set 
-an alternative port of your chosing with the flag `--port <port>`. You can then view the tensorboard at `http://localhost:<port>/`. 
-Tensorboard recursively searches for tensorboard event logs in the directory passed after the `--logdir` flag, so it will 
-discover the event logs in the `/tb` subdirectory.
+Tensorboard will attempt to launch on a default port (typically 6006) if `--port` is not specified. You can then view the 
+tensorboard at `http://localhost:<port>/`. Tensorboard recursively searches for tensorboard event logs in the directory 
+passed after the `--logdir` flag, so it will discover the event logs in the `/tb` subdirectory.
 
 ![fashion_mnist_tensorboard](https://github.com/StrongResearch/isc-demos/blob/main/fashion_mnist/fashionmnist_tensorboard.png?raw=true)
 
+If you are accessing the ISC from a terminal (not an IDE such as VSCode) then you will need to manually forward the port 
+that tensorboard is served on by extending the tensorboard launch command as follows.
+```bash
+tensorboard --logdir <Output Path from ISC Experiments table> --port <port>  --host 0.0.0.0
+```
+Tensorboard can then be viewed by entering `192.168.127.70:<port>` in the address bar of your browser.
+
 Continue to track the progress of your experiment while it cycles by checking in on the `rank_0.txt` file and the 
-tensorboard.
+tensorboard. You can also view the contents of the `rank_0.txt` file by visiting the **Experiments** tab on 
+**Control Plane** (https://cp.strongcompute.ai/) and clicking on the **Logs** button, and cancel the experiment
+by clicking on the **Cancel** button.
 
 Congratulations, you have successfully launched your first experiment on the ISC!
 
