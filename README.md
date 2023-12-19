@@ -336,7 +336,8 @@ overloaded, please further tune the variable for optimal performance in your app
  understand where and how these event logs are created.
 
 You can launch a tensorboard instance to track the training and performance metrics of the experiment with the following 
-command (**Note:** for this you will need to be accessing the ISC from an IDE such as VSCode which can handle automatic port-forwarding).
+command (**Note:** this assumes you are accessing the ISC from an IDE such as VSCode which does automatic port-forwarding. 
+See below for instructions on how to view tensorboard when accessing the ISC from terminal without IDE).
 
  ```bash
  tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
