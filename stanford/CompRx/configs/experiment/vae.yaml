@@ -12,10 +12,10 @@ img_size: 256
 task_name: vae_${downsize_factor}x_${num_latent_channels}c_${img_size}s
 
 # Training settings
-gradient_accumulation_steps: 3
+gradient_accumulation_steps: 1
 mixed_precision: "no"
-max_epoch: 18
-batch_size: 2
+max_epoch: 20
+batch_size: 1
 log_every_n_steps: 1
 base_learning_rate: 4.5e-6 #4.5e-6
 ema_decay: null
@@ -33,4 +33,4 @@ model:
 
 criterion:
   num_channels: 1
-  disc_start: 9375
+  disc_start: 3125

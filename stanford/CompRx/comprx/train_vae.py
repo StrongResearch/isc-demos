@@ -14,7 +14,6 @@ from comprx.utils.extras import sanitize_dataloader_kwargs, set_seed
 from comprx.utils.vae.litema import LitEma, ema_scope
 from comprx.utils.vae.train_components import training_epoch, validation_epoch
 from accelerate.data_loader import DataLoaderShard
-from torchsummary import summary
 
 from cycling_utils import InterruptableDistributedSampler
 
@@ -46,20 +45,7 @@ def main(cfg: DictConfig):
     print(f"=> Instantiate accelerator [logging={is_logging}]")
     
     gradient_accumulation_steps = cfg.get("gradient_accumulation_steps", 1)
-    accelerator = Accelerator(
-        gradient_accumulation_plugin=GradientAccumulationPlugin(
-            num_steps=gradient_accumulation_steps,
-            adjust_scheduler=False,
-        ),
-        mixed_precision=cfg.get("mixed_precision", None),
-        log_with="wandb" if is_logging else None,
-        split_batches=True,
-        kwargs_handlers=[
-            DistributedDataParallelKwargs(
-                find_unused_parameters=True,
-            )
-        ],
-    )
+    accelerator = Accelerator(gradient_accumulation_plugin=GradientAccumulationPlugin(num_steps=1,adjust_scheduler=False,),mixed_precision=None,log_with=None,split_batches=True,kwargs_handlers=[DistributedDataParallelKwargs(find_unused_parameters=True,)],)
     accelerator.init_trackers("comprx", config=cfg, init_kwargs={"wandb": logger_kwargs})
     
     # Determine the mode
@@ -106,7 +92,6 @@ def main(cfg: DictConfig):
         + list(model.post_quant_conv.parameters())
     )
     if criterion.learn_logvar:
-        print("Learning logvar...")
         ae_params.append(criterion.logvar)
     opt_ae = torch.optim.Adam(ae_params, lr=lr, betas=(0.5, 0.9))
     opt_disc = torch.optim.Adam(criterion.discriminator.parameters(), lr=lr, betas=(0.5, 0.9))

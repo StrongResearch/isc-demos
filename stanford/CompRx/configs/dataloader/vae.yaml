@@ -32,7 +32,7 @@ train:
         _target_: comprx.dataloaders.CNMGDataset
         split_path: ${paths.data_dir}/CMMD/dataset.csv
         split_column: split
-        split_name: path
+        split_name: train
         data_dir: ${paths.data_dir}/CMMD
         dataset_id: 2
         img_column: path

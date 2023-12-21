@@ -97,7 +97,6 @@ class CNMGDataset(Dataset):
 
         # Image
         if "img" in self.samples:
-            print(f"looking for sample in {self.samples['img'][idx]}")
             sample["img"] = torch.from_numpy(np.array(pydicom.dcmread(self.samples["img"][idx]).pixel_array, dtype=np.float32)).apply_(lambda x: x / 255)
             if sample["img"].dim() < 4:
                 sample["img"] = sample["img"].unsqueeze(0)
