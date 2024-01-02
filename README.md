@@ -84,7 +84,7 @@ associated with your User and Organisation.
 2. Click on the menu at the top right of the page (labelled with your email and Organisation name) and click on **"Organisations"**. 
     On the "Your Organisations" page, click on the tile for your organisation. When you first register, your Organisation will be
     named **"\<your email\>'s Personal Organisation"**.
-3. From the **"Organisation Settings"** page you can update the name of your
+3. From the **"Organisation Settings"** page you can create a new organisation, update the name of your existing
     Organisation, view current members, and *create* invitations for other members to join. **Note that Control Plane does not send
     emails to invitees.** If you invite a member to join your Organisation, you will need to notify them that they have been invited
     and which email address their invitation is registered with.
