@@ -1,0 +1,1321 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+[2024-01-02 23:37:32.925200] Starting job
+[2024-01-02 23:37:32.925230] Starting job
+[2024-01-02 23:37:32.925232] Starting job
+[2024-01-02 23:37:32.925302] Starting job
+[2024-01-02 23:37:32.925352] Starting job
+[2024-01-02 23:37:32.925378] Starting job
+| distributed init (rank 2, world 72): env://
+| distributed init (rank 3, world 72): env://
+| distributed init (rank 1, world 72): env://
+| distributed init (rank 4, world 72): env://
+| distributed init (rank 5, world 72): env://
+| distributed init (rank 0, world 72): env://
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_train.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_val.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_test.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/vg/vg_caption.json
+/embeddings/word_embeddings is tied
+/embeddings/position_embeddings is tied
+/embeddings/LayerNorm is tied
+/encoder/layer/0/crossattention/self/query is tied
+/encoder/layer/0/crossattention/self/key is tied
+/encoder/layer/0/crossattention/self/value is tied
+/encoder/layer/0/crossattention/output/dense is tied
+/encoder/layer/0/crossattention/output/LayerNorm is tied
+/encoder/layer/0/intermediate/dense is tied
+/encoder/layer/0/output/dense is tied
+/encoder/layer/0/output/LayerNorm is tied
+/encoder/layer/1/crossattention/self/query is tied
+/encoder/layer/1/crossattention/self/key is tied
+/encoder/layer/1/crossattention/self/value is tied
+/encoder/layer/1/crossattention/output/dense is tied
+/encoder/layer/1/crossattention/output/LayerNorm is tied
+/encoder/layer/1/intermediate/dense is tied
+/encoder/layer/1/output/dense is tied
+/encoder/layer/1/output/LayerNorm is tied
+/encoder/layer/2/crossattention/self/query is tied
+/encoder/layer/2/crossattention/self/key is tied
+/encoder/layer/2/crossattention/self/value is tied
+/encoder/layer/2/crossattention/output/dense is tied
+/encoder/layer/2/crossattention/output/LayerNorm is tied
+/encoder/layer/2/intermediate/dense is tied
+/encoder/layer/2/output/dense is tied
+/encoder/layer/2/output/LayerNorm is tied
+/encoder/layer/3/crossattention/self/query is tied
+/encoder/layer/3/crossattention/self/key is tied
+/encoder/layer/3/crossattention/self/value is tied
+/encoder/layer/3/crossattention/output/dense is tied
+/encoder/layer/3/crossattention/output/LayerNorm is tied
+/encoder/layer/3/intermediate/dense is tied
+/encoder/layer/3/output/dense is tied
+/encoder/layer/3/output/LayerNorm is tied
+/encoder/layer/4/crossattention/self/query is tied
+/encoder/layer/4/crossattention/self/key is tied
+/encoder/layer/4/crossattention/self/value is tied
+/encoder/layer/4/crossattention/output/dense is tied
+/encoder/layer/4/crossattention/output/LayerNorm is tied
+/encoder/layer/4/intermediate/dense is tied
+/encoder/layer/4/output/dense is tied
+/encoder/layer/4/output/LayerNorm is tied
+/encoder/layer/5/crossattention/self/query is tied
+/encoder/layer/5/crossattention/self/key is tied
+/encoder/layer/5/crossattention/self/value is tied
+/encoder/layer/5/crossattention/output/dense is tied
+/encoder/layer/5/crossattention/output/LayerNorm is tied
+/encoder/layer/5/intermediate/dense is tied
+/encoder/layer/5/output/dense is tied
+/encoder/layer/5/output/LayerNorm is tied
+/encoder/layer/6/crossattention/self/query is tied
+/encoder/layer/6/crossattention/self/key is tied
+/encoder/layer/6/crossattention/self/value is tied
+/encoder/layer/6/crossattention/output/dense is tied
+/encoder/layer/6/crossattention/output/LayerNorm is tied
+/encoder/layer/6/intermediate/dense is tied
+/encoder/layer/6/output/dense is tied
+/encoder/layer/6/output/LayerNorm is tied
+/encoder/layer/7/crossattention/self/query is tied
+/encoder/layer/7/crossattention/self/key is tied
+/encoder/layer/7/crossattention/self/value is tied
+/encoder/layer/7/crossattention/output/dense is tied
+/encoder/layer/7/crossattention/output/LayerNorm is tied
+/encoder/layer/7/intermediate/dense is tied
+/encoder/layer/7/output/dense is tied
+/encoder/layer/7/output/LayerNorm is tied
+/encoder/layer/8/crossattention/self/query is tied
+/encoder/layer/8/crossattention/self/key is tied
+/encoder/layer/8/crossattention/self/value is tied
+/encoder/layer/8/crossattention/output/dense is tied
+/encoder/layer/8/crossattention/output/LayerNorm is tied
+/encoder/layer/8/intermediate/dense is tied
+/encoder/layer/8/output/dense is tied
+/encoder/layer/8/output/LayerNorm is tied
+/encoder/layer/9/crossattention/self/query is tied
+/encoder/layer/9/crossattention/self/key is tied
+/encoder/layer/9/crossattention/self/value is tied
+/encoder/layer/9/crossattention/output/dense is tied
+/encoder/layer/9/crossattention/output/LayerNorm is tied
+/encoder/layer/9/intermediate/dense is tied
+/encoder/layer/9/output/dense is tied
+/encoder/layer/9/output/LayerNorm is tied
+/encoder/layer/10/crossattention/self/query is tied
+/encoder/layer/10/crossattention/self/key is tied
+/encoder/layer/10/crossattention/self/value is tied
+/encoder/layer/10/crossattention/output/dense is tied
+/encoder/layer/10/crossattention/output/LayerNorm is tied
+/encoder/layer/10/intermediate/dense is tied
+/encoder/layer/10/output/dense is tied
+/encoder/layer/10/output/LayerNorm is tied
+/encoder/layer/11/crossattention/self/query is tied
+/encoder/layer/11/crossattention/self/key is tied
+/encoder/layer/11/crossattention/self/value is tied
+/encoder/layer/11/crossattention/output/dense is tied
+/encoder/layer/11/crossattention/output/LayerNorm is tied
+/encoder/layer/11/intermediate/dense is tied
+/encoder/layer/11/output/dense is tied
+/encoder/layer/11/output/LayerNorm is tied
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+Train: data epoch: [0]  [ 151/4813]  eta: 19:43:04  lr: 0.000016  loss: 16.9886  loss_itc: 9.7672 (9.9866)  loss_itm: 0.6270 (0.6292)  loss_lm: 6.5944 (6.7313)  time: 15.2262  data: 3.8710  max mem: 18904
+Train: data epoch: [0]  [ 152/4813]  eta: 10:44:32  lr: 0.000016  loss: 16.9214  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5502 (6.7314)  time: 8.2971  data: 1.9373  max mem: 18929
+Train: data epoch: [0]  [ 153/4813]  eta: 7:46:39  lr: 0.000016  loss: 17.0032  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 6.0084  data: 1.2924  max mem: 18929
+Train: data epoch: [0]  [ 154/4813]  eta: 6:17:42  lr: 0.000016  loss: 17.0015  loss_itc: 9.7285 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.8643  data: 0.9699  max mem: 18930
+Train: data epoch: [0]  [ 155/4813]  eta: 5:28:12  lr: 0.000016  loss: 17.3796  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.6438 (6.7314)  time: 4.2277  data: 0.7765  max mem: 18930
+Train: data epoch: [0]  [ 156/4813]  eta: 4:54:52  lr: 0.000016  loss: 17.1512  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.7991  data: 0.6475  max mem: 18933
+Train: data epoch: [0]  [ 157/4813]  eta: 4:29:53  lr: 0.000017  loss: 17.2255  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.4779  data: 0.5553  max mem: 18934
+Train: data epoch: [0]  [ 158/4813]  eta: 4:13:16  lr: 0.000017  loss: 17.2511  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.2647  data: 0.4862  max mem: 18935
+Train: data epoch: [0]  [ 159/4813]  eta: 4:00:42  lr: 0.000017  loss: 16.7688  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.1033  data: 0.4325  max mem: 18937
+Train: data epoch: [0]  [ 160/4813]  eta: 3:49:47  lr: 0.000017  loss: 17.0705  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.9631  data: 0.3895  max mem: 18938
+Train: data epoch: [0]  [ 161/4813]  eta: 3:41:14  lr: 0.000017  loss: 16.7663  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.8535  data: 0.3543  max mem: 18938
+Train: data epoch: [0]  [ 162/4813]  eta: 3:34:03  lr: 0.000017  loss: 17.3424  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6256 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.7615  data: 0.3250  max mem: 18938
+Train: data epoch: [0]  [ 163/4813]  eta: 3:27:59  lr: 0.000017  loss: 16.7179  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6837  data: 0.3002  max mem: 18938
+Train: data epoch: [0]  [ 164/4813]  eta: 3:22:56  lr: 0.000017  loss: 16.8772  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5664 (6.7314)  time: 2.6192  data: 0.2789  max mem: 18938
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+[2024-01-02 23:49:06.090525] Starting job
+[2024-01-02 23:49:06.090759] Starting job
+[2024-01-02 23:49:06.091477] Starting job
+[2024-01-02 23:49:06.093055] Starting job
+[2024-01-02 23:49:06.095046] Starting job
+[2024-01-02 23:49:06.098424] Starting job
+| distributed init (rank 3, world 72): env://
+| distributed init (rank 2, world 72): env://
+| distributed init (rank 4, world 72): env://
+| distributed init (rank 1, world 72): env://
+| distributed init (rank 0, world 72): env://
+| distributed init (rank 5, world 72): env://
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_train.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_val.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_test.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/vg/vg_caption.json
+/embeddings/word_embeddings is tied
+/embeddings/position_embeddings is tied
+/embeddings/LayerNorm is tied
+/encoder/layer/0/crossattention/self/query is tied
+/encoder/layer/0/crossattention/self/key is tied
+/encoder/layer/0/crossattention/self/value is tied
+/encoder/layer/0/crossattention/output/dense is tied
+/encoder/layer/0/crossattention/output/LayerNorm is tied
+/encoder/layer/0/intermediate/dense is tied
+/encoder/layer/0/output/dense is tied
+/encoder/layer/0/output/LayerNorm is tied
+/encoder/layer/1/crossattention/self/query is tied
+/encoder/layer/1/crossattention/self/key is tied
+/encoder/layer/1/crossattention/self/value is tied
+/encoder/layer/1/crossattention/output/dense is tied
+/encoder/layer/1/crossattention/output/LayerNorm is tied
+/encoder/layer/1/intermediate/dense is tied
+/encoder/layer/1/output/dense is tied
+/encoder/layer/1/output/LayerNorm is tied
+/encoder/layer/2/crossattention/self/query is tied
+/encoder/layer/2/crossattention/self/key is tied
+/encoder/layer/2/crossattention/self/value is tied
+/encoder/layer/2/crossattention/output/dense is tied
+/encoder/layer/2/crossattention/output/LayerNorm is tied
+/encoder/layer/2/intermediate/dense is tied
+/encoder/layer/2/output/dense is tied
+/encoder/layer/2/output/LayerNorm is tied
+/encoder/layer/3/crossattention/self/query is tied
+/encoder/layer/3/crossattention/self/key is tied
+/encoder/layer/3/crossattention/self/value is tied
+/encoder/layer/3/crossattention/output/dense is tied
+/encoder/layer/3/crossattention/output/LayerNorm is tied
+/encoder/layer/3/intermediate/dense is tied
+/encoder/layer/3/output/dense is tied
+/encoder/layer/3/output/LayerNorm is tied
+/encoder/layer/4/crossattention/self/query is tied
+/encoder/layer/4/crossattention/self/key is tied
+/encoder/layer/4/crossattention/self/value is tied
+/encoder/layer/4/crossattention/output/dense is tied
+/encoder/layer/4/crossattention/output/LayerNorm is tied
+/encoder/layer/4/intermediate/dense is tied
+/encoder/layer/4/output/dense is tied
+/encoder/layer/4/output/LayerNorm is tied
+/encoder/layer/5/crossattention/self/query is tied
+/encoder/layer/5/crossattention/self/key is tied
+/encoder/layer/5/crossattention/self/value is tied
+/encoder/layer/5/crossattention/output/dense is tied
+/encoder/layer/5/crossattention/output/LayerNorm is tied
+/encoder/layer/5/intermediate/dense is tied
+/encoder/layer/5/output/dense is tied
+/encoder/layer/5/output/LayerNorm is tied
+/encoder/layer/6/crossattention/self/query is tied
+/encoder/layer/6/crossattention/self/key is tied
+/encoder/layer/6/crossattention/self/value is tied
+/encoder/layer/6/crossattention/output/dense is tied
+/encoder/layer/6/crossattention/output/LayerNorm is tied
+/encoder/layer/6/intermediate/dense is tied
+/encoder/layer/6/output/dense is tied
+/encoder/layer/6/output/LayerNorm is tied
+/encoder/layer/7/crossattention/self/query is tied
+/encoder/layer/7/crossattention/self/key is tied
+/encoder/layer/7/crossattention/self/value is tied
+/encoder/layer/7/crossattention/output/dense is tied
+/encoder/layer/7/crossattention/output/LayerNorm is tied
+/encoder/layer/7/intermediate/dense is tied
+/encoder/layer/7/output/dense is tied
+/encoder/layer/7/output/LayerNorm is tied
+/encoder/layer/8/crossattention/self/query is tied
+/encoder/layer/8/crossattention/self/key is tied
+/encoder/layer/8/crossattention/self/value is tied
+/encoder/layer/8/crossattention/output/dense is tied
+/encoder/layer/8/crossattention/output/LayerNorm is tied
+/encoder/layer/8/intermediate/dense is tied
+/encoder/layer/8/output/dense is tied
+/encoder/layer/8/output/LayerNorm is tied
+/encoder/layer/9/crossattention/self/query is tied
+/encoder/layer/9/crossattention/self/key is tied
+/encoder/layer/9/crossattention/self/value is tied
+/encoder/layer/9/crossattention/output/dense is tied
+/encoder/layer/9/crossattention/output/LayerNorm is tied
+/encoder/layer/9/intermediate/dense is tied
+/encoder/layer/9/output/dense is tied
+/encoder/layer/9/output/LayerNorm is tied
+/encoder/layer/10/crossattention/self/query is tied
+/encoder/layer/10/crossattention/self/key is tied
+/encoder/layer/10/crossattention/self/value is tied
+/encoder/layer/10/crossattention/output/dense is tied
+/encoder/layer/10/crossattention/output/LayerNorm is tied
+/encoder/layer/10/intermediate/dense is tied
+/encoder/layer/10/output/dense is tied
+/encoder/layer/10/output/LayerNorm is tied
+/encoder/layer/11/crossattention/self/query is tied
+/encoder/layer/11/crossattention/self/key is tied
+/encoder/layer/11/crossattention/self/value is tied
+/encoder/layer/11/crossattention/output/dense is tied
+/encoder/layer/11/crossattention/output/LayerNorm is tied
+/encoder/layer/11/intermediate/dense is tied
+/encoder/layer/11/output/dense is tied
+/encoder/layer/11/output/LayerNorm is tied
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+Train: data epoch: [0]  [ 151/4813]  eta: 18:48:36  lr: 0.000016  loss: 16.9886  loss_itc: 9.7672 (9.9866)  loss_itm: 0.6270 (0.6292)  loss_lm: 6.5944 (6.7313)  time: 14.5253  data: 2.8725  max mem: 18904
+Train: data epoch: [0]  [ 152/4813]  eta: 10:16:10  lr: 0.000016  loss: 16.9214  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5502 (6.7314)  time: 7.9319  data: 1.4384  max mem: 18929
+Train: data epoch: [0]  [ 153/4813]  eta: 7:27:06  lr: 0.000016  loss: 17.0032  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 5.7567  data: 0.9600  max mem: 18929
+Train: data epoch: [0]  [ 154/4813]  eta: 6:02:02  lr: 0.000016  loss: 17.0015  loss_itc: 9.7285 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.6626  data: 0.7208  max mem: 18930
+Train: data epoch: [0]  [ 155/4813]  eta: 5:12:58  lr: 0.000016  loss: 17.3796  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.6438 (6.7314)  time: 4.0315  data: 0.5773  max mem: 18930
+Train: data epoch: [0]  [ 156/4813]  eta: 4:39:33  lr: 0.000016  loss: 17.1512  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.6018  data: 0.4816  max mem: 18933
+Train: data epoch: [0]  [ 157/4813]  eta: 4:16:47  lr: 0.000017  loss: 17.2255  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.3091  data: 0.4132  max mem: 18934
+Train: data epoch: [0]  [ 158/4813]  eta: 3:59:34  lr: 0.000017  loss: 17.2511  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.0879  data: 0.3620  max mem: 18935
+Train: data epoch: [0]  [ 159/4813]  eta: 3:46:00  lr: 0.000017  loss: 16.7688  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.9138  data: 0.3221  max mem: 18937
+Train: data epoch: [0]  [ 160/4813]  eta: 3:36:41  lr: 0.000017  loss: 17.0705  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.7943  data: 0.2902  max mem: 18938
+Train: data epoch: [0]  [ 161/4813]  eta: 3:29:15  lr: 0.000017  loss: 16.7663  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.6990  data: 0.2642  max mem: 18938
+Train: data epoch: [0]  [ 162/4813]  eta: 3:22:50  lr: 0.000017  loss: 17.3424  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6256 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6167  data: 0.2424  max mem: 18938
+Train: data epoch: [0]  [ 163/4813]  eta: 3:17:04  lr: 0.000017  loss: 16.7179  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.5428  data: 0.2240  max mem: 18938
+Train: data epoch: [0]  [ 164/4813]  eta: 3:12:56  lr: 0.000017  loss: 16.8772  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5664 (6.7314)  time: 2.4900  data: 0.2082  max mem: 18938
+Train: data epoch: [0]  [ 165/4813]  eta: 3:09:01  lr: 0.000017  loss: 17.3053  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.4401  data: 0.1946  max mem: 18941
+Train: data epoch: [0]  [ 166/4813]  eta: 3:05:42  lr: 0.000017  loss: 17.0679  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.3979  data: 0.1826  max mem: 18944
+Train: data epoch: [0]  [ 167/4813]  eta: 3:03:19  lr: 0.000018  loss: 17.0306  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.3675  data: 0.1721  max mem: 18944
+Train: data epoch: [0]  [ 168/4813]  eta: 3:00:48  lr: 0.000018  loss: 16.9325  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 2.3356  data: 0.1627  max mem: 18944
+Train: data epoch: [0]  [ 169/4813]  eta: 2:58:44  lr: 0.000018  loss: 17.0628  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6306 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.3093  data: 0.1543  max mem: 18945
+Train: data epoch: [0]  [ 170/4813]  eta: 2:56:42  lr: 0.000018  loss: 16.5851  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 2.2835  data: 0.1467  max mem: 18948
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+[2024-01-03 00:00:37.110259] Starting job[2024-01-03 00:00:37.110262] Starting job
+[2024-01-03 00:00:37.110267] Starting job
+
+[2024-01-03 00:00:37.110270] Starting job
+[2024-01-03 00:00:37.110425] Starting job
+[2024-01-03 00:00:37.110447] Starting job
+| distributed init (rank 4, world 72): env://
+| distributed init (rank 1, world 72): env://
+| distributed init (rank 2, world 72): env://
+| distributed init (rank 3, world 72): env://
+| distributed init (rank 0, world 72): env://
+| distributed init (rank 5, world 72): env://
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_train.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_val.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_test.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/vg/vg_caption.json
+/embeddings/word_embeddings is tied
+/embeddings/position_embeddings is tied
+/embeddings/LayerNorm is tied
+/encoder/layer/0/crossattention/self/query is tied
+/encoder/layer/0/crossattention/self/key is tied
+/encoder/layer/0/crossattention/self/value is tied
+/encoder/layer/0/crossattention/output/dense is tied
+/encoder/layer/0/crossattention/output/LayerNorm is tied
+/encoder/layer/0/intermediate/dense is tied
+/encoder/layer/0/output/dense is tied
+/encoder/layer/0/output/LayerNorm is tied
+/encoder/layer/1/crossattention/self/query is tied
+/encoder/layer/1/crossattention/self/key is tied
+/encoder/layer/1/crossattention/self/value is tied
+/encoder/layer/1/crossattention/output/dense is tied
+/encoder/layer/1/crossattention/output/LayerNorm is tied
+/encoder/layer/1/intermediate/dense is tied
+/encoder/layer/1/output/dense is tied
+/encoder/layer/1/output/LayerNorm is tied
+/encoder/layer/2/crossattention/self/query is tied
+/encoder/layer/2/crossattention/self/key is tied
+/encoder/layer/2/crossattention/self/value is tied
+/encoder/layer/2/crossattention/output/dense is tied
+/encoder/layer/2/crossattention/output/LayerNorm is tied
+/encoder/layer/2/intermediate/dense is tied
+/encoder/layer/2/output/dense is tied
+/encoder/layer/2/output/LayerNorm is tied
+/encoder/layer/3/crossattention/self/query is tied
+/encoder/layer/3/crossattention/self/key is tied
+/encoder/layer/3/crossattention/self/value is tied
+/encoder/layer/3/crossattention/output/dense is tied
+/encoder/layer/3/crossattention/output/LayerNorm is tied
+/encoder/layer/3/intermediate/dense is tied
+/encoder/layer/3/output/dense is tied
+/encoder/layer/3/output/LayerNorm is tied
+/encoder/layer/4/crossattention/self/query is tied
+/encoder/layer/4/crossattention/self/key is tied
+/encoder/layer/4/crossattention/self/value is tied
+/encoder/layer/4/crossattention/output/dense is tied
+/encoder/layer/4/crossattention/output/LayerNorm is tied
+/encoder/layer/4/intermediate/dense is tied
+/encoder/layer/4/output/dense is tied
+/encoder/layer/4/output/LayerNorm is tied
+/encoder/layer/5/crossattention/self/query is tied
+/encoder/layer/5/crossattention/self/key is tied
+/encoder/layer/5/crossattention/self/value is tied
+/encoder/layer/5/crossattention/output/dense is tied
+/encoder/layer/5/crossattention/output/LayerNorm is tied
+/encoder/layer/5/intermediate/dense is tied
+/encoder/layer/5/output/dense is tied
+/encoder/layer/5/output/LayerNorm is tied
+/encoder/layer/6/crossattention/self/query is tied
+/encoder/layer/6/crossattention/self/key is tied
+/encoder/layer/6/crossattention/self/value is tied
+/encoder/layer/6/crossattention/output/dense is tied
+/encoder/layer/6/crossattention/output/LayerNorm is tied
+/encoder/layer/6/intermediate/dense is tied
+/encoder/layer/6/output/dense is tied
+/encoder/layer/6/output/LayerNorm is tied
+/encoder/layer/7/crossattention/self/query is tied
+/encoder/layer/7/crossattention/self/key is tied
+/encoder/layer/7/crossattention/self/value is tied
+/encoder/layer/7/crossattention/output/dense is tied
+/encoder/layer/7/crossattention/output/LayerNorm is tied
+/encoder/layer/7/intermediate/dense is tied
+/encoder/layer/7/output/dense is tied
+/encoder/layer/7/output/LayerNorm is tied
+/encoder/layer/8/crossattention/self/query is tied
+/encoder/layer/8/crossattention/self/key is tied
+/encoder/layer/8/crossattention/self/value is tied
+/encoder/layer/8/crossattention/output/dense is tied
+/encoder/layer/8/crossattention/output/LayerNorm is tied
+/encoder/layer/8/intermediate/dense is tied
+/encoder/layer/8/output/dense is tied
+/encoder/layer/8/output/LayerNorm is tied
+/encoder/layer/9/crossattention/self/query is tied
+/encoder/layer/9/crossattention/self/key is tied
+/encoder/layer/9/crossattention/self/value is tied
+/encoder/layer/9/crossattention/output/dense is tied
+/encoder/layer/9/crossattention/output/LayerNorm is tied
+/encoder/layer/9/intermediate/dense is tied
+/encoder/layer/9/output/dense is tied
+/encoder/layer/9/output/LayerNorm is tied
+/encoder/layer/10/crossattention/self/query is tied
+/encoder/layer/10/crossattention/self/key is tied
+/encoder/layer/10/crossattention/self/value is tied
+/encoder/layer/10/crossattention/output/dense is tied
+/encoder/layer/10/crossattention/output/LayerNorm is tied
+/encoder/layer/10/intermediate/dense is tied
+/encoder/layer/10/output/dense is tied
+/encoder/layer/10/output/LayerNorm is tied
+/encoder/layer/11/crossattention/self/query is tied
+/encoder/layer/11/crossattention/self/key is tied
+/encoder/layer/11/crossattention/self/value is tied
+/encoder/layer/11/crossattention/output/dense is tied
+/encoder/layer/11/crossattention/output/LayerNorm is tied
+/encoder/layer/11/intermediate/dense is tied
+/encoder/layer/11/output/dense is tied
+/encoder/layer/11/output/LayerNorm is tied
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+Train: data epoch: [0]  [ 151/4813]  eta: 18:59:27  lr: 0.000016  loss: 16.9886  loss_itc: 9.7672 (9.9866)  loss_itm: 0.6270 (0.6292)  loss_lm: 6.5944 (6.7313)  time: 14.6649  data: 4.4645  max mem: 18904
+Train: data epoch: [0]  [ 152/4813]  eta: 10:30:38  lr: 0.000016  loss: 16.9214  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5502 (6.7314)  time: 8.1180  data: 2.2343  max mem: 18929
+Train: data epoch: [0]  [ 153/4813]  eta: 7:48:05  lr: 0.000016  loss: 17.0032  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 6.0269  data: 1.4906  max mem: 18929
+Train: data epoch: [0]  [ 154/4813]  eta: 6:25:03  lr: 0.000016  loss: 17.0015  loss_itc: 9.7285 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.9589  data: 1.1188  max mem: 18930
+Train: data epoch: [0]  [ 155/4813]  eta: 5:36:08  lr: 0.000016  loss: 17.3796  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.6438 (6.7314)  time: 4.3298  data: 0.8957  max mem: 18930
+Train: data epoch: [0]  [ 156/4813]  eta: 5:03:29  lr: 0.000016  loss: 17.1512  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.9101  data: 0.7469  max mem: 18933
+Train: data epoch: [0]  [ 157/4813]  eta: 4:40:51  lr: 0.000017  loss: 17.2255  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.6194  data: 0.6407  max mem: 18934
+Train: data epoch: [0]  [ 158/4813]  eta: 4:23:14  lr: 0.000017  loss: 17.2511  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.3931  data: 0.5610  max mem: 18935
+Train: data epoch: [0]  [ 159/4813]  eta: 4:09:22  lr: 0.000017  loss: 16.7688  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.2149  data: 0.4990  max mem: 18937
+Train: data epoch: [0]  [ 160/4813]  eta: 3:59:00  lr: 0.000017  loss: 17.0705  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.0820  data: 0.4494  max mem: 18938
+Train: data epoch: [0]  [ 161/4813]  eta: 3:49:56  lr: 0.000017  loss: 16.7663  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.9657  data: 0.4089  max mem: 18938
+Train: data epoch: [0]  [ 162/4813]  eta: 3:42:21  lr: 0.000017  loss: 17.3424  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6256 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.8686  data: 0.3750  max mem: 18938
+Train: data epoch: [0]  [ 163/4813]  eta: 3:36:18  lr: 0.000017  loss: 16.7179  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.7911  data: 0.3464  max mem: 18938
+Train: data epoch: [0]  [ 164/4813]  eta: 3:30:54  lr: 0.000017  loss: 16.8772  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5664 (6.7314)  time: 2.7219  data: 0.3219  max mem: 18938
+Train: data epoch: [0]  [ 165/4813]  eta: 3:26:15  lr: 0.000017  loss: 17.3053  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6625  data: 0.3007  max mem: 18941
+Train: data epoch: [0]  [ 166/4813]  eta: 3:22:19  lr: 0.000017  loss: 17.0679  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6122  data: 0.2821  max mem: 18944
+Train: data epoch: [0]  [ 167/4813]  eta: 3:18:38  lr: 0.000018  loss: 17.0306  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.5652  data: 0.2657  max mem: 18944
+Train: data epoch: [0]  [ 168/4813]  eta: 3:15:12  lr: 0.000018  loss: 16.9325  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 2.5216  data: 0.2511  max mem: 18944
+Train: data epoch: [0]  [ 169/4813]  eta: 3:12:15  lr: 0.000018  loss: 17.0628  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6306 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.4840  data: 0.2381  max mem: 18945
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+[2024-01-03 00:08:23.698748] Starting job
+[2024-01-03 00:08:23.698760] Starting job[2024-01-03 00:08:23.698762] Starting job[2024-01-03 00:08:23.698762] Starting job
+
+
+[2024-01-03 00:08:23.698771] Starting job
+[2024-01-03 00:08:23.698835] Starting job
+| distributed init (rank 4, world 72): env://
+| distributed init (rank 1, world 72): env://
+| distributed init (rank 2, world 72): env://
+| distributed init (rank 0, world 72): env://
+| distributed init (rank 5, world 72): env://
+| distributed init (rank 3, world 72): env://
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_train.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_val.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_test.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/vg/vg_caption.json
+/embeddings/word_embeddings is tied
+/embeddings/position_embeddings is tied
+/embeddings/LayerNorm is tied
+/encoder/layer/0/crossattention/self/query is tied
+/encoder/layer/0/crossattention/self/key is tied
+/encoder/layer/0/crossattention/self/value is tied
+/encoder/layer/0/crossattention/output/dense is tied
+/encoder/layer/0/crossattention/output/LayerNorm is tied
+/encoder/layer/0/intermediate/dense is tied
+/encoder/layer/0/output/dense is tied
+/encoder/layer/0/output/LayerNorm is tied
+/encoder/layer/1/crossattention/self/query is tied
+/encoder/layer/1/crossattention/self/key is tied
+/encoder/layer/1/crossattention/self/value is tied
+/encoder/layer/1/crossattention/output/dense is tied
+/encoder/layer/1/crossattention/output/LayerNorm is tied
+/encoder/layer/1/intermediate/dense is tied
+/encoder/layer/1/output/dense is tied
+/encoder/layer/1/output/LayerNorm is tied
+/encoder/layer/2/crossattention/self/query is tied
+/encoder/layer/2/crossattention/self/key is tied
+/encoder/layer/2/crossattention/self/value is tied
+/encoder/layer/2/crossattention/output/dense is tied
+/encoder/layer/2/crossattention/output/LayerNorm is tied
+/encoder/layer/2/intermediate/dense is tied
+/encoder/layer/2/output/dense is tied
+/encoder/layer/2/output/LayerNorm is tied
+/encoder/layer/3/crossattention/self/query is tied
+/encoder/layer/3/crossattention/self/key is tied
+/encoder/layer/3/crossattention/self/value is tied
+/encoder/layer/3/crossattention/output/dense is tied
+/encoder/layer/3/crossattention/output/LayerNorm is tied
+/encoder/layer/3/intermediate/dense is tied
+/encoder/layer/3/output/dense is tied
+/encoder/layer/3/output/LayerNorm is tied
+/encoder/layer/4/crossattention/self/query is tied
+/encoder/layer/4/crossattention/self/key is tied
+/encoder/layer/4/crossattention/self/value is tied
+/encoder/layer/4/crossattention/output/dense is tied
+/encoder/layer/4/crossattention/output/LayerNorm is tied
+/encoder/layer/4/intermediate/dense is tied
+/encoder/layer/4/output/dense is tied
+/encoder/layer/4/output/LayerNorm is tied
+/encoder/layer/5/crossattention/self/query is tied
+/encoder/layer/5/crossattention/self/key is tied
+/encoder/layer/5/crossattention/self/value is tied
+/encoder/layer/5/crossattention/output/dense is tied
+/encoder/layer/5/crossattention/output/LayerNorm is tied
+/encoder/layer/5/intermediate/dense is tied
+/encoder/layer/5/output/dense is tied
+/encoder/layer/5/output/LayerNorm is tied
+/encoder/layer/6/crossattention/self/query is tied
+/encoder/layer/6/crossattention/self/key is tied
+/encoder/layer/6/crossattention/self/value is tied
+/encoder/layer/6/crossattention/output/dense is tied
+/encoder/layer/6/crossattention/output/LayerNorm is tied
+/encoder/layer/6/intermediate/dense is tied
+/encoder/layer/6/output/dense is tied
+/encoder/layer/6/output/LayerNorm is tied
+/encoder/layer/7/crossattention/self/query is tied
+/encoder/layer/7/crossattention/self/key is tied
+/encoder/layer/7/crossattention/self/value is tied
+/encoder/layer/7/crossattention/output/dense is tied
+/encoder/layer/7/crossattention/output/LayerNorm is tied
+/encoder/layer/7/intermediate/dense is tied
+/encoder/layer/7/output/dense is tied
+/encoder/layer/7/output/LayerNorm is tied
+/encoder/layer/8/crossattention/self/query is tied
+/encoder/layer/8/crossattention/self/key is tied
+/encoder/layer/8/crossattention/self/value is tied
+/encoder/layer/8/crossattention/output/dense is tied
+/encoder/layer/8/crossattention/output/LayerNorm is tied
+/encoder/layer/8/intermediate/dense is tied
+/encoder/layer/8/output/dense is tied
+/encoder/layer/8/output/LayerNorm is tied
+/encoder/layer/9/crossattention/self/query is tied
+/encoder/layer/9/crossattention/self/key is tied
+/encoder/layer/9/crossattention/self/value is tied
+/encoder/layer/9/crossattention/output/dense is tied
+/encoder/layer/9/crossattention/output/LayerNorm is tied
+/encoder/layer/9/intermediate/dense is tied
+/encoder/layer/9/output/dense is tied
+/encoder/layer/9/output/LayerNorm is tied
+/encoder/layer/10/crossattention/self/query is tied
+/encoder/layer/10/crossattention/self/key is tied
+/encoder/layer/10/crossattention/self/value is tied
+/encoder/layer/10/crossattention/output/dense is tied
+/encoder/layer/10/crossattention/output/LayerNorm is tied
+/encoder/layer/10/intermediate/dense is tied
+/encoder/layer/10/output/dense is tied
+/encoder/layer/10/output/LayerNorm is tied
+/encoder/layer/11/crossattention/self/query is tied
+/encoder/layer/11/crossattention/self/key is tied
+/encoder/layer/11/crossattention/self/value is tied
+/encoder/layer/11/crossattention/output/dense is tied
+/encoder/layer/11/crossattention/output/LayerNorm is tied
+/encoder/layer/11/intermediate/dense is tied
+/encoder/layer/11/output/dense is tied
+/encoder/layer/11/output/LayerNorm is tied
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+Train: data epoch: [0]  [ 151/4813]  eta: 20:54:03  lr: 0.000016  loss: 16.9886  loss_itc: 9.7672 (9.9866)  loss_itm: 0.6270 (0.6292)  loss_lm: 6.5944 (6.7313)  time: 16.1399  data: 5.7532  max mem: 18904
+Train: data epoch: [0]  [ 152/4813]  eta: 11:21:05  lr: 0.000016  loss: 16.9214  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5502 (6.7314)  time: 8.7675  data: 2.8788  max mem: 18929
+Train: data epoch: [0]  [ 153/4813]  eta: 8:21:26  lr: 0.000016  loss: 17.0032  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 6.4564  data: 1.9203  max mem: 18929
+Train: data epoch: [0]  [ 154/4813]  eta: 6:48:52  lr: 0.000016  loss: 17.0015  loss_itc: 9.7285 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 5.2655  data: 1.4410  max mem: 18930
+Train: data epoch: [0]  [ 155/4813]  eta: 5:53:48  lr: 0.000016  loss: 17.3796  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.6438 (6.7314)  time: 4.5574  data: 1.1535  max mem: 18930
+Train: data epoch: [0]  [ 156/4813]  eta: 5:18:18  lr: 0.000016  loss: 17.1512  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.1011  data: 0.9618  max mem: 18933
+Train: data epoch: [0]  [ 157/4813]  eta: 4:52:35  lr: 0.000017  loss: 17.2255  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.7705  data: 0.8249  max mem: 18934
+Train: data epoch: [0]  [ 158/4813]  eta: 4:33:25  lr: 0.000017  loss: 17.2511  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.5243  data: 0.7222  max mem: 18935
+Train: data epoch: [0]  [ 159/4813]  eta: 4:18:32  lr: 0.000017  loss: 16.7688  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.3331  data: 0.6423  max mem: 18937
+Train: data epoch: [0]  [ 160/4813]  eta: 4:06:50  lr: 0.000017  loss: 17.0705  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.1830  data: 0.5784  max mem: 18938
+Train: data epoch: [0]  [ 161/4813]  eta: 3:57:32  lr: 0.000017  loss: 16.7663  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.0636  data: 0.5261  max mem: 18938
+Train: data epoch: [0]  [ 162/4813]  eta: 3:49:35  lr: 0.000017  loss: 17.3424  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6256 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.9619  data: 0.4825  max mem: 18938
+Train: data epoch: [0]  [ 163/4813]  eta: 3:43:36  lr: 0.000017  loss: 16.7179  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.8853  data: 0.4457  max mem: 18938
+Train: data epoch: [0]  [ 164/4813]  eta: 3:37:49  lr: 0.000017  loss: 16.8772  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5664 (6.7314)  time: 2.8113  data: 0.4141  max mem: 18938
+Train: data epoch: [0]  [ 165/4813]  eta: 3:32:31  lr: 0.000017  loss: 17.3053  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.7434  data: 0.3867  max mem: 18941
+Train: data epoch: [0]  [ 166/4813]  eta: 3:28:09  lr: 0.000017  loss: 17.0679  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6877  data: 0.3627  max mem: 18944
+Train: data epoch: [0]  [ 167/4813]  eta: 3:24:10  lr: 0.000018  loss: 17.0306  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6367  data: 0.3416  max mem: 18944
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+[2024-01-03 00:16:17.266462] Starting job[2024-01-03 00:16:17.266467] Starting job
+
+[2024-01-03 00:16:17.266474] Starting job
+[2024-01-03 00:16:17.266478] Starting job
+[2024-01-03 00:16:17.266493] Starting job
+[2024-01-03 00:16:17.266576] Starting job
+| distributed init (rank 5, world 72): env://
+| distributed init (rank 4, world 72): env://
+| distributed init (rank 1, world 72): env://
+| distributed init (rank 3, world 72): env://
+| distributed init (rank 2, world 72): env://
+| distributed init (rank 0, world 72): env://
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_train.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_val.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_test.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/vg/vg_caption.json
+/embeddings/word_embeddings is tied
+/embeddings/position_embeddings is tied
+/embeddings/LayerNorm is tied
+/encoder/layer/0/crossattention/self/query is tied
+/encoder/layer/0/crossattention/self/key is tied
+/encoder/layer/0/crossattention/self/value is tied
+/encoder/layer/0/crossattention/output/dense is tied
+/encoder/layer/0/crossattention/output/LayerNorm is tied
+/encoder/layer/0/intermediate/dense is tied
+/encoder/layer/0/output/dense is tied
+/encoder/layer/0/output/LayerNorm is tied
+/encoder/layer/1/crossattention/self/query is tied
+/encoder/layer/1/crossattention/self/key is tied
+/encoder/layer/1/crossattention/self/value is tied
+/encoder/layer/1/crossattention/output/dense is tied
+/encoder/layer/1/crossattention/output/LayerNorm is tied
+/encoder/layer/1/intermediate/dense is tied
+/encoder/layer/1/output/dense is tied
+/encoder/layer/1/output/LayerNorm is tied
+/encoder/layer/2/crossattention/self/query is tied
+/encoder/layer/2/crossattention/self/key is tied
+/encoder/layer/2/crossattention/self/value is tied
+/encoder/layer/2/crossattention/output/dense is tied
+/encoder/layer/2/crossattention/output/LayerNorm is tied
+/encoder/layer/2/intermediate/dense is tied
+/encoder/layer/2/output/dense is tied
+/encoder/layer/2/output/LayerNorm is tied
+/encoder/layer/3/crossattention/self/query is tied
+/encoder/layer/3/crossattention/self/key is tied
+/encoder/layer/3/crossattention/self/value is tied
+/encoder/layer/3/crossattention/output/dense is tied
+/encoder/layer/3/crossattention/output/LayerNorm is tied
+/encoder/layer/3/intermediate/dense is tied
+/encoder/layer/3/output/dense is tied
+/encoder/layer/3/output/LayerNorm is tied
+/encoder/layer/4/crossattention/self/query is tied
+/encoder/layer/4/crossattention/self/key is tied
+/encoder/layer/4/crossattention/self/value is tied
+/encoder/layer/4/crossattention/output/dense is tied
+/encoder/layer/4/crossattention/output/LayerNorm is tied
+/encoder/layer/4/intermediate/dense is tied
+/encoder/layer/4/output/dense is tied
+/encoder/layer/4/output/LayerNorm is tied
+/encoder/layer/5/crossattention/self/query is tied
+/encoder/layer/5/crossattention/self/key is tied
+/encoder/layer/5/crossattention/self/value is tied
+/encoder/layer/5/crossattention/output/dense is tied
+/encoder/layer/5/crossattention/output/LayerNorm is tied
+/encoder/layer/5/intermediate/dense is tied
+/encoder/layer/5/output/dense is tied
+/encoder/layer/5/output/LayerNorm is tied
+/encoder/layer/6/crossattention/self/query is tied
+/encoder/layer/6/crossattention/self/key is tied
+/encoder/layer/6/crossattention/self/value is tied
+/encoder/layer/6/crossattention/output/dense is tied
+/encoder/layer/6/crossattention/output/LayerNorm is tied
+/encoder/layer/6/intermediate/dense is tied
+/encoder/layer/6/output/dense is tied
+/encoder/layer/6/output/LayerNorm is tied
+/encoder/layer/7/crossattention/self/query is tied
+/encoder/layer/7/crossattention/self/key is tied
+/encoder/layer/7/crossattention/self/value is tied
+/encoder/layer/7/crossattention/output/dense is tied
+/encoder/layer/7/crossattention/output/LayerNorm is tied
+/encoder/layer/7/intermediate/dense is tied
+/encoder/layer/7/output/dense is tied
+/encoder/layer/7/output/LayerNorm is tied
+/encoder/layer/8/crossattention/self/query is tied
+/encoder/layer/8/crossattention/self/key is tied
+/encoder/layer/8/crossattention/self/value is tied
+/encoder/layer/8/crossattention/output/dense is tied
+/encoder/layer/8/crossattention/output/LayerNorm is tied
+/encoder/layer/8/intermediate/dense is tied
+/encoder/layer/8/output/dense is tied
+/encoder/layer/8/output/LayerNorm is tied
+/encoder/layer/9/crossattention/self/query is tied
+/encoder/layer/9/crossattention/self/key is tied
+/encoder/layer/9/crossattention/self/value is tied
+/encoder/layer/9/crossattention/output/dense is tied
+/encoder/layer/9/crossattention/output/LayerNorm is tied
+/encoder/layer/9/intermediate/dense is tied
+/encoder/layer/9/output/dense is tied
+/encoder/layer/9/output/LayerNorm is tied
+/encoder/layer/10/crossattention/self/query is tied
+/encoder/layer/10/crossattention/self/key is tied
+/encoder/layer/10/crossattention/self/value is tied
+/encoder/layer/10/crossattention/output/dense is tied
+/encoder/layer/10/crossattention/output/LayerNorm is tied
+/encoder/layer/10/intermediate/dense is tied
+/encoder/layer/10/output/dense is tied
+/encoder/layer/10/output/LayerNorm is tied
+/encoder/layer/11/crossattention/self/query is tied
+/encoder/layer/11/crossattention/self/key is tied
+/encoder/layer/11/crossattention/self/value is tied
+/encoder/layer/11/crossattention/output/dense is tied
+/encoder/layer/11/crossattention/output/LayerNorm is tied
+/encoder/layer/11/intermediate/dense is tied
+/encoder/layer/11/output/dense is tied
+/encoder/layer/11/output/LayerNorm is tied
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+Train: data epoch: [0]  [ 151/4813]  eta: 18:36:44  lr: 0.000016  loss: 16.9886  loss_itc: 9.7672 (9.9866)  loss_itm: 0.6270 (0.6292)  loss_lm: 6.5944 (6.7313)  time: 14.3725  data: 3.8406  max mem: 18904
+Train: data epoch: [0]  [ 152/4813]  eta: 10:17:39  lr: 0.000016  loss: 16.9214  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5502 (6.7314)  time: 7.9510  data: 1.9224  max mem: 18929
+Train: data epoch: [0]  [ 153/4813]  eta: 7:39:31  lr: 0.000016  loss: 17.0032  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 5.9166  data: 1.2826  max mem: 18929
+Train: data epoch: [0]  [ 154/4813]  eta: 6:18:17  lr: 0.000016  loss: 17.0015  loss_itc: 9.7285 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.8717  data: 0.9628  max mem: 18930
+Train: data epoch: [0]  [ 155/4813]  eta: 5:30:25  lr: 0.000016  loss: 17.3796  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.6438 (6.7314)  time: 4.2561  data: 0.7708  max mem: 18930
+Train: data epoch: [0]  [ 156/4813]  eta: 4:58:13  lr: 0.000016  loss: 17.1512  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.8422  data: 0.6429  max mem: 18933
+Train: data epoch: [0]  [ 157/4813]  eta: 4:36:06  lr: 0.000017  loss: 17.2255  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.5581  data: 0.5515  max mem: 18934
+Train: data epoch: [0]  [ 158/4813]  eta: 4:19:05  lr: 0.000017  loss: 17.2511  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.3395  data: 0.4829  max mem: 18935
+Train: data epoch: [0]  [ 159/4813]  eta: 4:05:43  lr: 0.000017  loss: 16.7688  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.1679  data: 0.4296  max mem: 18937
+Train: data epoch: [0]  [ 160/4813]  eta: 3:55:40  lr: 0.000017  loss: 17.0705  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 3.0390  data: 0.3870  max mem: 18938
+Train: data epoch: [0]  [ 161/4813]  eta: 3:47:07  lr: 0.000017  loss: 16.7663  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 2.9295  data: 0.3521  max mem: 18938
+Train: data epoch: [0]  [ 162/4813]  eta: 3:39:46  lr: 0.000017  loss: 17.3424  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6256 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.8353  data: 0.3230  max mem: 18938
+Train: data epoch: [0]  [ 163/4813]  eta: 3:34:18  lr: 0.000017  loss: 16.7179  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.7653  data: 0.2984  max mem: 18938
+Train: data epoch: [0]  [ 164/4813]  eta: 3:28:58  lr: 0.000017  loss: 16.8772  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5664 (6.7314)  time: 2.6971  data: 0.2773  max mem: 18938
+Train: data epoch: [0]  [ 165/4813]  eta: 3:24:37  lr: 0.000017  loss: 17.3053  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.6414  data: 0.2590  max mem: 18941
+Train: data epoch: [0]  [ 166/4813]  eta: 3:21:09  lr: 0.000017  loss: 17.0679  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 2.5972  data: 0.2430  max mem: 18944
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/.venv/lib/python3.10/site-packages/diffusers/models/cross_attention.py:30: FutureWarning: Importing from cross_attention is deprecated. Please import from diffusers.models.attention_processor instead.
+  deprecate(
+[2024-01-03 02:26:49.096401] Starting job
+[2024-01-03 02:26:49.096413] Starting job
+[2024-01-03 02:26:49.096447] Starting job
+[2024-01-03 02:26:49.096474] Starting job
+[2024-01-03 02:26:49.096516] Starting job
+[2024-01-03 02:26:49.096534] Starting job
+| distributed init (rank 2, world 72): env://
+| distributed init (rank 4, world 72): env://
+| distributed init (rank 5, world 72): env://
+| distributed init (rank 1, world 72): env://
+| distributed init (rank 0, world 72): env://
+| distributed init (rank 3, world 72): env://
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_train.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_val.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/coco_gt/coco_karpathy_test.json
+Using downloaded and verified file: /mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/../.cache/lavis/vg/vg_caption.json
+/embeddings/word_embeddings is tied
+/embeddings/position_embeddings is tied
+/embeddings/LayerNorm is tied
+/encoder/layer/0/crossattention/self/query is tied
+/encoder/layer/0/crossattention/self/key is tied
+/encoder/layer/0/crossattention/self/value is tied
+/encoder/layer/0/crossattention/output/dense is tied
+/encoder/layer/0/crossattention/output/LayerNorm is tied
+/encoder/layer/0/intermediate/dense is tied
+/encoder/layer/0/output/dense is tied
+/encoder/layer/0/output/LayerNorm is tied
+/encoder/layer/1/crossattention/self/query is tied
+/encoder/layer/1/crossattention/self/key is tied
+/encoder/layer/1/crossattention/self/value is tied
+/encoder/layer/1/crossattention/output/dense is tied
+/encoder/layer/1/crossattention/output/LayerNorm is tied
+/encoder/layer/1/intermediate/dense is tied
+/encoder/layer/1/output/dense is tied
+/encoder/layer/1/output/LayerNorm is tied
+/encoder/layer/2/crossattention/self/query is tied
+/encoder/layer/2/crossattention/self/key is tied
+/encoder/layer/2/crossattention/self/value is tied
+/encoder/layer/2/crossattention/output/dense is tied
+/encoder/layer/2/crossattention/output/LayerNorm is tied
+/encoder/layer/2/intermediate/dense is tied
+/encoder/layer/2/output/dense is tied
+/encoder/layer/2/output/LayerNorm is tied
+/encoder/layer/3/crossattention/self/query is tied
+/encoder/layer/3/crossattention/self/key is tied
+/encoder/layer/3/crossattention/self/value is tied
+/encoder/layer/3/crossattention/output/dense is tied
+/encoder/layer/3/crossattention/output/LayerNorm is tied
+/encoder/layer/3/intermediate/dense is tied
+/encoder/layer/3/output/dense is tied
+/encoder/layer/3/output/LayerNorm is tied
+/encoder/layer/4/crossattention/self/query is tied
+/encoder/layer/4/crossattention/self/key is tied
+/encoder/layer/4/crossattention/self/value is tied
+/encoder/layer/4/crossattention/output/dense is tied
+/encoder/layer/4/crossattention/output/LayerNorm is tied
+/encoder/layer/4/intermediate/dense is tied
+/encoder/layer/4/output/dense is tied
+/encoder/layer/4/output/LayerNorm is tied
+/encoder/layer/5/crossattention/self/query is tied
+/encoder/layer/5/crossattention/self/key is tied
+/encoder/layer/5/crossattention/self/value is tied
+/encoder/layer/5/crossattention/output/dense is tied
+/encoder/layer/5/crossattention/output/LayerNorm is tied
+/encoder/layer/5/intermediate/dense is tied
+/encoder/layer/5/output/dense is tied
+/encoder/layer/5/output/LayerNorm is tied
+/encoder/layer/6/crossattention/self/query is tied
+/encoder/layer/6/crossattention/self/key is tied
+/encoder/layer/6/crossattention/self/value is tied
+/encoder/layer/6/crossattention/output/dense is tied
+/encoder/layer/6/crossattention/output/LayerNorm is tied
+/encoder/layer/6/intermediate/dense is tied
+/encoder/layer/6/output/dense is tied
+/encoder/layer/6/output/LayerNorm is tied
+/encoder/layer/7/crossattention/self/query is tied
+/encoder/layer/7/crossattention/self/key is tied
+/encoder/layer/7/crossattention/self/value is tied
+/encoder/layer/7/crossattention/output/dense is tied
+/encoder/layer/7/crossattention/output/LayerNorm is tied
+/encoder/layer/7/intermediate/dense is tied
+/encoder/layer/7/output/dense is tied
+/encoder/layer/7/output/LayerNorm is tied
+/encoder/layer/8/crossattention/self/query is tied
+/encoder/layer/8/crossattention/self/key is tied
+/encoder/layer/8/crossattention/self/value is tied
+/encoder/layer/8/crossattention/output/dense is tied
+/encoder/layer/8/crossattention/output/LayerNorm is tied
+/encoder/layer/8/intermediate/dense is tied
+/encoder/layer/8/output/dense is tied
+/encoder/layer/8/output/LayerNorm is tied
+/encoder/layer/9/crossattention/self/query is tied
+/encoder/layer/9/crossattention/self/key is tied
+/encoder/layer/9/crossattention/self/value is tied
+/encoder/layer/9/crossattention/output/dense is tied
+/encoder/layer/9/crossattention/output/LayerNorm is tied
+/encoder/layer/9/intermediate/dense is tied
+/encoder/layer/9/output/dense is tied
+/encoder/layer/9/output/LayerNorm is tied
+/encoder/layer/10/crossattention/self/query is tied
+/encoder/layer/10/crossattention/self/key is tied
+/encoder/layer/10/crossattention/self/value is tied
+/encoder/layer/10/crossattention/output/dense is tied
+/encoder/layer/10/crossattention/output/LayerNorm is tied
+/encoder/layer/10/intermediate/dense is tied
+/encoder/layer/10/output/dense is tied
+/encoder/layer/10/output/LayerNorm is tied
+/encoder/layer/11/crossattention/self/query is tied
+/encoder/layer/11/crossattention/self/key is tied
+/encoder/layer/11/crossattention/self/value is tied
+/encoder/layer/11/crossattention/output/dense is tied
+/encoder/layer/11/crossattention/output/LayerNorm is tied
+/encoder/layer/11/intermediate/dense is tied
+/encoder/layer/11/output/dense is tied
+/encoder/layer/11/output/LayerNorm is tied
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+/mnt/Client/Lachlawmluvcjm5begrdtv6yq5coyscy/laclacajdpsgj45bhklfjnq7komuyou4/blip/isc-demos/stanford/LAVIS/lavis/processors/randaugment.py:40: RuntimeWarning: overflow encountered in scalar negative
+  offset = -low * scale
+Train: data epoch: [0]  [ 151/4813]  eta: 1 day, 9:24:55  lr: 0.000016  loss: 16.9886  loss_itc: 9.7672 (9.9866)  loss_itm: 0.6270 (0.6292)  loss_lm: 6.5944 (6.7313)  time: 25.8034  data: 5.8277  max mem: 18904
+Train: data epoch: [0]  [ 152/4813]  eta: 17:58:26  lr: 0.000016  loss: 16.9214  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5502 (6.7314)  time: 13.8826  data: 2.9156  max mem: 18929
+Train: data epoch: [0]  [ 153/4813]  eta: 12:48:53  lr: 0.000016  loss: 17.0032  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 9.8998  data: 1.9446  max mem: 18929
+Train: data epoch: [0]  [ 154/4813]  eta: 10:10:57  lr: 0.000016  loss: 17.0015  loss_itc: 9.7285 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 7.8682  data: 1.4591  max mem: 18930
+Train: data epoch: [0]  [ 155/4813]  eta: 8:37:09  lr: 0.000016  loss: 17.3796  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.6438 (6.7314)  time: 6.6616  data: 1.1678  max mem: 18930
+Train: data epoch: [0]  [ 156/4813]  eta: 7:34:41  lr: 0.000016  loss: 17.1512  loss_itc: 9.7389 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 5.8583  data: 0.9736  max mem: 18933
+Train: data epoch: [0]  [ 157/4813]  eta: 6:49:44  lr: 0.000017  loss: 17.2255  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 5.2801  data: 0.8349  max mem: 18934
+Train: data epoch: [0]  [ 158/4813]  eta: 6:16:20  lr: 0.000017  loss: 17.2511  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.8509  data: 0.7308  max mem: 18935
+Train: data epoch: [0]  [ 159/4813]  eta: 5:50:00  lr: 0.000017  loss: 16.7688  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6308 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.5124  data: 0.6499  max mem: 18937
+Train: data epoch: [0]  [ 160/4813]  eta: 5:29:03  lr: 0.000017  loss: 17.0705  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.2433  data: 0.5852  max mem: 18938
+Train: data epoch: [0]  [ 161/4813]  eta: 5:11:36  lr: 0.000017  loss: 16.7663  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5944 (6.7314)  time: 4.0191  data: 0.5322  max mem: 18938
+Train: data epoch: [0]  [ 162/4813]  eta: 4:57:03  lr: 0.000017  loss: 17.3424  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6256 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 3.8323  data: 0.4881  max mem: 18938
+Train: data epoch: [0]  [ 163/4813]  eta: 4:44:36  lr: 0.000017  loss: 16.7179  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 3.6724  data: 0.4507  max mem: 18938
+Train: data epoch: [0]  [ 164/4813]  eta: 4:34:02  lr: 0.000017  loss: 16.8772  loss_itc: 9.7672 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5664 (6.7314)  time: 3.5369  data: 0.4187  max mem: 18938
+Train: data epoch: [0]  [ 165/4813]  eta: 4:32:02  lr: 0.000017  loss: 17.3053  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 3.5118  data: 0.3910  max mem: 18941
+Train: data epoch: [0]  [ 166/4813]  eta: 4:33:49  lr: 0.000017  loss: 17.0679  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 3.5356  data: 0.3667  max mem: 18944
+Train: data epoch: [0]  [ 167/4813]  eta: 4:47:52  lr: 0.000018  loss: 17.0306  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 3.7177  data: 0.3453  max mem: 18944
+Train: data epoch: [0]  [ 168/4813]  eta: 5:06:28  lr: 0.000018  loss: 16.9325  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 3.9588  data: 0.3262  max mem: 18944
+Train: data epoch: [0]  [ 169/4813]  eta: 5:32:59  lr: 0.000018  loss: 17.0628  loss_itc: 9.7818 (9.9862)  loss_itm: 0.6306 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 4.3021  data: 0.3092  max mem: 18945
+Train: data epoch: [0]  [ 170/4813]  eta: 5:55:33  lr: 0.000018  loss: 16.5851  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 4.5947  data: 0.2939  max mem: 18948
+Train: data epoch: [0]  [ 171/4813]  eta: 6:12:35  lr: 0.000018  loss: 17.0488  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6281 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 3.7665  data: 0.0026  max mem: 18948
+Train: data epoch: [0]  [ 172/4813]  eta: 6:29:02  lr: 0.000018  loss: 16.4612  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 4.1444  data: 0.0026  max mem: 18948
+Train: data epoch: [0]  [ 173/4813]  eta: 6:35:39  lr: 0.000018  loss: 16.4528  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6264 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 4.3987  data: 0.0026  max mem: 18948
+Train: data epoch: [0]  [ 174/4813]  eta: 6:35:18  lr: 0.000018  loss: 17.1100  loss_itc: 9.7760 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 4.5619  data: 0.0026  max mem: 18948
+Train: data epoch: [0]  [ 175/4813]  eta: 6:41:47  lr: 0.000018  loss: 16.8599  loss_itc: 9.7745 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 4.8320  data: 0.0026  max mem: 18949
+Train: data epoch: [0]  [ 176/4813]  eta: 6:51:44  lr: 0.000018  loss: 17.0928  loss_itc: 9.7745 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5687 (6.7314)  time: 5.1684  data: 0.0026  max mem: 18949
+Train: data epoch: [0]  [ 177/4813]  eta: 7:04:44  lr: 0.000019  loss: 16.6791  loss_itc: 9.7631 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5810 (6.7314)  time: 5.5729  data: 0.0026  max mem: 18949
+Train: data epoch: [0]  [ 178/4813]  eta: 7:09:57  lr: 0.000019  loss: 16.8907  loss_itc: 9.7423 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5810 (6.7314)  time: 5.8519  data: 0.0026  max mem: 18949
+Train: data epoch: [0]  [ 179/4813]  eta: 7:23:35  lr: 0.000019  loss: 16.5217  loss_itc: 9.7257 (9.9862)  loss_itm: 0.6264 (0.6291)  loss_lm: 6.5810 (6.7314)  time: 6.2975  data: 0.0026  max mem: 18949
+Train: data epoch: [0]  [ 180/4813]  eta: 7:31:29  lr: 0.000019  loss: 17.0632  loss_itc: 9.7257 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 6.6488  data: 0.0025  max mem: 18949
+Train: data epoch: [0]  [ 181/4813]  eta: 7:38:20  lr: 0.000019  loss: 16.6069  loss_itc: 9.6874 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 6.9920  data: 0.0025  max mem: 18949
+Train: data epoch: [0]  [ 182/4813]  eta: 7:41:10  lr: 0.000019  loss: 16.7834  loss_itc: 9.6874 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 7.2608  data: 0.0025  max mem: 18949
+Train: data epoch: [0]  [ 183/4813]  eta: 7:52:02  lr: 0.000019  loss: 16.7403  loss_itc: 9.7257 (9.9862)  loss_itm: 0.6267 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 7.7064  data: 0.0025  max mem: 18949
+Train: data epoch: [0]  [ 184/4813]  eta: 7:55:55  lr: 0.000019  loss: 16.9014  loss_itc: 9.7257 (9.9862)  loss_itm: 0.6264 (0.6291)  loss_lm: 6.5670 (6.7314)  time: 8.0113  data: 0.0025  max mem: 18949
+Train: data epoch: [0]  [ 185/4813]  eta: 8:00:38  lr: 0.000019  loss: 16.3619  loss_itc: 9.6874 (9.9862)  loss_itm: 0.6264 (0.6291)  loss_lm: 6.5389 (6.7314)  time: 8.2711  data: 0.0025  max mem: 18951
+Train: data epoch: [0]  [ 186/4813]  eta: 7:58:52  lr: 0.000019  loss: 17.0205  loss_itc: 9.6874 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.5389 (6.7314)  time: 8.3492  data: 0.0025  max mem: 18952
+Train: data epoch: [0]  [ 187/4813]  eta: 8:05:07  lr: 0.000020  loss: 16.8149  loss_itc: 9.6874 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.5353 (6.7314)  time: 8.4804  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 188/4813]  eta: 8:03:58  lr: 0.000020  loss: 17.0013  loss_itc: 9.6874 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.5026 (6.7314)  time: 8.3663  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 189/4813]  eta: 8:07:34  lr: 0.000020  loss: 16.2095  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.4799 (6.7314)  time: 8.2502  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 190/4813]  eta: 8:01:39  lr: 0.000020  loss: 16.9176  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.5026 (6.7314)  time: 7.9079  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 191/4813]  eta: 8:01:55  lr: 0.000020  loss: 16.6783  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.4799 (6.7314)  time: 7.7682  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 192/4813]  eta: 7:59:35  lr: 0.000020  loss: 16.3613  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.4799 (6.7314)  time: 7.5442  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 193/4813]  eta: 8:06:13  lr: 0.000020  loss: 16.5808  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.4799 (6.7314)  time: 7.6927  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 194/4813]  eta: 8:00:49  lr: 0.000020  loss: 16.2041  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.4303 (6.7314)  time: 7.6051  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 195/4813]  eta: 8:05:35  lr: 0.000020  loss: 16.5776  loss_itc: 9.6592 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.4303 (6.7314)  time: 7.6984  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 196/4813]  eta: 8:04:11  lr: 0.000020  loss: 16.4595  loss_itc: 9.6311 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.4303 (6.7314)  time: 7.5464  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 197/4813]  eta: 8:01:13  lr: 0.000021  loss: 16.1557  loss_itc: 9.6311 (9.9862)  loss_itm: 0.6270 (0.6291)  loss_lm: 6.4234 (6.7314)  time: 7.2784  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 198/4813]  eta: 7:54:03  lr: 0.000021  loss: 16.4657  loss_itc: 9.6091 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.3740 (6.7314)  time: 6.9997  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 199/4813]  eta: 7:51:33  lr: 0.000021  loss: 16.6504  loss_itc: 9.6311 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.3740 (6.7314)  time: 6.6959  data: 0.0025  max mem: 18955
+Train: data epoch: [0]  [ 200/4813]  eta: 7:47:40  lr: 0.000021  loss: 15.4820  loss_itc: 9.5444 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.3455 (6.7314)  time: 6.4367  data: 0.0025  max mem: 18958
+Train: data epoch: [0]  [ 201/4813]  eta: 7:46:25  lr: 0.000021  loss: 15.9044  loss_itc: 9.5035 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.3455 (6.7314)  time: 6.2706  data: 0.0025  max mem: 18958
+Train: data epoch: [0]  [ 202/4813]  eta: 7:40:03  lr: 0.000021  loss: 16.5355  loss_itc: 9.5035 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.3455 (6.7314)  time: 6.0045  data: 0.0025  max mem: 18958
+Train: data epoch: [0]  [ 203/4813]  eta: 7:41:15  lr: 0.000021  loss: 16.3821  loss_itc: 9.4580 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.3740 (6.7314)  time: 5.8154  data: 0.0025  max mem: 18958
+Train: data epoch: [0]  [ 204/4813]  eta: 7:43:05  lr: 0.000021  loss: 16.4686  loss_itc: 9.4493 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.3740 (6.7314)  time: 5.7899  data: 0.0025  max mem: 18958
+Train: data epoch: [0]  [ 205/4813]  eta: 7:50:58  lr: 0.000021  loss: 16.2550  loss_itc: 9.4294 (9.9862)  loss_itm: 0.6259 (0.6291)  loss_lm: 6.3740 (6.7314)  time: 5.9596  data: 0.0025  max mem: 18958
+Train: data epoch: [0]  [ 206/4813]  eta: 7:50:31  lr: 0.000021  loss: 16.2585  loss_itc: 9.4210 (9.9862)  loss_itm: 0.6260 (0.6291)  loss_lm: 6.3455 (6.7314)  time: 5.9806  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 207/4813]  eta: 7:59:44  lr: 0.000022  loss: 16.3088  loss_itc: 9.4047 (9.9862)  loss_itm: 0.6269 (0.6291)  loss_lm: 6.3441 (6.7314)  time: 6.1701  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 208/4813]  eta: 8:04:00  lr: 0.000022  loss: 16.4267  loss_itc: 9.3626 (9.9862)  loss_itm: 0.6251 (0.6291)  loss_lm: 6.3441 (6.7314)  time: 6.3594  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 209/4813]  eta: 8:08:38  lr: 0.000022  loss: 16.1313  loss_itc: 9.3626 (9.9862)  loss_itm: 0.6251 (0.6291)  loss_lm: 6.3441 (6.7314)  time: 6.4487  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 210/4813]  eta: 8:04:06  lr: 0.000022  loss: 16.4457  loss_itc: 9.3610 (9.9862)  loss_itm: 0.6233 (0.6291)  loss_lm: 6.3441 (6.7314)  time: 6.4285  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 211/4813]  eta: 8:13:15  lr: 0.000022  loss: 16.3624  loss_itc: 9.3412 (9.9862)  loss_itm: 0.6233 (0.6291)  loss_lm: 6.3441 (6.7314)  time: 6.7895  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 212/4813]  eta: 8:13:20  lr: 0.000022  loss: 15.9952  loss_itc: 9.3412 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.3356 (6.7314)  time: 6.8670  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 213/4813]  eta: 8:15:40  lr: 0.000022  loss: 16.3517  loss_itc: 9.3387 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.3356 (6.7314)  time: 6.7892  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 214/4813]  eta: 8:13:53  lr: 0.000022  loss: 15.7705  loss_itc: 9.3383 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.3356 (6.7314)  time: 6.8783  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 215/4813]  eta: 8:19:51  lr: 0.000022  loss: 15.6348  loss_itc: 9.2978 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.3337 (6.7314)  time: 7.0035  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 216/4813]  eta: 8:20:19  lr: 0.000022  loss: 16.1221  loss_itc: 9.2445 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.3302 (6.7314)  time: 7.0773  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 217/4813]  eta: 8:19:11  lr: 0.000023  loss: 16.0515  loss_itc: 9.2445 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.3337 (6.7314)  time: 7.1319  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 218/4813]  eta: 8:18:48  lr: 0.000023  loss: 15.7542  loss_itc: 9.2245 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.3302 (6.7314)  time: 7.3533  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 219/4813]  eta: 8:23:39  lr: 0.000023  loss: 15.4083  loss_itc: 9.2179 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.2919 (6.7314)  time: 7.6705  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 220/4813]  eta: 8:23:15  lr: 0.000023  loss: 16.1119  loss_itc: 9.2245 (9.9862)  loss_itm: 0.6197 (0.6291)  loss_lm: 6.2919 (6.7314)  time: 7.8025  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 221/4813]  eta: 8:22:09  lr: 0.000023  loss: 15.9037  loss_itc: 9.2245 (9.9862)  loss_itm: 0.6178 (0.6291)  loss_lm: 6.2919 (6.7314)  time: 7.8198  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 222/4813]  eta: 8:19:08  lr: 0.000023  loss: 15.6808  loss_itc: 9.2244 (9.9862)  loss_itm: 0.6178 (0.6291)  loss_lm: 6.2823 (6.7314)  time: 7.9191  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 223/4813]  eta: 8:19:56  lr: 0.000023  loss: 16.0345  loss_itc: 9.2179 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.2823 (6.7314)  time: 7.9446  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 224/4813]  eta: 8:16:16  lr: 0.000023  loss: 16.3621  loss_itc: 9.2179 (9.9862)  loss_itm: 0.6178 (0.6291)  loss_lm: 6.2823 (6.7314)  time: 7.7310  data: 0.0025  max mem: 18959
+Train: data epoch: [0]  [ 225/4813]  eta: 8:12:04  lr: 0.000023  loss: 16.1373  loss_itc: 9.2179 (9.9862)  loss_itm: 0.6178 (0.6291)  loss_lm: 6.2823 (6.7314)  time: 7.2670  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 226/4813]  eta: 8:07:19  lr: 0.000023  loss: 15.9864  loss_itc: 9.1778 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.2707 (6.7314)  time: 7.0647  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 227/4813]  eta: 8:06:01  lr: 0.000024  loss: 15.7431  loss_itc: 9.1692 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.2575 (6.7314)  time: 6.6711  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 228/4813]  eta: 8:04:01  lr: 0.000024  loss: 15.3110  loss_itc: 9.1396 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.2328 (6.7314)  time: 6.4139  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 229/4813]  eta: 8:00:47  lr: 0.000024  loss: 15.8140  loss_itc: 9.1346 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.2033 (6.7314)  time: 6.0715  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 230/4813]  eta: 7:56:30  lr: 0.000024  loss: 15.8716  loss_itc: 9.0787 (9.9862)  loss_itm: 0.6178 (0.6291)  loss_lm: 6.1755 (6.7314)  time: 6.0224  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 231/4813]  eta: 7:59:43  lr: 0.000024  loss: 15.8472  loss_itc: 9.0629 (9.9862)  loss_itm: 0.6178 (0.6291)  loss_lm: 6.1755 (6.7314)  time: 5.8271  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 232/4813]  eta: 8:01:44  lr: 0.000024  loss: 15.4216  loss_itc: 9.0520 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.1755 (6.7314)  time: 5.9258  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 233/4813]  eta: 8:01:30  lr: 0.000024  loss: 15.4724  loss_itc: 9.0520 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.1581 (6.7314)  time: 5.8128  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 234/4813]  eta: 7:58:49  lr: 0.000024  loss: 15.7044  loss_itc: 9.0407 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.1581 (6.7314)  time: 5.7327  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 235/4813]  eta: 8:03:51  lr: 0.000024  loss: 15.2920  loss_itc: 9.0407 (9.9862)  loss_itm: 0.6175 (0.6291)  loss_lm: 6.1419 (6.7314)  time: 5.7525  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 236/4813]  eta: 8:03:38  lr: 0.000024  loss: 15.3190  loss_itc: 9.0328 (9.9862)  loss_itm: 0.6186 (0.6291)  loss_lm: 6.1357 (6.7314)  time: 5.7131  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 237/4813]  eta: 8:00:28  lr: 0.000025  loss: 15.4015  loss_itc: 8.9547 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.0959 (6.7314)  time: 5.5735  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 238/4813]  eta: 7:56:27  lr: 0.000025  loss: 15.6954  loss_itc: 8.9547 (9.9862)  loss_itm: 0.6186 (0.6291)  loss_lm: 6.0959 (6.7314)  time: 5.3492  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 239/4813]  eta: 7:56:44  lr: 0.000025  loss: 15.1534  loss_itc: 8.9547 (9.9862)  loss_itm: 0.6186 (0.6291)  loss_lm: 6.1357 (6.7314)  time: 5.1342  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 240/4813]  eta: 7:55:24  lr: 0.000025  loss: 15.8569  loss_itc: 8.9547 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1419 (6.7314)  time: 5.0595  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 241/4813]  eta: 7:54:00  lr: 0.000025  loss: 15.2592  loss_itc: 8.9278 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1419 (6.7314)  time: 5.0111  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 242/4813]  eta: 7:50:55  lr: 0.000025  loss: 15.2972  loss_itc: 8.9278 (9.9862)  loss_itm: 0.6186 (0.6291)  loss_lm: 6.1385 (6.7314)  time: 4.9510  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 243/4813]  eta: 7:59:46  lr: 0.000025  loss: 15.5048  loss_itc: 8.9006 (9.9862)  loss_itm: 0.6186 (0.6291)  loss_lm: 6.1357 (6.7314)  time: 5.4376  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 244/4813]  eta: 8:03:27  lr: 0.000025  loss: 15.9246  loss_itc: 8.9006 (9.9862)  loss_itm: 0.6186 (0.6291)  loss_lm: 6.1357 (6.7314)  time: 5.8317  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 245/4813]  eta: 8:03:17  lr: 0.000025  loss: 15.2883  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1092 (6.7314)  time: 6.0216  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 246/4813]  eta: 8:01:03  lr: 0.000025  loss: 15.8694  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1092 (6.7314)  time: 6.1130  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 247/4813]  eta: 8:08:04  lr: 0.000026  loss: 15.9509  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6204 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 6.6246  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 248/4813]  eta: 8:11:21  lr: 0.000026  loss: 15.7118  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1357 (6.7314)  time: 6.9424  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 249/4813]  eta: 8:10:23  lr: 0.000026  loss: 15.6732  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1385 (6.7314)  time: 7.0549  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 250/4813]  eta: 8:08:03  lr: 0.000026  loss: 15.7635  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1340 (6.7314)  time: 7.1346  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 251/4813]  eta: 8:13:41  lr: 0.000026  loss: 15.6847  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.3489  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 252/4813]  eta: 8:15:38  lr: 0.000026  loss: 15.6139  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6204 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.3830  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 253/4813]  eta: 8:14:32  lr: 0.000026  loss: 15.6857  loss_itc: 8.8534 (9.9862)  loss_itm: 0.6189 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.3335  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 254/4813]  eta: 8:11:01  lr: 0.000026  loss: 15.0299  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6189 (0.6291)  loss_lm: 6.1092 (6.7314)  time: 7.2523  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 255/4813]  eta: 8:15:22  lr: 0.000026  loss: 15.0223  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1092 (6.7314)  time: 7.2830  data: 0.0025  max mem: 18960
+Train: data epoch: [0]  [ 256/4813]  eta: 8:16:14  lr: 0.000026  loss: 15.4568  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6182 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.3664  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 257/4813]  eta: 8:16:36  lr: 0.000027  loss: 15.5260  loss_itc: 8.8486 (9.9862)  loss_itm: 0.6176 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.5840  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 258/4813]  eta: 8:13:08  lr: 0.000027  loss: 15.0662  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6176 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.5827  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 259/4813]  eta: 8:16:27  lr: 0.000027  loss: 15.5906  loss_itc: 8.8486 (9.9862)  loss_itm: 0.6176 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.8196  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 260/4813]  eta: 8:16:04  lr: 0.000027  loss: 15.1781  loss_itc: 8.8170 (9.9862)  loss_itm: 0.6176 (0.6291)  loss_lm: 6.1092 (6.7314)  time: 7.8867  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 261/4813]  eta: 8:15:17  lr: 0.000027  loss: 15.9718  loss_itc: 8.8486 (9.9862)  loss_itm: 0.6189 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.9283  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 262/4813]  eta: 8:11:57  lr: 0.000027  loss: 14.8820  loss_itc: 8.8486 (9.9862)  loss_itm: 0.6176 (0.6291)  loss_lm: 6.0864 (6.7314)  time: 7.8869  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 263/4813]  eta: 8:10:14  lr: 0.000027  loss: 15.5157  loss_itc: 8.8486 (9.9862)  loss_itm: 0.6189 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 7.2349  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 264/4813]  eta: 8:08:09  lr: 0.000027  loss: 15.5575  loss_itc: 8.8041 (9.9862)  loss_itm: 0.6189 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 6.8609  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 265/4813]  eta: 8:06:31  lr: 0.000027  loss: 15.4948  loss_itc: 8.8022 (9.9862)  loss_itm: 0.6196 (0.6291)  loss_lm: 6.1113 (6.7314)  time: 6.7538  data: 0.0025  max mem: 18961
+Train: data epoch: [0]  [ 266/4813]  eta: 8:03:23  lr: 0.000027  loss: 14.9039  loss_itc: 8.7951 (9.9862)  loss_itm: 0.6196 (0.6291)  loss_lm: 6.0760 (6.7314)  time: 6.6602  data: 0.0025  max mem: 18962
+Train: data epoch: [0]  [ 267/4813]  eta: 8:02:45  lr: 0.000028  loss: 15.2058  loss_itc: 8.7061 (9.9862)  loss_itm: 0.6196 (0.6291)  loss_lm: 6.0760 (6.7314)  time: 6.1674  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 268/4813]  eta: 8:03:13  lr: 0.000028  loss: 14.6918  loss_itc: 8.6743 (9.9862)  loss_itm: 0.6196 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 5.9927  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 269/4813]  eta: 8:05:05  lr: 0.000028  loss: 15.6523  loss_itc: 8.6743 (9.9862)  loss_itm: 0.6196 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 6.1989  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 270/4813]  eta: 8:02:03  lr: 0.000028  loss: 15.4862  loss_itc: 8.6743 (9.9862)  loss_itm: 0.6189 (0.6291)  loss_lm: 6.0445 (6.7314)  time: 6.1121  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 271/4813]  eta: 8:06:18  lr: 0.000028  loss: 15.1295  loss_itc: 8.6743 (9.9862)  loss_itm: 0.6164 (0.6291)  loss_lm: 6.0445 (6.7314)  time: 6.0760  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 272/4813]  eta: 8:09:15  lr: 0.000028  loss: 14.8451  loss_itc: 8.6678 (9.9862)  loss_itm: 0.6132 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 6.1804  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 273/4813]  eta: 8:09:58  lr: 0.000028  loss: 14.7891  loss_itc: 8.6500 (9.9862)  loss_itm: 0.6132 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 6.3119  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 274/4813]  eta: 8:06:59  lr: 0.000028  loss: 15.0567  loss_itc: 8.6500 (9.9862)  loss_itm: 0.6132 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 6.3077  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 275/4813]  eta: 8:07:17  lr: 0.000028  loss: 15.2638  loss_itc: 8.6500 (9.9862)  loss_itm: 0.6132 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 6.0334  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 276/4813]  eta: 8:06:56  lr: 0.000028  loss: 15.5787  loss_itc: 8.6678 (9.9862)  loss_itm: 0.6132 (0.6291)  loss_lm: 6.0730 (6.7314)  time: 5.9402  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 277/4813]  eta: 8:08:43  lr: 0.000029  loss: 15.1391  loss_itc: 8.6119 (9.9862)  loss_itm: 0.6148 (0.6291)  loss_lm: 6.0539 (6.7314)  time: 6.0616  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 278/4813]  eta: 8:05:50  lr: 0.000029  loss: 15.6142  loss_itc: 8.6678 (9.9862)  loss_itm: 0.6148 (0.6291)  loss_lm: 6.0539 (6.7314)  time: 6.0612  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 279/4813]  eta: 8:10:52  lr: 0.000029  loss: 14.9987  loss_itc: 8.6119 (9.9862)  loss_itm: 0.6164 (0.6291)  loss_lm: 6.0445 (6.7314)  time: 6.2511  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 280/4813]  eta: 8:13:17  lr: 0.000029  loss: 14.5155  loss_itc: 8.5710 (9.9862)  loss_itm: 0.6164 (0.6291)  loss_lm: 6.0445 (6.7314)  time: 6.4851  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 281/4813]  eta: 8:13:22  lr: 0.000029  loss: 15.1468  loss_itc: 8.5528 (9.9862)  loss_itm: 0.6148 (0.6291)  loss_lm: 6.0445 (6.7314)  time: 6.5509  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 282/4813]  eta: 8:11:20  lr: 0.000029  loss: 14.7121  loss_itc: 8.5528 (9.9862)  loss_itm: 0.6148 (0.6291)  loss_lm: 6.0445 (6.7314)  time: 6.6210  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 283/4813]  eta: 8:14:25  lr: 0.000029  loss: 14.6655  loss_itc: 8.5295 (9.9862)  loss_itm: 0.6132 (0.6291)  loss_lm: 6.0212 (6.7314)  time: 7.0224  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 284/4813]  eta: 8:16:14  lr: 0.000029  loss: 14.8630  loss_itc: 8.4977 (9.9862)  loss_itm: 0.6109 (0.6291)  loss_lm: 5.9428 (6.7314)  time: 7.3462  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 285/4813]  eta: 8:16:12  lr: 0.000029  loss: 14.7905  loss_itc: 8.4838 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9428 (6.7314)  time: 7.4757  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 286/4813]  eta: 8:13:58  lr: 0.000029  loss: 14.8325  loss_itc: 8.4631 (9.9862)  loss_itm: 0.6087 (0.6291)  loss_lm: 5.9428 (6.7314)  time: 7.5236  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 287/4813]  eta: 8:16:18  lr: 0.000030  loss: 14.7316  loss_itc: 8.4593 (9.9862)  loss_itm: 0.6085 (0.6291)  loss_lm: 5.9428 (6.7314)  time: 7.7948  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 288/4813]  eta: 8:17:08  lr: 0.000030  loss: 14.6265  loss_itc: 8.4593 (9.9862)  loss_itm: 0.6070 (0.6291)  loss_lm: 5.9428 (6.7314)  time: 7.8467  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 289/4813]  eta: 8:17:03  lr: 0.000030  loss: 15.0335  loss_itc: 8.4593 (9.9862)  loss_itm: 0.6070 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 7.7052  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 290/4813]  eta: 8:14:41  lr: 0.000030  loss: 14.7647  loss_itc: 8.4120 (9.9862)  loss_itm: 0.6070 (0.6291)  loss_lm: 5.8870 (6.7314)  time: 7.7365  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 291/4813]  eta: 8:14:51  lr: 0.000030  loss: 15.3367  loss_itc: 8.4120 (9.9862)  loss_itm: 0.6085 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 7.4245  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 292/4813]  eta: 8:12:59  lr: 0.000030  loss: 15.3839  loss_itc: 8.4593 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 7.0197  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 293/4813]  eta: 8:11:32  lr: 0.000030  loss: 14.5397  loss_itc: 8.4160 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 6.8288  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 294/4813]  eta: 8:09:27  lr: 0.000030  loss: 14.8202  loss_itc: 8.4120 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9354 (6.7314)  time: 6.8786  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 295/4813]  eta: 8:12:50  lr: 0.000030  loss: 14.7170  loss_itc: 8.4059 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 7.1832  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 296/4813]  eta: 8:12:39  lr: 0.000030  loss: 15.5620  loss_itc: 8.4059 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 7.2028  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 297/4813]  eta: 8:12:31  lr: 0.000031  loss: 14.7310  loss_itc: 8.2961 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.9172 (6.7314)  time: 7.0458  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 298/4813]  eta: 8:11:29  lr: 0.000031  loss: 15.0009  loss_itc: 8.2961 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 7.1940  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 299/4813]  eta: 8:12:02  lr: 0.000031  loss: 14.4872  loss_itc: 8.2545 (9.9862)  loss_itm: 0.6102 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.8258  data: 0.0025  max mem: 18966
+Saving checkpoint at iters: 300 and epoch: 0
+Train: data epoch: [0]  [ 300/4813]  eta: 8:13:29  lr: 0.000031  loss: 14.9802  loss_itc: 8.2961 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.7653  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 301/4813]  eta: 8:11:00  lr: 0.000031  loss: 15.0094  loss_itc: 8.2961 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8897 (6.7314)  time: 6.5134  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 302/4813]  eta: 8:08:32  lr: 0.000031  loss: 14.7894  loss_itc: 8.3331 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8870 (6.7314)  time: 6.4428  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 303/4813]  eta: 8:07:07  lr: 0.000031  loss: 15.0250  loss_itc: 8.3331 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8897 (6.7314)  time: 6.0287  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 304/4813]  eta: 8:07:18  lr: 0.000031  loss: 14.8382  loss_itc: 8.3267 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 5.8838  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 305/4813]  eta: 8:09:05  lr: 0.000031  loss: 15.0708  loss_itc: 8.3331 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.0665  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 306/4813]  eta: 8:07:34  lr: 0.000031  loss: 14.3379  loss_itc: 8.3267 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.1091  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 307/4813]  eta: 8:12:29  lr: 0.000031  loss: 14.7131  loss_itc: 8.3267 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.4104  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 308/4813]  eta: 8:14:18  lr: 0.000032  loss: 14.2731  loss_itc: 8.3267 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.5258  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 309/4813]  eta: 8:15:35  lr: 0.000032  loss: 14.5456  loss_itc: 8.3168 (9.9862)  loss_itm: 0.6115 (0.6291)  loss_lm: 5.8990 (6.7314)  time: 6.6703  data: 0.0025  max mem: 18966
+Train: data epoch: [0]  [ 310/4813]  eta: 8:13:35  lr: 0.000032  loss: 15.0178  loss_itc: 8.3267 (9.9862)  loss_itm: 0.6099 (0.6291)  loss_lm: 5.9099 (6.7314)  time: 6.6782  data: 0.0025  max mem: 18966

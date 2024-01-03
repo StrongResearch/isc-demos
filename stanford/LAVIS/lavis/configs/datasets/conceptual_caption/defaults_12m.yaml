@@ -13,6 +13,6 @@ datasets:
       annotations:
         train:
           url: /mnt/.node1/Open-Datasets/cc/cc12m.json
-          storage: /mnt/.node1/Open-Datasets/cc/cc3m.json
+          storage: /mnt/.node1/Open-Datasets/cc/cc12m.json
       images:
           storage: conceptual_caption/images_12m

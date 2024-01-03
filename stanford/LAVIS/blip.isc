@@ -1,6 +1,6 @@
 experiment_name = "blip"
 gpu_type = "24GB VRAM GPU"
-nnodes = 2
-venv_path = "~/isc-demos/stanford/LAVIS/.venv/bin/activate"
-output_path = "~/isc-demos/stanford/LAVIS/coutput"
+nnodes = 12
+venv_path = "~/blip/isc-demos/stanford/LAVIS/.venv/bin/activate"
+output_path = "~/blip/isc-demos/stanford/LAVIS/coutput"
 command = "train.py --cfg-path lavis/projects/blip/train/pretrain_14m.yaml"

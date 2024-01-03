@@ -1,0 +1,182 @@
+{
+    "run": {
+        "task": "image_text_pretrain",
+        "runner": "runner_base",
+        "lr_sched": "linear_warmup_step_lr",
+        "init_lr": 0.0003,
+        "min_lr": 1e-06,
+        "warmup_lr": 1e-06,
+        "lr_decay_rate": 0.85,
+        "weight_decay": 0.05,
+        "accum_grad_iters": 1,
+        "max_epoch": 20,
+        "batch_size_train": 40,
+        "batch_size_eval": 40,
+        "num_workers": 4,
+        "warmup_steps": 3000,
+        "seed": 42,
+        "amp": false,
+        "evaluate": false,
+        "train_splits": [
+            "train"
+        ],
+        "output_dir": "./checkpoints/pretrain",
+        "resume_ckpt_path": "/mnt/.node2/Lachlan/blip/checkpoints/image_text_pretrain_latest.pth",
+        "tensorboard_path": "/mnt/.node2/Lachlan/blip/logs",
+        "checkpoint_freq": 5,
+        "log_freq": 1,
+        "device": "cuda",
+        "world_size": 1,
+        "dist_url": "env://",
+        "distributed": true,
+        "rank": 0,
+        "gpu": 0,
+        "dist_backend": "nccl"
+    },
+    "model": {
+        "arch": "blip_pretrain",
+        "load_pretrained": false,
+        "pretrained": "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth",
+        "vit_type": "base",
+        "vit_grad_ckpt": false,
+        "vit_ckpt_layer": 0,
+        "image_size": 224,
+        "alpha": 0.4,
+        "med_config_path": "configs/models/bert_config.json",
+        "embed_dim": 256,
+        "prompt": "a picture of ",
+        "model_type": "base",
+        "queue_size": 57600
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip_image_train",
+                "image_size": 224
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption"
+            }
+        }
+    },
+    "datasets": {
+        "conceptual_caption_3m": {
+            "data_type": "images",
+            "build_info": {
+                "annotations": {
+                    "train": {
+                        "url": "/mnt/.node1/Open-Datasets/cc/cc3m.json",
+                        "storage": "/mnt/.node1/Open-Datasets/cc/cc3m.json"
+                    }
+                },
+                "images": {
+                    "storage": "conceptual_caption/images_3m"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip_image_train",
+                    "image_size": 224
+                }
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                }
+            }
+        }
+    }
+}
+{
+    "run": {
+        "task": "image_text_pretrain",
+        "runner": "runner_base",
+        "lr_sched": "linear_warmup_step_lr",
+        "init_lr": 0.0003,
+        "min_lr": 1e-06,
+        "warmup_lr": 1e-06,
+        "lr_decay_rate": 0.85,
+        "weight_decay": 0.05,
+        "accum_grad_iters": 1,
+        "max_epoch": 20,
+        "batch_size_train": 40,
+        "batch_size_eval": 40,
+        "num_workers": 4,
+        "warmup_steps": 3000,
+        "seed": 42,
+        "amp": false,
+        "evaluate": false,
+        "train_splits": [
+            "train"
+        ],
+        "output_dir": "./checkpoints/pretrain",
+        "resume_ckpt_path": "/mnt/.node2/Lachlan/blip/checkpoints/image_text_pretrain_latest.pth",
+        "tensorboard_path": "/mnt/.node2/Lachlan/blip/logs",
+        "checkpoint_freq": 5,
+        "log_freq": 1,
+        "device": "cuda",
+        "world_size": 1,
+        "dist_url": "env://",
+        "distributed": true,
+        "rank": 0,
+        "gpu": 0,
+        "dist_backend": "nccl"
+    },
+    "model": {
+        "arch": "blip_pretrain",
+        "load_pretrained": false,
+        "pretrained": "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth",
+        "vit_type": "base",
+        "vit_grad_ckpt": false,
+        "vit_ckpt_layer": 0,
+        "image_size": 224,
+        "alpha": 0.4,
+        "med_config_path": "configs/models/bert_config.json",
+        "embed_dim": 256,
+        "prompt": "a picture of ",
+        "model_type": "base",
+        "queue_size": 57600
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip_image_train",
+                "image_size": 224
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption"
+            }
+        }
+    },
+    "datasets": {
+        "conceptual_caption_3m": {
+            "data_type": "images",
+            "build_info": {
+                "annotations": {
+                    "train": {
+                        "url": "/mnt/.node1/Open-Datasets/cc/cc3m.json",
+                        "storage": "/mnt/.node1/Open-Datasets/cc/cc3m.json"
+                    }
+                },
+                "images": {
+                    "storage": "conceptual_caption/images_3m"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip_image_train",
+                    "image_size": 224
+                }
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                }
+            }
+        }
+    }
+}

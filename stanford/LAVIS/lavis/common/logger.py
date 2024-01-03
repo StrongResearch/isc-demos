@@ -7,6 +7,7 @@
 
 import datetime
 import logging
+import os
 import time
 from collections import defaultdict, deque
 
@@ -41,6 +42,8 @@ class SmoothedValue(object):
         if not dist_utils.is_dist_avail_and_initialized():
             return
         t = torch.tensor([self.count, self.total], dtype=torch.float64, device="cuda")
+        if torch.isinf(t).any() or torch.isnan(t).any():
+            print(f"Nan or inf detected on rank {os.environ['RANK']}")
         dist.barrier()
         dist.all_reduce(t)
         t = t.tolist()
