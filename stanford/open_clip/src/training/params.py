@@ -455,7 +455,7 @@ def parse_args(args):
     
     parser.add_argument(
         "--distributed-evaluation",
-        default=False,
+        default=True,
         action="store_true",
         help='Use multi gpu/node in evaluation'
     )

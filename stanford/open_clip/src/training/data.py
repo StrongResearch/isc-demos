@@ -205,7 +205,7 @@ def get_imagenet(args, preprocess_fns, split):
         idxs = idxs.astype('int')
         sampler = SubsetRandomSampler(np.where(idxs)[0])
     else:
-        sampler = None
+        sampler = torch.utils.data.distributed.DistributedSampler(dataset) if args.distributed_evaluation else None
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
@@ -516,7 +516,14 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     num_samples = len(dataset)
     
     # Use our sampler for easy cycling
-    sampler = InterruptableDistributedSampler(dataset) if args.distributed else None
+    sampler = None
+    if is_train and args.distributed:
+        sampler = InterruptableDistributedSampler(dataset)
+        num_samples = num_samples // args.world_size
+        
+    elif not is_train and args.distributed_evaluation:
+        sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        num_samples = num_samples // args.world_size
     shuffle = is_train and sampler is None
 
     dataloader = DataLoader(
@@ -551,7 +558,14 @@ def get_coco_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     num_samples = len(dataset)
     
     # Use our sampler for easy cycling
-    sampler = InterruptableDistributedSampler(dataset) if args.distributed else None
+    sampler = None
+    if is_train and args.distributed:
+        sampler = InterruptableDistributedSampler(dataset)
+        num_samples = num_samples // args.world_size
+        
+    elif not is_train and args.distributed_evaluation:
+        sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        num_samples = num_samples // args.world_size
     shuffle = is_train and sampler is None
 
     dataloader = DataLoader(
@@ -596,10 +610,19 @@ class SyntheticDataset(Dataset):
 
 def get_synthetic_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
     image_size = preprocess_fn.transforms[0].size
+    if not is_train:
+        image_size = (image_size, image_size)
     dataset = SyntheticDataset(
         transform=preprocess_fn, image_size=image_size, dataset_size=args.train_num_samples, tokenizer=tokenizer)
     num_samples = len(dataset)
-    sampler = DistributedSampler(dataset) if args.distributed and is_train else None
+    sampler = None
+    if is_train and args.distributed:
+        sampler = InterruptableDistributedSampler(dataset)
+        num_samples = num_samples // args.world_size
+        
+    elif not is_train and args.distributed_evaluation:
+        sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+        num_samples = num_samples // args.world_size
     shuffle = is_train and sampler is None
 
     dataloader = DataLoader(

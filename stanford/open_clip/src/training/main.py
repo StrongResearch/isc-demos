@@ -334,7 +334,7 @@ def main(args):
         if "sampler" in checkpoint:
             sampler = checkpoint["sampler"]
             data["train"].dataloader.sampler.load_state_dict(sampler)
-            data["val"].dataloader.sampler.load_state_dict(checkpoint["val_sampler"])
+
     else:
         tokenizer = get_tokenizer(args.model)
         data = get_data(
@@ -345,11 +345,11 @@ def main(args):
         )
     
     assert len(data), 'At least one train or eval dataset must be specified.'
-
+    logging.info("Finished loading checkpoint.")
     # create scheduler if train
     scheduler = None
     if 'train' in data and optimizer is not None:
-        total_steps = ((data["train"].dataloader.num_batches // args.accum_freq) * args.epochs)
+        total_steps = ((data["train"].dataloader.num_batches // args.accum_freq) * args.epochs) + start_iteration
         if args.lr_scheduler == "cosine":
             scheduler = cosine_lr(optimizer, args.lr, args.warmup, total_steps)
         elif args.lr_scheduler == "const":
@@ -422,8 +422,7 @@ def main(args):
             start_iteration = 0
             
             if any(v in data for v in ('val', 'imagenet-val', 'imagenet-v2')) and ((epoch + 1) % args.val_frequency == 0 or epoch == args.epochs):
-                with data["val"].dataloader.sampler.in_epoch(epoch):
-                    evaluate(model, data, epoch, args, tb_writer=writer, tokenizer=tokenizer)
+                evaluate(model, data, epoch, args, tb_writer=writer, tokenizer=tokenizer)
 
     if args.wandb and is_master(args):
         wandb.finish()

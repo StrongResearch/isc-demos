@@ -66,7 +66,7 @@ def backward(total_loss, scaler):
         total_loss.backward()
 
 # This function saves the inner-epoch state of the run so it can be easily resumed
-def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, val_sampler, scaler, path):
+def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, scaler, path):
     scaler_dict = None
     if scaler is not None:
         scaler_dict = scaler.state_dict()
@@ -76,7 +76,6 @@ def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, val_sampl
                 "model": model.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "sampler": sampler.state_dict(),
-                "val_sampler": val_sampler.state_dict(),
                 "scaler": scaler_dict
             }
     parent_dir = os.path.dirname(path)
@@ -84,6 +83,9 @@ def save_train_checkpoint(epoch, iteration, model, optimizer, sampler, val_sampl
     atomic_torch_save(checkpoint_dict, path)
 
 def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, scheduler, dist_model, args, tb_writer=None):
+    if iters == 0 and epoch > 1 and is_master(args):
+        logging.info(f"Saving checkpoint after evaluation, at the beginning of epoch {epoch}")
+        save_train_checkpoint(epoch, iters, model, optimizer, data['train'].dataloader.sampler, scaler, args.resume)
     device = torch.device(args.device)
     autocast = get_autocast(args.precision)
     input_dtype = get_input_dtype(args.precision)
@@ -95,7 +97,6 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     data['train'].set_epoch(epoch)  # set epoch in process safe manner via sampler or shared_epoch
     dataloader = data['train'].dataloader
     num_batches_per_epoch = dataloader.num_batches // args.accum_freq
-    sample_digits = math.ceil(math.log(dataloader.num_samples + 1, 10))
 
     if args.accum_freq > 1:
         accum_images, accum_texts, accum_features = [], [], {}
@@ -106,12 +107,8 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
     end = time.time()
     
     metric_data = []
-    torch.cuda.cudart().cudaProfilerStart()
     # No need to enumerate since we pass in iterations
     for batch in dataloader:
-        if iters >= 200:
-            torch.cuda.cudart().cudaProfilerStop()
-            return
         # Advance sampler by batch size before checkpointing
         dataloader.sampler.advance(args.batch_size)
         iters += 1
@@ -258,7 +255,10 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
             if iters >= len(dataloader):
                 #  save checkpoint and break
                 logging.info("Reached the end of the dataloader - saving checkpoint")
-                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, data["val"].dataloader.sampler, scaler, args.resume)
+                if "val" in data:
+                    save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
+                else:
+                    save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
                 if tb_writer is not None:
                     for scalar in metric_data:
                         tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
@@ -270,7 +270,7 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
                 #break
             elif iters % args.save_frequency == 0:  # Save checkpoint every n iterations
                 logging.info(f"Saving checkpoint at epoch {epoch} and iteration {iters}/{len(dataloader)}")
-                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, data["val"].dataloader.sampler, scaler, args.resume)
+                save_train_checkpoint(epoch, iters, model, optimizer, dataloader.sampler, scaler, args.resume)
                 if tb_writer is not None:
                     for scalar in metric_data:
                         tb_writer.add_scalar("Train/avg_loss", scalar[0], scalar[1])
@@ -357,8 +357,8 @@ def train_one_epoch(model, data, loss, epoch, iters, optimizer, scaler, schedule
 
 def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     metrics = {}
-    # if not is_master(args):
-    #     return metrics
+    if not is_master(args) and not args.distributed_evaluation:
+        return metrics
     device = torch.device(args.device)
     model.eval()
 
@@ -369,6 +369,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
     input_dtype = get_input_dtype(args.precision)
 
     if 'val' in data:
+        logging.info("Starting evaluation on validation set")
         dataloader = data['val'].dataloader
         num_samples = 0
         samples_per_val = dataloader.num_samples
@@ -385,11 +386,6 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 images = images.to(device=device, dtype=input_dtype, non_blocking=True)
                 texts = texts.to(device=device, non_blocking=True)
                 
-                # Advance the sampler by the batch size - ignore when it steps too far on the last step
-                try:
-                    dataloader.sampler.advance(args.batch_size)
-                except Exception:
-                    logging.info("Sampler stepped too far at the end of batch - ignoring")
                 with autocast():
                     model_out = model(images, texts)
                     image_features = model_out["image_features"]
@@ -416,9 +412,7 @@ def evaluate(model, data, epoch, args, tb_writer=None, tokenizer=None):
                 if (i % 100) == 0:
                     if args.distributed_evaluation:
                         total_num_samples = torch.Tensor([num_samples]).to(device)
-                        print(7)
                         torch.distributed.all_reduce(total_num_samples)
-                        print(8)
                         total_num_samples = total_num_samples.item()
 
                         total_cumulative_loss = cumulative_loss.clone()

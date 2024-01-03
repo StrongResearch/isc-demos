@@ -1,11 +1,30 @@
 import logging
 
 import torch
+import torch.nn.functional as F
 from tqdm import tqdm
-
-from open_clip import get_input_dtype, get_tokenizer, build_zero_shot_classifier, \
-    IMAGENET_CLASSNAMES, OPENAI_IMAGENET_TEMPLATES
+from training.distributed import is_master
+from open_clip import tokenize, get_cast_dtype
 from .precision import get_autocast
+from .imagenet_zeroshot_data import imagenet_classnames, openai_imagenet_template
+
+
+def zero_shot_classifier(model, classnames, templates, args):
+    classnames = tqdm(classnames) if is_master(args) else classnames
+    with torch.no_grad():
+        zeroshot_weights = []
+        for classname in classnames:
+            texts = [template(classname) for template in templates]  # format with class
+            texts = tokenize(texts).to(args.device)  # tokenize
+            if args.distributed and not args.horovod:
+                class_embeddings = model.module.encode_text(texts)
+            else:
+                class_embeddings = model.encode_text(texts)
+            class_embedding = F.normalize(class_embeddings, dim=-1).mean(dim=0)
+            class_embedding /= class_embedding.norm()
+            zeroshot_weights.append(class_embedding)
+        zeroshot_weights = torch.stack(zeroshot_weights, dim=1).to(args.device)
+    return zeroshot_weights
 
 
 def accuracy(output, target, topk=(1,)):
@@ -16,22 +35,23 @@ def accuracy(output, target, topk=(1,)):
 
 def run(model, classifier, dataloader, args):
     autocast = get_autocast(args.precision)
-    input_dtype = get_input_dtype(args.precision)
-
+    dataloader = tqdm(dataloader, unit_scale=args.batch_size) if is_master(args) else dataloader
+    cast_dtype = get_cast_dtype(args.precision)
     with torch.no_grad():
         top1, top5, n = 0., 0., 0.
-        i = 0
-        for images, target in tqdm(dataloader, unit_scale=args.batch_size):
-            if i % 50 == 0:
-                logging.info("progress: " + str(i) + "/" + str(args.batch_size))
-            
-            images = images.to(device=args.device, dtype=input_dtype)
+        for images, target in dataloader:
+            images = images.to(args.device)
+            if cast_dtype is not None:
+                images = images.to(dtype=cast_dtype)
             target = target.to(args.device)
 
             with autocast():
                 # predict
-                output = model(image=images)
-                image_features = output['image_features'] if isinstance(output, dict) else output[0]
+                if args.distributed and not args.horovod:
+                    image_features = model.module.encode_image(images)
+                else:
+                    image_features = model.encode_image(images)
+                image_features = F.normalize(image_features, dim=-1)
                 logits = 100. * image_features @ classifier
 
             # measure accuracy
@@ -39,8 +59,10 @@ def run(model, classifier, dataloader, args):
             top1 += acc1
             top5 += acc5
             n += images.size(0)
-            i += 1
-
+    if args.distributed_evaluation:
+        vals = torch.Tensor([n, top1, top5]).to(args.device)
+        torch.distributed.all_reduce(vals)
+        n, top1, top5 = vals.tolist()
     top1 = (top1 / n)
     top5 = (top5 / n)
     return top1, top5
@@ -53,27 +75,16 @@ def zero_shot_eval(model, data, epoch, args, tokenizer=None):
         return {}
     if (epoch % args.zeroshot_frequency) != 0 and epoch != args.epochs:
         return {}
-    if args.distributed and not args.horovod:
-        model = model.module
 
-    logging.info('Starting zero-shot imagenet.')
-    if tokenizer is None:
-        tokenizer = get_tokenizer(args.model)
+    if is_master(args):
+        logging.info('Starting zero-shot imagenet.')
+        logging.info('Building zero-shot classifier')
 
-    logging.info('Building zero-shot classifier')
-    autocast = get_autocast(args.precision)
-    with autocast():
-        classifier = build_zero_shot_classifier(
-            model,
-            tokenizer=tokenizer,
-            classnames=IMAGENET_CLASSNAMES,
-            templates=OPENAI_IMAGENET_TEMPLATES,
-            num_classes_per_batch=10,
-            device=args.device,
-            use_tqdm=True,
-        )
+    classifier = zero_shot_classifier(model, imagenet_classnames, openai_imagenet_template, args)
 
-    logging.info('Using classifier')
+    if is_master(args):
+        logging.info('Using classifier')
+
     results = {}
     if 'imagenet-val' in data:
         top1, top5 = run(model, classifier, data['imagenet-val'].dataloader, args)
@@ -84,6 +95,7 @@ def zero_shot_eval(model, data, epoch, args, tokenizer=None):
         results['imagenetv2-zeroshot-val-top1'] = top1
         results['imagenetv2-zeroshot-val-top5'] = top5
 
-    logging.info('Finished zero-shot imagenet.')
+    if is_master(args):
+        logging.info('Finished zero-shot imagenet.')
 
     return results
