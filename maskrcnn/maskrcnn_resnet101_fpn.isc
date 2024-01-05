@@ -1,0 +1,6 @@
+experiment_name = "maskrcnn_resnet101_fpn"
+gpu_type = "24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.mask/bin/activate"
+output_path = "~/outputs/maskrcnn_resnet101_fpn"
+command = "train.py --dataset coco --model maskrcnn_resnet101_fpn --epochs 100 -b 2 --lr 0.06 --lr-step-size 20 --lr-gamma 0.8 --grad-clip-norm 1.0 --data-path=/mnt/.node1/Open-Datasets/coco --resume $OUTPUT_PATH/checkpoint.isc --tboard-path $OUTPUT_PATH/tb"
