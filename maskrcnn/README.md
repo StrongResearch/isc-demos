@@ -27,6 +27,7 @@ pip install -e cycling_utils
 Run "prep.py" to download pretrained model weights before launching your training job.
 
 ```bash
+cd isc-demos/maskrcnn
 python prep.py
 ```
 
