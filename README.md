@@ -453,6 +453,7 @@ For example, when scaling from an effective batch size of 32 to 128, the suggest
 The process for transferring large datasets to the ISC for training includes two main steps:
 1. Download your dataset to the **Download Server**.
 2. Transfer your dataset to your Organisation directory on one of our **Data Nodes**.
+Currently we accept any dataset up to 100GB of any format.
 
 **Note:** We will need to advise you on which **Data Node** to transfer your data to. Please contact us to discuss your dataset 
 and be assigned a data node. It is important to note that all Users within your Organisation will have access to datasets saved 
