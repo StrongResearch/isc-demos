@@ -279,7 +279,7 @@ python -m prep_data
     when looking at the next file.
 5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. 
    The key information included in the ISC Config file is as follows.
-    - `isc_experiment_id`: This is the ID of the project that this experiment will belong to. Projects can be created on the
+    - `isc_project_id`: This is the ID of the project that this experiment will belong to. Projects can be created on the
      Control Plane under the 'Projects' tab, and all experiments must be given a valid project ID.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
