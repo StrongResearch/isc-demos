@@ -167,6 +167,12 @@ isc login
 ```bash
 isc ping
 ```
+
+### 1.3 Creating a Project 
+
+Every ISC experiment belongs to a single 'project' for the purpose of easily setting cost limits for groups of experiments. You can create a project in the `Projects` tab on the Control Plane. You will need to use the project ID when launching an experiment to link the experiment with that project. Create a project now as you will need one later for when you launch a job on the ISC.
+
+
 Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
 configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
 is "interruptible" (including what this means).
@@ -279,6 +285,7 @@ python -m prep_data
     when looking at the next file.
 5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. 
    The key information included in the ISC Config file is as follows.
+    - `isc_project_id`: This is the ID of the project that you wish to have this experiment associated with. Every experiment requires a project ID, so **you must** replace the <project_id> with the ID of the project that you created earlier on the Control Plane, or the job will not launch.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
     - `gpu_type`: The type of GPU that you are requesting for your experiment. At this time, the only supported 
@@ -294,6 +301,8 @@ python -m prep_data
     - `command`: This is the launch command passed to **torchrun** to commence your experiment. Note the call to `train.py` 
         and the command line arguments passed. Refer to the notes within `train.py` to understand how these arguments 
         affect training and checkpointing.
+
+**If you have created a dataset through the Control Plane, you must also add the `dataset_id` field to your .isc file. More information on this can be found [here](https://docs.google.com/document/d/1-VpF38g6Q5AULj8AFpVMIzF96DF6ufgtyfIluz7209E/view#heading=h.z5hdk2p6v23d)** 
 
 After you have run `prep_data.py` (above) to pre-download the Fashion MNIST dataset, you can launch this experiment to 
 train on the ISC using the following command.
@@ -450,7 +459,11 @@ For example, when scaling from an effective batch size of 32 to 128, the suggest
 `new_learning_rate = sqrt(128/32) * original_learning_rate` 
 
 ## 4. Transferring your dataset <a name="data-transfer"></a>
-The process for transferring large datasets to the ISC for training includes two main steps:
+
+### 4.1 Manually moving your data to the Download Server
+**Note that this method will only make your data available for training on the cycling cluster, but not for Burst.**
+
+The process for transferring datasets to the ISC for training includes two main steps:
 1. Download your dataset to the **Download Server**.
 2. Transfer your dataset to your Organisation directory on one of our **Data Nodes**.
 
@@ -477,3 +490,13 @@ Move your data to your Organisation directory on your assigned Data Node.
 ```
 
 Make note of the path to your dataset and ensure that your training scripts correctly reference this path when loading data.
+
+### 4.2 Adding a dataset from an AWS S3 bucket
+**This method is required for training burst jobs, and also works for training on the cycling cluster.**
+**This is currently only support for datasets of size 100GB or smaller**
+
+Once you have your data stored on an AWS S3 bucket, go to the Datasets tab in the Control Plane, and select `New Dataset`. From here, name your dataset and fill form with your S3 bucket details. 
+
+Once you have successfully added the dataset, it will be processed eventually reach the `Available` status, after which you can use it in training by using the `dataset_id` field in your .isc file, and using the `$STRONG_DATASET_PATH` environment variable to get the path to your data.
+
+Some more information about adding datasets through the Control Plane can be found [here](https://docs.google.com/document/d/1-VpF38g6Q5AULj8AFpVMIzF96DF6ufgtyfIluz7209E/view#heading=h.z5hdk2p6v23d).

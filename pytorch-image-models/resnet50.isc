@@ -1,6 +1,7 @@
+isc_project_id = "<project_id>"
 experiment_name="timm-resnet50"
 gpu_type="24GB VRAM GPU"
-nnodes = 10
+nnodes = 12
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_timm"
 command = "train_cycling.py /workspace/datasets/imagenet/ILSVRC/Data/CLS-LOC --model=resnet50 --batch-size=16 --amp --resume $OUTPUT_PATH/checkpoint.pt"
