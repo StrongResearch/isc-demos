@@ -1,6 +1,7 @@
+isc_project_id = "<project_id>"
 experiment_name = "cifar100-resnet50"
 gpu_type = "24GB VRAM GPU"
-nnodes = 10
+nnodes = 12
 venv_path = "~/.venv/bin/activate"
 output_path = "~/output_cifar100-resnet50"
 command = "train.py --save-dir $OUTPUT_PATH"
