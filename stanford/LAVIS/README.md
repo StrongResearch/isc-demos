@@ -1,5 +1,5 @@
 # Introduction
-This demonstration trains a BLIP model on the COCO dataset. The demonstration aims to mimic the same configuration used for pre-training in the 
+This demonstration trains a BLIP model on a collection of multiple datasets. The demonstration aims to mimic the same configuration used for pre-training in the 
 
 Tensorboard logs are saved by default to `./LAVIS/logs`.
 
