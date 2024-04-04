@@ -2,3 +2,4 @@ torch==2.0.1
 torchvision==0.15.2
 tensorboard==2.14.0
 six==1.16.0
+cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
