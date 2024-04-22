@@ -98,14 +98,14 @@ associated with your User and Organisation.
 
 **Instructions for all users continue from here:***
    
-1. On Control Plane click on the menu at the top right of the page and click on **"Settings"**.
+1. On Control Plane click on the menu at the top right of the page and click on **"User Credentials"**.
 2. At the bottom of the page, click on **"ADD SSH KEY"**.
 3. You will need a cryptographic key pair which you can generate by opening a terminal and running `ssh-keygen`. When prompted,
     provide a filename in which to save the key. You can also optionally enter a passphrase (or just press enter twice). This will 
     generate two files containing your public and private keys. Your public key will be saved in the file ending in `.pub`.
-4. Open the file containing your public key. If you generated your keypair with the instruction above, the public key file contents
-    should start with `ssh-rsa` and end with `.local`. Copy the entire contents of this file and paste into the input field on
-    Control Plane beneath **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
+4. Open the file containing your public key. If you generated your keypair with the instruction above, the public key file should 
+    have a file extension of `.pub`. Copy the entire contents of this file and paste into the input field on Control Plane beneath 
+    **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
 5. Return to the Settings page on Control Plane and click on **"NEW API KEY"**. Optionally name your API key. If you already have
     multiple Organisations established, select the Organisation to associate this API key with. Click on **"GENERATE NEW API ACCESS
     TOKEN"**. You will be presented with the API Access Token associated with your API key. Save a copy of this API Access Token. Be
@@ -114,7 +114,12 @@ associated with your User and Organisation.
     always create a new API Key. Note you will need a separate API Key set up for each Organisation you wish to login to.
 6. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
     You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
-7. <a name="org-id"></a> Open a terminal and enter the entire the SSH Username command. The command should start with `ssh` and end 
+7. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
+    be associated with one and only one **ISC Project** which is used for usage tracking and cost control. Click on 
+    **"NEW PROJECT"** and give your new **ISC Project** a name. You will also need the help of your Org Owner or Admins 
+    to ensure your Organisation has sufficient credits and that cost controls have been set to permit experiments to be 
+    launched under your new **ISC Project**.
+8. <a name="org-id"></a> Open a terminal and enter the entire the SSH Username command. The command should start with `ssh` and end 
     with `@<ip-address>`. You should be greeted by the Strong Compute logo and ISC welcome message below. This indicates that you have 
     successfully logged into your home directory on the ISC. Your home directory on the ISC is a subdirectory within your Organisation
     directory. Running `pwd` you will see the full path to your home directory following the pattern `/mnt/Client/<OrgID>/<UserID>`.
@@ -157,12 +162,12 @@ Version 0.5.0-alpha of the ISC is now live!
 ...
 ```
 
-8. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
+9. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
     is used to authenticate you when you launch experiments on the ISC, and should be saved in the root of your home directory.
 ```bash
 isc login
 ```
-9. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
+10. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
     created correctly.
 ```bash
 isc ping
@@ -203,22 +208,23 @@ on the ISC at the same time that will not be visible to you.
 Experiments share time on the **Rapid Cycling** cluster by means of a queue which is cycled at fixed time intervals. The 
 queue is comprised of two sub-queues, a **rapid cycling** queue and an **interruptible** queue.
 
-When a new experiment is launched onto the Rapid Cycling cluster, it joins the **rapid cycling** queue. When it is this
+When a new experiment is launched onto the Rapid Cycling cluster, it joins the **rapid cycling queue**. When it is this
 experiment's turn to run, its status will be recorded as `running` in the **Experiments Table**. It will run for **90 seconds**
-and then will be paused and placed at the back of the **rapid cycling** queue, allowing the next experiment to run. Experiments 
-in the **rapid cycling** queue cycle in this fashion until they have been run 5 times, and then are moved into the **interruptible** 
-queue. Experiments in the **interruptible** queue are cycled when there are no experiments waiting in the **rapid cycling** 
-queue, and are at this point considered ready to be scheduled for **Burst**.
+and then will be paused and placed at the back of the **rapid cycling queue**, allowing the next experiment to run. Experiments 
+in the **rapid cycling queue** cycle in this fashion until they have been run 5 times, and then are moved into the 
+**interruptible queue**. Experiments in the **interruptible queue** are cycled when there are no experiments waiting in the 
+**rapid cycling queue**, and are then considered ready to be scheduled for **Burst**.
 
 If the experiment **fails** during any running cycle (for example if there was an error in the experiment code) then the 
-experiment status will be recorded as `failed` and the experiment will be dropped from the queue it was in.
+experiment status will be recorded as `failed` in the **Experiments Table** and the experiment will be dropped from the 
+queue it was in.
 
 When an experiment is scheduled for **Burst**, a dedicated cluster will be created for the experiment in the cloud, and 
 the experiment will be launched on this dedicated cluster to train. In case of cloud interruption (for example due to blackout 
 or hardware failure), another dedicated cluster will be created and the experiment resumed on the new dedicated cluster.
 
-The ability to abruptly interrupt experiments or **"interruptibility"** is crucial for the purpose of **Rapid Cycling**, pausing 
-and resuming. The main approach to achieve interruptibility is **robust and frequent checkpointing** which we will 
+The ability to abruptly interrupt experiments or **"interruptibility"** is crucial for the purpose of **Rapid Cycling**, 
+pausing, and resuming. The main approach to achieve interruptibility is **robust and frequent checkpointing** which we will 
 demonstrate with the example project that follows.
 
 ### 2.2. Hello World with Fashion MNIST <a name="hello-world-with-fashion-mnist"></a>
@@ -279,6 +285,7 @@ python -m prep_data
     when looking at the next file.
 5. `fashion_mnist.isc` is the **ISC Config** <a name="isc-config"></a> file necessary for launching this experiment on the isc. 
    The key information included in the ISC Config file is as follows.
+    - `isc_project_id`: The ID of the ISC Project created at [**Step 7**](#isc-project-id) above.
     - `experiment_name`: This name will appear in the **Experiments Table**. Use this name to uniquely identify this 
         experiment from your other experiments at a glance, for example by encoding hyper-parameters that you are testing.
     - `gpu_type`: The type of GPU that you are requesting for your experiment. At this time, the only supported 
@@ -310,38 +317,39 @@ the following.
  - `Name`: The experiment name you specified in the `.isc` file, `fashion_mnist` in this case.
  - `NNodes`: The number of nodes requested for your experiment.
  - `Output Path`: The path to your experiment output directory. It may be necessary to zoom out to see the full path.
+ - `Status`: The current status of your experiment.
 
- Refresh the Experiments Table periodically by running `isc experiments`. When you see your experiment transition from 
- `enqueued` to `running`, navigate to the experiment output directory. You will find a number of `rank_X.txt` files, 
- corresponding to each of the `NNodes` nodes requested for your experiment. You can thus verify that all requested nodes 
- were initialised. Each `rank_X.txt` file should contain at least the following. By default, only the `rank_0.txt` file 
- should contain anything more.
+Refresh the Experiments Table periodically by running `isc experiments`. When you see your experiment transition from 
+`enqueued` to `running`, navigate to the experiment output directory. You will find a number of `rank_X.txt` files, 
+corresponding to each of the `NNodes` nodes requested for your experiment. You can thus verify that all requested nodes 
+were initialised. Each `rank_X.txt` file should contain at least the following. By default, only the `rank_0.txt` file 
+should contain anything more.
 
- ```bash
- WARNING:torch.distributed.run:
+```bash
+WARNING:torch.distributed.run:
 *****************************************
 Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being \
 overloaded, please further tune the variable for optimal performance in your application as needed. 
 *****************************************
- ```
+```
 
- **Action:** Open the **`rank_0.txt`** file and inspect the contents. Compare the outputs in this file with the reporting 
- points within `train.py`. If there are errors in your code, the `rank_X.txt` files will be where to look to understand 
- what has gone wrong and how to fix it.
+**Action:** Open the **`rank_0.txt`** file and inspect the contents. Compare the outputs in this file with the reporting 
+points within `train.py`. If there are errors in your code, the `rank_X.txt` files will be where to look to understand 
+what has gone wrong and how to fix it.
 
- You will also find a `checkpoint.isc` file saved in the experiment output directory. This is the checkpoint file that is 
- regularly updated with the information necessary to resume your experiment after it is paused.
+You will also find a `checkpoint.isc` file saved in the experiment output directory. This is the checkpoint file that is 
+regularly updated with the information necessary to resume your experiment after it is paused.
 
- Lastly you will find a subdirectory called `tb` which contains tensorboard event logs. Refer to the `train.py` file to 
- understand where and how these event logs are created.
+Lastly you will find a subdirectory called `tb` which contains tensorboard event logs. Refer to the `train.py` file to 
+understand where and how these event logs are created.
 
 You can launch a tensorboard instance to track the training and performance metrics of the experiment with the following 
 command (**Note:** this assumes you are accessing the ISC from an IDE such as VSCode which does automatic port-forwarding. 
 See below for instructions on how to view tensorboard when accessing the ISC from terminal without IDE).
 
- ```bash
- tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
- ```
+```bash
+tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
+```
 
 Tensorboard will attempt to launch on a default port (typically 6006) if `--port` is not specified. You can then view the 
 tensorboard at `http://localhost:<port>/`. Tensorboard recursively searches for tensorboard event logs in the directory 
