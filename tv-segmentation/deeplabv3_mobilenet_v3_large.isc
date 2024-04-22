@@ -1,4 +1,4 @@
-
+isc_project_id = "<isc_project_id>"
 experiment_name="deeplabv3_mobilenet_v3_large"
 gpu_type="24GB VRAM GPU"
 nnodes = 9

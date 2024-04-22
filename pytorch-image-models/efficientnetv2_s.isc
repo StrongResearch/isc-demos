@@ -1,3 +1,4 @@
+isc_project_id = "<isc_project_id>"
 experiment_name="timm-efficientnetv2_s"
 gpu_type="24GB VRAM GPU"
 nnodes = 10

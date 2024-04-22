@@ -214,8 +214,9 @@ def main(args, timer):
     # node.
 
     dist.init_process_group("nccl")  # Expects RANK set in environment variable
-    rank = dist.get_rank()  # Rank of this GPU in cluster
-    args.device_id = rank % torch.cuda.device_count()  # Rank on local node
+    rank = int(os.environ["RANK"])  # Rank of this GPU in cluster
+    world_size = int(os.environ["WORLD_SIZE"]) # Total number of GPUs in the cluster
+    args.device_id = int(os.environ["LOCAL_RANK"])  # Rank on local node
     args.is_master = rank == 0  # Master node for saving / reporting
     torch.cuda.set_device(args.device_id)  # Enables calling 'cuda'
 
