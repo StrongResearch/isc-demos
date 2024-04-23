@@ -458,30 +458,4 @@ For example, when scaling from an effective batch size of 32 to 128, the suggest
 `new_learning_rate = sqrt(128/32) * original_learning_rate` 
 
 ## 4. Transferring your dataset <a name="data-transfer"></a>
-The process for transferring large datasets to the ISC for training includes two main steps:
-1. Download your dataset to the **Download Server**.
-2. Transfer your dataset to your Organisation directory on one of our **Data Nodes**.
-
-Currently we support datasets up to 100GB in any format.
-
-**Note:** We will need to advise you on which **Data Node** to transfer your data to. Please contact us to discuss your dataset 
-and be assigned a data node. It is important to note that all Users within your Organisation will have access to datasets saved 
-in your Organisation directory on the Download Server and the Data Node.
-
-Use the following command to SSH into the Download Server.
-```bash
-ssh username@192.168.127.100
-```
-
-Download your data to your Organisation directory on the Download Server. You can obtain your [OrgID from the full path 
-to your home directory](#org-id).
-```bash
-/Downloads/<OrgID>/<dataset-name>
-```
-
-Move your data to your Organisation directory on your assigned Data Node.
-```bash
-/mnt/.node<assigned-node>/<OrgID>/<dataset-name>
-```
-
-Make note of the path to your dataset and ensure that your training scripts correctly reference this path when loading data.
+< Refer to Documentation in Control Plane for Dataset instructions >
