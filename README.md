@@ -11,7 +11,7 @@ Pytorch models on the Strong Compute ISC.
    - [2.2. Hello World with Fashion MNIST](#hello-world-with-fashion-mnist)
    - [2.3. More examples](#more-examples)
  - [3. Data Parallel Scaling](#data-parallel-scaling)
- - [4. Transferring your dataset](#data-transfer)
+ - [4. Uploading your dataset](#data-transfer)
 
 
 ## 1. Getting started <a name="getting-started"></a>
@@ -116,13 +116,14 @@ associated with your User and Organisation.
     You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
 7. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
     be associated with one and only one **ISC Project** which is used for usage tracking and cost control. Click on 
-    **"NEW PROJECT"** and give your new **ISC Project** a name. You will also need the help of your Org Owner or Admins 
+    **"NEW PROJECT"** and give your new **ISC Project** a name. You will also need the help of your Organisation Owner or Admins 
     to ensure your Organisation has sufficient credits and that cost controls have been set to permit experiments to be 
     launched under your new **ISC Project**.
 8. <a name="org-id"></a> Open a terminal and enter the entire the SSH Username command. The command should start with `ssh` and end 
     with `@<ip-address>`. You should be greeted by the Strong Compute logo and ISC welcome message below. This indicates that you have 
-    successfully logged into your home directory on the ISC. Your home directory on the ISC is a subdirectory within your Organisation
-    directory. Running `pwd` you will see the full path to your home directory following the pattern `/mnt/Client/<OrgID>/<UserID>`.
+    successfully logged into your environment on the **ISC Portal**. Your home directory on the ISC Portal is a subdirectory within
+   your Organisation directory. Running `pwd` you will see the full path to your home directory following the pattern
+   `/mnt/Client/<OrgID>/<UserID>`.
 
 ```bash
                     ;≥░░░≥≥-
@@ -457,5 +458,11 @@ For example, when scaling from an effective batch size of 32 to 128, the suggest
 
 `new_learning_rate = sqrt(128/32) * original_learning_rate` 
 
-## 4. Transferring your dataset <a name="data-transfer"></a>
-< Refer to Documentation in Control Plane for Dataset instructions >
+## 4. Uploading your dataset <a name="data-transfer"></a>
+Strong Compute currently supports uploading private datasets 100GB or less in size from AWS S3 buckets.
+1. Visit the **Datasets** page on Control Plane (ensure you have selected the intended Organisation from the menu top-right) and click on **New Dataset**
+2. Complete the New Dataset form, including AWS S3 bucket name and credentials information, leave the format set to "small_unstructured", and click on **Add Dataset**.
+3. Returning to the **Datasets** page you will see your dataset registered on Control Plane. The status of the new dataset will report its progress through the preprocessing pipeline including **Created** indicating the dataset has been added to the web application, but has not yet been cached onto the ISC system, **Caching** indicating the dataset is currently being cached from S3 (this may take several minutes for larger S3 buckets), and **Available** indicating the dataset has been cached onto the ISC system, and can be accessed in training. Note the ID for the new dataset for use in the next step.
+4. Edit your `.isc` file to include the additional field `dataset_id="<dataset_id>"`. This will instruct the ISC make this dataset available to your experiment in a mounted directory. The path for this directory will also be set as an environment variable `$STRONG_DATASET_PATH` which you can access in your training script or pass in as a keyword argument (e.g. `command = “train.py --epochs 100 --data-path $STRONG_DATASET_PATH”`).
+
+**Note:** All users within the Organisation that the Dataset was created under will be able to see and access this dataset. Currently datasets created in the above fashion are only accessible in training, not from the ISC Portal.
