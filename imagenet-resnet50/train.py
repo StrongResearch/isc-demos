@@ -8,20 +8,26 @@ timer = TimestampedTimer("Imported TimestampedTimer & MetricsTracker")
 import argparse
 import os
 import re
+import math
 import time
-from pathlib import Path
 import socket
 import json
 import subprocess
+from pathlib import Path
+from itertools import accumulate
 import torch
 import torch.distributed as dist
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import DataLoader, default_collate
 from torch.utils.tensorboard import SummaryWriter
-from torchvision import datasets, models
+from torchvision import datasets
 from torchvision.transforms import v2
+import antialiased_cnns # from our good friends at Adobe
+
+
 from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
+from LAMB import Lamb
 
 timer.report("00_imports")
 
@@ -31,27 +37,21 @@ def get_args_parser(add_help=True):
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--accum", type=float, default=1)
     parser.add_argument("--label-smoothing", type=float, default=0.1)
-    parser.add_argument("--random-erase", type=float, default=0.1)
+    parser.add_argument("--random-erase", type=float, default=0.0)
     parser.add_argument("--amp", action='store_true') # Defaults to False
 
-    parser.add_argument("--optim", type=str, choices=['sgd','adamw'], default='sgd')
-    parser.add_argument("--lr", type=float, default=0.001)
+    parser.add_argument("--lr-stepevery", type=str, choices=['epoch', 'batch'], default='batch')
+    parser.add_argument("--optim", type=str, choices=['sgd', 'adamw', 'lamb'], default='lamb')
+    parser.add_argument("--lr", type=float, default=1.0)
     parser.add_argument("--momentum", type=float, default=0.9)
-    parser.add_argument("--weight-decay", type=float, default=0.0001)
+    parser.add_argument("--weight-decay", type=float, default=0.01)
 
-    parser.add_argument("--lr-stepevery", type=str, choices=['epoch','batch'], default='epoch')
-    parser.add_argument("--lr-sched", type=str, choices=['cyclic','cosine','step'], default='cosine')
-    parser.add_argument("--lr-warmup-epochs", type=int, default=5)
-    parser.add_argument("--lr-decay-epochs", type=list, default=[60, 80])
-    parser.add_argument("--lr-gamma", type=float, default=0.1)
-
-    parser.add_argument(
-        "--data-path", type=Path, default="/mnt/.node1/Open-Datasets/imagenet"
-    )
+    parser.add_argument("--data-path", type=Path, default="/mnt/.node1/Open-Datasets/imagenet")
     parser.add_argument("--save-dir", type=Path, required=True)
-    parser.add_argument("--save-freq", type=int, default=10)
-    parser.add_argument("--log-freq", type=int, default=50)
     parser.add_argument("--tboard-path", type=Path, required=True)
+
+    parser.add_argument("--save-freq", type=int, default=50)
+    parser.add_argument("--log-freq", type=int, default=50)
     return parser
 
 def check_model_grads(model, args):
@@ -62,6 +62,9 @@ def check_model_grads(model, args):
 
 def is_batchnorm_param(name):
     return re.search(r'\.bn\d+\.', name) is not None
+
+def label_smoothing(labels, smoothing):
+    return (labels * (1-smoothing) + (1 - labels) * (smoothing / (labels.shape[1] - 1)))
 
 def train_loop(
     model,
@@ -99,6 +102,8 @@ def train_loop(
 
         # Move input and targets to device
         inputs, targets = inputs.to(args.device_id, memory_format=torch.channels_last), targets.to(args.device_id)
+        targets = label_smoothing(targets, args.label_smoothing)
+
         torch.cuda.synchronize()
         metrics["sys"].update({"1_data_device": time.perf_counter() - start})
         start = time.perf_counter()
@@ -136,7 +141,7 @@ def train_loop(
                 start = time.perf_counter()
 
             # Accumulate examples seen and loss locally - scale loss back to normal for metrics reporting
-            metrics["train"].update({"examples_seen": len(inputs), "loss": loss.item()})
+            metrics["train"].update({"examples_seen": len(inputs), "loss": loss.item() * len(inputs)})
             torch.cuda.synchronize()
             metrics["sys"].update({"5_metrics_update": time.perf_counter() - start})
             start = time.perf_counter()
@@ -186,7 +191,7 @@ def train_loop(
                     start = time.perf_counter()
 
                 # Accumulate examples seen and loss locally
-                metrics["train"].update({"examples_seen": len(inputs), "loss": loss.item()})
+                metrics["train"].update({"examples_seen": len(inputs), "loss": loss.item() * len(inputs)})
                 torch.cuda.synchronize()
                 metrics["sys"].update({"5_metrics_update": time.perf_counter() - start})
                 start = time.perf_counter()
@@ -208,7 +213,7 @@ def train_loop(
             if args.is_master:
                 total_progress = batch + epoch * train_batches_per_epoch
                 examples_seen = metrics["train"].agg["examples_seen"]
-                accum_avg_loss = metrics["train"].agg["loss"] * args.accum / examples_seen # scale back up for accum
+                accum_avg_loss = metrics["train"].agg["loss"] / examples_seen # scale back up for accum
                 writer.add_scalar("Train/avg_loss", accum_avg_loss, total_progress)
                 writer.add_scalar(
                     "Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress
@@ -353,10 +358,12 @@ def test_loop(
             is_last_batch = (batch + 1) == test_batches_per_epoch
             # Move input and targets to device
             inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
+            # Create one-hot encoded targets for test loss calculation
+            targets_ = nn.functional.one_hot(targets, num_classes=1000).to(torch.float16)
             # Inference
             predictions = model(inputs)
             # Test loss
-            test_loss = loss_fn(predictions, targets)
+            test_loss = loss_fn(predictions, targets_)
             # Advance sampler
             test_dataloader.sampler.advance(len(inputs))
             # Performance metrics logging
@@ -365,7 +372,7 @@ def test_loop(
             metrics["test"].update(
                 {
                     "examples_seen": len(inputs),
-                    "loss": test_loss.item(),
+                    "loss": test_loss.item() * len(inputs),
                     "correct": correct.item(),
                 }
             ).reduce().reset_local()
@@ -423,8 +430,10 @@ def main(args, timer):
     args.is_master = rank == 0  # Master node for saving / reporting
     torch.cuda.set_device(args.device_id)  # Enables calling 'cuda'
     timer.report(f"03_init_nccl - HOST: {args.host}, WORLD_SIZE {args.world_size}")
+    if args.device_id == 0:
+        print(f"Machine: {args.host}")
 
-    ## NOTE: GRAD SCALER CAUSES NANS - EXPECTED. LOG NANS WITHOUT RAISING
+    ## NOTE: GRAD SCALER CAUSES NANS BY DESIGN. LOG NANS WITHOUT RAISING.
     # torch.autograd.set_detect_anomaly(True) 
 
     args.checkpoint_path = args.save_dir / "checkpoint.pt"
@@ -450,9 +459,9 @@ def main(args, timer):
     test_transform = v2.Compose(
         [
             v2.PILToTensor(),
+            # FixRes ratio of 0.875
             v2.Resize(256, antialias=True),
             v2.CenterCrop(224),
-            # v2.Resize(size=(224, 224), antialias=True),
             v2.ToDtype(torch.float32, scale=True),  # to float32 in [0, 1]
             v2.Normalize(mean=img_mean, std=img_std),
         ]
@@ -462,7 +471,8 @@ def main(args, timer):
     val_path = os.path.join(args.data_path, "ILSVRC/Data/CLS-LOC/val")
     train_data = datasets.ImageFolder(train_path, transform=train_transform)
     test_data = datasets.ImageFolder(val_path, transform=test_transform)
-    timer.report(f"05_init_datasets: found {len(train_data):,} training and {len(test_data):,} test samples.")
+    args.num_classes = len(train_data.classes)
+    timer.report(f"05_init_datasets: TRAIN: {len(train_data):,} TEST: {len(test_data):,} CLASSES: {args.num_classes:,}")
 
     ##############################################
     # Data Samplers and Loaders
@@ -477,19 +487,18 @@ def main(args, timer):
     cutmix_or_mixup = v2.RandomChoice([cutmix, mixup])
     def collate_fn(batch):
         return cutmix_or_mixup(*default_collate(batch))
-
     train_dataloader = DataLoader(
         train_data, batch_size=args.batch_size, sampler=train_sampler, num_workers=3, collate_fn=collate_fn
     )
     test_dataloader = DataLoader(
         test_data, batch_size=args.batch_size, sampler=test_sampler
     )
-    timer.report(f"07_init_dataloaders: assembled {len(train_dataloader):,} training and {len(test_dataloader):,} test batches.")
+    timer.report(f"07_init_dataloaders: TRAIN BATCHES: {len(train_dataloader):,} TEST BATCHES: {len(test_dataloader):,}")
 
     ##############################################
     # Model Preparation
     # ----------------------
-    model = models.resnet50()
+    model = antialiased_cnns.resnet50() # APPLIES BLURPOOL
     timer.report("08_model_build")
     model = model.to(args.device_id, memory_format=torch.channels_last)
     timer.report("09_model_gpu")
@@ -499,39 +508,46 @@ def main(args, timer):
     ########################################
     # Loss function, Optimizer, Learning rate scheduler
     # ----------------------
-    loss_fn = nn.CrossEntropyLoss(reduction="sum", label_smoothing=args.label_smoothing)
+    loss_fn = nn.BCEWithLogitsLoss(reduction="mean") # Using cutmix, mixup, and label smoothing
+    scaler = torch.cuda.amp.GradScaler(enabled=args.amp) # Enabled or not based on arg 'amp'
     
     param_groups = [{'params': param, 'weight_decay': 0.00} if is_batchnorm_param(name) else {'params': param} for name,param in model.named_parameters()]
     if args.optim  == 'sgd':
         optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
     elif args.optim == 'adamw':
         optimizer = torch.optim.AdamW(param_groups, lr=args.lr, weight_decay=args.weight_decay)
+    elif args.optim == 'lamb':
+         optimizer = Lamb(param_groups, lr=args.lr, weight_decay=args.weight_decay)
     else:
         raise Exception("Arg 'optim' must be either 'sgd' or 'adamw'.")
-    scaler = torch.cuda.amp.GradScaler(enabled=args.amp) # Enabled or not based on arg 'amp'
 
-    if args.lr_sched == 'cyclic':
-        warmup_lambda = lambda epoch: (epoch + 1) / (2 * args.lr_warmup_epochs)
-        warmup_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=warmup_lambda)
-        lr_scheduler = torch.optim.lr_scheduler.CyclicLR(
-            optimizer, base_lr=args.lr / 2, max_lr=args.lr, step_size_up=5, step_size_down=5, 
-            mode='exp_range', gamma=0.98 , cycle_momentum=False
-        )
-    elif args.lr_sched == 'cosine':
-        warmup_lambda = lambda epoch: (epoch + 1) / args.lr_warmup_epochs
-        warmup_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=warmup_lambda)
-        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, T_max=args.epochs, eta_min= 0.01 * args.lr
-        )
-    elif args.lr_sched == 'step':
-        warmup_lambda = lambda epoch: (epoch + 1) / args.lr_warmup_epochs
-        warmup_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=warmup_lambda)
-        lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
-            optimizer, milestones=args.lr_decay_epochs, gamma=args.lr_gamma
-        )
+    # Function to convert from epochs to steps based on args.lr_stepevery
+    milestone_steps = lambda epochs: epochs * len(train_dataloader) if args.lr_stepevery == 'batch' else epochs
+
+    def get_linear_scheduler(start, finish, epochs):
+        steps = milestone_steps(epochs)
+        linear_lambda = lambda step: step * (finish - start) / steps + start
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, linear_lambda)
+    
+    def get_cosine_scheduler(start, finish, epochs):
+        steps = milestone_steps(epochs)
+        cos_lambda = lambda epoch: 0.5 * (1 - math.cos(epoch * math.pi / steps)) * (finish - start) + start
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, cos_lambda)
+    
+    def get_exp_scheduler(start, finish, epochs):
+        steps = milestone_steps(epochs)
+        exp_lambda = lambda step: math.exp(step * math.log(finish/start) / steps + math.log(start))
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_lambda)
+
+    sched_epochs = [
+        (0.002, 0.01, 5), # warm up
+        (0.01, 0.00, 95), # annealing
+    ]
+    schedulers, milestone_epochs = zip(*[(get_cosine_scheduler(frm, to, freq), freq) for frm, to, freq in sched_epochs])
+    sched_milestones = list(accumulate([milestone_steps(epochs) for epochs in milestone_epochs[:-1]]))
 
     lr_scheduler = torch.optim.lr_scheduler.SequentialLR(
-        optimizer, schedulers=[warmup_scheduler, lr_scheduler], milestones=[args.lr_warmup_epochs - 1]
+        optimizer, schedulers=[*schedulers], milestones=sched_milestones
     )
 
     metrics = {

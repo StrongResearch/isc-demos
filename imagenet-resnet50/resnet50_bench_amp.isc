@@ -1,7 +1,0 @@
-isc_project_id = "d337d33f-8413-4e0e-93f7-e7428205868a"
-experiment_name = "resnet50_bench_12_amp"
-gpu_type = "24GB VRAM GPU"
-nnodes = 12
-venv_path = "~/.venv/bin/activate"
-output_path = "~/outputs/resnet50_bench"
-command = "train_amp.py --epochs 100 --optim adamw --lr 0.005 --lr-warmup-epochs 10 --batch-size 56 --log-freq 10 --amp --data-path=/workspace/datasets/imagenet --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"
