@@ -1,0 +1,7 @@
+isc_project_id = "<project_id>"
+experiment_name = "imagenet_resnet50_bench"
+gpu_type = "24GB VRAM GPU"
+nnodes = 12
+venv_path = "~/.rn50in/bin/activate"
+output_path = "~/outputs/imagenet_resnet50_bench"
+command = "train.py --epochs 100 --lr 1.0 --label-smoothing=0.1 --weight-decay 0.02 --batch-size 28 --log-freq 10 --amp --data-path=/workspace/datasets/imagenet --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"
