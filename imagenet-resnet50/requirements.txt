@@ -1,5 +1,6 @@
 torch==2.1.2  --index-url https://download.pytorch.org/whl/cu118
 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
+tensorboard==2.16.2
 pycocotools==2.0.7
-tensorboard==2.15.1
 antialiased_cnns
+cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git

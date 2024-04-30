@@ -1,4 +1,4 @@
-# torch>=2.0.1
+torch==2.2.0
 accelerate==0.24.1
 appdirs==1.4.4
 loralib==0.1.2

@@ -91,7 +91,7 @@ def main():
     model = LanguageModel(vocab_size=dataset.vocab_size)
 
     num_gpus = torch.cuda.device_count()
-    num_nodes = dist.get_world_size() / num_gpus
+    num_nodes = int(dist.get_world_size() / num_gpus)
 
     trainer = L.Trainer(callbacks=[checkpoint_callback, sampler_callback], log_every_n_steps=1, gradient_clip_val=0.25, max_epochs=args.epochs, use_distributed_sampler=False, strategy='ddp', accelerator='gpu', devices=num_gpus, num_nodes=num_nodes)
 

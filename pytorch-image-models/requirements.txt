@@ -1,5 +1,5 @@
-torch>=1.7
-torchvision
+torch==2.1.2  --index-url https://download.pytorch.org/whl/cu118
+torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
 pyyaml
 huggingface_hub
 safetensors>=0.2
