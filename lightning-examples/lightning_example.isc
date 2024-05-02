@@ -2,6 +2,5 @@ isc_project_id = "<isc_project_id>"
 experiment_name = "lightning_example"
 gpu_type = "24GB VRAM GPU"
 nnodes = 10
-venv_path = "~/.venv/bin/activate"
 output_path = "~/output_lightning_example"
-command = "small_language_model.py --save-dir $OUTPUT_PATH --epochs 50 --save-freq 5"
+command = "source ~/.bashrc && source ~/.lightning/bin/activate && cd ~/isc-demos/lightning-examples/ && torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK small_language_model.py --save-dir $OUTPUT_PATH --epochs 50 --save-freq 5"

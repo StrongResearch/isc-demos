@@ -13,14 +13,15 @@ Once downloaded, make a note of the path to the pre-trained model, for example `
 FSDP currently relies on Pytorch nighlies, so we recommend creating and sourcing a new virtual environment for this demonstration.
 
 ```bash
-python3 -m virtualenv ~/.llama2env
-source ~/.llama2env/bin/activate
+python3 -m virtualenv ~/.llama2
+source ~/.llama2/bin/activate
 ```
 
 Install the required version of Pytorch with the following command.
 
 ```bash
-pip install torch==2.2.0.dev20231113+cu118 --index-url https://download.pytorch.org/whl/nightly/cu118
+# pip install torch==2.2.0.dev20231113+cu118 --index-url https://download.pytorch.org/whl/nightly/cu118
+pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu118
 ```
 
 Navigate into the llama-recipes directory and install llama-recipes.

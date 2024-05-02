@@ -106,76 +106,23 @@ associated with your User and Organisation.
 4. Open the file containing your public key. If you generated your keypair with the instruction above, the public key file should 
     have a file extension of `.pub`. Copy the entire contents of this file and paste into the input field on Control Plane beneath 
     **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
-5. Return to the Settings page on Control Plane and click on **"NEW API KEY"**. Optionally name your API key. If you already have
-    multiple Organisations established, select the Organisation to associate this API key with. Click on **"GENERATE NEW API ACCESS
-    TOKEN"**. You will be presented with the API Access Token associated with your API key. Save a copy of this API Access Token. Be
-    careful to save the entire API Access Token, note that some characters will be obscured by the fixed width of the display window.
-    For security purposes you will only be shown this API Access Token once and will not be able to access it again, though you can
-    always create a new API Key. Note you will need a separate API Key set up for each Organisation you wish to login to.
-6. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
+5. Return to the Settings page on Control Plane and click on **GENERATE** under the heading **Containers**. Strong Compute User 
+   environments are accessed via Docker containers, and this will generate you a new base image. Once your container has been created, 
+   you will then see the button update to allow you to **START** your container. You will also see displayed a new **ssh command** which
+   will include a specified port number and the login **root@192.168.127.70** which you can use to access your User environment. Note
+   that your container must be started in order for you to connect with it via ssh, and a new port number will be assigned each time
+   your container is stopped and started.
+6. Please ignore the **Access Tokens** section of the User Credentials page. This is deprecated and will be removed shortly.
+7. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
     You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
-7. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
+8. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
     be associated with one and only one **ISC Project** which is used for usage tracking and cost control. Click on 
     **"NEW PROJECT"** and give your new **ISC Project** a name. You will also need the help of your Organisation Owner or Admins 
     to ensure your Organisation has sufficient credits and that cost controls have been set to permit experiments to be 
     launched under your new **ISC Project**.
-8. <a name="org-id"></a> Open a terminal and enter the entire the SSH Username command. The command should start with `ssh` and end 
-    with `@<ip-address>`. You should be greeted by the Strong Compute logo and ISC welcome message below. This indicates that you have 
-    successfully logged into your environment on the **ISC Portal**. Your home directory on the ISC Portal is a subdirectory within
-   your Organisation directory. Running `pwd` you will see the full path to your home directory following the pattern
-   `/mnt/Client/<OrgID>/<UserID>`.
-
-```bash
-                    ;≥░░░≥≥-
-             ╓ ]▒╠╬╦  ░░░Γ ,φ╬╬▒  ,
-      ,╓ )▒╬╬╬╦ ╚╬╬╬╬╦   ,φ╬╬╬╬╜ φ╬╬╬▒ ┌,
-    ╬╬╬╬  ╬╬╬╬╬╦ ╙╬╬╩  ╔╖ ╙╩╬╬╙ φ╬╬╬╬╩ ╚╬╬╬▒
-    ╠╬╬╬▒ ╚╬╬╬╬╬▒   ╓φ╬╬╬╠╦,   ╬╬╬╬╬╬  ╬╬╬╬╬
-    ╘╬╬╬╬ε ╠╬╩╙ ,╔ç ╚╬╬╬╬╬╬╜ ╔╖  ╙╩╬╜ ╠╬╬╬╬╩
-     ╬╬╬╩╙  ,╔φ╬╬╬╬▒  ╚╬╬╩ ,╠╬╬╬╬╦╖   ╙╩╬╬╬
-       ,╔φ▒  ╬╬╬╬╬╬╬╬╦   ,φ╬╬╬╬╬╬╬╩ ╔▒╦╖,
-      ╠╬╬╬╬╬ç ╠╬╬╬╬╬╬╜ ╓╖ ╙╬╬╬╬╬╬╙ φ╬╬╬╬╬╬
-       ╬╬╬╬╬╬╦ ╙╬╩╜ ,φ╬╬╬╬╗  ╙╩╬  ╠╬╬╬╬╬╬
-        ╠╬╬╬╬╩╜  .φ╬╬╬╬╬╬╬╬╬╬╗   ╙╩╬╬╬╬╬
-         ╙  ,╓#▒▒  ╚╬╬╬╬╬╬╬╬╜ ╓╬▒╗╖   ╙
-           ╬╬╬╬╬╬╬▒  ╙╠╬╬╬╜ ╓╬╬╬╬╬╬╬╬
-            ╙╬╬╬╬╬╬╬▒╖   ,φ╬╬╬╬╬╬╬╬╩
-              ╙╬╬╬╬╝╜ ,╔╖  ╙╬╬╬╬╬╩
-                ╙  ╓#▓╬╬╬╬▒╗╖  ╙
-                   ╙╣╬╬╬╬╬╬╬╜
-                      ╙╝╝╙
- 
-=================================================
-                ISC v0.5.0-alpha
-=================================================
-
-Version 0.5.0-alpha of the ISC is now live!
-
-## Changelog
-...
-## Cycling
-...
-## Checkpointing
-...
-## Cycling utilities
-...
-## Example training scripts
-...
-```
-
-9. Run `isc login` and enter the API Key you saved previously at step 6. This will create your `credentials.isc` file which 
-    is used to authenticate you when you launch experiments on the ISC, and should be saved in the root of your home directory.
-```bash
-isc login
-```
-10. Run `isc ping` and you should receieve `Success: {'data': 'pong'}` in response to indicate that your credentials file has been 
-    created correctly.
-```bash
-isc ping
-```
-Congratulations, you are all set to start running experiments on the ISC. Follow the next steps in this guide to 
-configure and launch your first "hello world" experiment, and learn about necessary steps to make sure your experiment 
-is "interruptible" (including what this means).
+9. <a name="org-id"></a> Open a terminal and enter the ssh command obtained above. Congratulations, you are all set to start running 
+    experiments on the ISC. Follow the next steps in this guide to configure and launch your first "hello world" experiment, and learn
+    about necessary steps to make sure your experiment is "interruptible" (including what this means).
 
 ## 2. Interruptible experiments <a name="interruptible-experiments"></a>
 
@@ -232,11 +179,6 @@ demonstrate with the example project that follows.
 
 To follow this demonstration, first ensure you have cloned this repository in your home directory on the ISC.
 
-```bash
-cd ~
-git clone https://github.com/StrongResearch/isc-demos.git
-```
-
 The first step when commencing a new project on the ISC is to create and activate a virtual environment as follows.
 
 ```bash
@@ -245,23 +187,10 @@ python3 -m virtualenv ~/.fashion
 source ~/.fashion/bin/activate
 ```
 
-Next we will clone the `cycling_utils` repo (https://github.com/StrongResearch/cycling_utils) and install it as a package 
-in editable mode.
-
+Next we will clone this repo to access the example source code and navigate to the fashion_mnist subdirectory.
 ```bash
-cd ~
-git clone https://github.com/StrongResearch/cycling_utils.git
-pip install -e cycling_utils
-```
-
-The `cycling_utils` package contains helpful functions and classes for achieving interruptibility in distributed training. 
-Installing `cycling_utils` in editable mode will allow you to extend this package at any time with your own modules as needed 
-without having to reinstall the package. Next navigate to the `isc-demos` repo directory and inspect the contents of the 
-`fashion_mnist` subdirectory.
-
-```bash
+git clone https://github.com/StrongResearch/isc-demos.git
 cd ~/isc-demos/fashion_mnist
-ls
 ```
 
 The `isc-demos/fashion_mnist` subdirectory contains the following files of interest.
@@ -271,6 +200,11 @@ distributed training is coordinated using torchrun.
 ```bash
 pip install -r requirements.txt
 ```
+Note the `cycling_utils` package among the installed dependencies. The `cycling_utils` package contains helpful functions and 
+classes for achieving interruptibility in distributed training. Installing `cycling_utils` in editable mode will allow you to 
+extend this package at any time with your own modules as needed without having to reinstall the package. Next navigate to the 
+`isc-demos` repo directory and inspect the contents of the `fashion_mnist` subdirectory.
+
 2. `prep_data.py` includes commands for downloading the required dataset (Fashion MNIST). Run this with the following command 
     to download the dataset to the `fashion_mnist` directory, from which it is available to the Rapid Cycling cluster. This will 
     mean that this data is ready to go when the experiment is launched and no cycling time is wasted waiting for the data to 

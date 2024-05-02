@@ -46,7 +46,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--weight-decay", type=float, default=0.01)
 
-    parser.add_argument("--data-path", type=Path, default="/mnt/.node1/Open-Datasets/imagenet")
+    parser.add_argument("--data-path", type=Path, default="/open-datasets/imagenet")
     parser.add_argument("--save-dir", type=Path, required=True)
     parser.add_argument("--tboard-path", type=Path, required=True)
 
