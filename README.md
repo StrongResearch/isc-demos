@@ -113,14 +113,12 @@ associated with your User and Organisation.
    that your container must be started in order for you to connect with it via ssh, and a new port number will be assigned each time
    your container is stopped and started.
 6. Please ignore the **Access Tokens** section of the User Credentials page. This is deprecated and will be removed shortly.
-7. Click on **"Back to Settings"**. You should see the new API Key that you just created, and an associated SSH Username. 
-    You will use the command shown under **"SSH Username"** to connect to the ISC via SSH.
-8. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
+7. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
     be associated with one and only one **ISC Project** which is used for usage tracking and cost control. Click on 
     **"NEW PROJECT"** and give your new **ISC Project** a name. You will also need the help of your Organisation Owner or Admins 
     to ensure your Organisation has sufficient credits and that cost controls have been set to permit experiments to be 
     launched under your new **ISC Project**.
-9. <a name="org-id"></a> Open a terminal and enter the ssh command obtained above. Congratulations, you are all set to start running 
+8. <a name="org-id"></a> Open a terminal and enter the ssh command obtained above. Congratulations, you are all set to start running 
     experiments on the ISC. Follow the next steps in this guide to configure and launch your first "hello world" experiment, and learn
     about necessary steps to make sure your experiment is "interruptible" (including what this means).
 
