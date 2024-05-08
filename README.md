@@ -108,17 +108,27 @@ associated with your User and Organisation.
     **"Public key contents"**, then click **"SUBMIT NEW SSH PUBLIC KEY"**.
 5. Return to the Settings page on Control Plane and click on **GENERATE** under the heading **Containers**. Strong Compute User 
    environments are accessed via Docker containers, and this will generate you a new base image. Once your container has been created, 
-   you will then see the button update to allow you to **START** your container. You will also see displayed a new **ssh command** which
-   will include a specified port number and the login **root@192.168.127.70** which you can use to access your User environment. Note
-   that your container must be started in order for you to connect with it via ssh, and a new port number will be assigned each time
-   your container is stopped and started.
-6. Please ignore the **Access Tokens** section of the User Credentials page. This is deprecated and will be removed shortly.
-7. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
+   you will then see the button update to allow you to **START** your container.
+6. You will also see displayed a new **ssh command** which will include a specified port number and the login **root@192.168.127.70**
+   which you can use to access your User environment. You may need to extend this ssh command to specify the private key to use as follows.
+   If you submitted your public key saved at `~/.ssh/id_rsa.pub` then you should be able to ignore this requirement.
+
+```bash
+# If not submitted ~/.ssh/id_rsa.pub
+ssh -p <port> root@192.168.127.70 -i <path/to/your/private_key>
+
+# If submitted ~/.ssh/id_rsa.pub
+ssh -p <port> root@192.168.127.70
+```
+7. Note that your container **must be started** in order for you to connect to it via ssh, and a **new port number** will be assigned each
+   time your container is stopped and started.
+8. Please ignore the **Access Tokens** section of the User Credentials page. This is deprecated and will be removed shortly.
+9. <a name="isc-project-id"></a> From the main page tabs, click on **"Projects"**. All experiments launched on the ISC must 
     be associated with one and only one **ISC Project** which is used for usage tracking and cost control. Click on 
     **"NEW PROJECT"** and give your new **ISC Project** a name. You will also need the help of your Organisation Owner or Admins 
     to ensure your Organisation has sufficient credits and that cost controls have been set to permit experiments to be 
     launched under your new **ISC Project**.
-8. <a name="org-id"></a> Open a terminal and enter the ssh command obtained above. Congratulations, you are all set to start running 
+10. <a name="org-id"></a> Open a terminal and enter the ssh command obtained above. Congratulations, you are all set to start running 
     experiments on the ISC. Follow the next steps in this guide to configure and launch your first "hello world" experiment, and learn
     about necessary steps to make sure your experiment is "interruptible" (including what this means).
 
