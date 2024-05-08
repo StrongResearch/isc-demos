@@ -194,7 +194,6 @@ source ~/.fashion/bin/activate
 Next we will clone this repo to access the example source code and navigate to the fashion_mnist subdirectory.
 ```bash
 git clone https://github.com/StrongResearch/isc-demos.git
-cd ~/isc-demos/fashion_mnist
 ```
 
 The `isc-demos/fashion_mnist` subdirectory contains the following files of interest.
@@ -202,6 +201,7 @@ The `isc-demos/fashion_mnist` subdirectory contains the following files of inter
 for our project. Install these by running the following. Note, only Pytorch models are currently supported on the ISC and 
 distributed training is coordinated using torchrun. 
 ```bash
+cd ~/isc-demos/fashion_mnist
 pip install -r requirements.txt
 ```
 Note the `cycling_utils` package among the installed dependencies. The `cycling_utils` package contains helpful functions and 
@@ -215,6 +215,7 @@ extend this package at any time with your own modules as needed without having t
     download. Preparing your data ahead of time is an essential requirement for running experiments on the ISC and we will cover 
     [**how to transfer your private dataset to our cloud storage**](#data-transfer) for training in a later section.
 ```bash
+cd ~/isc-demos/fashion_mnist
 python -m prep_data
 ```
 3. `model.py` includes a description of the neural network model that we will train.
@@ -245,6 +246,7 @@ After you have run `prep_data.py` (above) to pre-download the Fashion MNIST data
 train on the ISC using the following command.
 
 ```bash
+cd ~/isc-demos/fashion_mnist
 isc train fashion_mnist.isc
 isc experiments # view a list of your experiments
 ```
