@@ -134,7 +134,7 @@ ssh -p <port> root@192.168.127.70
 
 **Note:** Your environment is running in a **Docker container**. Your home directory is **read/write** mounted at `/root`. A shared directory accessible 
 to all members of your Organisation is **read/write** mounted at `/shared`. You can install any software you require in your container
-which will be committed and pushed to our docker registry when you **STOP** your container and when you launch an experiment. 
+which will be committed and pushed to our docker registry when you **STOP** your container and when you launch an experiment.
 
 We recommend saving all working files (including virtual environments) to `/root` in order to **minimise the size** of your container, thus 
 minimizing the start time for your container and the time to launch your experiments on the ISC.
@@ -244,14 +244,14 @@ python -m prep_data
     - `nnodes`: This is the number of nodes that you are requesting. Each node will have a number of GPUs. The **Rapid 
         Cycling** cluster nodes each have **6 GPUs**, and there are currently a **maximum of 12 nodes available**, so be 
         sure to request between 1 and 12 nodes.
-    - `venv_path`: This is the path to your virtual environment which we set up above. If you followed the instructions 
-        above for **"Creating your ISC User and Organisation credentials"** then you should leave this unchanged.
     - `output_path`: This is the directory where the outputs of your experiment will be saved, including reports from 
         each node utilised by your experiment. It can be helpful to consider how you would like to structure your 
         output(s) directory to keep your experiment results organised (i.e. subdirectories for experiment groups).
-    - `command`: This is the launch command passed to **torchrun** to commence your experiment. Note the call to `train.py` 
-        and the command line arguments passed. Refer to the notes within `train.py` to understand how these arguments 
-        affect training and checkpointing.
+    - `command`: This is the **CMD** supplied when running your docker container. In this `fashion_mnist` example we
+      demonstrate chaining the suitable instructions to run a **torchrun** command. We `source ~/.bashrc` to configure
+      the nodes to communicate over infiniband (note this will soon not be required), activate the virtual environment
+      with `source ~/.fashion/bin/activate` and then launch torchrun with `torchrun --nnodes=10 --nproc-per-node=6 ...`.
+      Refer to the notes within `train.py` to understand how these arguments affect training and checkpointing.
 
 After you have run `prep_data.py` (above) to pre-download the Fashion MNIST dataset, you can launch this experiment to 
 train on the ISC using the following command.
@@ -261,6 +261,9 @@ cd ~/isc-demos/fashion_mnist
 isc train fashion_mnist.isc
 isc experiments # view a list of your experiments
 ```
+
+When you launch an experiment, the ISC will **commit and push** your container to our private docker registry, and then
+run your container with the command provided in the 
 
 You should recieve the response `Success: Experiment created`. Running `isc experiments` you should be able to see your 
 experiment in the experiments table with the status `enqueued`. Other details about your experiment displayed include 
@@ -414,6 +417,6 @@ Strong Compute currently supports uploading private datasets 100GB or less in si
 1. Visit the **Datasets** page on Control Plane (ensure you have selected the intended Organisation from the menu top-right) and click on **New Dataset**
 2. Complete the New Dataset form, including AWS S3 bucket name and credentials information, leave the format set to "small_unstructured", and click on **Add Dataset**.
 3. Returning to the **Datasets** page you will see your dataset registered on Control Plane. The status of the new dataset will report its progress through the preprocessing pipeline including **Created** indicating the dataset has been added to the web application, but has not yet been cached onto the ISC system, **Caching** indicating the dataset is currently being cached from S3 (this may take several minutes for larger S3 buckets), and **Available** indicating the dataset has been cached onto the ISC system, and can be accessed in training. Note the `dataset_id` for the new dataset for use in the next step.
-4. Edit your `.isc` file to include the additional field `dataset_id="<dataset_id>"`. This will instruct the ISC make this dataset available to your experiment in a mounted directory. The path for this directory will also be set as an environment variable `$STRONG_DATASET_PATH` which you can access in your training script or pass in as a keyword argument (e.g. `command = “train.py --epochs 100 --data-path $STRONG_DATASET_PATH”`).
+4. Edit your `.isc` file to include the additional field `dataset_id="<dataset_id>"`. The ISC will mount your dataset **read-only** at `/data/<contents-of-your-bucket>` which your cont.
 
 **Note:** All users within the Organisation that the Dataset was created under will be able to see and access this dataset. Currently datasets created in the above fashion are only accessible in training, not from the ISC Portal.
