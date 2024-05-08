@@ -251,7 +251,8 @@ python -m prep_data
       demonstrate chaining the suitable instructions to run a **torchrun** command. We `source ~/.bashrc` to configure
       the nodes to communicate over infiniband (note this will soon not be required), activate the virtual environment
       with `source ~/.fashion/bin/activate` and then launch torchrun with `torchrun --nnodes=10 --nproc-per-node=6 ...`.
-      Refer to the notes within `train.py` to understand how these arguments affect training and checkpointing.
+      When launching torchrun it is important to specify the torchrun `--nnodes` argument equal to the `nnodes` argument
+      above.
 
 After you have run `prep_data.py` (above) to pre-download the Fashion MNIST dataset, you can launch this experiment to 
 train on the ISC using the following command.
