@@ -122,6 +122,12 @@ associated with your User and Organisation.
     experiments on the ISC. Follow the next steps in this guide to configure and launch your first "hello world" experiment, and learn
     about necessary steps to make sure your experiment is "interruptible" (including what this means).
 
+Your environment is running in a Docker container. Your home directory is **read/write** mounted at `/root`. A shared directory accessible 
+to all members of your Organisation is **read/write** mounted at `/shared`. You can install any software you require in your container
+which will be committed and pushed to our docker registry when you **STOP** your container and when you launch an experiment. We recommend
+saving all working files (including virtual environments) to `/root` in order to minimise the start time for your container, and thus the
+time to launch your experiments on the cluster.
+
 ## 2. Interruptible experiments <a name="interruptible-experiments"></a>
 
 We will now explore and run some code to launch an experiment on the ISC. This example will demonstrate the principle and 
