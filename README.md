@@ -1,5 +1,5 @@
 # ISC Demos
-Welcome to the Strong Compute ISC Demos repo, here you will find all the instructions you need to get set up to train 
+Welcome to the Strong Compute Instant Super Computer (ISC) Demos repo, here you will find all the instructions you need to get set up to train 
 Pytorch models on the Strong Compute ISC.
  - [1. Getting Started](#getting-started)
    - [1.1. Setting up the VPN](#setting-up-vpn)
@@ -137,7 +137,7 @@ to all members of your Organisation is **read/write** mounted at `/shared`. You 
 which will be committed and pushed to our docker registry when you **STOP** your container and when you launch an experiment. 
 
 We recommend saving all working files (including virtual environments) to `/root` in order to **minimise the size** of your container, thus 
-minimizing the start time for your container and the time to launch your experiments on the cluster.
+minimizing the start time for your container and the time to launch your experiments on the ISC.
 
 ## 2. Interruptible experiments <a name="interruptible-experiments"></a>
 
