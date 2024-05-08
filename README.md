@@ -264,7 +264,7 @@ isc experiments # view a list of your experiments
 ```
 
 When you launch an experiment, the ISC will **commit and push** your container to our private docker registry, and then
-run your container once on each node with the CMD provided in the `.isc` file.
+run your container once on each node with the command provided in the `.isc` file.
 
 You should recieve the response `Success: Experiment created`. Running `isc experiments` you should be able to see your 
 experiment in the experiments table with the status `enqueued`. Other details about your experiment displayed include 
