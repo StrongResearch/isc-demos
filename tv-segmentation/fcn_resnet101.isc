@@ -3,7 +3,7 @@ experiment_name="seg-fcn_resnet50"
 gpu_type="24GB VRAM GPU"
 nnodes = 10
 output_path = "~/outputs/tv-segmentation"
-command = "source ~/.bashrc && source ~/.cifar/bin/activate && cd ~/isc-demos/cifar100-resnet50/ && torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train_cycling.py --lr 0.0002 --dataset coco -b 8 --model fcn_resnet101 --aux-loss --weights-backbone ResNet101_Weights.IMAGENET1K_V1 --data-path=/open-datasets/coco --epochs=1 --resume $OUTPUT_PATH/checkpoint.isc"
+command = "source ~/.cifar/bin/activate && cd ~/isc-demos/cifar100-resnet50/ && torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train_cycling.py --lr 0.0002 --dataset coco -b 8 --model fcn_resnet101 --aux-loss --weights-backbone ResNet101_Weights.IMAGENET1K_V1 --data-path=/open-datasets/coco --epochs=1 --resume $OUTPUT_PATH/checkpoint.isc"
 
 
 
