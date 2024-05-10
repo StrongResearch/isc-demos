@@ -248,8 +248,7 @@ python -m prep_data
         each node utilised by your experiment. It can be helpful to consider how you would like to structure your 
         output(s) directory to keep your experiment results organised (i.e. subdirectories for experiment groups).
     - `command`: This is the **CMD** supplied when running your docker container. In this `fashion_mnist` example we
-      demonstrate chaining the suitable instructions to run a **torchrun** command. We `source ~/.bashrc` to configure
-      the nodes to communicate over infiniband (note this will soon not be required), activate the virtual environment
+      demonstrate chaining the suitable instructions to run a **torchrun** command. We activate the virtual environment
       with `source ~/.fashion/bin/activate` and then launch torchrun with `torchrun --nnodes=10 --nproc-per-node=6 ...`.
       When launching torchrun it is important to specify the torchrun `--nnodes` argument equal to the `nnodes` argument
       above.
