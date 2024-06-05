@@ -301,7 +301,8 @@ understand where and how these event logs are created.
 You can launch a tensorboard instance to track the training and performance metrics of the experiment with the following 
 command **Note:** this assumes you are accessing the ISC from an IDE such as VSCode which does automatic port-forwarding. 
 See below for instructions on how to view tensorboard when accessing the ISC from terminal without IDE). If you are accessing
-the ISC from a bare terminal, you will need to download your tensorboard logs before launching your tensorboard.
+the ISC from a bare terminal, you will need to download your tensorboard logs to your local machine (e.g. using `scp` before 
+launching your tensorboard.
 
 ```bash
 tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
