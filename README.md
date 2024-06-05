@@ -299,8 +299,9 @@ Lastly you will find a subdirectory called `tb` which contains tensorboard event
 understand where and how these event logs are created.
 
 You can launch a tensorboard instance to track the training and performance metrics of the experiment with the following 
-command (**Note:** this assumes you are accessing the ISC from an IDE such as VSCode which does automatic port-forwarding. 
-See below for instructions on how to view tensorboard when accessing the ISC from terminal without IDE).
+command **Note:** this assumes you are accessing the ISC from an IDE such as VSCode which does automatic port-forwarding. 
+See below for instructions on how to view tensorboard when accessing the ISC from terminal without IDE). If you are accessing
+the ISC from a bare terminal, you will need to download your tensorboard logs before launching your tensorboard.
 
 ```bash
 tensorboard --logdir <Output Path from ISC Experiments table> --port <port>
@@ -311,13 +312,6 @@ tensorboard at `http://localhost:<port>/`. Tensorboard recursively searches for 
 passed after the `--logdir` flag, so it will discover the event logs in the `/tb` subdirectory.
 
 ![fashion_mnist_tensorboard](https://github.com/StrongResearch/isc-demos/blob/main/fashion_mnist/fashionmnist_tensorboard.png?raw=true)
-
-If you are accessing the ISC from a terminal (not an IDE such as VSCode) then you will need to manually forward the port 
-that tensorboard is served on by extending the tensorboard launch command as follows.
-```bash
-tensorboard --logdir <Output Path from ISC Experiments table> --port <port>  --host 0.0.0.0
-```
-Tensorboard can then be viewed by entering `192.168.127.70:<port>` in the address bar of your browser.
 
 Continue to track the progress of your experiment while it cycles by checking in on the `rank_0.txt` file and the 
 tensorboard. You can also view the contents of the `rank_0.txt` file by visiting the **Experiments** tab on 
