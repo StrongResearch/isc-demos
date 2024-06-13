@@ -5,6 +5,8 @@ strong_launcher/
 *.pth
 *.checkpoint
 *.pt
+*.safetensors
+*.sf
 wandb/
 lightning-examples/data
 events.out.tfevents.*

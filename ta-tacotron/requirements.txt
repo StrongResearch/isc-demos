@@ -1,0 +1,11 @@
+torch==2.0.1
+librosa
+inflect
+joblib
+torchaudio==2.0.2 
+matplotlib
+tensorboard
+unidecode
+pillow
+tqdm
+safetensors
