@@ -1,3 +1,4 @@
 torch==2.1.2  --index-url https://download.pytorch.org/whl/cu118
 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
 cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
+numpy==1.26.4
