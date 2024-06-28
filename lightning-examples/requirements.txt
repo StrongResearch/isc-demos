@@ -1,5 +1,0 @@
-lightning==2.2.3
-torch==2.1.2  --index-url https://download.pytorch.org/whl/cu118
-torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
-requests==2.31.0
-cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
