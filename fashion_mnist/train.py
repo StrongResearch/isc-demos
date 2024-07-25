@@ -55,7 +55,7 @@ def get_args_parser(add_help=True):
     # A model training regularisation technique to reduce over-fitting
     # ---------------------------------------
     parser.add_argument("--lr", type=float, default=0.01)
-    parser.add_argument("--lr-step-epochs", type=float, default=50)
+    parser.add_argument("--lr-step-epochs", type=float, default=100)
     parser.add_argument("--lr-decay-rate", type=float, default=0.8)
     # This example demonstrates a StepLR learning rate scheduler. Different schedulers will require different
     # hyper-parameters.
