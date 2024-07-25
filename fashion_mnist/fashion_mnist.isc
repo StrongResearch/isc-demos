@@ -1,6 +1,7 @@
-isc_project_id = "<isc_project_id>"
+isc_project_id = "<isc-project-id>"
 experiment_name = "fashion_mnist"
 gpu_type = "24GB VRAM GPU"
 nnodes = 10
 output_path = "~/outputs/fashion_mnist"
+dataset_id = "0cfd54a3-4096-494e-93d5-a073126e81e2"
 command = "source ~/.fashion/bin/activate && cd ~/isc-demos/fashion_mnist/ && torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train.py --epochs 1000 --test-epochs 5 --lr 0.001 --lr-step-epochs 100 --lr-decay-rate 0.8 --batch-size 16 --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"

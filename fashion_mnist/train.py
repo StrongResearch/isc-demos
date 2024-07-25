@@ -237,8 +237,8 @@ def main(args, timer):
     train_transform = Compose([PILToTensor(), RandAugment(), Lambda(lambda v: v.to(torch.float32) / 255.0)])
     test_transform = Compose([PILToTensor(), Lambda(lambda v: v.to(torch.float32) / 255.0)])
 
-    training_data = datasets.FashionMNIST(root="data", train=True, download=False, transform=train_transform)
-    test_data = datasets.FashionMNIST(root="data", train=False, download=False, transform=test_transform)
+    training_data = datasets.FashionMNIST(root="/data", train=True, download=False, transform=train_transform)
+    test_data = datasets.FashionMNIST(root="/data", train=False, download=False, transform=test_transform)
     timer.report("Initialized datasets")
 
     ##############################################
