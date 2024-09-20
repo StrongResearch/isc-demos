@@ -1,6 +1,7 @@
-isc_project_id = "<isc_project_id>"
+isc_project_id = "<isc-project-id>"
 experiment_name = "imagenet_resnet50_bench"
 gpu_type = "24GB VRAM GPU"
-gpus = 8
+gpus = 48
+compute_mode = "cycle"
 output_path = "~/outputs/imagenet_resnet50_bench"
 command = "source ~/.imagenet/bin/activate && cd ~/isc-demos/imagenet-resnet50/ && torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train.py --epochs 100 --lr 1.0 --label-smoothing=0.1 --weight-decay 0.02 --batch-size 28 --log-freq 10 --amp --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"

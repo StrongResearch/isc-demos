@@ -1,9 +1,8 @@
 # Fashion MNIST
-To get started with this demo, run the following commands to get the requirements installed and dataset downloaded.
+To get started with this demo, update the Project ID in the experiment launch file `fashion_mnist.isc` with your Project ID from Control Plane.
 
-```bash
-pip install -r requirements.txt
-python -m prep_data
+```
+isc_project_id = "<isc-project-id>"
 ```
 
 You can then launch an experiment with the following command.

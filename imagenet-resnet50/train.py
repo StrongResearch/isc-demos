@@ -23,11 +23,10 @@ from torch.utils.data import DataLoader, default_collate
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import v2
-import antialiased_cnns # from our good friends at Adobe
 
-
+from antialiased_resnet import resnet50
+from lamb import Lamb
 from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
-from LAMB import Lamb
 
 timer.report("00_imports")
 
@@ -120,7 +119,7 @@ def train_loop(
 
         # Accumulation batch
         if is_accum_batch or is_last_batch:
-            with torch.cuda.amp.autocast(enabled=args.amp): # AMP context for forward pass if AMP
+            with torch.amp.autocast('cuda', enabled=args.amp): # AMP context for forward pass if AMP
                 # Forward pass
                 predictions = model(inputs)
                 torch.cuda.synchronize()
@@ -170,7 +169,7 @@ def train_loop(
         # Non-accumulation batch
         else:
             with model.no_sync(): # No GPU sync on grad accumulation batch
-                with torch.cuda.amp.autocast(enabled=args.amp): # Optional context for forward pass
+                with torch.amp.autocast('cuda', enabled=args.amp): # Optional context for forward pass
                     # Forward pass
                     predictions = model(inputs)
                     torch.cuda.synchronize()
@@ -498,7 +497,7 @@ def main(args, timer):
     ##############################################
     # Model Preparation
     # ----------------------
-    model = antialiased_cnns.resnet50() # APPLIES BLURPOOL
+    model = resnet50() # APPLIES BLURPOOL
     timer.report("08_model_build")
     model = model.to(args.device_id, memory_format=torch.channels_last)
     timer.report("09_model_gpu")
@@ -509,7 +508,7 @@ def main(args, timer):
     # Loss function, Optimizer, Learning rate scheduler
     # ----------------------
     loss_fn = nn.BCEWithLogitsLoss(reduction="mean") # Using cutmix, mixup, and label smoothing
-    scaler = torch.cuda.amp.GradScaler(enabled=args.amp) # Enabled or not based on arg 'amp'
+    scaler = torch.amp.GradScaler('cuda', enabled=args.amp) # Enabled or not based on arg 'amp'
     
     param_groups = [{'params': param, 'weight_decay': 0.00} if is_batchnorm_param(name) else {'params': param} for name,param in model.named_parameters()]
     if args.optim  == 'sgd':
