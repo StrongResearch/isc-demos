@@ -26,7 +26,7 @@ Each example published below is annotated with its degree of completion. Example
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
-| resnet50 | Image classification | ResNet50 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
+| resnet50 | Image classification | ResNet50 | [3] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 | resnet152 | Image classification | ResNet152 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 | efficientnet_b0 | Image classification | EfficientNet B0 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
 | efficientnet_b7 | Image classification | EfficientNet B7 | [2] | [isc-demos/pytorch-image-models](pytorch-image-models) |
