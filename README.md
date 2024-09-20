@@ -3,7 +3,7 @@ Welcome to the Strong Compute Instant Super Computer (ISC) Demos repo. Before di
 that Strong Compute users complete the Getting Started section of the 
 [Developer Docs](https://strong-compute.gitbook.io/developer-docs/getting-started).
 
-### 1. Demos <a name="more-examples"></a>
+### Demos <a name="more-examples"></a>
 
 The following examples demonstrate use of the ISC for training a variety of models, including how to implement 
 interruptibility in distributed training scripts using checkpointing, atomic saving, and stateful samplers.
