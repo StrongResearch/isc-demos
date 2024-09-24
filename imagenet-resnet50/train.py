@@ -26,7 +26,7 @@ from torchvision.transforms import v2
 
 from antialiased_resnet import resnet50
 from lamb import Lamb
-from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
+from cycling_utils import InterruptableDistributedSampler, AtomicDirectory
 
 timer.report("00_imports")
 
@@ -45,9 +45,10 @@ def get_args_parser(add_help=True):
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--weight-decay", type=float, default=0.01)
 
-    parser.add_argument("--data-path", type=Path, default="/open-datasets/imagenet")
+    parser.add_argument("--data-path", type=Path, default="/data")
     parser.add_argument("--save-dir", type=Path, required=True)
     parser.add_argument("--tboard-path", type=Path, required=True)
+    parser.add_argument("--load-path", type=Path, default=None)
 
     parser.add_argument("--save-freq", type=int, default=50)
     parser.add_argument("--log-freq", type=int, default=50)
@@ -74,6 +75,7 @@ def train_loop(
     train_dataloader,
     test_dataloader,
     metrics,
+    saver,
     args,
 ):
     # Determine starting progress through epoch
@@ -113,6 +115,8 @@ def train_loop(
         is_save_batch = (batch + 1) % args.save_freq == 0
         is_last_batch = (batch + 1) == train_batches_per_epoch
         is_lrstep_batch = True if args.lr_stepevery == "batch" else is_last_batch
+        if (is_save_batch or is_last_batch) and args.is_master:
+            checkpoint_directory = saver.prepare_checkpoint_directory()
         torch.cuda.synchronize()
         metrics["sys"].update({"2_batch_stats": time.perf_counter() - start})
         start = time.perf_counter()
@@ -212,7 +216,7 @@ def train_loop(
             if args.is_master:
                 total_progress = batch + epoch * train_batches_per_epoch
                 examples_seen = metrics["train"].agg["examples_seen"]
-                accum_avg_loss = metrics["train"].agg["loss"] / examples_seen # scale back up for accum
+                accum_avg_loss = metrics["train"].agg["loss"] / examples_seen
                 writer.add_scalar("Train/avg_loss", accum_avg_loss, total_progress)
                 writer.add_scalar(
                     "Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress
@@ -314,9 +318,8 @@ def train_loop(
                 "metrics_test": metrics["test"].state_dict(),
                 "metrics_sys": metrics["sys"].state_dict(),
             }
-            atomic_torch_save(
-                save_payload, args.checkpoint_path,
-            )
+            torch.save(save_payload, os.path.join(checkpoint_directory, "checkpoint.pt"))
+            saver.atomic_symlink(checkpoint_directory)
 
         torch.cuda.synchronize()
         dist.barrier()  # Add after master-only op to ensure fair timing
@@ -333,6 +336,7 @@ def test_loop(
     train_dataloader,
     test_dataloader,
     metrics,
+    saver,
     args,
 ):
     epoch = test_dataloader.sampler.epoch
@@ -355,6 +359,9 @@ def test_loop(
             is_log_batch = (batch + 1) % args.log_freq == 0
             is_save_batch = (batch + 1) % args.save_freq == 0
             is_last_batch = (batch + 1) == test_batches_per_epoch
+            if (is_save_batch or is_last_batch) and args.is_master:
+                checkpoint_directory = saver.prepare_checkpoint_directory()
+
             # Move input and targets to device
             inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
             # Create one-hot encoded targets for test loss calculation
@@ -415,9 +422,8 @@ def test_loop(
                     "metrics_test": metrics["test"].state_dict(),
                     "metrics_sys": metrics["sys"].state_dict(),
                 }
-                atomic_torch_save(
-                    save_payload, args.checkpoint_path,
-                )
+                torch.save(save_payload, os.path.join(checkpoint_directory, "checkpoint.pt"))
+                saver.atomic_symlink(checkpoint_directory)
 
 
 def main(args, timer):
@@ -434,10 +440,6 @@ def main(args, timer):
 
     ## NOTE: GRAD SCALER CAUSES NANS BY DESIGN. LOG NANS WITHOUT RAISING.
     # torch.autograd.set_detect_anomaly(True) 
-
-    args.checkpoint_path = args.save_dir / "checkpoint.pt"
-    args.checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
-    timer.report("04_checkpoint_path")
 
     ##############################################
     # Data Transformation and Augmentation
@@ -559,12 +561,18 @@ def main(args, timer):
     #####################################
     # Retrieve the checkpoint if the experiment is resuming from pause
     # ----------------------
-    if os.path.isfile(args.checkpoint_path):
-        if args.is_master:
-            print(f"Loading checkpoint from {args.checkpoint_path}")
-        checkpoint = torch.load(
-            args.checkpoint_path, map_location=f"cuda:{args.device_id}"
-        )
+    saver = AtomicDirectory(args.save_dir)
+    checkpoint_path = None
+
+    local_resume_path = os.path.join(args.save_dir, saver.symlink_name)
+    if os.path.islink(local_resume_path):
+        checkpoint_path = os.path.join(os.readlink(local_resume_path), "checkpoint.pt")
+    elif args.load_path:
+        if os.path.isfile(args.load_path):
+            checkpoint_path = args.load_path
+    if checkpoint_path:
+        timer.report(f"Loading checkpoint from {checkpoint_path}")
+        checkpoint = torch.load(checkpoint_path, map_location=f"cuda:{args.device_id}")
 
         model.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
@@ -592,6 +600,7 @@ def main(args, timer):
                 train_dataloader,
                 test_dataloader,
                 metrics,
+                saver,
                 args,
             )
 
@@ -605,9 +614,9 @@ def main(args, timer):
                     train_dataloader,
                     test_dataloader,
                     metrics,
+                    saver,
                     args,
                 )
-
 
 timer.report("01_define_functions")
 
