@@ -19,7 +19,7 @@ python3 -c "import torch; print(torch.cuda.is_available())"
 ```
 4. Update the `yolov10-train.isc` file with your own project ID. If you wish to change the GPU numbers, note that you can only go up to maximum capacity for a single machine. You can change the experiment name too if you want.
 
-5. For this demo, we'll be training YOLOv10n on the COCO8 dataset. You should not need to download them, as Ultralytics handles these automatically.
+5. For this demo, we'll be training YOLOv10n on the COCO8 dataset. You should not need to download the model and dataset, as Ultralytics handles these automatically.
 
 ## Running the script
 6. Start an experiment with the following command
@@ -30,7 +30,7 @@ isc train yolov10-train.isc
 ```
 Logging results to runs/detect/train2
 ```
-After the training is complete, check your results at that specified directory. You should be able to see images of the confusion matrix and overall results graphs.
+After the training is complete, check your results at that specified directory. You should be able to see images of results like confusion matrix.
 
 # Custom Dataset Training
 1. Organize your dataset like this. If you do not have a test split for your data, it is OK. Just make sure you have the validation split.
