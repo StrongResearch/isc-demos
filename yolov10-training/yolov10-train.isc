@@ -1,0 +1,7 @@
+isc_project_id = "6e8eca81-df43-4d0e-8dfd-90bd755afec1"
+experiment_name = "ISC DEMO YOLOV10 Training"
+gpu_type = "24GB VRAM GPU"
+gpus = 6
+compute_mode = "cycle"
+output_path = "~/outputs/yolov10_training"
+command = "source ~/.yolov10-train/bin/activate && cd ~/isc-demos/yolov10-training && python3 yolov10-train.py"
