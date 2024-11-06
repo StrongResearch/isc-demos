@@ -44,6 +44,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--lr", type=float, default=1.0)
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--weight-decay", type=float, default=0.01)
+    parser.add_argument("--warmup-epochs", type=int, default=5)
 
     parser.add_argument("--data-path", type=Path, default="/data")
     parser.add_argument("--save-dir", type=Path, required=True)
@@ -540,9 +541,10 @@ def main(args, timer):
         exp_lambda = lambda step: math.exp(step * math.log(finish/start) / steps + math.log(start))
         return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_lambda)
 
+    annealing_epochs = args.epochs - args.warmup_epochs
     sched_epochs = [
-        (0.002, 0.01, 5), # warm up
-        (0.01, 0.00, 95), # annealing
+        (0.002, 0.01, args.warmup_epochs), # warm up
+        (0.01, 0.00, annealing_epochs), # annealing
     ]
     schedulers, milestone_epochs = zip(*[(get_cosine_scheduler(frm, to, freq), freq) for frm, to, freq in sched_epochs])
     sched_milestones = list(accumulate([milestone_steps(epochs) for epochs in milestone_epochs[:-1]]))
