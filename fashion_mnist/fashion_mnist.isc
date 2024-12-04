@@ -5,4 +5,9 @@ gpus = 20
 compute_mode = "cycle"
 output_path = "~/outputs/fashion_mnist"
 dataset_id = "8d2de5b2-d07f-47ce-a6d6-d217a1cfa369"
-command = "source ~/.fashion/bin/activate && cd ~/isc-demos/fashion_mnist/ && torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train.py --lr 0.001 --batch-size 16 --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb"
+command = '''
+source ~/.fashion/bin/activate && 
+cd ~/isc-demos/fashion_mnist/ && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+train.py --lr 0.001 --batch-size 16 --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb'''
