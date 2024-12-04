@@ -1,6 +1,6 @@
 isc_project_id = "<isc_project_id>"
 experiment_name="timm-efficientnetv2_xl"
 gpu_type="24GB VRAM GPU"
-nnodes = 10
+gpus = 20
 output_path = "~/output_timm"
 command = "source ~/.timm/bin/activate && cd ~/isc-demos/pytorch-image-models/ && torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train_cycling.py /open-datasets/imagenet/ILSVRC/Data/CLS-LOC --model=efficientnetv2_xl --batch-size=16 --amp --resume $OUTPUT_PATH/checkpoint.pt"
