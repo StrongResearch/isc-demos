@@ -56,9 +56,9 @@ def get_args_parser(add_help=True):
     return parser
 
 def check_model_grads(model, args):
-    result = 0.0
+    result = 0
     if any([torch.isnan(param.grad).any().item() for param in model.parameters()]):
-        result = 1.0
+        result = 1
     return result
 
 def is_batchnorm_param(name):
@@ -87,8 +87,7 @@ def train_loop(
 
     # Setup for logging
     writer = SummaryWriter(log_dir=args.tboard_path)
-    host_device_nans = torch.zeros(3, args.world_size, device=args.device_id)
-    host_device_nans[:, int(os.environ["RANK"])] = torch.tensor([int(args.host[2:]), args.device_id, 0])
+    host_device_nans = torch.zeros(args.world_size, dtype=torch.int, device=args.device_id)
 
     # Report and just reset timer
     timer.report(
@@ -155,7 +154,7 @@ def train_loop(
             metrics["sys"].update({"6_backward": time.perf_counter() - start})
             start = time.perf_counter()
             # Check model grads for nans
-            host_device_nans[2, int(os.environ["RANK"])] += check_model_grads(model, args)
+            host_device_nans[args.rank] += check_model_grads(model, args)
             torch.cuda.synchronize()
             metrics["sys"].update({"7_grad_nan_check": time.perf_counter() - start})
             start = time.perf_counter()
@@ -205,7 +204,7 @@ def train_loop(
                 metrics["sys"].update({"6_backward": time.perf_counter() - start})
                 start = time.perf_counter()
                 # Check model grads for nans
-                host_device_nans[2, int(os.environ["RANK"])] += check_model_grads(model, args)
+                host_device_nans[int(os.environ["RANK"])] += check_model_grads(model, args)
                 torch.cuda.synchronize()
                 metrics["sys"].update({"7_grad_nan_check": time.perf_counter() - start})
                 start = time.perf_counter()
@@ -272,7 +271,7 @@ def train_loop(
                     json_payload[step] = duration / (args.world_size * args.log_freq)
                 writer.add_scalar("Sys/Total_time", total_duration, total_progress)
                 writer.add_scalar("Sys/Max_GPU_temp", max_gpu_temp, total_progress)
-                writer.add_scalar("Sys/Grad_NaNs", host_device_nans[2,:].sum().item(), total_progress)
+                writer.add_scalar("Sys/Grad_NaNs", host_device_nans.sum().item(), total_progress)
 
                 json_payload["total_time"] = total_duration
                 json_payload["gpu_temps"] = gpu_temps
@@ -289,8 +288,7 @@ def train_loop(
                     f.write(json.dumps(json_payload) + "\n")
 
             metrics["sys"].end_epoch()
-            host_device_nans = torch.zeros(3, args.world_size, device=args.device_id)
-            host_device_nans[:, int(os.environ["RANK"])] = torch.tensor([int(args.host[2:]), args.device_id, 0])
+            host_device_nans = torch.zeros(args.world_size, dtype=torch.int, device=args.device_id)
 
         torch.cuda.synchronize()
         dist.barrier()  # Add after master-only op to ensure fair timing
@@ -430,10 +428,10 @@ def test_loop(
 def main(args, timer):
     dist.init_process_group("nccl")  # Expects RANK set in environment variable
     args.host = socket.gethostname()
-    rank = int(os.environ["RANK"])
+    args.rank = int(os.environ["RANK"])
     args.device_id = int(os.environ["LOCAL_RANK"])
     args.world_size = int(os.environ["WORLD_SIZE"])
-    args.is_master = rank == 0  # Master node for saving / reporting
+    args.is_master = args.rank == 0  # Master node for saving / reporting
     torch.cuda.set_device(args.device_id)  # Enables calling 'cuda'
     timer.report(f"03_init_nccl - HOST: {args.host}, WORLD_SIZE {args.world_size}")
     if args.device_id == 0:
