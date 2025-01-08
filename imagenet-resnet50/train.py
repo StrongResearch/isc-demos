@@ -561,7 +561,7 @@ def main(args, timer):
     #####################################
     # Retrieve the checkpoint if the experiment is resuming from pause
     # ----------------------
-    saver = AtomicDirectory(args.save_dir)
+    saver = AtomicDirectory(output_directory=args.save_dir, is_master=args.is_master)
     checkpoint_path = None
 
     local_resume_path = os.path.join(args.save_dir, saver.symlink_name)
