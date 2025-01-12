@@ -1,7 +1,7 @@
 isc_project_id = "<isc-project-id>"
 experiment_name = "imagenet_resnet50_bench"
 gpu_type = "24GB VRAM GPU"
-gpus = 48
+gpus = 16
 compute_mode = "cycle"
 output_path = "~/outputs/imagenet_resnet50_bench"
 dataset_id = "2850b50a-4542-4e81-ac01-4dd5b66572a2"
