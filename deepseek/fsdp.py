@@ -146,7 +146,6 @@ if __name__ == "__main__":
 
         timer.report(f"Step {step} Loss: {loss.item()}")
 
-        # if is_save_step and rank in saving_ranks:
         if is_save_step:
             state_dict = { "app": AppState(model, optimizer) }
             dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
