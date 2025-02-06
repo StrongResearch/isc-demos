@@ -21,7 +21,7 @@ cd /root/isc-demos/deepseek
 pip install -r requirements.txt
 ```
 ### Step 4: Update experiment launch file
-Pick your DeekSeek-R1 model. We have imported these as Datasets in Control Plane.
+Pick your DeekSeek-R1 model. We have imported these as Datasets in Control Plane: https://cp.strongcompute.ai/.
 Edit the experiment launch file (`deepseek-r1-<model>.isc`) corresponding to the model of your choice, replacing the `project_id` with your Project ID.
 ```toml
 isc_project_id = "<project-id>"
