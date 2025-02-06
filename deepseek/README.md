@@ -1,4 +1,4 @@
-# deepseek-r1
+# Fine-tune deepseek-r1
 ## Quick start
 ### Step 1: Prepare your container
 If you've just generated a new Freedom Container, start by installing python.
