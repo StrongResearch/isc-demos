@@ -1,4 +1,4 @@
-# Fine-tune DeepSeek-R1
+# PEFT (LoRA) Fine-tune DeepSeek-R1
 ## Quick start
 ### Step 1: Prepare your container
 If you've just generated a new Freedom Container, start by installing python.
@@ -36,4 +36,17 @@ command = '''...'''
 ```bash
 isc train deepseek-r1-<model>.isc
 isc experiments
+```
+## Full fine-tuning
+To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (LoRA) fine-tune, comment out lines 78 to 88 of `fsdp.py`.
+```
+#    # inject PEFT modules
+#    lora_config = LoraConfig(
+#        r=16,
+#        lora_alpha=32,
+#        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+#       lora_dropout=0, # set to zero to see identical loss on all ranks
+#    )
+#
+#    model = LoraModel(model, lora_config, ADAPTER_NAME)
 ```
