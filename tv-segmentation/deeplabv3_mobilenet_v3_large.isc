@@ -1,6 +1,10 @@
 isc_project_id = "<isc_project_id>"
 experiment_name="deeplabv3_mobilenet_v3_large"
-gpu_type="24GB VRAM GPU"
 gpus = 20
 output_path = "~/outputs/tv-segmentation"
-command = "source ~/.tvseg/bin/activate && cd ~/isc-demos/tv-segmentation/ && torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK train_cycling.py --dataset coco -b 4 --model deeplabv3_mobilenet_v3_large --aux-loss --wd 0.000001 --weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1 --data-path=/open-datasets/coco --resume $OUTPUT_PATH/checkpoint.isc"
+command = '''
+source ~/.tvseg/bin/activate && 
+cd ~/isc-demos/tv-segmentation/ && 
+torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+train_cycling.py --dataset coco -b 4 --model deeplabv3_mobilenet_v3_large --aux-loss --wd 0.000001 
+--weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1 --data-path=/open-datasets/coco --resume $OUTPUT_PATH/checkpoint.isc'''

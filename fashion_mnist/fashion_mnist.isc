@@ -1,6 +1,5 @@
 isc_project_id = "<project-id>"
 experiment_name = "fashion_mnist"
-gpu_type = "24GB VRAM GPU"
 gpus = 16
 compute_mode = "cycle"
 output_path = "~/outputs/fashion_mnist"

@@ -1,6 +1,13 @@
 isc_project_id = "<isc_project_id>"
 experiment_name = "hubert_example_cycling"
-gpu_type = "24GB VRAM GPU"
 gpus = 20
 output_path = "~/outputs/hubert"
-command = "source ~/.fairseq/bin/activate && cd ~/isc-demos/fairseq/ && torchrun --nnodes=12 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK fairseq_cli/hydra_train.py --config-dir examples/hubert/config/pretrain --config-name hubert_base_librispeech dataset.max_tokens=622222 task.data=/open-datasets/librispeech/LibriSpeech/train-960/ task.label_dir=/open-datasets/librispeech/LibriSpeech/labels task.labels='[\"km\"]' checkpoint.save_dir=$OUTPUT_PATH/checkpoints checkpoint.save_interval_updates=50 checkpoint.no_epoch_checkpoints=true  model.label_rate=100"
+command = '''
+source ~/.fairseq/bin/activate && 
+cd ~/isc-demos/fairseq/ && 
+torchrun --nnodes=12 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+fairseq_cli/hydra_train.py --config-dir examples/hubert/config/pretrain --config-name hubert_base_librispeech 
+dataset.max_tokens=622222 task.data=/open-datasets/librispeech/LibriSpeech/train-960/ 
+task.label_dir=/open-datasets/librispeech/LibriSpeech/labels task.labels='[\"km\"]' 
+checkpoint.save_dir=$OUTPUT_PATH/checkpoints checkpoint.save_interval_updates=50 
+checkpoint.no_epoch_checkpoints=true  model.label_rate=100'''

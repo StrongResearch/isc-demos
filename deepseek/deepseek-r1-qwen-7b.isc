@@ -1,0 +1,11 @@
+isc_project_id = "<project-id>"
+experiment_name = "deepseek-r1-qwen-7b"
+gpus = 16
+compute_mode = "cycle"
+output_path = "~/outputs/deepseek-r1-qwen-7b"
+dataset_id = "a792646c-39f5-4971-a169-425324fec87b"
+command = '''
+source ~/.deepseek/bin/activate && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+/root/fsdp_backup/fsdp.py --chk-path $OUTPUT_PATH'''
