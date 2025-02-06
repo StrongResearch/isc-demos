@@ -19,14 +19,14 @@ from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parame
 
 timer = TimestampedTimer("Start")
 
-ADAPTER_NAME = "ExampleLora"
-SHARD_STRATEGY = ShardingStrategy.FULL_SHARD
-
 # suppressing warnings about missing modules in state_dict
 logger = logging.getLogger("torch.distributed.fsdp._state_dict_utils")
 logger.setLevel(logging.ERROR)
 # suppress warnings about "UserWarning: `_get_pg_default_device` will be deprecated" while saving and loading
 warnings.filterwarnings("ignore", category=UserWarning)
+
+ADAPTER_NAME = "ExampleLora"
+SHARD_STRATEGY = ShardingStrategy.FULL_SHARD
 
 '''
 For Hybrid shard we need to:
@@ -41,20 +41,22 @@ print("Finished imports")
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
-
     rank = int(os.environ["RANK"]) # Global rank
     local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
     world_size = int(os.environ["WORLD_SIZE"]) # Total number of global ranks
     torch.cuda.set_device(local_device)
-    print(f"Init process group for world size: {world_size}")
+
+    timer.report(f"Init process group for world size: {world_size}")
 
     # creating a device mesh enables FSDP to use DTensor instead of ShardedTensor
     device_mesh = init_device_mesh("cuda", (world_size,))
     saving_group = device_mesh.get_group() # modify this for HYBRID_SHARD
     assert bfSixteen_ready(), "ERROR: System not BF16 ready."
 
+    # pre-trained model weights should be mounted at /data
     tokenizer = AutoTokenizer.from_pretrained("/data")
 
+    # save CPU RAM by loading non-main rank models to 'meta' device
     if rank == 0:
         model = AutoModelForCausalLM.from_pretrained(
             "/data", 
@@ -71,8 +73,9 @@ if __name__ == "__main__":
             )
             print(f"Non-main rank {rank} model params on device: {set([p.data.device for p in model.parameters()])}")
 
-    timer.report(count_trainable_parameters(model))
+    timer.report(f"Loaded model: {count_trainable_parameters(model)}")
 
+    # inject PEFT modules
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
@@ -81,14 +84,13 @@ if __name__ == "__main__":
     )
 
     model = LoraModel(model, lora_config, ADAPTER_NAME)
-    timer.report("Lora'd the model")
 
-    timer.report(count_trainable_parameters(model))
+    timer.report(f"PEFT model: {count_trainable_parameters(model)}")
 
+    # wrap model in FSDP
     my_auto_wrap_policy = functools.partial(
-        size_based_auto_wrap_policy, min_num_params=1000
+        size_based_auto_wrap_policy, min_num_params=1_000
     )
-    timer.report("Autowrap policy")
 
     model = FSDP(model, 
         auto_wrap_policy=my_auto_wrap_policy,
@@ -96,28 +98,30 @@ if __name__ == "__main__":
         mixed_precision=bfSixteen_policy,
         cpu_offload=CPUOffload(offload_params=True),
         device_id=torch.cuda.current_device(),
-        param_init_fn=lambda mod: mod.to_empty(device=torch.cuda.current_device(), recurse=False),
-        sync_module_states=True,
+        param_init_fn=lambda mod: mod.to_empty(device=torch.cuda.current_device(), recurse=False), # for init from 'meta' device
+        sync_module_states=True, # broadcast model weights from main rank
         device_mesh=device_mesh
     )
-    timer.report("Wrap model in FSDP and broadcast to GPUs")
+
+    timer.report("FSDP wrapped model and broadcast to GPUs")
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 
-    # load checkpoint if there
+    # load checkpoint if found
     saver = AtomicDirectory(output_directory=args.chk_path, is_master=rank==0)
     latest_sym = os.path.join(args.chk_path, saver.symlink_name)
     if os.path.exists(latest_sym):
-        timer.report("Loading checkpoint")
         latest_path = os.readlink(latest_sym)
         state_dict = { "app": AppState(model, optimizer)}
         dcp.load(state_dict=state_dict, checkpoint_id=latest_path)
 
-    # simulate an update
-    docs = ["hello mate how are you?", "I'm good thanks mate, and you?", "Yeah nah"]
-    encoding = tokenizer(docs, return_tensors="pt", padding=True, truncation=True)
+        timer.report("Loaded checkpoint")
 
-    # train in autoregressive mode
+    # simulate a batch of data
+    batch = ["Hello how are you?", "I'm good thanks, and you?", "Great!"]
+    encoding = tokenizer(batch, return_tensors="pt", padding=True, truncation=True)
+
+    # train in autoregressive mode (next-token prediction)
     input_ids = encoding['input_ids'][:,:-1]
     attention_mask = encoding['attention_mask'][:,:-1]
     labels = encoding['input_ids'][:,1:]
@@ -126,26 +130,32 @@ if __name__ == "__main__":
     attention_mask = attention_mask.to(torch.cuda.current_device())
     labels = labels.to(torch.cuda.current_device())
 
-    # forward
+    # simulate training
     for step in range(100):
         is_save_step = (step + 1) % 5 == 0
         if is_save_step:
             checkpoint_directory = saver.prepare_checkpoint_directory()
 
+            timer.report("Prepared checkpoint directory")
+
+        # forward, backward, update
         outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
         loss = outputs.loss
         loss.backward()
         optimizer.step()
+
         timer.report(f"Step {step} Loss: {loss.item()}")
 
         # if is_save_step and rank in saving_ranks:
         if is_save_step:
-            timer.report(f"Saving")
             state_dict = { "app": AppState(model, optimizer) }
             dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
             saver.atomic_symlink(checkpoint_directory)
 
-    timer.report(f"Rank {rank} done.")
+            timer.report("Saved checkpoint")
+
+    timer.report("Done.")
+
     dist.barrier()
     dist.destroy_process_group()
   
