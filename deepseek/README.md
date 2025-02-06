@@ -49,4 +49,6 @@ To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (L
 #    )
 #
 #    model = LoraModel(model, lora_config, ADAPTER_NAME)
+#
+#    timer.report(f"PEFT model: {count_trainable_parameters(model)}")
 ```
