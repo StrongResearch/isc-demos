@@ -45,7 +45,7 @@ To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (L
 #        r=16,
 #        lora_alpha=32,
 #        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-#       lora_dropout=0, # set to zero to see identical loss on all ranks
+#        lora_dropout=0, # set to zero to see identical loss on all ranks
 #    )
 #
 #    model = LoraModel(model, lora_config, ADAPTER_NAME)
