@@ -1,5 +1,9 @@
 # ImageNet x ResNet50 Speed Run
 ## Quickstart
+If you've just generated a new Freedom Container in [Control Plane](https://cp.strongcompute.ai/), start by installing python, git, and nano.
+```bash
+apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
+```
 Clone this repo if you haven't already.
 ```bash
 cd ~
