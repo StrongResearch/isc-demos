@@ -9,14 +9,14 @@ apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
 ### Step 2: Create a virtual environment
 Next create and source a `.deepseek` python virtual environment.
 ```bash
-cd ~
-python3 -m virtualenv ~/.deepseek
-source ~/.deepseek/bin/activate
+cd /root
+python3 -m virtualenv /root/.deepseek
+source /root/.deepseek/bin/activate
 ```
 ### Step 3: Install dependencies
 Clone this repo and install dependencies.
 ```bash
-ch /root
+cd /root
 git clone https://github.com/StrongResearch/isc-demos.git
 cd /root/isc-demos/deepseek
 pip install -r requirements.txt
