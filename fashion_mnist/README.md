@@ -1,5 +1,9 @@
 # Fashion MNIST
-To get started with this demo, first create and source a virtual environment. 
+If you've just generated a new Freedom Container in [Control Plane](https://cp.strongcompute.ai/), start by installing python, git, and nano.
+```bash
+apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
+```
+Then create and source a virtual environment. 
 ```bash
 python3 -m virtualenv ~/.fashion
 source ~/.fashion/bin/activate
@@ -16,7 +20,7 @@ Then update the Project ID in the experiment launch file `fashion_mnist.isc`
 cd ~/isc-demos/fashion_mnist
 nano fashion_mnist.isc
 ```
-with your Project ID from Control Plane.
+with your Project ID from [Control Plane](https://cp.strongcompute.ai/).
 ```toml
 isc_project_id = "<isc-project-id>"
 ```
