@@ -2,7 +2,7 @@
 Here we demonstrate a minimum-viable fine-tuning of the DeepSeek-R1 models (adaptable for any similar LLM) using FSDP and LoRA.
 ## Quick start
 ### Step 1: Prepare your container
-If you've just generated a new Freedom Container, start by installing python.
+If you've just generated a new Freedom Container in [Control Plane](https://cp.strongcompute.ai/), start by installing python, git, and nano.
 ```bash
 apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
 ```
@@ -22,7 +22,7 @@ cd /root/isc-demos/deepseek
 pip install -r requirements.txt
 ```
 ### Step 4: Update experiment launch file
-Pick your DeekSeek-R1 model. We have imported these as Datasets in Control Plane: https://cp.strongcompute.ai/.
+Pick your DeekSeek-R1 model. We have imported these as Datasets in [Control Plane](https://cp.strongcompute.ai/).
 Edit the experiment launch file (`deepseek-r1-<model>.isc`) corresponding to the model of your choice, replacing the `project_id` with your Project ID.
 ```toml
 isc_project_id = "<project-id>"
