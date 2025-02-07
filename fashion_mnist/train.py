@@ -324,6 +324,8 @@ def main(args, timer):
     # Each epoch the training loop is called within a context set from the training InterruptibleDistributedSampler
 
     for epoch in range(train_dataloader.sampler.epoch, args.epochs):
+
+        # important for use with InterruptableDistributedSampler
         train_dataloader.sampler.set_epoch(epoch)
         test_dataloader.sampler.set_epoch(epoch)
 
@@ -340,6 +342,7 @@ def main(args, timer):
         )
 
         if epoch % args.test_epochs == 0:
+
             test_loop(
                 model,
                 optimizer,
@@ -352,6 +355,7 @@ def main(args, timer):
                 args
             )
 
+        # important for use with InterruptableDistributedSampler
         train_dataloader.sampler.reset_progress()
         test_dataloader.sampler.reset_progress()
 
