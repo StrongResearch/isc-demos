@@ -17,8 +17,8 @@ Each example published below is annotated with its degree of completion. Example
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
 | Fashion MNIST | Image classification | CNN | [3] | [isc-demos/fashion_mnist](fashion_mnist) |
-| CIFAR100 | Image classification | ResNet50 | [2] | [isc-demos/cifar100-resnet50](cifar100-resnet50) |
-| Distributed Model Parallel | TBC | TBC | [0] | |
+| ImageNet | Image classification | ResNet50 | [2] | [isc-demos/imagenet-resnet50](imagenet-resnet50) |
+| DeepSeek | Language Modelling | DeepSeek-R1 | [2] | [isc-demos/deepseek](deepseek) |
 
 #### pytorch-image-models (timm)
 
@@ -66,5 +66,5 @@ Each example published below is annotated with its degree of completion. Example
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
+| DeepSeek | Language Modelling | DeepSeek-R1 | [2] | [isc-demos/deepseek](deepseek) |
 | Llama2 | LoRA | Llama2 | [0] | [isc-demos/llama2](llama2) |
-| Mistral | TBC | Mistral | [0] | [isc-demos/mistral](mistral) |
