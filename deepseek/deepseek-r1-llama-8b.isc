@@ -8,4 +8,4 @@ command = '''
 source ~/.deepseek/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
-/root/fsdp_backup/fsdp.py --chk-path $OUTPUT_PATH'''
+/root/isc-demos/deepseek/fsdp.py --chk-path $OUTPUT_PATH'''
