@@ -66,6 +66,7 @@ def get_args_parser(add_help=True):
     # of GPUs in the cluster. With a local batch size of 16, and 10 nodes with 6 GPUs per node, the effective batch size
     # is 960. Effective batch size can also be increased using gradient accumulation which is not demonstrated here.
     # ---------------------------------------
+    parser.add_argument("--save-freq", type=int, default=50)
     parser.add_argument("--save-dir", type=Path, required=True)
     parser.add_argument("--tboard-path", type=Path, required=True)
     # While the "output_path" is set in the .isc file and receives reports from each node in the cluster (i.e.
@@ -91,11 +92,13 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
     model.train()
 
     for inputs, targets in train_dataloader:
-        # Reset model parameter gradients
+
+        # Prepare for batch processing
         optimizer.zero_grad()
-        # Determine the current batch
         batch = train_dataloader.sampler.progress // train_dataloader.batch_size
+        is_save_batch = (batch + 1) % args.save_freq == 0
         is_last_batch = (batch + 1) == train_batches_per_epoch
+
         # Move input and targets to device
         inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - data to device")
@@ -104,9 +107,7 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - forward pass")
         # Compute loss and log to metrics
         loss = loss_fn(predictions, targets)
-        metrics["train"].update({"examples_seen": len(inputs), "loss": loss.item()})
-        metrics["train"].reduce()  # Gather results from all nodes - sums metrics from all nodes into local aggregate
-        timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - compute loss: {loss.item()}")
+        timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - compute loss")
         # Backpropagation
         loss.backward()
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - backward pass")
@@ -116,10 +117,13 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         # Advance sampler - essential for interruptibility
         train_dataloader.sampler.advance(len(inputs))
         timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - advance sampler")
+        
         # Report training metrics
-        total_batch_loss, examples_seen = itemgetter("loss", "examples_seen")(metrics["train"].local)
+        metrics["train"].update({"examples_seen": len(inputs), "loss": loss.item()})
+        metrics["train"].reduce().reset_local()  # Sum results from all nodes into "agg"
+        total_batch_loss, examples_seen = itemgetter("loss", "examples_seen")(metrics["train"].agg)
         batch_avg_loss = total_batch_loss / examples_seen
-        metrics["train"].reset_local()
+        timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - metrics (batch avg loss: {batch_avg_loss:,.3f})")
 
         if is_last_batch:
             lr_scheduler.step()  # Step learning rate scheduler at the end of the epoch
@@ -131,18 +135,20 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
             writer.add_scalar("Train/avg_loss", batch_avg_loss, total_progress)
             writer.add_scalar("Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress)
             # Save checkpoint
-            atomic_torch_save(
-                {
-                    "model": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "train_sampler": train_dataloader.sampler.state_dict(),
-                    "test_sampler": test_dataloader.sampler.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "metrics": metrics,
-                },
-                args.checkpoint_path,
-            )
-            timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - save checkpoint")
+            if is_save_batch:
+                atomic_torch_save(
+                    {
+                        "model": model.state_dict(),
+                        "optimizer": optimizer.state_dict(),
+                        "train_sampler": train_dataloader.sampler.state_dict(),
+                        "test_sampler": test_dataloader.sampler.state_dict(),
+                        "lr_scheduler": lr_scheduler.state_dict(),
+                        "train_metrics": metrics["train"].state_dict(),
+                        "test_metrics": metrics["test"].state_dict(),
+                    },
+                    args.checkpoint_path,
+                )
+                timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - save checkpoint")
 
 def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, args):
     epoch = test_dataloader.sampler.epoch
@@ -154,9 +160,12 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
     # reduce unnecessary gradient computations and memory usage for tensors with requires_grad=True
     with torch.no_grad():
         for inputs, targets in test_dataloader:
-            # Determine the current batch
+
+            # Prepare for batch processing
             batch = test_dataloader.sampler.progress // test_dataloader.batch_size
             is_last_batch = (batch + 1) == test_batches_per_epoch
+            is_save_batch = (batch + 1) % args.save_freq
+
             # Move input and targets to device
             inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
             timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - data to device")
@@ -166,20 +175,21 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
             # Test loss
             test_loss = loss_fn(predictions, targets)
             timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - loss calculation")
-            # Performance metrics logging
-            correct = (predictions.argmax(1) == targets).type(torch.float).sum()
-            metrics["test"].update({"examples_seen": len(inputs), "loss": test_loss.item(), "correct": correct.item()})
-            metrics["test"].reduce()  # Gather results from all nodes - sums metrics from all nodes into local aggregate
-            metrics["test"].reset_local()  # Reset local cache
-            timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - metrics logging")
             # Advance sampler
             test_dataloader.sampler.advance(len(inputs))
+            timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - advance sampler")
+
+            # Performance metrics logging
+            num_correct = (predictions.argmax(1) == targets).type(torch.float).sum()
+            metrics["test"].update({"examples_seen": len(inputs), "loss": test_loss.item(), "num_correct": num_correct.item()})
+            metrics["test"].reduce().reset_local()  # Sum results from all nodes into "agg"
+            timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] - metrics")
 
             # Performance summary at the end of the epoch
             if args.is_master and is_last_batch:
-                total_loss, correct, examples_seen = itemgetter("loss", "correct", "examples_seen")(metrics["test"].agg)
+                total_loss, examples_seen, num_correct = itemgetter("loss", "examples_seen", "num_correct")(metrics["test"].agg)
                 avg_test_loss = total_loss / examples_seen
-                pct_test_correct = correct / examples_seen
+                pct_test_correct = num_correct / examples_seen
                 writer.add_scalar("Test/avg_test_loss", avg_test_loss, epoch)
                 writer.add_scalar("Test/pct_test_correct", pct_test_correct, epoch)
                 metrics["test"].end_epoch()
@@ -189,7 +199,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                 )
 
             # Save checkpoint
-            if args.is_master and (is_last_batch or (batch + 1) % 5 == 0):
+            if args.is_master and (is_last_batch or is_save_batch):
                 # Save checkpoint
                 atomic_torch_save(
                     {
@@ -198,7 +208,8 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                         "train_sampler": train_dataloader.sampler.state_dict(),
                         "test_sampler": test_dataloader.sampler.state_dict(),
                         "lr_scheduler": lr_scheduler.state_dict(),
-                        "metrics": metrics,
+                        "train_metrics": metrics["train"].state_dict(),
+                        "test_metrics": metrics["test"].state_dict(),
                     },
                     args.checkpoint_path,
                 )
@@ -303,7 +314,8 @@ def main(args, timer):
         train_dataloader.sampler.load_state_dict(checkpoint["train_sampler"])
         test_dataloader.sampler.load_state_dict(checkpoint["test_sampler"])
         lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-        metrics = checkpoint["metrics"]
+        metrics["train"].load_state_dict(checkpoint["train_metrics"])
+        metrics["test"].load_state_dict(checkpoint["test_metrics"])
         timer.report("Retrieved savedcheckpoint")
 
     #####################################
@@ -312,27 +324,36 @@ def main(args, timer):
     # Each epoch the training loop is called within a context set from the training InterruptibleDistributedSampler
 
     for epoch in range(train_dataloader.sampler.epoch, args.epochs):
-        with train_dataloader.sampler.in_epoch(epoch):
-            train_loop(
-                model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, args
+        train_dataloader.sampler.set_epoch(epoch)
+        test_dataloader.sampler.set_epoch(epoch)
+
+        train_loop(
+            model, 
+            optimizer, 
+            lr_scheduler, 
+            loss_fn, 
+            train_dataloader, 
+            test_dataloader, 
+            metrics, 
+            writer, 
+            args
+        )
+
+        if epoch % args.test_epochs == 0:
+            test_loop(
+                model,
+                optimizer,
+                lr_scheduler,
+                loss_fn,
+                train_dataloader,
+                test_dataloader,
+                metrics,
+                writer,
+                args
             )
 
-            # An inner context is also set from the testing sampler. This ensures that both training and testing can be
-            # interrupted and resumed from checkpoint.
-            
-            if epoch % args.test_epochs == 0:
-                with test_dataloader.sampler.in_epoch(epoch):
-                    test_loop(
-                        model,
-                        optimizer,
-                        lr_scheduler,
-                        loss_fn,
-                        train_dataloader,
-                        test_dataloader,
-                        metrics,
-                        writer,
-                        args,
-                    )
+        train_dataloader.sampler.reset_progress()
+        test_dataloader.sampler.reset_progress()
 
     print("Done!")
 

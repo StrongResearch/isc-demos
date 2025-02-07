@@ -4,4 +4,3 @@ tensorboard==2.16.2
 six==1.16.0
 packaging==24.0
 numpy==1.26.4
-cycling_utils @ git+https://github.com/StrongResearch/cycling_utils.git
