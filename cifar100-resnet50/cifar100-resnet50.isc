@@ -2,7 +2,6 @@ isc_project_id = "<isc_project_id>"
 experiment_name = "cifar100-resnet50"
 gpus = 16
 compute_mode = "cycle"
-output_path = "~/outputs/cifar100-resnet50"
 dataset_id = "<dataset-id>"
 command = '''
 source ~/.cifar/bin/activate && 
