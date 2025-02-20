@@ -1,7 +1,6 @@
 isc_project_id = "<isc_project_id>"
 experiment_name = "maskrcnn_resnet101_fpn"
 gpus = 20
-output_path = "~/outputs/maskrcnn_resnet101_fpn"
 command = '''
 source ~/.mask/bin/activate && 
 cd ~/isc-demos/maskrcnn/ && 
