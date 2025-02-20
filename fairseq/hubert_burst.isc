@@ -1,7 +1,6 @@
 isc_project_id = "<isc_project_id>"
 experiment_name = "hubert_example_burst"
 gpus = 20
-output_path = "~/outputs/hubert"
 command = '''
 source ~/.fairseq/bin/activate && 
 cd ~/isc-demos/fairseq/ && 
