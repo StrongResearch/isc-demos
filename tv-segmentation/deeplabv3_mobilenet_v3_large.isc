@@ -1,7 +1,6 @@
 isc_project_id = "<isc_project_id>"
 experiment_name="deeplabv3_mobilenet_v3_large"
 gpus = 20
-output_path = "~/outputs/tv-segmentation"
 command = '''
 source ~/.tvseg/bin/activate && 
 cd ~/isc-demos/tv-segmentation/ && 
