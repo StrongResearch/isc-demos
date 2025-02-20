@@ -1,7 +1,6 @@
 isc_project_id = "<isc_project_id>"
 experiment_name="timm-efficientnetv2_s"
 gpus = 20
-output_path = "~/output_timm"
 command = '''
 source ~/.timm/bin/activate && 
 cd ~/isc-demos/pytorch-image-models/ && 
