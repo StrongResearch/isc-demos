@@ -1,7 +1,6 @@
 isc_project_id = "<isc_project_id>"
 experiment_name="seg-fcn_resnet50"
 gpus = 20
-output_path = "~/outputs/tv-segmentation"
 command = '''
 source ~/.cifar/bin/activate && 
 cd ~/isc-demos/cifar100-resnet50/ && 
