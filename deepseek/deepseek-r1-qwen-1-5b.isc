@@ -2,7 +2,6 @@ isc_project_id = "<project-id>"
 experiment_name = "deepseek-r1-qwen-1.5b"
 gpus = 16
 compute_mode = "cycle"
-output_path = "/root/outputs/deepseek-r1-qwen-1.5b"
 dataset_id = "6c796efa-7063-4a74-99b8-aab1c728ad98"
 command = '''
 source /root/.deepseek/bin/activate && 
