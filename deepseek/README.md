@@ -38,6 +38,14 @@ command = '''...'''
 isc train deepseek-r1-<model>.isc
 isc experiments
 ```
+
+## Step 6: Debugging / Optimising Checkpoints
+
+If you're training bigger models (such as the 70b), you may find that training with compute_mode = "cycle" does not make enough progress to checkpoint your model.
+
+In this case, you should still train with compute_mode = "cycle" to confirm your training code is valid on a smaller model (e.g. 1.5B) and then launch in burst to see checkpoints
+changes.
+
 ## Full fine-tuning
 To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (LoRA) fine-tune, comment out lines 78 to 88 of `fsdp.py`.
 ```
