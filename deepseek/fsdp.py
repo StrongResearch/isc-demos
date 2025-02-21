@@ -44,6 +44,7 @@ if __name__ == "__main__":
     rank = int(os.environ["RANK"]) # Global rank
     local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
     world_size = int(os.environ["WORLD_SIZE"]) # Total number of global ranks
+    model_path = os.path.join("/data", args.dataset_id)
     torch.cuda.set_device(local_device)
 
     timer.report(f"Init process group for world size: {world_size}")
@@ -54,12 +55,12 @@ if __name__ == "__main__":
     assert bfSixteen_ready(), "ERROR: System not BF16 ready."
 
     # pre-trained model weights should be mounted at /data
-    tokenizer = AutoTokenizer.from_pretrained("/data")
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
 
     # save CPU RAM by loading non-main rank models to 'meta' device
     if rank == 0:
         model = AutoModelForCausalLM.from_pretrained(
-            "/data", 
+            model_path, 
             use_cache=False, 
             torch_dtype=torch.bfloat16
         )
@@ -67,7 +68,7 @@ if __name__ == "__main__":
     else:
         with torch.device("meta"):
             model = AutoModelForCausalLM.from_pretrained(
-                "/data", 
+                model_path, 
                 use_cache=False, 
                 torch_dtype=torch.bfloat16
             )

@@ -1,14 +1,17 @@
+import os
 import argparse
 import torch
 import torch.distributed as dist
 from torch.distributed.checkpoint.stateful import Stateful
 from torch.distributed.fsdp import MixedPrecision
 from torch.distributed.checkpoint.state_dict import get_state_dict, set_state_dict, StateDictOptions
+from pathlib import Path
 from looseversion import LooseVersion
 
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--chk-path", type=str, default="/root/fsdp_lora_checkpoint")
+    parser.add_argument("--chk-path", type=str, default=os.environ.get("CHECKPOINT_ARTIFACT_PATH"))
+    parser.add_argument("--dataset-id", help="Dataset ID for the dataset", type=Path, required=True)
     return parser
 
 def count_trainable_parameters(model):
