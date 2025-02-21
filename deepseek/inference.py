@@ -26,9 +26,17 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 state_dict = { "app": AppState(model, optimizer)}
 dcp.load(state_dict=state_dict, checkpoint_id="/root/fsdp_backup/CHK2")
 
-prompt = "hello how are"
+prompt = "Do you think there are more wheels or doors in the world?"
 
-encoding = tokenizer(prompt, return_tensors="pt")
+# https://arxiv.org/abs/2501.12948
+deepseek_r1_input = f'''
+A conversation between User and Assistant. The user asks a question, and the Assistant solves it.
+The assistant first thinks about the reasoning process in the mind and then provides the user
+with the answer. The reasoning process and answer are enclosed within <think> </think> and
+<answer> </answer> tags, respectively, i.e., <think> reasoning process here </think>
+<answer> answer here </answer>. User: {prompt}. Assistant:'''
+
+encoding = tokenizer(deepseek_r1_input, return_tensors="pt")
 
 input_ids = encoding['input_ids'].to("cuda")
 attention_mask = encoding['attention_mask'].to("cuda")
