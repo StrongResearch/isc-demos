@@ -46,7 +46,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--weight-decay", type=float, default=0.01)
     parser.add_argument("--warmup-epochs", type=int, default=5)
 
-    parser.add_argument("--data-path", type=Path, default="/data")
+    parser.add_argument("--dataset-id", type=str, required=True)
     parser.add_argument("--save-dir", type=Path, required=True)
     parser.add_argument("--tboard-path", type=Path, required=True)
     parser.add_argument("--load-path", type=Path, default=None)
@@ -467,8 +467,9 @@ def main(args, timer):
         ]
     )
 
-    train_path = os.path.join(args.data_path, "ILSVRC/Data/CLS-LOC/train")
-    val_path = os.path.join(args.data_path, "ILSVRC/Data/CLS-LOC/val")
+    data_path = os.path.join("/data", args.dataset_id)
+    train_path = os.path.join(data_path, "ILSVRC/Data/CLS-LOC/train")
+    val_path = os.path.join(data_path, "ILSVRC/Data/CLS-LOC/val")
     train_data = datasets.ImageFolder(train_path, transform=train_transform)
     test_data = datasets.ImageFolder(val_path, transform=test_transform)
     args.num_classes = len(train_data.classes)

@@ -2,9 +2,9 @@ isc_project_id = "<isc_project_id>"
 experiment_name = "cifar100-resnet50"
 gpus = 16
 compute_mode = "cycle"
-dataset_id = "<dataset-id>"
+dataset_id_list = ["<dataset-id>"]
 command = '''
 source ~/.cifar/bin/activate && 
 cd ~/isc-demos/cifar100-resnet50/ && 
 torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
-train.py --save-dir $OUTPUT_PATH'''
+train.py --save-dir $CHECKPOINT_ARTIFACT_PATH'''

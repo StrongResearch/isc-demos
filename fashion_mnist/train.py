@@ -44,6 +44,7 @@ timer.report("Completed imports")
 
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset-id", type=str, required=True)
     # ---------------------------------------
     parser.add_argument("--epochs", type=int, default=100)
     # The number of times to loop over the whole dataset
@@ -248,8 +249,9 @@ def main(args, timer):
     train_transform = Compose([PILToTensor(), RandAugment(), Lambda(lambda v: v.to(torch.float32) / 255.0)])
     test_transform = Compose([PILToTensor(), Lambda(lambda v: v.to(torch.float32) / 255.0)])
 
-    training_data = datasets.FashionMNIST(root="/data", train=True, download=False, transform=train_transform)
-    test_data = datasets.FashionMNIST(root="/data", train=False, download=False, transform=test_transform)
+    data_path = os.path.join("/data", args.dataset_id)
+    training_data = datasets.FashionMNIST(root=data_path, train=True, download=False, transform=train_transform)
+    test_data = datasets.FashionMNIST(root=data_path, train=False, download=False, transform=test_transform)
     timer.report("Initialized datasets")
 
     ##############################################
