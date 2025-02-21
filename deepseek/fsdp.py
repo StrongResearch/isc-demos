@@ -11,10 +11,14 @@ from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 from torch.distributed.fsdp import ShardingStrategy
 from torch.distributed.fsdp.wrap import size_based_auto_wrap_policy
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
+from torch.utils.data import DataLoader
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import LoraModel, LoraConfig
 
-from cycling_utils import AtomicDirectory, TimestampedTimer
+from datasets import load_dataset
+
+from cycling_utils import atomic_torch_save, AtomicDirectory, TimestampedTimer, InterruptableDistributedSampler
 from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parameters, AppState, get_args_parser
 
 timer = TimestampedTimer("Start")
@@ -108,6 +112,53 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 
+    # prepare dataset and utilities
+    dataset = load_dataset("wiki_qa", split="train")
+
+    def preprocess_function(examples):
+        # Combine question and answer into a single text
+        texts = [f"Question: {q}\nAnswer: {a}" for q, a in zip(examples['question'], examples['answer'])]
+        
+        # Tokenize with padding and truncation
+        encodings = tokenizer(
+            texts,
+            truncation=True,
+            max_length=512,
+            padding="max_length",
+            return_tensors=None
+        )
+        
+        # Create labels for causal language modeling (shift input_ids right)
+        encodings["labels"] = encodings["input_ids"].copy()
+        
+        return encodings
+
+    # Process dataset
+    tokenized_dataset = dataset.map(
+        preprocess_function,
+        batched=True,
+        remove_columns=dataset.column_names,
+        desc="Tokenizing and preprocessing dataset",
+    )
+
+    # Create dataloader
+    def collate_fn(batch):
+        return {
+            'input_ids': torch.stack([torch.tensor(x['input_ids']) for x in batch]),
+            'attention_mask': torch.stack([torch.tensor(x['attention_mask']) for x in batch]),
+            'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
+        }
+    
+    train_sampler = InterruptableDistributedSampler(tokenized_dataset)
+
+    batch_size = 4  # Adjust based on your GPU memory
+    dataloader = DataLoader(
+        tokenized_dataset,
+        batch_size=batch_size,
+        collate_fn=collate_fn,
+        sampler=train_sampler
+    )
+
     # load checkpoint if found
     saver = AtomicDirectory(output_directory=args.chk_path, is_master=rank==0)
     latest_sym = os.path.join(args.chk_path, saver.symlink_name)
@@ -116,46 +167,57 @@ if __name__ == "__main__":
         state_dict = { "app": AppState(model, optimizer)}
         dcp.load(state_dict=state_dict, checkpoint_id=latest_path)
 
+        train_state = torch.load(os.path.join(latest_path, "train_state.pt"))
+        dataloader.sampler.load_state_dict(train_state["sampler"])
+
         timer.report("Loaded checkpoint")
 
-    # simulate a batch of data
-    batch = ["Hello how are you?", "I'm good thanks, and you?", "Great!"]
-    encoding = tokenizer(batch, return_tensors="pt", padding=True, truncation=True)
+    # training
+    num_epochs = 5
+    save_every = 2
+    model.train()
 
-    # train in autoregressive mode (next-token prediction)
-    input_ids = encoding['input_ids'][:,:-1]
-    attention_mask = encoding['attention_mask'][:,:-1]
-    labels = encoding['input_ids'][:,1:]
+    for epoch in range(dataloader.sampler.epoch, num_epochs):
 
-    input_ids = input_ids.to(torch.cuda.current_device())
-    attention_mask = attention_mask.to(torch.cuda.current_device())
-    labels = labels.to(torch.cuda.current_device())
+        dataloader.sampler.set_epoch(epoch)
 
-    # simulate training
-    for step in range(100):
-        is_save_step = (step + 1) % 5 == 0
-        if is_save_step:
-            checkpoint_directory = saver.prepare_checkpoint_directory()
+        for step, batch in enumerate(dataloader):
 
-            timer.report("Prepared checkpoint directory")
+            is_save_step = (step + 1) % save_every == 0
+            if is_save_step:
+                checkpoint_directory = saver.prepare_checkpoint_directory()
 
-        # forward, backward, update
-        outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
-        loss = outputs.loss
-        loss.backward()
-        optimizer.step()
+                timer.report("Prepared checkpoint directory")
 
-        timer.report(f"Step {step} Loss: {loss.item()}")
+            # Move batch to device
+            input_ids = batch["input_ids"].to(torch.cuda.current_device())
+            attention_mask = batch["attention_mask"].to(torch.cuda.current_device())
+            labels = batch["labels"].to(torch.cuda.current_device())
 
-        if is_save_step:
-            state_dict = { "app": AppState(model, optimizer) }
-            dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
-            saver.atomic_symlink(checkpoint_directory)
+            # forward, backward, update
+            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+            loss = outputs.loss
+            loss.backward()
+            optimizer.step()
+            dataloader.sampler.advance(len(input_ids))
+            optimizer.zero_grad()
 
-            timer.report("Saved checkpoint")
+            timer.report(f"Step {step} Loss: {loss.item()}")
+
+            if is_save_step:
+                state_dict = { "app": AppState(model, optimizer) }
+                dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
+                torch.save({
+                    "sampler": dataloader.sampler.state_dict()
+                }, os.path.join(checkpoint_directory, "train_state.pt"))
+
+                saver.atomic_symlink(checkpoint_directory)
+
+                timer.report("Saved checkpoint")
+
+        dataloader.sampler.reset_progress()
 
     timer.report("Done.")
 
     dist.barrier()
     dist.destroy_process_group()
-  
