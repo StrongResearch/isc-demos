@@ -24,7 +24,7 @@ lora_config = LoraConfig(
 model = LoraModel(model, lora_config, adapter_name).to("cuda")
 optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 state_dict = { "app": AppState(model, optimizer)}
-dcp.load(state_dict=state_dict, checkpoint_id="/root/fsdp_backup/CHK2")
+dcp.load(state_dict=state_dict, checkpoint_id="/shared/artifacts/<experiment-id>/checkpoints/CHKxx") ## UPDATE WITH PATH TO CHECKPOINT DIRECTORY
 
 prompt = "Do you think there are more wheels or doors in the world?"
 
