@@ -2,6 +2,7 @@ import os
 import functools
 import logging
 import warnings
+import wandb
 
 from datasets.arrow_dataset import Dataset
 from datasets.dataset_dict import DatasetDict, IterableDatasetDict
@@ -23,6 +24,7 @@ from datasets import load_dataset
 
 from cycling_utils import atomic_torch_save, AtomicDirectory, TimestampedTimer, InterruptableDistributedSampler
 from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parameters, AppState, get_args_parser
+from friendly_helpers import init_wandb_logging, get_mem_stats, get_detailed_memory_stats
 
 timer = TimestampedTimer("Start")
 
@@ -48,6 +50,9 @@ print("Finished imports")
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
+    batch_size = 4
+    sequence_length = 384
+    save_every = 20
 
     rank = int(os.environ["RANK"]) # Global rank
     local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
@@ -61,6 +66,10 @@ if __name__ == "__main__":
     device_mesh = init_device_mesh("cuda", (world_size,))
     saving_group = device_mesh.get_group() # modify this for HYBRID_SHARD
     assert bfSixteen_ready(), "ERROR: System not BF16 ready."
+
+    # Log for da graphs etc
+    if wandb_apikey := os.getenv("WANDB_API_KEY") and rank == 0:
+        init_wandb_logging(batch_size, sequence_length, device_mesh, world_size, save_every)
 
     # pre-trained model weights should be mounted at /data
     tokenizer = AutoTokenizer.from_pretrained(model_path)
@@ -116,8 +125,6 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 
-    batch_size = 4
-    sequence_length = 384
 
     # prepare dataset and utilities
     dataset = load_dataset("arrow", 
@@ -191,7 +198,6 @@ if __name__ == "__main__":
 
     # training
     num_epochs = 5
-    save_every = 20
     model.train()
 
     for epoch in range(dataloader.sampler.epoch, num_epochs):
@@ -228,6 +234,15 @@ if __name__ == "__main__":
             optimizer.zero_grad()
 
             timer.report(f"Step {step} Loss: {loss.item()}")
+
+            device = torch.device(f"cuda:{local_device}")
+            info = {
+                **get_mem_stats(device),
+                **get_detailed_memory_stats(),  # Add detailed memory stats
+            }
+
+            if wandb_apikey and rank == 0:
+                wandb.log(info, step=step)
 
             if is_save_step:
                 timer.report(f"=== SAVING CHECKPOINT! ===")
