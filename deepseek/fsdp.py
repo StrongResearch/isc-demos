@@ -3,6 +3,9 @@ import functools
 import logging
 import warnings
 
+from datasets.arrow_dataset import Dataset
+from datasets.dataset_dict import DatasetDict, IterableDatasetDict
+from datasets.iterable_dataset import IterableDataset
 import torch
 import torch.distributed as dist
 import torch.distributed.checkpoint as dcp
@@ -45,6 +48,7 @@ print("Finished imports")
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
+
     rank = int(os.environ["RANK"]) # Global rank
     local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
     world_size = int(os.environ["WORLD_SIZE"]) # Total number of global ranks
@@ -80,17 +84,17 @@ if __name__ == "__main__":
 
     timer.report(f"Loaded model: {count_trainable_parameters(model)}")
 
-    # inject PEFT modules
-    lora_config = LoraConfig(
-        r=16,
-        lora_alpha=32,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-        lora_dropout=0, # set to zero to see identical loss on all ranks
-    )
+    # # inject PEFT modules
+    # lora_config = LoraConfig(
+    #     r=16,
+    #     lora_alpha=32,
+    #     target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+    #     lora_dropout=0, # set to zero to see identical loss on all ranks
+    # )
 
-    model = LoraModel(model, lora_config, ADAPTER_NAME)
+    # model = LoraModel(model, lora_config, ADAPTER_NAME)
 
-    timer.report(f"PEFT model: {count_trainable_parameters(model)}")
+    # timer.report(f"PEFT model: {count_trainable_parameters(model)}")
 
     # wrap model in FSDP
     my_auto_wrap_policy = functools.partial(
@@ -112,23 +116,29 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 
+    batch_size = 4
+    sequence_length = 384
+
     # prepare dataset and utilities
-    dataset = load_dataset("wiki_qa", split="train")
+    dataset = load_dataset("arrow", 
+                        data_files=f"/data/82b2949e-1167-42df-a654-ea74a6877a53/filtered_reasoning_deepseek-train.arrow",  
+                        split="train").select(range(90000))
 
     def preprocess_function(examples):
-        # Combine question and answer into a single text
-        texts = [f"Question: {q}\nAnswer: {a}" for q, a in zip(examples['question'], examples['answer'])]
+        # Access the messages and answers directly from the batch
+        texts = [f"Question: {msg[0]['content']}\nAnswer: {ans}" 
+                for msg, ans in zip(examples['messages'], examples['answer'])]
         
         # Tokenize with padding and truncation
         encodings = tokenizer(
             texts,
             truncation=True,
-            max_length=512,
+            max_length=sequence_length,  # Using the specified sequence_length
             padding="max_length",
             return_tensors=None
         )
         
-        # Create labels for causal language modeling (shift input_ids right)
+        # Create labels for causal language modeling
         encodings["labels"] = encodings["input_ids"].copy()
         
         return encodings
@@ -141,6 +151,10 @@ if __name__ == "__main__":
         desc="Tokenizing and preprocessing dataset",
     )
 
+    if rank == 0:
+        print(f"Processed dataset with {len(tokenized_dataset)} examples")
+        print(f"Sequence length: {sequence_length}")
+        
     # Create dataloader
     def collate_fn(batch):
         return {
@@ -148,17 +162,20 @@ if __name__ == "__main__":
             'attention_mask': torch.stack([torch.tensor(x['attention_mask']) for x in batch]),
             'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
         }
-    
+
     train_sampler = InterruptableDistributedSampler(tokenized_dataset)
 
-    batch_size = 4  # Adjust based on your GPU memory
     dataloader = DataLoader(
         tokenized_dataset,
         batch_size=batch_size,
         collate_fn=collate_fn,
-        sampler=train_sampler
+        sampler=train_sampler,
+        num_workers=4,
+        pin_memory=True,
+        persistent_workers=True
     )
 
+    print(f"Effective batch size: {batch_size} (across {world_size} GPUs)")
     # load checkpoint if found
     saver = AtomicDirectory(output_directory=args.chk_path, is_master=rank==0)
     latest_sym = os.path.join(args.chk_path, saver.symlink_name)
@@ -174,7 +191,7 @@ if __name__ == "__main__":
 
     # training
     num_epochs = 5
-    save_every = 2
+    save_every = 20
     model.train()
 
     for epoch in range(dataloader.sampler.epoch, num_epochs):
@@ -189,32 +206,50 @@ if __name__ == "__main__":
 
                 timer.report("Prepared checkpoint directory")
 
+            timer.report("Moving batch to device!")
             # Move batch to device
             input_ids = batch["input_ids"].to(torch.cuda.current_device())
             attention_mask = batch["attention_mask"].to(torch.cuda.current_device())
             labels = batch["labels"].to(torch.cuda.current_device())
 
+            timer.report("Calculating loss!")
             # forward, backward, update
             outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
             loss = outputs.loss
             loss.backward()
+
+            timer.report("Stepping optimizer!")
             optimizer.step()
+
+            timer.report("Advancing dataloader!")
             dataloader.sampler.advance(len(input_ids))
+
+            timer.report("Zeroing optimizer gradient!")
             optimizer.zero_grad()
 
             timer.report(f"Step {step} Loss: {loss.item()}")
 
             if is_save_step:
+                timer.report(f"=== SAVING CHECKPOINT! ===")
                 state_dict = { "app": AppState(model, optimizer) }
+
+                timer.report(f"Grabbed state dict. Saving model state with dcp.save...")
                 dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
+
+                timer.report(f"Called! Saving dataloader sampler with pt using torch.save...")
                 torch.save({
                     "sampler": dataloader.sampler.state_dict()
                 }, os.path.join(checkpoint_directory, "train_state.pt"))
 
+                timer.report(f"Saved! Symlinking checkpoint directory...")
+
                 saver.atomic_symlink(checkpoint_directory)
+                timer.report(f"Symlink success!")
 
-                timer.report("Saved checkpoint")
+                timer.report(f"=== Saved checkpoint ===")
+                dist.barrier()
 
+        timer.report(f"=== RESETTING DATALOADER PROGRESS! ===")
         dataloader.sampler.reset_progress()
 
     timer.report("Done.")
