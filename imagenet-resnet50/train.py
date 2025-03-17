@@ -47,8 +47,6 @@ def get_args_parser(add_help=True):
     parser.add_argument("--warmup-epochs", type=int, default=5)
 
     parser.add_argument("--dataset-id", type=str, required=True)
-    parser.add_argument("--save-dir", type=Path, required=True)
-    parser.add_argument("--tboard-path", type=Path, required=True)
     parser.add_argument("--load-path", type=Path, default=None)
 
     parser.add_argument("--save-freq", type=int, default=50)
@@ -84,11 +82,8 @@ def train_loop(
     epoch = train_dataloader.sampler.epoch
     train_batches_per_epoch = len(train_dataloader)
     batch = train_dataloader.sampler.progress // train_dataloader.batch_size
-    model.train()
-
-    # Setup for logging
-    writer = SummaryWriter(log_dir=args.tboard_path)
     host_device_nans = torch.zeros(args.world_size, dtype=torch.int, device=args.device_id)
+    model.train()
 
     # Report and just reset timer
     timer.report(
@@ -287,7 +282,8 @@ def train_loop(
                 )
 
                 # Dump log to json
-                with open(os.path.join(args.save_dir, "train_metrics.jsonl"), "a") as f:
+                lossy_output_dir = os.environ["LOSSY_ARTIFACT_PATH"]
+                with open(os.path.join(lossy_output_dir, "train_metrics.jsonl"), "a") as f:
                     f.write(json.dumps(json_payload) + "\n")
 
             metrics["sys"].end_epoch()
@@ -307,25 +303,28 @@ def train_loop(
         start = time.perf_counter()
 
         # Saving
-        if is_save_batch and args.is_master:
+        if is_save_batch:
             checkpoint_directory = saver.prepare_checkpoint_directory()
-            # Save checkpoint
-            atomic_torch_save(
-                {
-                    "model": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "train_sampler": train_dataloader.sampler.state_dict(),
-                    "test_sampler": test_dataloader.sampler.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "scaler": scaler.state_dict(),
-                    "metrics_train": metrics["train"].state_dict(),
-                    "metrics_test": metrics["test"].state_dict(),
-                    "metrics_sys": metrics["sys"].state_dict(),
-                    "best_accuracy": metrics["best_accuracy"]
-                },
-                os.path.join(checkpoint_directory, "checkpoint.pt")
-            )
-            saver.atomic_symlink(checkpoint_directory)
+
+            if args.is_master:
+                # Save checkpoint
+                atomic_torch_save(
+                    {
+                        "model": model.state_dict(),
+                        "optimizer": optimizer.state_dict(),
+                        "train_sampler": train_dataloader.sampler.state_dict(),
+                        "test_sampler": test_dataloader.sampler.state_dict(),
+                        "lr_scheduler": lr_scheduler.state_dict(),
+                        "scaler": scaler.state_dict(),
+                        "metrics_train": metrics["train"].state_dict(),
+                        "metrics_test": metrics["test"].state_dict(),
+                        "metrics_sys": metrics["sys"].state_dict(),
+                        "best_accuracy": metrics["best_accuracy"]
+                    },
+                    os.path.join(checkpoint_directory, "checkpoint.pt")
+                )
+
+            saver.symlink_latest(checkpoint_directory)
 
         torch.cuda.synchronize()
         dist.barrier()  # Add after master-only op to ensure fair timing
@@ -415,7 +414,7 @@ def test_loop(
                 )
 
             # Save checkpoint
-            if args.is_master and is_save_batch:
+            if is_save_batch:
                 # force save checkpoint if test performance improves, only after 20 epochs
                 if (epoch > 20) and (pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
@@ -425,22 +424,25 @@ def test_loop(
 
                 # Save checkpoint
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
-                atomic_torch_save(
-                    {
-                        "model": model.state_dict(),
-                        "optimizer": optimizer.state_dict(),
-                        "train_sampler": train_dataloader.sampler.state_dict(),
-                        "test_sampler": test_dataloader.sampler.state_dict(),
-                        "lr_scheduler": lr_scheduler.state_dict(),
-                        "scaler": scaler.state_dict(),
-                        "metrics_train": metrics["train"].state_dict(),
-                        "metrics_test": metrics["test"].state_dict(),
-                        "metrics_sys": metrics["sys"].state_dict(),
-                        "best_accuracy": metrics["best_accuracy"]
-                    },
-                    os.path.join(checkpoint_directory, "checkpoint.pt")
-                )
-                saver.atomic_symlink(checkpoint_directory)
+
+                if args.is_master:
+                    atomic_torch_save(
+                        {
+                            "model": model.state_dict(),
+                            "optimizer": optimizer.state_dict(),
+                            "train_sampler": train_dataloader.sampler.state_dict(),
+                            "test_sampler": test_dataloader.sampler.state_dict(),
+                            "lr_scheduler": lr_scheduler.state_dict(),
+                            "scaler": scaler.state_dict(),
+                            "metrics_train": metrics["train"].state_dict(),
+                            "metrics_test": metrics["test"].state_dict(),
+                            "metrics_sys": metrics["sys"].state_dict(),
+                            "best_accuracy": metrics["best_accuracy"]
+                        },
+                        os.path.join(checkpoint_directory, "checkpoint.pt")
+                    )
+
+                saver.symlink_latest(checkpoint_directory)
 
 
 def main(args, timer):
