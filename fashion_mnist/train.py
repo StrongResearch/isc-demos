@@ -68,7 +68,7 @@ def get_args_parser(add_help=True):
     # of GPUs in the cluster. With a local batch size of 16, and 10 nodes with 6 GPUs per node, the effective batch size
     # is 960. Effective batch size can also be increased using gradient accumulation which is not demonstrated here.
     # ---------------------------------------
-    parser.add_argument("--save-freq", type=int, default=200)
+    parser.add_argument("--save-freq", type=int, default=100)
     return parser
 
 #####################################
@@ -125,14 +125,16 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
             lr_scheduler.step()  # Step learning rate scheduler at the end of the epoch
             metrics["train"].end_epoch()  # Store epoch aggregates and reset local aggregate for next epoch
 
-        # Saving and reporting
-        if args.is_master:
-            total_progress = train_dataloader.sampler.progress + epoch * train_batches_per_epoch
-            writer.add_scalar("Train/avg_loss", batch_avg_loss, total_progress)
-            writer.add_scalar("Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress)
-            # Save checkpoint
-            if is_save_batch:
-                checkpoint_directory = saver.prepare_checkpoint_directory()
+        # Save checkpoint
+        if is_save_batch:
+            checkpoint_directory = saver.prepare_checkpoint_directory()
+
+            # Saving and reporting
+            if args.is_master:
+                total_progress = train_dataloader.sampler.progress + epoch * train_batches_per_epoch
+                writer.add_scalar("Train/avg_loss", batch_avg_loss, total_progress)
+                writer.add_scalar("Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress)
+
                 atomic_torch_save(
                     {
                         "model": model.state_dict(),
@@ -146,8 +148,8 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
                     },
                     os.path.join(checkpoint_directory, "checkpoint.pt")
                 )
-                saver.symlink_latest(checkpoint_directory)
 
+            saver.symlink_latest(checkpoint_directory)
 
 def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
     epoch = test_dataloader.sampler.epoch
@@ -198,7 +200,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                 )
 
             # Save checkpoint
-            if args.is_master and is_save_batch:
+            if is_save_batch:
                 # force save checkpoint if test performance improves, only after 20 epochs
                 if (epoch > 20) and (pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
@@ -207,19 +209,22 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                     force_save = False
                 
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
-                atomic_torch_save(
-                    {
-                        "model": model.state_dict(),
-                        "optimizer": optimizer.state_dict(),
-                        "train_sampler": train_dataloader.sampler.state_dict(),
-                        "test_sampler": test_dataloader.sampler.state_dict(),
-                        "lr_scheduler": lr_scheduler.state_dict(),
-                        "train_metrics": metrics["train"].state_dict(),
-                        "test_metrics": metrics["test"].state_dict(),
-                        "best_accuracy": metrics["best_accuracy"]
-                    },
-                    os.path.join(checkpoint_directory, "checkpoint.pt")
-                )
+
+                if args.is_master:
+                    atomic_torch_save(
+                        {
+                            "model": model.state_dict(),
+                            "optimizer": optimizer.state_dict(),
+                            "train_sampler": train_dataloader.sampler.state_dict(),
+                            "test_sampler": test_dataloader.sampler.state_dict(),
+                            "lr_scheduler": lr_scheduler.state_dict(),
+                            "train_metrics": metrics["train"].state_dict(),
+                            "test_metrics": metrics["test"].state_dict(),
+                            "best_accuracy": metrics["best_accuracy"]
+                        },
+                        os.path.join(checkpoint_directory, "checkpoint.pt")
+                    )
+                
                 saver.symlink_latest(checkpoint_directory)
 
 timer.report("Defined helper function/s, loops, and model")
