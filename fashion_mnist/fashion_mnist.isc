@@ -5,7 +5,6 @@ compute_mode = "cycle"
 dataset_id_list = ["8d2de5b2-d07f-47ce-a6d6-d217a1cfa369"]
 command = '''
 source /root/.fashion/bin/activate && 
-cd /root/isc-demos/fashion_mnist/ && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
 /root/isc-demos/fashion_mnist/train.py 

@@ -144,7 +144,7 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
                         "test_metrics": metrics["test"].state_dict(),
                         "best_accuracy": metrics["best_accuracy"]
                     },
-                    os.path.join(checkpoint_directory, "checkpoint.pt"),
+                    os.path.join(checkpoint_directory, "checkpoint.pt")
                 )
                 saver.symlink_latest(checkpoint_directory)
 
@@ -183,6 +183,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
             metrics["test"].reduce().reset_local()  # Sum results from all nodes into "agg"
 
             # Performance summary at the end of the epoch
+            pct_test_correct = float("-inf")
             if args.is_master and is_last_batch:
                 total_loss, examples_seen, num_correct = itemgetter("loss", "examples_seen", "num_correct")(metrics["test"].agg)
                 avg_test_loss = total_loss / examples_seen
@@ -217,7 +218,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                         "test_metrics": metrics["test"].state_dict(),
                         "best_accuracy": metrics["best_accuracy"]
                     },
-                    os.path.join(checkpoint_directory, "checkpoint.pt"),
+                    os.path.join(checkpoint_directory, "checkpoint.pt")
                 )
                 saver.symlink_latest(checkpoint_directory)
 
@@ -303,7 +304,11 @@ def main(args, timer):
     # -----------------
     # Metrics are commonly tracked and plotted during training to report on progress and model performance.
 
-    metrics = {"train": MetricsTracker(), "test": MetricsTracker(), "best_accuracy": float("-inf")}
+    metrics = {
+        "train": MetricsTracker(), 
+        "test": MetricsTracker(), 
+        "best_accuracy": float("-inf")
+    }
     writer = SummaryWriter(log_dir=os.environ["LOSSY_ARTIFACT_PATH"])
 
     #####################################
@@ -329,7 +334,7 @@ def main(args, timer):
     # Retrieve the checkpoint if the experiment is resuming from pause
 
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
-    if os.path.exists(latest_symlink_file_path):
+    if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
         checkpoint_path = os.path.join(latest_checkpoint_path, "checkpoint.pt")
 
