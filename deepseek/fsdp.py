@@ -18,7 +18,7 @@ from peft import LoraModel, LoraConfig
 
 from datasets import load_dataset
 
-from cycling_utils import atomic_torch_save, AtomicDirectory, TimestampedTimer, InterruptableDistributedSampler
+from cycling_utils import AtomicDirectory, TimestampedTimer, InterruptableDistributedSampler
 from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parameters, AppState, get_args_parser
 
 timer = TimestampedTimer("Start")
@@ -158,16 +158,20 @@ if __name__ == "__main__":
         collate_fn=collate_fn,
         sampler=train_sampler
     )
+    batches_per_epoch = len(dataloader)
 
     # load checkpoint if found
-    saver = AtomicDirectory(output_directory=args.chk_path, is_master=rank==0)
-    latest_sym = os.path.join(args.chk_path, saver.symlink_name)
-    if os.path.exists(latest_sym):
-        latest_path = os.readlink(latest_sym)
-        state_dict = { "app": AppState(model, optimizer)}
-        dcp.load(state_dict=state_dict, checkpoint_id=latest_path)
+    output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
+    saver = AtomicDirectory(output_directory=output_directory, is_master=rank==0)
 
-        train_state = torch.load(os.path.join(latest_path, "train_state.pt"))
+    latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
+    if os.path.islink(latest_symlink_file_path):
+        latest_checkpoint_path = os.readlink(latest_symlink_file_path)
+
+        state_dict = { "app": AppState(model, optimizer)}
+        dcp.load(state_dict=state_dict, checkpoint_id=latest_checkpoint_path)
+
+        train_state = torch.load(os.path.join(latest_checkpoint_path, "train_state.pt"))
         dataloader.sampler.load_state_dict(train_state["sampler"])
 
         timer.report("Loaded checkpoint")
@@ -183,11 +187,8 @@ if __name__ == "__main__":
 
         for step, batch in enumerate(dataloader):
 
-            is_save_step = (step + 1) % save_every == 0
-            if is_save_step:
-                checkpoint_directory = saver.prepare_checkpoint_directory()
-
-                timer.report("Prepared checkpoint directory")
+            is_last_batch = (batch + 1) == batches_per_epoch 
+            is_save_step = ((step + 1) % save_every == 0) or is_last_batch
 
             # Move batch to device
             input_ids = batch["input_ids"].to(torch.cuda.current_device())
@@ -205,13 +206,15 @@ if __name__ == "__main__":
             timer.report(f"Step {step} Loss: {loss.item()}")
 
             if is_save_step:
+                checkpoint_directory = saver.prepare_checkpoint_directory()
+
                 state_dict = { "app": AppState(model, optimizer) }
                 dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
                 torch.save({
                     "sampler": dataloader.sampler.state_dict()
                 }, os.path.join(checkpoint_directory, "train_state.pt"))
 
-                saver.atomic_symlink(checkpoint_directory)
+                saver.symlink_latest(checkpoint_directory)
 
                 timer.report("Saved checkpoint")
 
