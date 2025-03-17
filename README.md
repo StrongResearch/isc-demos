@@ -3,6 +3,9 @@ Welcome to the Strong Compute Instant Super Computer (ISC) Demos repo. Before di
 that Strong Compute users complete the Getting Started section of the 
 [Developer Docs](https://strong-compute.gitbook.io/developer-docs/getting-started).
 
+### Recent Updates
+Please note: This repo has recently been updated to reflect the imminent changes to the Artifacts system in the Strong Compute ISC. These changes are scheduled for general release on Tuesday, 18 March 2025 at 09:30:00 pm PST.
+
 ### Demos <a name="more-examples"></a>
 
 The following examples demonstrate use of the ISC for training a variety of models, including how to implement 
