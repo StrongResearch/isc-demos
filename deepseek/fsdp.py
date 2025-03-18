@@ -93,17 +93,17 @@ if __name__ == "__main__":
 
     timer.report(f"Loaded model: {count_trainable_parameters(model)}")
 
-    # # inject PEFT modules
-    # lora_config = LoraConfig(
-    #     r=16,
-    #     lora_alpha=32,
-    #     target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-    #     lora_dropout=0, # set to zero to see identical loss on all ranks
-    # )
+    # inject PEFT modules
+    lora_config = LoraConfig(
+        r=16,
+        lora_alpha=32,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+        lora_dropout=0, # set to zero to see identical loss on all ranks
+    )
 
-    # model = LoraModel(model, lora_config, ADAPTER_NAME)
+    model = LoraModel(model, lora_config, ADAPTER_NAME)
 
-    # timer.report(f"PEFT model: {count_trainable_parameters(model)}")
+    timer.report(f"PEFT model: {count_trainable_parameters(model)}")
 
     # wrap model in FSDP
     my_auto_wrap_policy = functools.partial(
@@ -207,7 +207,7 @@ if __name__ == "__main__":
 
     # training
     num_epochs = 5
-    save_every_steps = 5
+    save_every_steps = 20
     model.train()
 
     for epoch in range(dataloader.sampler.epoch, num_epochs):
@@ -244,12 +244,13 @@ if __name__ == "__main__":
             sync_loss = loss
             dist.all_reduce(sync_loss)
 
-            timer.report(f"Step {step} Loss: {loss.item():.3f}")
+            timer.report(f"Step {step} Loss: {sync_loss.item():.3f}")
 
             device = torch.device(f"cuda:{local_device}")
             info = {
                 **get_mem_stats(device),
                 **get_detailed_memory_stats(),  # Add detailed memory stats
+                "running_loss": sync_loss.item()
             }
 
             if wandb_apikey and rank == 0:
