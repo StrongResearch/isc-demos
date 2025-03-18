@@ -2,6 +2,7 @@ import os
 import functools
 import logging
 import warnings
+import time
 
 import torch
 import torch.distributed as dist
@@ -175,11 +176,11 @@ if __name__ == "__main__":
 
         train_state = torch.load(os.path.join(latest_checkpoint_path, "train_state.pt"))
         dataloader.sampler.load_state_dict(train_state["sampler"])
-
-        best_loss_checkpoint = torch.load(os.path.join(latest_checkpoint_path, "best_loss.pt"))
-        best_loss = best_loss_checkpoint["best_loss"]
+        best_loss = train_state["best_loss"]
 
         timer.report("Loaded checkpoint")
+
+    state_dict = { "app": AppState(model, optimizer) }
 
     # training
     num_epochs = 10
@@ -192,7 +193,7 @@ if __name__ == "__main__":
 
         for step, batch in enumerate(dataloader):
 
-            is_last_batch = (batch + 1) == batches_per_epoch 
+            is_last_batch = (step + 1) == batches_per_epoch 
             is_save_step = ((step + 1) % save_every_steps == 0) or is_last_batch
 
             # Move batch to device
@@ -208,25 +209,56 @@ if __name__ == "__main__":
             dataloader.sampler.advance(len(input_ids))
             optimizer.zero_grad()
 
-            timer.report(f"Step {step} Loss: {loss.item()}")
+            timer.report(f"Step {step} Loss: {loss.item():.3f}")
 
             if is_save_step:
+                force_save = False
                 if loss.item() < best_loss:
                     best_loss = loss.item()
                     force_save = True
 
+                timer.report(f"Step: {step} Force save: {force_save}")
+
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
 
-                state_dict = { "app": AppState(model, optimizer) }
-                dcp.save(state_dict=state_dict, checkpoint_id=checkpoint_directory, process_group=saving_group)
-                torch.save({
-                    "sampler": dataloader.sampler.state_dict()
-                }, os.path.join(checkpoint_directory, "train_state.pt"))
+                timer.report(f"checkpoint_directory: {checkpoint_directory}")
 
-                atomic_torch_save(
-                    {"best_loss": best_loss}, 
-                    os.path.join(checkpoint_directory, "best_loss.pt")
+                checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
+
+                timer.report("checkpoint_writer")
+
+                # state_dict = { "app": AppState(model, optimizer) }
+
+                metadata = dcp.save(
+                    state_dict=state_dict, 
+                    # checkpoint_id=checkpoint_directory, 
+                    storage_writer=checkpoint_writer,
+                    # process_group=saving_group
                 )
+
+                timer.report("DCP save")
+
+                dist.barrier()
+
+                timer.report("Barrier")
+
+                if rank == 0:
+                    atomic_torch_save(
+                        {
+                            "sampler": dataloader.sampler.state_dict(),
+                            "best_loss": best_loss
+                        }, 
+                        os.path.join(checkpoint_directory, "train_state.pt")
+                    )
+
+                timer.report("Atomic training")
+                    
+                while len(os.listdir(checkpoint_directory)) < world_size + 2:
+                    print("Checkpoint not yet saved...")
+                    time.sleep(1)
+                    dist.barrier()
+
+                timer.report("DCP Checking")
 
                 saver.symlink_latest(checkpoint_directory)
 

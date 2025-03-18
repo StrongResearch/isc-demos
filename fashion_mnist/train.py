@@ -202,7 +202,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
             # Save checkpoint
             if is_save_batch:
                 # force save checkpoint if test performance improves, only after 20 epochs
-                if (epoch > 20) and (pct_test_correct > metrics["best_accuracy"]):
+                if (epoch > 20) and is_last_batch and (pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
                     metrics["best_accuracy"] = pct_test_correct
                 else:

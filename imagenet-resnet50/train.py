@@ -416,13 +416,12 @@ def test_loop(
             # Save checkpoint
             if is_save_batch:
                 # force save checkpoint if test performance improves, only after 20 epochs
-                if (epoch > 20) and (pct_test_correct > metrics["best_accuracy"]):
+                if (epoch > 20) and is_last_batch and (pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
                     metrics["best_accuracy"] = pct_test_correct
                 else:
                     force_save = False
 
-                # Save checkpoint
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
 
                 if args.is_master:
