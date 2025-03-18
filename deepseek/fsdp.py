@@ -212,7 +212,7 @@ if __name__ == "__main__":
             sync_loss = loss
             dist.all_reduce(sync_loss)
 
-            timer.report(f"Step {step} Loss: {loss.item():.3f}")
+            timer.report(f"Step {step} Loss: {sync_loss.item():.3f}")
 
             if is_save_step:
                 force_save = False
