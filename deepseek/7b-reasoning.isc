@@ -1,14 +1,14 @@
-isc_project_id = "REPLACE_ME"
+isc_project_id = "13fc0ea5-6c3b-420a-af6a-eb2aef18b8af"
 experiment_name = "WANDBdist-reasoningFULL-demo-ds-7b"
 gpus = 16
 compute_mode = "burst"
-burst_shape_priority_list = ["aws-debug-nvidia-570-us-east-1", "aws-debug-nvidia-570-us-west-2" ]
-dataset_id_list = ["a792646c-39f5-4971-a169-425324fec87b", "82b2949e-1167-42df-a654-ea74a6877a53" ]
+burst_shape_priority_list = ["aws-debug-nvidia-570-us-east-1"]
+dataset_id_list = [ "c993c709-ac9a-4a24-bddc-3949c397418d", "82b2949e-1167-42df-a654-ea74a6877a53" ]
 command = '''
 source /root/.deepseek/bin/activate && 
 source /root/isc-demos/deepseek/.env &&
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
 /root/isc-demos/deepseek/fsdp.py 
---dataset-id a792646c-39f5-4971-a169-425324fec87b
+--dataset-id c993c709-ac9a-4a24-bddc-3949c397418d
 --chk-path $OUTPUT_PATH'''
