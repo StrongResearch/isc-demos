@@ -26,7 +26,7 @@ from torchvision.transforms import v2
 
 from antialiased_resnet import resnet50
 from lamb import Lamb
-from cycling_utils import InterruptableDistributedSampler, AtomicDirectory
+from cycling_utils import InterruptableDistributedSampler, AtomicDirectory, atomic_torch_save
 
 timer.report("00_imports")
 
@@ -47,8 +47,6 @@ def get_args_parser(add_help=True):
     parser.add_argument("--warmup-epochs", type=int, default=5)
 
     parser.add_argument("--dataset-id", type=str, required=True)
-    parser.add_argument("--save-dir", type=Path, required=True)
-    parser.add_argument("--tboard-path", type=Path, required=True)
     parser.add_argument("--load-path", type=Path, default=None)
 
     parser.add_argument("--save-freq", type=int, default=50)
@@ -76,6 +74,7 @@ def train_loop(
     train_dataloader,
     test_dataloader,
     metrics,
+    writer,
     saver,
     args,
 ):
@@ -83,11 +82,8 @@ def train_loop(
     epoch = train_dataloader.sampler.epoch
     train_batches_per_epoch = len(train_dataloader)
     batch = train_dataloader.sampler.progress // train_dataloader.batch_size
-    model.train()
-
-    # Setup for logging
-    writer = SummaryWriter(log_dir=args.tboard_path)
     host_device_nans = torch.zeros(args.world_size, dtype=torch.int, device=args.device_id)
+    model.train()
 
     # Report and just reset timer
     timer.report(
@@ -112,11 +108,13 @@ def train_loop(
         # Batch setup - epoch starts with batch 0
         is_log_batch = (batch + 1) % args.log_freq == 0
         is_accum_batch = (batch + 1) % args.accum == 0
-        is_save_batch = (batch + 1) % args.save_freq == 0
         is_last_batch = (batch + 1) == train_batches_per_epoch
+        is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
         is_lrstep_batch = True if args.lr_stepevery == "batch" else is_last_batch
-        if (is_save_batch or is_last_batch) and args.is_master:
-            checkpoint_directory = saver.prepare_checkpoint_directory()
+
+        # if (is_save_batch or is_last_batch) and args.is_master:
+        #     checkpoint_directory = saver.prepare_checkpoint_directory()
+
         torch.cuda.synchronize()
         metrics["sys"].update({"2_batch_stats": time.perf_counter() - start})
         start = time.perf_counter()
@@ -284,7 +282,8 @@ def train_loop(
                 )
 
                 # Dump log to json
-                with open(os.path.join(args.save_dir, "train_metrics.jsonl"), "a") as f:
+                lossy_output_dir = os.environ["LOSSY_ARTIFACT_PATH"]
+                with open(os.path.join(lossy_output_dir, "train_metrics.jsonl"), "a") as f:
                     f.write(json.dumps(json_payload) + "\n")
 
             metrics["sys"].end_epoch()
@@ -304,21 +303,28 @@ def train_loop(
         start = time.perf_counter()
 
         # Saving
-        if (is_save_batch or is_last_batch) and args.is_master:
-            # Save checkpoint
-            save_payload = {
-                "model": model.state_dict(),
-                "optimizer": optimizer.state_dict(),
-                "train_sampler": train_dataloader.sampler.state_dict(),
-                "test_sampler": test_dataloader.sampler.state_dict(),
-                "lr_scheduler": lr_scheduler.state_dict(),
-                "scaler": scaler.state_dict(),
-                "metrics_train": metrics["train"].state_dict(),
-                "metrics_test": metrics["test"].state_dict(),
-                "metrics_sys": metrics["sys"].state_dict(),
-            }
-            torch.save(save_payload, os.path.join(checkpoint_directory, "checkpoint.pt"))
-            saver.atomic_symlink(checkpoint_directory)
+        if is_save_batch:
+            checkpoint_directory = saver.prepare_checkpoint_directory()
+
+            if args.is_master:
+                # Save checkpoint
+                atomic_torch_save(
+                    {
+                        "model": model.state_dict(),
+                        "optimizer": optimizer.state_dict(),
+                        "train_sampler": train_dataloader.sampler.state_dict(),
+                        "test_sampler": test_dataloader.sampler.state_dict(),
+                        "lr_scheduler": lr_scheduler.state_dict(),
+                        "scaler": scaler.state_dict(),
+                        "metrics_train": metrics["train"].state_dict(),
+                        "metrics_test": metrics["test"].state_dict(),
+                        "metrics_sys": metrics["sys"].state_dict(),
+                        "best_accuracy": metrics["best_accuracy"]
+                    },
+                    os.path.join(checkpoint_directory, "checkpoint.pt")
+                )
+
+            saver.symlink_latest(checkpoint_directory)
 
         torch.cuda.synchronize()
         dist.barrier()  # Add after master-only op to ensure fair timing
@@ -335,6 +341,7 @@ def test_loop(
     train_dataloader,
     test_dataloader,
     metrics,
+    writer,
     saver,
     args,
 ):
@@ -348,18 +355,16 @@ def test_loop(
         f"14_test_start - EPOCH [{epoch:,}] TEST BATCH [{batch:,} / {test_batches_per_epoch:,}]"
     )
 
-    # Write setup timing data to tensorboard
-    writer = SummaryWriter(log_dir=args.tboard_path)
-
     with torch.no_grad():
         for batch, (inputs, targets) in enumerate(test_dataloader, start=batch):
             # Batch setup
             batch = test_dataloader.sampler.progress // test_dataloader.batch_size
             is_log_batch = (batch + 1) % args.log_freq == 0
-            is_save_batch = (batch + 1) % args.save_freq == 0
             is_last_batch = (batch + 1) == test_batches_per_epoch
-            if (is_save_batch or is_last_batch) and args.is_master:
-                checkpoint_directory = saver.prepare_checkpoint_directory()
+            is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
+
+            # if (is_save_batch or is_last_batch) and args.is_master:
+            #     checkpoint_directory = saver.prepare_checkpoint_directory()
 
             # Move input and targets to device
             inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
@@ -383,6 +388,7 @@ def test_loop(
             ).reduce().reset_local()
 
             # Performance summary at the end of the epoch
+            pct_test_correct = float("-inf")
             if args.is_master and is_last_batch:
                 examples_seen = metrics["test"].agg["examples_seen"]
                 avg_test_loss = metrics["test"].agg["loss"] / examples_seen
@@ -408,21 +414,34 @@ def test_loop(
                 )
 
             # Save checkpoint
-            if args.is_master and (is_save_batch or is_last_batch):
-                # Save checkpoint
-                save_payload = {
-                    "model": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "train_sampler": train_dataloader.sampler.state_dict(),
-                    "test_sampler": test_dataloader.sampler.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "scaler": scaler.state_dict(),
-                    "metrics_train": metrics["train"].state_dict(),
-                    "metrics_test": metrics["test"].state_dict(),
-                    "metrics_sys": metrics["sys"].state_dict(),
-                }
-                torch.save(save_payload, os.path.join(checkpoint_directory, "checkpoint.pt"))
-                saver.atomic_symlink(checkpoint_directory)
+            if is_save_batch:
+                # force save checkpoint if test performance improves, only after 20 epochs
+                if (epoch > 20) and is_last_batch and (pct_test_correct > metrics["best_accuracy"]):
+                    force_save = True
+                    metrics["best_accuracy"] = pct_test_correct
+                else:
+                    force_save = False
+
+                checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
+
+                if args.is_master:
+                    atomic_torch_save(
+                        {
+                            "model": model.state_dict(),
+                            "optimizer": optimizer.state_dict(),
+                            "train_sampler": train_dataloader.sampler.state_dict(),
+                            "test_sampler": test_dataloader.sampler.state_dict(),
+                            "lr_scheduler": lr_scheduler.state_dict(),
+                            "scaler": scaler.state_dict(),
+                            "metrics_train": metrics["train"].state_dict(),
+                            "metrics_test": metrics["test"].state_dict(),
+                            "metrics_sys": metrics["sys"].state_dict(),
+                            "best_accuracy": metrics["best_accuracy"]
+                        },
+                        os.path.join(checkpoint_directory, "checkpoint.pt")
+                    )
+
+                saver.symlink_latest(checkpoint_directory)
 
 
 def main(args, timer):
@@ -556,21 +575,28 @@ def main(args, timer):
         "train": MetricsTracker(),
         "test": MetricsTracker(),
         "sys": MetricsTracker(),
+        "best_accuracy": float("-inf")
     }
+    writer = SummaryWriter(log_dir=os.environ["LOSSY_ARTIFACT_PATH"])
     timer.report("11_loss_opt_lrsch_met")
 
     #####################################
     # Retrieve the checkpoint if the experiment is resuming from pause
     # ----------------------
-    saver = AtomicDirectory(output_directory=args.save_dir, is_master=args.is_master)
-    checkpoint_path = None
+    output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
+    saver = AtomicDirectory(output_directory=output_directory, is_master=args.is_master)
 
-    local_resume_path = os.path.join(args.save_dir, saver.symlink_name)
-    if os.path.islink(local_resume_path):
-        checkpoint_path = os.path.join(os.readlink(local_resume_path), "checkpoint.pt")
+    # set the checkpoint_path if there is one to resume from
+    checkpoint_path = None
+    latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
+    if os.path.islink(latest_symlink_file_path):
+        latest_checkpoint_path = os.readlink(latest_symlink_file_path)
+        checkpoint_path = os.path.join(latest_checkpoint_path, "checkpoint.pt")
     elif args.load_path:
+        # assume user has provided a full path to a checkpoint to resume
         if os.path.isfile(args.load_path):
             checkpoint_path = args.load_path
+
     if checkpoint_path:
         timer.report(f"Loading checkpoint from {checkpoint_path}")
         checkpoint = torch.load(checkpoint_path, map_location=f"cuda:{args.device_id}", weights_only=False)
@@ -584,6 +610,7 @@ def main(args, timer):
         metrics["train"].load_state_dict(checkpoint["metrics_train"])
         metrics["test"].load_state_dict(checkpoint["metrics_test"])
         metrics["sys"].load_state_dict(checkpoint["metrics_sys"])
+        metrics["best_accuracy"] = checkpoint["best_accuracy"]
 
     timer.report("12_load_checkpoint")
 
@@ -591,33 +618,44 @@ def main(args, timer):
     # Main training loop
     # --------------------
     for epoch in range(train_dataloader.sampler.epoch, args.epochs):
-        with train_dataloader.sampler.in_epoch(epoch):
-            train_loop(
-                model,
-                optimizer,
-                lr_scheduler,
-                scaler,
-                loss_fn,
-                train_dataloader,
-                test_dataloader,
-                metrics,
-                saver,
-                args,
-            )
 
-            with test_dataloader.sampler.in_epoch(epoch):
-                test_loop(
-                    model,
-                    optimizer,
-                    lr_scheduler,
-                    scaler,
-                    loss_fn,
-                    train_dataloader,
-                    test_dataloader,
-                    metrics,
-                    saver,
-                    args,
-                )
+        # important for use with InterruptableDistributedSampler
+        train_dataloader.sampler.set_epoch(epoch)
+        test_dataloader.sampler.set_epoch(epoch)
+
+        train_loop(
+            model,
+            optimizer,
+            lr_scheduler,
+            scaler,
+            loss_fn,
+            train_dataloader,
+            test_dataloader,
+            metrics,
+            writer,
+            saver,
+            args,
+        )
+
+        test_loop(
+            model,
+            optimizer,
+            lr_scheduler,
+            scaler,
+            loss_fn,
+            train_dataloader,
+            test_dataloader,
+            metrics,
+            writer,
+            saver,
+            args,
+        )
+
+        # important for use with InterruptableDistributedSampler
+        train_dataloader.sampler.reset_progress()
+        test_dataloader.sampler.reset_progress()
+
+    print("Done!")
 
 timer.report("01_define_functions")
 

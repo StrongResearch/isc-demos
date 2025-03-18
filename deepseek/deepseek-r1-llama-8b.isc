@@ -8,5 +8,4 @@ source /root/.deepseek/bin/activate &&
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
 /root/isc-demos/deepseek/fsdp.py 
---dataset-id 38b32289-7d34-4c72-9546-9d480f676840
---chk-path $OUTPUT_PATH'''
+--dataset-id 38b32289-7d34-4c72-9546-9d480f676840'''
