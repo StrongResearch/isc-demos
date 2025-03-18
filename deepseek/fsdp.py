@@ -209,6 +209,7 @@ if __name__ == "__main__":
             dataloader.sampler.advance(len(input_ids))
             optimizer.zero_grad()
 
+            # synchronize loss to determine whether to force_save
             sync_loss = loss
             dist.all_reduce(sync_loss)
 
