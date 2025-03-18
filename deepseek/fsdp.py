@@ -65,7 +65,6 @@ if __name__ == "__main__":
 
     # creating a device mesh enables FSDP to use DTensor instead of ShardedTensor
     device_mesh = init_device_mesh("cuda", (world_size,))
-    saving_group = device_mesh.get_group() # modify this for HYBRID_SHARD
     assert bfSixteen_ready(), "ERROR: System not BF16 ready."
 
     # Log for da graphs etc
@@ -182,7 +181,7 @@ if __name__ == "__main__":
         pin_memory=True,
         persistent_workers=True
     )
-    batches_per_epoch = len(dataloader)
+    steps_per_epoch = len(dataloader)
 
     best_loss = float("inf")
 
@@ -215,10 +214,11 @@ if __name__ == "__main__":
 
         dataloader.sampler.set_epoch(epoch)
 
-        for step, batch in enumerate(dataloader):
+        for batch in dataloader:
 
-            is_last_batch = (step + 1) == batches_per_epoch 
-            is_save_step = ((step + 1) % save_every_steps == 0) or is_last_batch
+            step = dataloader.sampler.progress // dataloader.batch_size
+            is_last_step = (step + 1) == steps_per_epoch
+            is_save_step = ((step + 1) % save_every_steps == 0) or is_last_step
 
             timer.report("Moving batch to device!")
             # Move batch to device
@@ -241,6 +241,9 @@ if __name__ == "__main__":
             timer.report("Zeroing optimizer gradient!")
             optimizer.zero_grad()
 
+            sync_loss = loss
+            dist.all_reduce(sync_loss)
+
             timer.report(f"Step {step} Loss: {loss.item():.3f}")
 
             device = torch.device(f"cuda:{local_device}")
@@ -254,34 +257,19 @@ if __name__ == "__main__":
 
             if is_save_step:
                 force_save = False
-                if loss.item() < best_loss:
-                    best_loss = loss.item()
+                if sync_loss.item() < best_loss:
+                    best_loss = sync_loss.item()
                     force_save = True
 
-                timer.report(f"Step: {step} Force save: {force_save}")
-
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
-
-                timer.report(f"checkpoint_directory: {checkpoint_directory}")
-
                 checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
-
-                timer.report("checkpoint_writer")
-
-                # state_dict = { "app": AppState(model, optimizer) }
 
                 metadata = dcp.save(
                     state_dict=state_dict, 
-                    # checkpoint_id=checkpoint_directory, 
-                    storage_writer=checkpoint_writer,
-                    # process_group=saving_group
+                    storage_writer=checkpoint_writer
                 )
 
-                timer.report("DCP save")
-
                 dist.barrier()
-
-                timer.report("Barrier")
 
                 if rank == 0:
                     atomic_torch_save(
@@ -291,15 +279,11 @@ if __name__ == "__main__":
                         }, 
                         os.path.join(checkpoint_directory, "train_state.pt")
                     )
-
-                timer.report("Atomic training")
                     
                 while len(os.listdir(checkpoint_directory)) < world_size + 2:
                     print("Checkpoint not yet saved...")
                     time.sleep(1)
                     dist.barrier()
-
-                timer.report("DCP Checking")
 
                 saver.symlink_latest(checkpoint_directory)
 
