@@ -46,7 +46,7 @@ In this case, you should still train with compute_mode = "cycle" to confirm your
 changes.
 
 ## Full fine-tuning
-To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (LoRA) fine-tune, comment out lines 78 to 88 of `fsdp.py`.
+To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (LoRA) fine-tune, comment out lines 83 to 93 of `fsdp.py`.
 ```
 #    # inject PEFT modules
 #    lora_config = LoraConfig(
