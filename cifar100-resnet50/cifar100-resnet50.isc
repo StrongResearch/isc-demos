@@ -5,6 +5,7 @@ compute_mode = "cycle"
 dataset_id_list = ["<dataset-id>"]
 command = '''
 source ~/.cifar/bin/activate && 
-cd ~/isc-demos/cifar100-resnet50/ && 
-torchrun --nnodes=10 --nproc-per-node=6 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
-train.py --save-dir $CHECKPOINT_ARTIFACT_PATH'''
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+/root/isc-demos/cifar100-resnet50/train.py
+--dataset-id <dataset-id>'''
