@@ -22,7 +22,7 @@ def init_wandb_logging(batch_size, seq_len, device_mesh_1d, world_size, save_eve
 
    # wandb_name = f"{being_tested}:{world_size}.{args.batch_size}.{args.grad_accum_steps}:{args.sharding_strategy}:{sc_name}"
    wandb.init(
-         project="simpler-fsdp-poc",
+         project="fsdp-ds-reasoning",
          # dir=exp_dir,
          name=wandb_name,
          id=os.getenv("STRONG_EXPERIMENT_ID", str(datetime.now().timestamp())),
