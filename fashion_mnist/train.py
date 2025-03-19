@@ -119,8 +119,6 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
         total_batch_loss, examples_seen = itemgetter("loss", "examples_seen")(metrics["train"].agg)
         batch_avg_loss = total_batch_loss / examples_seen
 
-        timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f})")
-
         if is_last_batch:
             lr_scheduler.step()  # Step learning rate scheduler at the end of the epoch
             metrics["train"].end_epoch()  # Store epoch aggregates and reset local aggregate for next epoch
@@ -150,6 +148,8 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
                 )
 
             saver.symlink_latest(checkpoint_directory)
+
+            timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f})")
 
 def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
     epoch = test_dataloader.sampler.epoch
