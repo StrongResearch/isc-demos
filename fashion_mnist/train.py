@@ -149,7 +149,7 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
 
             saver.symlink_latest(checkpoint_directory)
 
-            timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f})")
+            timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f}")
 
 def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
     epoch = test_dataloader.sampler.epoch
@@ -194,10 +194,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                 writer.add_scalar("Test/pct_test_correct", pct_test_correct, epoch)
                 metrics["test"].end_epoch()
 
-                timer.report(
-                    f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] :: AVG TEST LOSS: \
-                             {avg_test_loss}, TEST ACC: {pct_test_correct}"
-                )
+                timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] :: AVG TEST LOSS: {avg_test_loss:.3f}, TEST ACC: {pct_test_correct:.3f}")
 
             # Save checkpoint
             if is_save_batch:
@@ -243,10 +240,10 @@ def main(args, timer):
     # node.
 
     dist.init_process_group("nccl")  # Expects RANK set in environment variable
-    rank = int(os.environ["RANK"])  # Rank of this GPU in cluster
+    args.rank = int(os.environ["RANK"])  # Rank of this GPU in cluster
     _world_size = int(os.environ["WORLD_SIZE"]) # Total number of GPUs in the cluster
     args.device_id = int(os.environ["LOCAL_RANK"])  # Rank on local node
-    args.is_master = rank == 0  # Master node for saving / reporting
+    args.is_master = args.rank == 0  # Master node for saving / reporting
     torch.cuda.set_device(args.device_id)  # Enables calling 'cuda'
 
     timer.report("Setup for distributed training")
