@@ -163,7 +163,11 @@ if __name__ == "__main__":
     best_loss = float("inf")
 
     # load checkpoint if found
-    output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
+    try:
+        output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
+    except KeyError as error:
+        print("Must set env var CHECKPOINT_ARTIFACT_PATH so we know where to save checkpoints!")
+        exit(1)
     saver = AtomicDirectory(output_directory=output_directory, is_master=rank==0)
 
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
