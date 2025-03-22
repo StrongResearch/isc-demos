@@ -187,7 +187,7 @@ if __name__ == "__main__":
 
     # training
     num_epochs = 10
-    save_every_steps = 5
+    save_every_steps = 30
     model.train()
 
     for epoch in range(dataloader.sampler.epoch, num_epochs):
@@ -221,9 +221,6 @@ if __name__ == "__main__":
 
             if is_save_step:
                 force_save = False
-                if sync_loss.item() < best_loss:
-                    best_loss = sync_loss.item()
-                    force_save = True
 
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
                 checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
