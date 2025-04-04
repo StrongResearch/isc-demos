@@ -2,18 +2,19 @@ import datetime
 import os
 import time
 import warnings
-
 from pathlib import Path
+
 import presets
 import torch
 import torch.utils.data
 import torchvision
 import utils
 from coco_utils import get_coco
+from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
 from torch import nn
 from torch.optim.lr_scheduler import PolynomialLR
-from torchvision.transforms import functional as F, InterpolationMode
-from cycling_utils import InterruptableDistributedSampler, atomic_torch_save
+from torchvision.transforms import InterpolationMode
+from torchvision.transforms import functional as F
 
 
 def get_dataset(dir_path, name, image_set, transform):
@@ -96,12 +97,25 @@ def evaluate(model, data_loader, device, num_classes):
     return confmat
 
 
-def train_one_epoch(model, criterion, optimizer, data_loader, sampler: InterruptableDistributedSampler, lr_scheduler, device, epoch, print_freq, scaler=None):
+def train_one_epoch(
+    model,
+    criterion,
+    optimizer,
+    data_loader,
+    sampler: InterruptableDistributedSampler,
+    lr_scheduler,
+    device,
+    epoch,
+    print_freq,
+    scaler=None,
+):
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
     header = f"Epoch: [{epoch}]"
-    for image, target in metric_logger.log_every(data_loader, sampler.progress // data_loader.batch_size, print_freq, header):
+    for image, target in metric_logger.log_every(
+        data_loader, sampler.progress // data_loader.batch_size, print_freq, header
+    ):
         image, target = image.to(device), target.to(device)
         with torch.cuda.amp.autocast(enabled=scaler is not None):
             output = model(image)
@@ -145,7 +159,7 @@ def main(args):
     utils.init_distributed_mode(args)
     print(args)
 
-    assert args.distributed # don't support cycling when not distributed for simplicity
+    assert args.distributed  # don't support cycling when not distributed for simplicity
 
     device = torch.device(args.device)
 
@@ -238,7 +252,7 @@ def main(args):
         if not args.test_only:
             optimizer.load_state_dict(checkpoint["optimizer"])
             lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
-            args.start_epoch = checkpoint["epoch"] #+ 1
+            args.start_epoch = checkpoint["epoch"]  # + 1
             if args.amp:
                 scaler.load_state_dict(checkpoint["scaler"])
             train_sampler.load_state_dict(checkpoint["sampler"])
@@ -255,7 +269,18 @@ def main(args):
     for epoch in range(args.start_epoch, args.epochs):
         # if args.distributed:
         with train_sampler.in_epoch(epoch):
-            train_one_epoch(model, criterion, optimizer, data_loader, train_sampler, lr_scheduler, device, epoch, args.print_freq, scaler)
+            train_one_epoch(
+                model,
+                criterion,
+                optimizer,
+                data_loader,
+                train_sampler,
+                lr_scheduler,
+                device,
+                epoch,
+                args.print_freq,
+                scaler,
+            )
             confmat = evaluate(model, data_loader_test, device=device, num_classes=num_classes)
             print(confmat)
             if utils.is_main_process():

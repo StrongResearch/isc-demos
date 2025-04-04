@@ -1,5 +1,6 @@
 from torch import nn
 
+
 class ConvBlock(nn.Module):
     def __init__(self, inch, ouch, krnl, strd, padd, drop):
         super(ConvBlock, self).__init__()
@@ -9,8 +10,10 @@ class ConvBlock(nn.Module):
             nn.MaxPool2d(kernel_size=3, stride=1, padding=0),
             nn.ReLU(),
         )
+
     def forward(self, x):
         return self.model(x)
+
 
 class ConvNet(nn.Module):
     def __init__(self, dropout):
@@ -26,7 +29,8 @@ class ConvNet(nn.Module):
             nn.Linear(500, 100),
             nn.ReLU(),
             nn.Dropout(p=dropout),
-            nn.Linear(100, 10)
+            nn.Linear(100, 10),
         )
+
     def forward(self, x):
         return self.model(x)

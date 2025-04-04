@@ -11,10 +11,15 @@ timer = TimestampedTimer("Imported TimestampedTimer")
 import argparse
 import os
 from operator import itemgetter
-from pathlib import Path
 
 import torch
 import torch.distributed as dist
+from cycling_utils import (
+    AtomicDirectory,
+    InterruptableDistributedSampler,
+    MetricsTracker,
+    atomic_torch_save,
+)
 from model import ConvNet
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -22,13 +27,6 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import Compose, Lambda, PILToTensor, RandAugment
-
-from cycling_utils import (
-    InterruptableDistributedSampler,
-    MetricsTracker,
-    AtomicDirectory,
-    atomic_torch_save,
-)
 
 timer.report("Completed imports")
 
@@ -42,6 +40,7 @@ timer.report("Completed imports")
 #  - **Batch Size** - the number of data samples propagated through the network before the parameters are updated
 #  - **Learning Rate** - how much to update models parameters at each batch/epoch. Smaller values yield slow learning
 #       speed, while large values may result in unpredictable behavior during training.
+
 
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser()
@@ -71,6 +70,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--save-freq", type=int, default=100)
     return parser
 
+
 #####################################
 # We define ``train_loop`` that loops over our optimization code, and ``test_loop`` that evaluates the model's
 # performance against our test data. Inside the training loop, optimization happens in three steps:
@@ -81,7 +81,10 @@ def get_args_parser(add_help=True):
 #  * Once we have our gradients, we call ``optimizer.step()`` to adjust the parameters by the gradients collected in the
 #       backward pass.
 
-def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
+
+def train_loop(
+    model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args
+):
     epoch = train_dataloader.sampler.epoch
     train_batches_per_epoch = len(train_dataloader)
     # Set the model to training mode - important for layers with different training / inference behaviour
@@ -142,14 +145,17 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
                         "lr_scheduler": lr_scheduler.state_dict(),
                         "train_metrics": metrics["train"].state_dict(),
                         "test_metrics": metrics["test"].state_dict(),
-                        "best_accuracy": metrics["best_accuracy"]
+                        "best_accuracy": metrics["best_accuracy"],
                     },
-                    os.path.join(checkpoint_directory, "checkpoint.pt")
+                    os.path.join(checkpoint_directory, "checkpoint.pt"),
                 )
 
             saver.symlink_latest(checkpoint_directory)
 
-            timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f}")
+            timer.report(
+                f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f}"
+            )
+
 
 def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
     epoch = test_dataloader.sampler.epoch
@@ -181,26 +187,32 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
 
             # Performance metrics logging
             num_correct = (predictions.argmax(1) == targets).type(torch.float).sum()
-            metrics["test"].update({"examples_seen": len(inputs), "loss": test_loss.item(), "num_correct": num_correct.item()})
+            metrics["test"].update(
+                {"examples_seen": len(inputs), "loss": test_loss.item(), "num_correct": num_correct.item()}
+            )
             metrics["test"].reduce().reset_local()  # Sum results from all nodes into "agg"
 
             # Performance summary at the end of the epoch
             pct_test_correct = float("-inf")
             if args.is_master and is_last_batch:
-                total_loss, examples_seen, num_correct = itemgetter("loss", "examples_seen", "num_correct")(metrics["test"].agg)
+                total_loss, examples_seen, num_correct = itemgetter("loss", "examples_seen", "num_correct")(
+                    metrics["test"].agg
+                )
                 avg_test_loss = total_loss / examples_seen
                 pct_test_correct = num_correct / examples_seen
                 writer.add_scalar("Test/avg_test_loss", avg_test_loss, epoch)
                 writer.add_scalar("Test/pct_test_correct", pct_test_correct, epoch)
                 metrics["test"].end_epoch()
 
-                timer.report(f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] :: AVG TEST LOSS: {avg_test_loss:.3f}, TEST ACC: {pct_test_correct:.3f}")
+                timer.report(
+                    f"EPOCH [{epoch}] TEST BATCH [{batch} / {test_batches_per_epoch}] :: AVG TEST LOSS: {avg_test_loss:.3f}, TEST ACC: {pct_test_correct:.3f}"
+                )
 
             # Save checkpoint
             if is_save_batch:
 
                 # sync pct_test_correct to determine force_save
-                sync_pct_test_correct = torch.tensor(pct_test_correct).to('cuda')
+                sync_pct_test_correct = torch.tensor(pct_test_correct).to("cuda")
                 dist.broadcast(sync_pct_test_correct, src=0)
 
                 # force save checkpoint if test performance improves, only after 20 epochs
@@ -209,7 +221,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                     metrics["best_accuracy"] = sync_pct_test_correct
                 else:
                     force_save = False
-                
+
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
 
                 if args.is_master:
@@ -222,14 +234,16 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                             "lr_scheduler": lr_scheduler.state_dict(),
                             "train_metrics": metrics["train"].state_dict(),
                             "test_metrics": metrics["test"].state_dict(),
-                            "best_accuracy": metrics["best_accuracy"]
+                            "best_accuracy": metrics["best_accuracy"],
                         },
-                        os.path.join(checkpoint_directory, "checkpoint.pt")
+                        os.path.join(checkpoint_directory, "checkpoint.pt"),
                     )
-                
+
                 saver.symlink_latest(checkpoint_directory)
 
+
 timer.report("Defined helper function/s, loops, and model")
+
 
 def main(args, timer):
     ##############################################
@@ -241,7 +255,7 @@ def main(args, timer):
 
     dist.init_process_group("nccl")  # Expects RANK set in environment variable
     args.rank = int(os.environ["RANK"])  # Rank of this GPU in cluster
-    _world_size = int(os.environ["WORLD_SIZE"]) # Total number of GPUs in the cluster
+    _world_size = int(os.environ["WORLD_SIZE"])  # Total number of GPUs in the cluster
     args.device_id = int(os.environ["LOCAL_RANK"])  # Rank on local node
     args.is_master = args.rank == 0  # Master node for saving / reporting
     torch.cuda.set_device(args.device_id)  # Enables calling 'cuda'
@@ -311,28 +325,24 @@ def main(args, timer):
     # -----------------
     # Metrics are commonly tracked and plotted during training to report on progress and model performance.
 
-    metrics = {
-        "train": MetricsTracker(), 
-        "test": MetricsTracker(), 
-        "best_accuracy": float("-inf")
-    }
+    metrics = {"train": MetricsTracker(), "test": MetricsTracker(), "best_accuracy": float("-inf")}
     writer = SummaryWriter(log_dir=os.environ["LOSSY_ARTIFACT_PATH"])
 
     #####################################
     # Checkpoint Saving - AtomicDirectory
     # -----------------
-    # The AtomicDirectory saver is designed for use with Checkpoint Artifacts on Strong Compute. The User is responsible for 
+    # The AtomicDirectory saver is designed for use with Checkpoint Artifacts on Strong Compute. The User is responsible for
     # implementing AtomicDirectory saver and saving checkpoints at their desired frequency.
 
-    # Checkpoint Artifacts are synchronized every 10 minutes and/or at the end of each cycle on Strong Compute. Upon synchronization, 
-    # the latest symlinked checkpoint/s saved by AtomicDirectory saver/s in the $CHECKPOINT_ARTIFACT_PATH directory will be shipped 
-    # to Checkpoint Artifacts for the experiment. Any non-latest checkpoints saved since the previous Checkpoint Artifact sychronization 
+    # Checkpoint Artifacts are synchronized every 10 minutes and/or at the end of each cycle on Strong Compute. Upon synchronization,
+    # the latest symlinked checkpoint/s saved by AtomicDirectory saver/s in the $CHECKPOINT_ARTIFACT_PATH directory will be shipped
+    # to Checkpoint Artifacts for the experiment. Any non-latest checkpoints saved since the previous Checkpoint Artifact sychronization
     # will be deleted and not shipped.
 
     # The user can force non-latest checkpoints to also ship to Checkpoint Artifacts by calling `prepare_checkpoint_directory`
     # with `force_save = True`. This can be used, for example:
-    # - to ensure every Nth saved checkpoint is archived for later analysis, or 
-    # - to ensure that checkpoints are saved each time model performance improves. 
+    # - to ensure every Nth saved checkpoint is archived for later analysis, or
+    # - to ensure that checkpoints are saved each time model performance improves.
 
     output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
     saver = AtomicDirectory(output_directory=output_directory, is_master=args.is_master)
@@ -370,31 +380,13 @@ def main(args, timer):
         test_dataloader.sampler.set_epoch(epoch)
 
         train_loop(
-            model, 
-            optimizer, 
-            lr_scheduler, 
-            loss_fn, 
-            train_dataloader, 
-            test_dataloader, 
-            metrics, 
-            writer, 
-            saver,
-            args
+            model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args
         )
 
         if epoch % args.test_epochs == 0:
 
             test_loop(
-                model,
-                optimizer,
-                lr_scheduler,
-                loss_fn,
-                train_dataloader,
-                test_dataloader,
-                metrics,
-                writer,
-                saver,
-                args
+                model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args
             )
 
         # important for use with InterruptableDistributedSampler
@@ -402,6 +394,7 @@ def main(args, timer):
         test_dataloader.sampler.reset_progress()
 
     print("Done!")
+
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
