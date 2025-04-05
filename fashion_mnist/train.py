@@ -22,6 +22,7 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import Compose, Lambda, PILToTensor, RandAugment
+from typing import TypedDict
 
 from cycling_utils import (
     InterruptableDistributedSampler,
@@ -81,17 +82,40 @@ def get_args_parser(add_help=True):
 #  * Once we have our gradients, we call ``optimizer.step()`` to adjust the parameters by the gradients collected in the
 #       backward pass.
 
-def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
+class InterruptableDistributedDataLoader(DataLoader):
+    sampler: InterruptableDistributedSampler
+
+class Metrics(TypedDict):
+    train: MetricsTracker
+    test: MetricsTracker
+    best_accuracy: float
+
+def train_loop(model: nn.Module, 
+               optimizer: torch.optim.Optimizer, 
+               lr_scheduler: torch.optim.lr_scheduler.LRScheduler, 
+               loss_fn, 
+               train_dataloader: InterruptableDistributedDataLoader, 
+               test_dataloader: InterruptableDistributedDataLoader, 
+               metrics: Metrics,
+               writer: SummaryWriter, 
+               saver: AtomicDirectory, 
+               args):
     epoch = train_dataloader.sampler.epoch
     train_batches_per_epoch = len(train_dataloader)
     # Set the model to training mode - important for layers with different training / inference behaviour
     model.train()
+
+    inputs: torch.Tensor
+    targets: torch.Tensor
+    loss: torch.Tensor
 
     for inputs, targets in train_dataloader:
 
         # Prepare for batch processing
         optimizer.zero_grad()
         batch = train_dataloader.sampler.progress // train_dataloader.batch_size
+        # progress: n samples has been consumed
+        # progress will reset after every epoch
         is_last_batch = (batch + 1) == train_batches_per_epoch
         is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
 
@@ -130,6 +154,11 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
             # Saving and reporting
             if args.is_master:
                 total_progress = train_dataloader.sampler.progress + epoch * train_batches_per_epoch
+                # total_progress: n samples has been consumed
+                # usually it's step/epoch instead of total_progress
+                # step: single update of the model's weights.
+                # epoch: one complete pass through the entire set.
+                # a step may do more than 1 step, if we apply gradient accumulation.
                 writer.add_scalar("Train/avg_loss", batch_avg_loss, total_progress)
                 writer.add_scalar("Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress)
 
@@ -151,7 +180,16 @@ def train_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_d
 
             timer.report(f"EPOCH [{epoch}] TRAIN BATCH [{batch} / {train_batches_per_epoch}] - batch avg loss: {batch_avg_loss:,.3f}")
 
-def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_dataloader, metrics, writer, saver, args):
+def test_loop(model: nn.Module, 
+              optimizer: torch.optim.Optimizer, 
+              lr_scheduler: torch.optim.lr_scheduler.LRScheduler, 
+              loss_fn, 
+              train_dataloader: InterruptableDistributedDataLoader, 
+              test_dataloader: InterruptableDistributedDataLoader, 
+              metrics: Metrics,
+              writer: SummaryWriter, 
+              saver: AtomicDirectory, 
+              args):
     epoch = test_dataloader.sampler.epoch
     test_batches_per_epoch = len(test_dataloader)
     # Set the model to evaluation mode - important for layers with different training / inference behaviour
@@ -160,6 +198,10 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
     # Evaluating the model with torch.no_grad() ensures that no gradients are computed during test mode also serves to
     # reduce unnecessary gradient computations and memory usage for tensors with requires_grad=True
     with torch.no_grad():
+        inputs: torch.Tensor
+        targets: torch.Tensor
+        predictions: torch.Tensor
+        test_loss: torch.Tensor
         for inputs, targets in test_dataloader:
 
             # Prepare for batch processing
@@ -204,6 +246,7 @@ def test_loop(model, optimizer, lr_scheduler, loss_fn, train_dataloader, test_da
                 dist.broadcast(sync_pct_test_correct, src=0)
 
                 # force save checkpoint if test performance improves, only after 20 epochs
+                # this force non-latest checkpoints to also ship to Checkpoint Artifacts
                 if (epoch > 20) and is_last_batch and (sync_pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
                     metrics["best_accuracy"] = sync_pct_test_correct
@@ -276,8 +319,8 @@ def main(args, timer):
     test_sampler = InterruptableDistributedSampler(test_data)
     timer.report("Initialized samplers")
 
-    train_dataloader = DataLoader(training_data, batch_size=args.batch_size, sampler=train_sampler, num_workers=3)
-    test_dataloader = DataLoader(test_data, batch_size=64, sampler=test_sampler)
+    train_dataloader = InterruptableDistributedDataLoader(training_data, batch_size=args.batch_size, sampler=train_sampler, num_workers=3)
+    test_dataloader = InterruptableDistributedDataLoader(test_data, batch_size=64, sampler=test_sampler)
     timer.report("Initialized dataloaders")
 
     ##############################################
@@ -311,7 +354,7 @@ def main(args, timer):
     # -----------------
     # Metrics are commonly tracked and plotted during training to report on progress and model performance.
 
-    metrics = {
+    metrics: Metrics = {
         "train": MetricsTracker(), 
         "test": MetricsTracker(), 
         "best_accuracy": float("-inf")
