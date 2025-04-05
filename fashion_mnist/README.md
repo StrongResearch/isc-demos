@@ -28,3 +28,15 @@ Finally, launch an experiment with the following command.
 ```bash
 isc train fashion_mnist.isc
 ```
+
+## Run in the User Container
+
+```
+DIR=/root \
+EXPERIMENT_ID=$(python -c 'import uuid; print(uuid.uuid4())') \
+LOSSY_ARTIFACT_PATH=$DIR/artifacts/$EXPERIMENT_ID/lossy \
+CHECKPOINT_ARTIFACT_PATH=$DIR/artifacts/$EXPERIMENT_ID/checkpoints \
+bash -c '\
+printenv EXPERIMENT_ID && \
+torchrun --nnodes=1 --nproc-per-node=1 train.py --dataset-id 8d2de5b2-d07f-47ce-a6d6-d217a1cfa369 --lr 0.001 --batch-size 16'
+```
