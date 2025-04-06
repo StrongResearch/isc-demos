@@ -33,6 +33,19 @@ dataset_id_list = ["<dataset-id>"]
 command = '''...'''
 ```
 ### Step 5: Launch your experiment to train
+
+Run first in the user container to cache the preprocessed dataset. Then, stop the training.
+
+```bash
+DIR=/root \
+EXPERIMENT_ID=$(python -c 'import uuid; print(uuid.uuid4())') \
+LOSSY_ARTIFACT_PATH=$DIR/artifacts/$EXPERIMENT_ID/lossy \
+CHECKPOINT_ARTIFACT_PATH=$DIR/artifacts/$EXPERIMENT_ID/checkpoints \
+bash -c '\
+printenv EXPERIMENT_ID && \
+torchrun --nnodes=1 --nproc-per-node=1 fsdp.py --dataset-id af72b3ae-4cd7-407a-be5e-c831a6f578a1'
+```
+
 ```bash
 isc train deepseek-r1-<model>.isc
 isc experiments
