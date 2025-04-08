@@ -405,7 +405,9 @@ def test_loop(
                     "test_accu": pct_test_correct,
                     "datetime": time.strftime("%Y-%m-%d %H:%M:%S"),
                 }
-                with open(os.path.join(args.save_dir, "test_metrics.jsonl"), "a") as f:
+                
+                lossy_output_dir = os.environ["LOSSY_ARTIFACT_PATH"]
+                with open(os.path.join(lossy_output_dir, "test_metrics.jsonl"), "a") as f:
                     f.write(json.dumps(json_payload) + "\n")
 
             if is_log_batch and not is_last_batch:
