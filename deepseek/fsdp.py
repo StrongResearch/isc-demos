@@ -15,6 +15,9 @@ from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.utils.data import DataLoader
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers.models.qwen2.modeling_qwen2 import Qwen2ForCausalLM
+from transformers.models.llama import LlamaTokenizerFast
+from transformers.modeling_outputs import CausalLMOutputWithPast
 from peft import LoraModel, LoraConfig
 
 from datasets import load_dataset
@@ -32,6 +35,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 ADAPTER_NAME = "ExampleLora"
 SHARD_STRATEGY = ShardingStrategy.FULL_SHARD
+# Parameters, gradients, and optimizer states are sharded
 
 '''
 For Hybrid shard we need to:
@@ -59,9 +63,11 @@ if __name__ == "__main__":
     assert bfSixteen_ready(), "ERROR: System not BF16 ready."
 
     # pre-trained model weights should be mounted at /data
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    tokenizer: LlamaTokenizerFast = AutoTokenizer.from_pretrained(model_path)
 
+    model: Qwen2ForCausalLM
     # save CPU RAM by loading non-main rank models to 'meta' device
+    # DeepSeekV3Config: https://huggingface.co/docs/transformers/main/en/model_doc/deepseek_v3#transformers.DeepseekV3Config
     if rank == 0:
         model = AutoModelForCausalLM.from_pretrained(
             model_path, 
@@ -71,8 +77,9 @@ if __name__ == "__main__":
         print(f"Main rank {rank} model params on device: {set([p.data.device for p in model.parameters()])}")
     else:
         with torch.device("meta"):
+            # tensor records only metadata (shape), not actual data.
             model = AutoModelForCausalLM.from_pretrained(
-                model_path, 
+                model_path,
                 use_cache=False, 
                 torch_dtype=torch.bfloat16
             )
@@ -85,7 +92,10 @@ if __name__ == "__main__":
         r=16,
         lora_alpha=32,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-        lora_dropout=0, # set to zero to see identical loss on all ranks
+        lora_dropout=0,
+        # set to zero to see identical loss on all ranks
+        # ranks refer t o different processes in a distributed training setup
+        # each process computes the same loss value because the dropout randomness has been disabled.
     )
 
     model = LoraModel(model, lora_config, ADAPTER_NAME)
@@ -95,6 +105,8 @@ if __name__ == "__main__":
     # wrap model in FSDP
     my_auto_wrap_policy = functools.partial(
         size_based_auto_wrap_policy, min_num_params=1_000
+        # module with over 1k params will be considered as individual FSDP module and shraded.
+        # module with lower than 1k params will be combined with larger parent module and shraded.
     )
 
     model = FSDP(model, 
@@ -102,6 +114,7 @@ if __name__ == "__main__":
         sharding_strategy=SHARD_STRATEGY,
         mixed_precision=bfSixteen_policy,
         cpu_offload=CPUOffload(offload_params=True),
+        # offload gradients to CPU, meaning the optimizer step runs on CPU.
         device_id=torch.cuda.current_device(),
         param_init_fn=lambda mod: mod.to_empty(device=torch.cuda.current_device(), recurse=False), # for init from 'meta' device
         sync_module_states=True, # broadcast model weights from main rank
@@ -151,14 +164,17 @@ if __name__ == "__main__":
     
     train_sampler = InterruptableDistributedSampler(tokenized_dataset)
 
+    class InterruptableDistributedDataLoader(DataLoader):
+        sampler: InterruptableDistributedSampler
+
     batch_size = 4  # Adjust based on your GPU memory
-    dataloader = DataLoader(
+    dataloader = InterruptableDistributedDataLoader(
         tokenized_dataset,
         batch_size=batch_size,
         collate_fn=collate_fn,
         sampler=train_sampler
     )
-    steps_per_epoch = len(dataloader)
+    train_batches_per_epoch = len(dataloader)
 
     best_loss = float("inf")
 
@@ -187,26 +203,26 @@ if __name__ == "__main__":
 
     # training
     num_epochs = 10
-    save_every_steps = 30
+    save_every_batchs = 30
     model.train()
 
     for epoch in range(dataloader.sampler.epoch, num_epochs):
 
         dataloader.sampler.set_epoch(epoch)
 
-        for batch in dataloader:
+        for samples in dataloader:
 
-            step = dataloader.sampler.progress // dataloader.batch_size
-            is_last_step = (step + 1) == steps_per_epoch
-            is_save_step = ((step + 1) % save_every_steps == 0) or is_last_step
+            batch = dataloader.sampler.progress // dataloader.batch_size
+            is_last_batch = (batch + 1) == train_batches_per_epoch
+            is_save_batch = ((batch + 1) % save_every_batchs == 0) or is_last_batch
 
             # Move batch to device
-            input_ids = batch["input_ids"].to(torch.cuda.current_device())
-            attention_mask = batch["attention_mask"].to(torch.cuda.current_device())
-            labels = batch["labels"].to(torch.cuda.current_device())
+            input_ids = samples["input_ids"].to(torch.cuda.current_device())
+            attention_mask = samples["attention_mask"].to(torch.cuda.current_device())
+            labels = samples["labels"].to(torch.cuda.current_device())
 
             # forward, backward, update
-            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+            outputs: CausalLMOutputWithPast = model(input_ids, attention_mask=attention_mask, labels=labels)
             loss = outputs.loss
             loss.backward()
             optimizer.step()
@@ -217,9 +233,9 @@ if __name__ == "__main__":
             sync_loss = loss
             dist.all_reduce(sync_loss)
 
-            timer.report(f"Step {step} Loss: {sync_loss.item():.3f}")
+            timer.report(f"Batch {batch} Loss: {sync_loss.item():.3f}")
 
-            if is_save_step:
+            if is_save_batch:
                 force_save = False
 
                 checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
@@ -242,6 +258,7 @@ if __name__ == "__main__":
                     )
                     
                 while len(os.listdir(checkpoint_directory)) < world_size + 2:
+                    # + 2 because additional file: train_state.pt
                     print("Checkpoint not yet saved...")
                     time.sleep(1)
                     dist.barrier()
