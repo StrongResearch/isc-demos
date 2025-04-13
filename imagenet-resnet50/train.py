@@ -112,9 +112,6 @@ def train_loop(
         is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
         is_lrstep_batch = True if args.lr_stepevery == "batch" else is_last_batch
 
-        # if (is_save_batch or is_last_batch) and args.is_master:
-        #     checkpoint_directory = saver.prepare_checkpoint_directory()
-
         torch.cuda.synchronize()
         metrics["sys"].update({"2_batch_stats": time.perf_counter() - start})
         start = time.perf_counter()
@@ -362,9 +359,6 @@ def test_loop(
             is_log_batch = (batch + 1) % args.log_freq == 0
             is_last_batch = (batch + 1) == test_batches_per_epoch
             is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
-
-            # if (is_save_batch or is_last_batch) and args.is_master:
-            #     checkpoint_directory = saver.prepare_checkpoint_directory()
 
             # Move input and targets to device
             inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
