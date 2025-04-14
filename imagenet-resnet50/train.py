@@ -411,10 +411,15 @@ def test_loop(
 
             # Save checkpoint
             if is_save_batch:
+
+                # sync pct_test_correct to determine force_save
+                sync_pct_test_correct = torch.tensor(pct_test_correct).to('cuda')
+                dist.broadcast(sync_pct_test_correct, src=0)
+                
                 # force save checkpoint if test performance improves, only after 20 epochs
-                if (epoch > 20) and (pct_test_correct > metrics["best_accuracy"]):
+                if (epoch > 20) and is_last_batch and (sync_pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
-                    metrics["best_accuracy"] = pct_test_correct
+                    metrics["best_accuracy"] = sync_pct_test_correct
                 else:
                     force_save = False
 
