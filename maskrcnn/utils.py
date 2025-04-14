@@ -5,7 +5,8 @@ import time
 from collections import defaultdict, deque
 
 import torch
-import torch.distributed as dist  
+import torch.distributed as dist
+
 
 class SmoothedValue:
     """Track a series of values and provide access to smoothed values over a
@@ -171,7 +172,7 @@ class MetricLogger:
             data_time.update(time.time() - end)
             yield obj
             iter_time.update(time.time() - end)
-            if i % print_freq == 0: # or i == len(iterable) - 1: ## EDITED - POTENTIALLY UNNECESSARY
+            if i % print_freq == 0:  # or i == len(iterable) - 1: ## EDITED - POTENTIALLY UNNECESSARY
                 eta_seconds = iter_time.global_avg * (len(iterable) - i)
                 eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
                 if torch.cuda.is_available():
@@ -192,11 +193,11 @@ class MetricLogger:
                             i, len(iterable), eta=eta_string, meters=str(self), time=str(iter_time), data=str(data_time)
                         )
                     )
-            i += 1 
+            i += 1
             end = time.time()
         total_time = time.time() - start_time
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-        print(f"{header} Total time: {total_time_str}") # ({total_time / len(iterable):.4f} s / it)") ## EDITED
+        print(f"{header} Total time: {total_time_str}")  # ({total_time / len(iterable):.4f} s / it)") ## EDITED
 
 
 def collate_fn(batch):

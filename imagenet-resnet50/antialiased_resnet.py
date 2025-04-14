@@ -42,39 +42,61 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 
 import torch.nn as nn
-import torch.utils.model_zoo as model_zoo
 from blurpool import *
+
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
     """3x3 convolution with padding"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-                 padding=dilation, groups=groups, bias=False, dilation=dilation)
+    return nn.Conv2d(
+        in_planes,
+        out_planes,
+        kernel_size=3,
+        stride=stride,
+        padding=dilation,
+        groups=groups,
+        bias=False,
+        dilation=dilation,
+    )
+
 
 def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
+
 class BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None, groups=1, 
-                 base_width=64, dilation=1, norm_layer=None, filter_size=1):
+    def __init__(
+        self,
+        inplanes,
+        planes,
+        stride=1,
+        downsample=None,
+        groups=1,
+        base_width=64,
+        dilation=1,
+        norm_layer=None,
+        filter_size=1,
+    ):
         super(BasicBlock, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
         if groups != 1 or base_width != 64:
-            raise ValueError('BasicBlock only supports groups=1 and base_width=64')
+            raise ValueError("BasicBlock only supports groups=1 and base_width=64")
         if dilation > 1:
             raise NotImplementedError("Dilation > 1 not supported in BasicBlock")
         # Both self.conv1 and self.downsample layers downsample the input when stride != 1
         self.conv1 = conv3x3(inplanes, planes)
         self.bn1 = norm_layer(planes)
         self.relu = nn.ReLU(inplace=True)
-        if(stride==1):
-            self.conv2 = conv3x3(planes,planes)
+        if stride == 1:
+            self.conv2 = conv3x3(planes, planes)
         else:
-            self.conv2 = nn.Sequential(BlurPool(planes, filt_size=filter_size, stride=stride),
-                conv3x3(planes, planes),)
+            self.conv2 = nn.Sequential(
+                BlurPool(planes, filt_size=filter_size, stride=stride),
+                conv3x3(planes, planes),
+            )
         self.bn2 = norm_layer(planes)
         self.downsample = downsample
         self.stride = stride
@@ -101,22 +123,35 @@ class BasicBlock(nn.Module):
 class Bottleneck(nn.Module):
     expansion = 4
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None, groups=1, 
-                 base_width=64, dilation=1, norm_layer=None, filter_size=1):
+    def __init__(
+        self,
+        inplanes,
+        planes,
+        stride=1,
+        downsample=None,
+        groups=1,
+        base_width=64,
+        dilation=1,
+        norm_layer=None,
+        filter_size=1,
+    ):
         super(Bottleneck, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
-        width = int(planes * (base_width / 64.)) * groups
+        width = int(planes * (base_width / 64.0)) * groups
         self.conv1 = conv1x1(inplanes, width)
         self.bn1 = norm_layer(width)
-        self.conv2 = conv3x3(width, width, groups=groups, dilation=dilation)  # Conv(stride2)-Norm-Relu --> #Conv-Norm-Relu-BlurPool(stride2)
+        self.conv2 = conv3x3(
+            width, width, groups=groups, dilation=dilation
+        )  # Conv(stride2)-Norm-Relu --> #Conv-Norm-Relu-BlurPool(stride2)
         self.bn2 = norm_layer(width)
-        if(stride==1):
+        if stride == 1:
             self.conv3 = conv1x1(width, planes * self.expansion)
         else:
-            self.conv3 = nn.Sequential(BlurPool(width, filt_size=filter_size, stride=stride),
-                conv1x1(width, planes * self.expansion))
+            self.conv3 = nn.Sequential(
+                BlurPool(width, filt_size=filter_size, stride=stride), conv1x1(width, planes * self.expansion)
+            )
         self.bn3 = norm_layer(planes * self.expansion)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
@@ -147,9 +182,19 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, num_classes=1000, zero_init_residual=False,
-                 groups=1, width_per_group=64, norm_layer=None, filter_size=1, pool_only=True,
-                 replace_stride_with_dilation=None):
+    def __init__(
+        self,
+        block,
+        layers,
+        num_classes=1000,
+        zero_init_residual=False,
+        groups=1,
+        width_per_group=64,
+        norm_layer=None,
+        filter_size=1,
+        pool_only=True,
+        replace_stride_with_dilation=None,
+    ):
         super(ResNet, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
@@ -162,40 +207,68 @@ class ResNet(nn.Module):
             # the 2x2 stride with a dilated convolution instead
             replace_stride_with_dilation = [False, False, False]
         if len(replace_stride_with_dilation) != 3:
-            raise ValueError("replace_stride_with_dilation should be None "
-                             "or a 3-element tuple, got {}".format(replace_stride_with_dilation))
+            raise ValueError(
+                "replace_stride_with_dilation should be None "
+                "or a 3-element tuple, got {}".format(replace_stride_with_dilation)
+            )
 
         self.groups = groups
         self.base_width = width_per_group
 
-        if(pool_only):
+        if pool_only:
             self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
             self.bn1 = norm_layer(self.inplanes)
             self.relu = nn.ReLU(inplace=True)
-            self.maxpool = nn.Sequential(*[nn.MaxPool2d(kernel_size=2, stride=1), 
-                BlurPool(self.inplanes, filt_size=filter_size, stride=2,)])
+            self.maxpool = nn.Sequential(
+                *[
+                    nn.MaxPool2d(kernel_size=2, stride=1),
+                    BlurPool(
+                        self.inplanes,
+                        filt_size=filter_size,
+                        stride=2,
+                    ),
+                ]
+            )
         else:
             self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=1, padding=3, bias=False)
             self.bn1 = norm_layer(self.inplanes)
             self.relu = nn.ReLU(inplace=True)
-            self.maxpool = nn.Sequential(*[BlurPool(self.inplanes, filt_size=filter_size, stride=2,), 
-                nn.MaxPool2d(kernel_size=2, stride=1), 
-                BlurPool(self.inplanes, filt_size=filter_size, stride=2,)])
+            self.maxpool = nn.Sequential(
+                *[
+                    BlurPool(
+                        self.inplanes,
+                        filt_size=filter_size,
+                        stride=2,
+                    ),
+                    nn.MaxPool2d(kernel_size=2, stride=1),
+                    BlurPool(
+                        self.inplanes,
+                        filt_size=filter_size,
+                        stride=2,
+                    ),
+                ]
+            )
 
         self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0], filter_size=filter_size)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1], filter_size=filter_size)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2], filter_size=filter_size)
+        self.layer2 = self._make_layer(
+            block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0], filter_size=filter_size
+        )
+        self.layer3 = self._make_layer(
+            block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1], filter_size=filter_size
+        )
+        self.layer4 = self._make_layer(
+            block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2], filter_size=filter_size
+        )
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                if(m.in_channels!=m.out_channels or m.out_channels!=m.groups or m.bias is not None):
+                if m.in_channels != m.out_channels or m.out_channels != m.groups or m.bias is not None:
                     # don't want to reinitialize downsample layers, code assuming normal conv layers will not have these characteristics
-                    nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                    nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
                 else:
-                    print('Not initializing')
+                    print("Not initializing")
             elif isinstance(m, (nn.BatchNorm2d, nn.GroupNorm)):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
@@ -220,20 +293,43 @@ class ResNet(nn.Module):
         if stride != 1 or self.inplanes != planes * block.expansion:
             # since this is just a conv1x1 layer (no nonlinearity),
             # conv1x1->blurpool is the same as blurpool->conv1x1; the latter is cheaper
-            downsample = [BlurPool(filt_size=filter_size, stride=stride, channels=self.inplanes),] if(stride !=1) else []
-            downsample += [conv1x1(self.inplanes, planes * block.expansion, 1),
-                norm_layer(planes * block.expansion)]
+            downsample = (
+                [
+                    BlurPool(filt_size=filter_size, stride=stride, channels=self.inplanes),
+                ]
+                if (stride != 1)
+                else []
+            )
+            downsample += [conv1x1(self.inplanes, planes * block.expansion, 1), norm_layer(planes * block.expansion)]
             downsample = nn.Sequential(*downsample)
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample, self.groups, 
-                            base_width=self.base_width, dilation=previous_dilation, 
-                            norm_layer=norm_layer, filter_size=filter_size))
+        layers.append(
+            block(
+                self.inplanes,
+                planes,
+                stride,
+                downsample,
+                self.groups,
+                base_width=self.base_width,
+                dilation=previous_dilation,
+                norm_layer=norm_layer,
+                filter_size=filter_size,
+            )
+        )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
-            layers.append(block(self.inplanes, planes, groups=self.groups, 
-                                base_width=self.base_width, dilation=self.dilation,
-                                norm_layer=norm_layer, filter_size=filter_size))
+            layers.append(
+                block(
+                    self.inplanes,
+                    planes,
+                    groups=self.groups,
+                    base_width=self.base_width,
+                    dilation=self.dilation,
+                    norm_layer=norm_layer,
+                    filter_size=filter_size,
+                )
+            )
 
         return nn.Sequential(*layers)
 
@@ -301,11 +397,15 @@ def resnet152(filter_size=4, pool_only=True, **kwargs):
 
 
 def resnext50_32x4d(filter_size=4, pool_only=True, **kwargs):
-    return ResNet(Bottleneck, [3, 4, 6, 3], groups=32, width_per_group=4, filter_size=filter_size, pool_only=pool_only, **kwargs)
+    return ResNet(
+        Bottleneck, [3, 4, 6, 3], groups=32, width_per_group=4, filter_size=filter_size, pool_only=pool_only, **kwargs
+    )
 
 
 def resnext101_32x8d(filter_size=4, pool_only=True, **kwargs):
-    return ResNet(Bottleneck, [3, 4, 23, 3], groups=32, width_per_group=8, filter_size=filter_size, pool_only=pool_only, **kwargs)
+    return ResNet(
+        Bottleneck, [3, 4, 23, 3], groups=32, width_per_group=8, filter_size=filter_size, pool_only=pool_only, **kwargs
+    )
 
 
 def wide_resnet50_2(filter_size=4, **kwargs):
@@ -317,7 +417,8 @@ def wide_resnet50_2(filter_size=4, **kwargs):
     convolutions is the same, e.g. last block in ResNet-50 has 2048-512-2048
     channels, and in Wide ResNet-50-2 has 2048-1024-2048.
     """
-    return ResNet(Bottleneck, [3, 4, 6, 3], width_per_group=64*2, filter_size=filter_size, **kwargs)
+    return ResNet(Bottleneck, [3, 4, 6, 3], width_per_group=64 * 2, filter_size=filter_size, **kwargs)
+
 
 def wide_resnet101_2(filter_size=4, _force_nonfinetuned=False, **kwargs):
     """Wide ResNet-101-2 model from
@@ -328,4 +429,4 @@ def wide_resnet101_2(filter_size=4, _force_nonfinetuned=False, **kwargs):
     convolutions is the same, e.g. last block in ResNet-50 has 2048-512-2048
     channels, and in Wide ResNet-50-2 has 2048-1024-2048.
     """
-    return ResNet(Bottleneck, [3, 4, 23, 3], width_per_group=64*2, filter_size=filter_size, **kwargs)
+    return ResNet(Bottleneck, [3, 4, 23, 3], width_per_group=64 * 2, filter_size=filter_size, **kwargs)
