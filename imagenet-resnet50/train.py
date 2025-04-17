@@ -10,6 +10,7 @@ import os
 import re
 import math
 import time
+import datetime
 import socket
 import json
 import subprocess
@@ -446,7 +447,8 @@ def test_loop(
 
 
 def main(args, timer):
-    dist.init_process_group("nccl")  # Expects RANK set in environment variable
+    timeout = datetime.timedelta(minutes=60)
+    dist.init_process_group("nccl", timeout=timeout)  # Expects RANK set in environment variable
     args.host = socket.gethostname()
     args.rank = int(os.environ["RANK"])
     args.device_id = int(os.environ["LOCAL_RANK"])
