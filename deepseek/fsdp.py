@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import LoraModel, LoraConfig
 
-from datasets import load_dataset
+from datasets import load_dataset, disable_progress_bars
 
 from cycling_utils import AtomicDirectory, atomic_torch_save, TimestampedTimer, InterruptableDistributedSampler
 from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parameters, AppState, get_args_parser
@@ -29,6 +29,8 @@ logger = logging.getLogger("torch.distributed.fsdp._state_dict_utils")
 logger.setLevel(logging.ERROR)
 # suppress warnings about "UserWarning: `_get_pg_default_device` will be deprecated" while saving and loading
 warnings.filterwarnings("ignore", category=UserWarning)
+# suppress huggingface datasets progress bars
+disable_progress_bars()
 
 ADAPTER_NAME = "ExampleLora"
 SHARD_STRATEGY = ShardingStrategy.FULL_SHARD
@@ -42,14 +44,12 @@ For Hybrid shard we need to:
 5. Pass the saving process group to the dcp.save function
 '''
 
-print("Finished imports")
-
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
     rank = int(os.environ["RANK"]) # Global rank
     local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
     world_size = int(os.environ["WORLD_SIZE"]) # Total number of global ranks
-    model_path = os.path.join("/data", args.dataset_id)
+    model_path = os.path.join("/data", args.model_dataset_id)
     torch.cuda.set_device(local_device)
 
     timer.report(f"Init process group for world size: {world_size}")
@@ -113,7 +113,9 @@ if __name__ == "__main__":
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 
     # prepare dataset and utilities
-    dataset = load_dataset("wiki_qa", split="train")
+    train_data_path = f"/data/{args.dataset_id}/train-00000-of-00001.parquet"
+    test_data_path = f"/data/{args.dataset_id}/test-00000-of-00001.parquet"
+    dataset = load_dataset("parquet", data_files={"train": train_data_path, "test": test_data_path}, cache_dir="/tmp/wiki_qa")
 
     def preprocess_function(examples):
         # Combine question and answer into a single text
@@ -134,11 +136,14 @@ if __name__ == "__main__":
         return encodings
 
     # Process dataset
-    tokenized_dataset = dataset.map(
-        preprocess_function,
-        batched=True,
-        remove_columns=dataset.column_names,
-        desc="Tokenizing and preprocessing dataset",
+    tokenized_train_dataset = dataset["train"].map(
+        preprocess_function, batched=True,
+        remove_columns=dataset["train"].column_names, desc="Tokenizing and preprocessing train dataset"
+    )
+
+    tokenized_test_dataset = dataset["test"].map(
+        preprocess_function, batched=True,
+        remove_columns=dataset["test"].column_names, desc="Tokenizing and preprocessing test dataset"
     )
 
     # Create dataloader
@@ -149,19 +154,13 @@ if __name__ == "__main__":
             'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
         }
     
-    train_sampler = InterruptableDistributedSampler(tokenized_dataset)
+    train_sampler = InterruptableDistributedSampler(tokenized_train_dataset)
+    test_sampler = InterruptableDistributedSampler(tokenized_test_dataset)
 
     batch_size = 4  # Adjust based on your GPU memory
-    dataloader = DataLoader(
-        tokenized_dataset,
-        batch_size=batch_size,
-        collate_fn=collate_fn,
-        sampler=train_sampler
-    )
-    steps_per_epoch = len(dataloader)
-
-    best_loss = float("inf")
-
+    train_dataloader = DataLoader(tokenized_train_dataset, batch_size=batch_size, collate_fn=collate_fn, sampler=train_sampler)
+    test_dataloader = DataLoader(tokenized_test_dataset, batch_size=batch_size, collate_fn=collate_fn, sampler=test_sampler)
+    
     # load checkpoint if found
     try:
         output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
@@ -169,6 +168,11 @@ if __name__ == "__main__":
         print("Must set env var CHECKPOINT_ARTIFACT_PATH so we know where to save checkpoints!")
         exit(1)
     saver = AtomicDirectory(output_directory=output_directory, is_master=rank==0)
+
+    # performance metrics to track
+    train_loss = 0.0
+    test_loss = 0.0
+    best_test_loss = float("inf")
 
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
     if os.path.islink(latest_symlink_file_path):
@@ -178,8 +182,11 @@ if __name__ == "__main__":
         dcp.load(state_dict=state_dict, checkpoint_id=latest_checkpoint_path)
 
         train_state = torch.load(os.path.join(latest_checkpoint_path, "train_state.pt"))
-        dataloader.sampler.load_state_dict(train_state["sampler"])
-        best_loss = train_state["best_loss"]
+        train_dataloader.sampler.load_state_dict(train_state["train_sampler"])
+        test_dataloader.sampler.load_state_dict(train_state["test_sampler"])
+        train_loss = train_state["train_loss"]
+        test_loss = train_state["test_loss"]
+        best_test_loss = train_state["best_test_loss"]
 
         timer.report("Loaded checkpoint")
 
@@ -187,17 +194,18 @@ if __name__ == "__main__":
 
     # training
     num_epochs = 10
-    save_every_steps = 30
-    model.train()
+    save_every_steps = 20
 
-    for epoch in range(dataloader.sampler.epoch, num_epochs):
+    for epoch in range(train_dataloader.sampler.epoch, num_epochs):
 
-        dataloader.sampler.set_epoch(epoch)
+        train_dataloader.sampler.set_epoch(epoch)
+        test_dataloader.sampler.set_epoch(epoch)
+        
+        model.train()
+        for batch in train_dataloader:
 
-        for batch in dataloader:
-
-            step = dataloader.sampler.progress // dataloader.batch_size
-            is_last_step = (step + 1) == steps_per_epoch
+            step = train_dataloader.sampler.progress // train_dataloader.batch_size
+            is_last_step = (step + 1) == len(train_dataloader)
             is_save_step = ((step + 1) % save_every_steps == 0) or is_last_step
 
             # Move batch to device
@@ -210,19 +218,19 @@ if __name__ == "__main__":
             loss = outputs.loss
             loss.backward()
             optimizer.step()
-            dataloader.sampler.advance(len(input_ids))
+            train_dataloader.sampler.advance(len(input_ids))
             optimizer.zero_grad()
 
-            # synchronize loss to determine whether to force_save
+            # synchronize loss for reporting
             sync_loss = loss
             dist.all_reduce(sync_loss)
+            train_loss += sync_loss.item()
 
-            timer.report(f"Step {step} Loss: {sync_loss.item():.3f}")
+            timer.report(f"Epoch [{epoch}] train step [{step} / {len(train_dataloader)}] loss: {sync_loss.item():.3f}")
 
             if is_save_step:
-                force_save = False
 
-                checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
+                checkpoint_directory = saver.prepare_checkpoint_directory()
                 checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
 
                 metadata = dcp.save(
@@ -230,27 +238,90 @@ if __name__ == "__main__":
                     storage_writer=checkpoint_writer
                 )
 
-                dist.barrier()
-
                 if rank == 0:
                     atomic_torch_save(
                         {
-                            "sampler": dataloader.sampler.state_dict(),
-                            "best_loss": best_loss
+                            "train_sampler": train_dataloader.sampler.state_dict(),
+                            "test_sampler": test_dataloader.sampler.state_dict(),
+                            "train_loss" : train_loss,
+                            "test_loss" : test_loss,
+                            "best_test_loss": best_test_loss
                         }, 
                         os.path.join(checkpoint_directory, "train_state.pt")
                     )
-                    
-                while len(os.listdir(checkpoint_directory)) < world_size + 2:
-                    print("Checkpoint not yet saved...")
-                    time.sleep(1)
-                    dist.barrier()
 
                 saver.symlink_latest(checkpoint_directory)
 
                 timer.report("Saved checkpoint")
 
-        dataloader.sampler.reset_progress()
+            if is_last_step:
+                timer.report(f"Epoch [{epoch}] average training loss: [{train_loss / len(train_dataloader):,.3f}]")
+
+        model.eval()
+        with torch.no_grad():
+            for batch in test_dataloader:
+
+                step = test_dataloader.sampler.progress // test_dataloader.batch_size
+                is_last_step = (step + 1) == len(test_dataloader)
+                is_save_step = ((step + 1) % save_every_steps == 0) or is_last_step
+
+                # Move batch to device
+                input_ids = batch["input_ids"].to(torch.cuda.current_device())
+                attention_mask = batch["attention_mask"].to(torch.cuda.current_device())
+                labels = batch["labels"].to(torch.cuda.current_device())
+
+                # forward, backward, update
+                outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+                loss = outputs.loss
+                test_dataloader.sampler.advance(len(input_ids))
+
+                # synchronize loss for reporting
+                sync_loss = loss
+                dist.all_reduce(sync_loss)
+                test_loss += sync_loss.item()
+
+                timer.report(f"Epoch [{epoch}] test step [{step} / {len(test_dataloader)}]")
+
+                if is_save_step:
+
+                    if is_last_step and test_loss < best_test_loss:
+                        force_save = True
+                        best_test_loss = test_loss
+                    else:
+                        force_save = False
+
+                    checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
+                    checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
+
+                    metadata = dcp.save(
+                        state_dict=state_dict, 
+                        storage_writer=checkpoint_writer
+                    )
+
+                    if rank == 0:
+                        atomic_torch_save(
+                            {
+                                "train_sampler": train_dataloader.sampler.state_dict(),
+                                "test_sampler": test_dataloader.sampler.state_dict(),
+                                "train_loss" : train_loss,
+                                "test_loss" : test_loss,
+                                "best_test_loss": best_test_loss
+                            }, 
+                            os.path.join(checkpoint_directory, "train_state.pt")
+                        )
+
+                    saver.symlink_latest(checkpoint_directory)
+
+                    timer.report("Saved checkpoint")
+
+                if is_last_step:
+                    timer.report(f"Epoch [{epoch}] average test loss: [{test_loss / len(test_dataloader):,.3f}]")
+
+        train_loss = 0.0
+        test_loss = 0.0
+
+        train_dataloader.sampler.reset_progress()
+        test_dataloader.sampler.reset_progress()
 
     timer.report("Done.")
 
