@@ -2,7 +2,6 @@ import os
 import functools
 import logging
 import warnings
-import time
 
 import torch
 import torch.distributed as dist
