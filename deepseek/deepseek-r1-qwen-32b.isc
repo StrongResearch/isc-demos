@@ -2,10 +2,11 @@ isc_project_id = "<project-id>"
 experiment_name = "deepseek-r1-qwen-32b"
 gpus = 16
 compute_mode = "cycle"
-dataset_id_list = ["84c2b2cb-95b4-4ce6-a2d4-6f210afad36b"]
+dataset_id_list = ["53abecfa-f67c-4c80-aa02-df62181eaa7b", "af72b3ae-4cd7-407a-be5e-c831a6f578a1"]
 command = '''
 source /root/.deepseek/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
 /root/isc-demos/deepseek/fsdp.py 
---dataset-id 84c2b2cb-95b4-4ce6-a2d4-6f210afad36b'''
+--dataset-id 53abecfa-f67c-4c80-aa02-df62181eaa7b	
+--model-dataset-id af72b3ae-4cd7-407a-be5e-c831a6f578a1'''
