@@ -1,0 +1,13 @@
+isc_project_id = "<project-id>"
+experiment_name = "deepseek-r1-<model>"
+gpus = 16
+compute_mode = "cycle"
+dataset_id_list = ["615e3906-1001-4737-a3d9-e492a0f5e619", "<model-weight-dataset-id>"]
+input_artifact_id_list = ["<checkpoint-artifact-if-validation.py>"]
+command = '''
+source /root/.deepseek/bin/activate && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+/root/isc-demos/deepseek/<train.py-or-validation.py> 
+--dataset-id 615e3906-1001-4737-a3d9-e492a0f5e619	
+--model-dataset-id <model-weight-dataset-id>'''

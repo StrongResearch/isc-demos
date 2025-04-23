@@ -7,6 +7,6 @@ command = '''
 source /root/.deepseek/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
-/root/isc-demos/deepseek/fsdp.py 
+/root/isc-demos/deepseek/train.py 
 --dataset-id 6e226f91-6b7d-46ff-9f1e-4740efaf9b0e	
 --model-dataset-id af72b3ae-4cd7-407a-be5e-c831a6f578a1'''

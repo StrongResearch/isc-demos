@@ -109,7 +109,8 @@ if __name__ == "__main__":
 
     timer.report("FSDP wrapped model and broadcast to GPUs")
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
+    trainable_params = [p for p in model.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(trainable_params, lr=1e-5)
 
     # prepare dataset and utilities
     train_data_path = f"/data/{args.dataset_id}/train-00000-of-00001.parquet"
@@ -156,9 +157,8 @@ if __name__ == "__main__":
     train_sampler = InterruptableDistributedSampler(tokenized_train_dataset)
     test_sampler = InterruptableDistributedSampler(tokenized_test_dataset)
 
-    batch_size = 4  # Adjust based on your GPU memory
-    train_dataloader = DataLoader(tokenized_train_dataset, batch_size=batch_size, collate_fn=collate_fn, sampler=train_sampler)
-    test_dataloader = DataLoader(tokenized_test_dataset, batch_size=batch_size, collate_fn=collate_fn, sampler=test_sampler)
+    train_dataloader = DataLoader(tokenized_train_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=train_sampler)
+    test_dataloader = DataLoader(tokenized_test_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=test_sampler)
     
     # load checkpoint if found
     try:
