@@ -13,6 +13,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--chk-path", type=str, default=os.environ.get("CHECKPOINT_ARTIFACT_PATH"))
     parser.add_argument("--dataset-id", help="Dataset ID for the dataset", type=Path, required=True)
     parser.add_argument("--model-dataset-id", help="Dataset ID for the model weights", type=Path, required=True)
+    parser.add_argument("--batch-size", help="Local batch size", type=int, default=4)
     return parser
 
 def count_trainable_parameters(model):
