@@ -2,11 +2,11 @@ isc_project_id = "<project-id>"
 experiment_name = "deepseek-r1-llama-8b"
 gpus = 8
 compute_mode = "cycle"
-dataset_id_list = ["615e3906-1001-4737-a3d9-e492a0f5e619", "255087c3-046c-421c-8fe3-6e333f14892a"]
+dataset_id_list = ["uds-visual-water-soup-250513", "uds-unruly-jungle-offer-250513"]
 command = '''
 source /root/.deepseek/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
 /root/isc-demos/deepseek/train.py 
---dataset-id 615e3906-1001-4737-a3d9-e492a0f5e619
---model-dataset-id 255087c3-046c-421c-8fe3-6e333f14892a'''
+--dataset-id uds-visual-water-soup-250513
+--model-dataset-id uds-unruly-jungle-offer-250513'''
