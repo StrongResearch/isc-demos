@@ -2,11 +2,11 @@ isc_project_id = "<project-id>"
 experiment_name = "fashion_mnist"
 gpus = 16
 compute_mode = "cycle"
-dataset_id_list = ["8d2de5b2-d07f-47ce-a6d6-d217a1cfa369"]
+dataset_id_list = ["uds-decorous-field-baritone-250513"]
 command = '''
 source /root/.fashion/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
 /root/isc-demos/fashion_mnist/train.py 
---dataset-id 8d2de5b2-d07f-47ce-a6d6-d217a1cfa369
+--dataset-id uds-decorous-field-baritone-250513
 --lr 0.001 --batch-size 16'''
