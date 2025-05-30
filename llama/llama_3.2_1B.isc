@@ -1,0 +1,12 @@
+isc_project_id = "<project-id>"
+experiment_name = "Llama3.2 1B"
+gpus = 16
+compute_mode = "cycle"
+dataset_id_list = ["uds-visual-water-soup-250513", "uds-field-equatorial-stove-250527"]
+command = '''
+source /root/.llama/bin/activate && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+/root/isc-demos/llama/train.py 
+--dataset-id uds-visual-water-soup-250513
+--model-dataset-id uds-field-equatorial-stove-250527'''
