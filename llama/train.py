@@ -162,13 +162,8 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(tokenized_train_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=train_sampler)
     test_dataloader = DataLoader(tokenized_test_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=test_sampler)
     
-    # load checkpoint if found
-    try:
-        output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
-    except KeyError as error:
-        print("Must set env var CHECKPOINT_ARTIFACT_PATH so we know where to save checkpoints!")
-        exit(1)
-    saver = AtomicDirectory(output_directory=output_directory, is_master=rank==0)
+    # initialize saver pointing to the $CHECKPOINT_ARTIFACT_PATH
+    saver = AtomicDirectory(output_directory=os.environ["CHECKPOINT_ARTIFACT_PATH"], is_master=rank==0)
 
     # performance metrics to track
     train_loss = 0.0
