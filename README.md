@@ -24,6 +24,7 @@ Each example published below is annotated with its degree of completion. Example
 | Fashion MNIST | Image classification | CNN | [3] | [isc-demos/fashion_mnist](fashion_mnist) |
 | ImageNet | Image classification | ResNet50 | [2] | [isc-demos/imagenet-resnet50](imagenet-resnet50) |
 | DeepSeek | Language Modelling | DeepSeek-R1 | [2] | [isc-demos/deepseek](deepseek) |
+| Llama | Language Modelling | Llama3.2 | [2] | [isc-demos/llama](llama) |
 
 
 #### Torchvision segmentation
@@ -44,8 +45,9 @@ Each example published below is annotated with its degree of completion. Example
 | maskrcnn_resnet101_fpn | Object detection | Mask RCNN (ResNet101 FPN) | [2] | [isc-demos/maskrcnn](maskrcnn) |
 
 
-#### DeepSeek
+#### Large Language Models
 
 | Title | Description | Model | Status | Link |
 | :--- | :--- | :--- | :----: | :--- |
 | DeepSeek | Language Modelling | DeepSeek-R1 | [2] | [isc-demos/deepseek](deepseek) |
+| Llama | Language Modelling | Llama3.2 | [2] | [isc-demos/llama](llama) |
