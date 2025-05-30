@@ -29,8 +29,8 @@ isc_project_id = "<project-id>"
 experiment_name = "Llama3.2 <model>"
 gpus = 16
 compute_mode = "cycle"
-dataset_id_list = [...]
-command = '''...'''
+dataset_id_list = [ ... ]
+command = ''' ... '''
 ```
 ### Step 5: Launch your experiment to train
 ```bash
