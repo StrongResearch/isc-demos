@@ -18,7 +18,7 @@ from peft import LoraModel, LoraConfig
 
 from datasets import load_dataset, disable_progress_bars
 
-from cycling_utils import AtomicDirectory, atomic_torch_save, InterruptableDistributedSampler, TimestampedTimer
+from cycling_utils import AtomicDirectory, InterruptableDistributedSampler, TimestampedTimer
 from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parameters, AppState, get_args_parser
 
 timer = TimestampedTimer("Start")
@@ -240,7 +240,7 @@ if __name__ == "__main__":
                 )
 
                 if rank == 0:
-                    atomic_torch_save(
+                    torch.save(
                         {
                             "train_sampler": train_dataloader.sampler.state_dict(),
                             "test_sampler": test_dataloader.sampler.state_dict(),
@@ -300,7 +300,7 @@ if __name__ == "__main__":
                     )
 
                     if rank == 0:
-                        atomic_torch_save(
+                        torch.save(
                             {
                                 "train_sampler": train_dataloader.sampler.state_dict(),
                                 "test_sampler": test_dataloader.sampler.state_dict(),
