@@ -1,5 +1,5 @@
-torch==2.1.2  --index-url https://download.pytorch.org/whl/cu118
-torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
+torch==2.6.0
+torchvision==0.21.0 
 tensorboard==2.16.2
 six==1.16.0
 packaging==24.0
