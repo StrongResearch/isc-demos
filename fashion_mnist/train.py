@@ -346,7 +346,7 @@ def main(args, timer):
         checkpoint_path = os.path.join(latest_checkpoint_path, "checkpoint.pt")
 
         print(f"Loading checkpoint from {checkpoint_path}")
-        checkpoint = torch.load(checkpoint_path, map_location=f"cuda:{args.device_id}")
+        checkpoint = torch.load(checkpoint_path, map_location=f"cuda:{args.device_id}", weights_only=False)
 
         model.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
