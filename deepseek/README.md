@@ -29,7 +29,7 @@ isc_project_id = "<project-id>"
 experiment_name = "deepseek-r1-<model>"
 gpus = 16
 compute_mode = "cycle"
-dataset_id_list = ["<dataset-id>"]
+dataset_id_list = ["<model-weights-dataset-id>", "<training-data-dataset-id>"]
 command = '''...'''
 ```
 ### Step 5: Launch your experiment to train
