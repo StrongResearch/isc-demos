@@ -1,5 +1,5 @@
 # Fashion MNIST
-If you've just generated a new Freedom Container in [Control Plane](https://cp.strongcompute.ai/), start by installing python, git, and nano.
+If you've just created a new container in [Control Plane](https://cp.strongcompute.ai/), start by installing python, git, and nano.
 ```bash
 apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
 ```
