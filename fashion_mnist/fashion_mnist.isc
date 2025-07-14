@@ -1,7 +1,7 @@
 isc_project_id = "<project-id>"
 experiment_name = "fashion_mnist"
 gpus = 16
-compute_mode = "cycle"
+compute_mode = "burst"
 dataset_id_list = ["uds-decorous-field-baritone-250513"]
 command = '''
 source /root/.fashion/bin/activate && 
