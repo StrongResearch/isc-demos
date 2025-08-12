@@ -180,7 +180,7 @@ if __name__ == "__main__":
         state_dict = { "app": AppState(model, optimizer)}
         dcp.load(state_dict=state_dict, checkpoint_id=latest_checkpoint_path)
 
-        train_state = torch.load(os.path.join(latest_checkpoint_path, "train_state.pt"))
+        train_state = torch.load(os.path.join(latest_checkpoint_path, "train_state.pt"), weights_only=False)
         train_dataloader.sampler.load_state_dict(train_state["train_sampler"])
         test_dataloader.sampler.load_state_dict(train_state["test_sampler"])
         train_loss = train_state["train_loss"]
@@ -232,7 +232,7 @@ if __name__ == "__main__":
                 checkpoint_directory = saver.prepare_checkpoint_directory()
                 checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
 
-                metadata = dcp.save(
+                _metadata = dcp.save(
                     state_dict=state_dict, 
                     storage_writer=checkpoint_writer
                 )
