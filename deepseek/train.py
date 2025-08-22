@@ -292,7 +292,7 @@ if __name__ == "__main__":
                     checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
                     checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
 
-                    metadata = dcp.save(
+                    _metadata = dcp.save(
                         state_dict=state_dict, 
                         storage_writer=checkpoint_writer
                     )
