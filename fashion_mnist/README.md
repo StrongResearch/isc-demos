@@ -24,7 +24,14 @@ with your Project ID from [Control Plane](https://cp.strongcompute.ai/).
 ```toml
 isc_project_id = "<isc-project-id>"
 ```
-Finally, launch an experiment with the following command.
+Also notice that the experiment launch file is configured to launch a `burst` experiment.
+```toml
+compute_mode = "burst"
+```
+Burst experiments run on clusters which are created by the ISC specifically for those experiments and then destroyed when the experiment is terminated.
+
+Stage a `burst` experiment with the following command.
 ```bash
 isc train fashion_mnist.isc
 ```
+Return to Control Plane > Experiments to launch the `burst` experiment by clicking "Burst" when the experiment is ready to launch.
