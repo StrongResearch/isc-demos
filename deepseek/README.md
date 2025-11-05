@@ -1,6 +1,6 @@
 # PEFT (LoRA) Fine-tune DeepSeek-R1
 Here we demonstrate a minimum-viable fine-tuning of the DeepSeek-R1 models (adaptable for any similar LLM) using FSDP and LoRA.
-## Quick start
+
 ## Step 1a: `isc-demos` image container
 If you have created your container based on the `isc-demos` Image in [Control Plane](https://cp.strongcompute.ai/), 
 then your container already has all necessary dependencies installed including a python virtual environment with 
