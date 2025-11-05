@@ -1,12 +1,12 @@
 isc_project_id = "<project-id>"
 experiment_name = "deepseek-r1-llama-70b"
 gpus = 16
-compute_mode = "cycle"
+compute_mode = "burst"
 dataset_id_list = ["uds-visual-water-soup-250513", "uds-quilled-branch-catboat-250513"]
 command = '''
-source /root/.deepseek/bin/activate && 
+source /opt/venv/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
---master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$NODE_RANK 
 /root/isc-demos/deepseek/train.py 
 --batch-size 1
 --dataset-id uds-visual-water-soup-250513
