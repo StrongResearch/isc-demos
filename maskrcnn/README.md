@@ -1,11 +1,20 @@
 # MaskRCNN
-
-First create and source a virtual environment for this project.
+## Step 1a: `isc-demos` image container
+If you have created your container based on the `isc-demos` Image in [Control Plane](https://cp.strongcompute.ai/), 
+then your container already has all necessary dependencies installed including a python virtual environment with 
+necessary python dependencies at `/opt/venv`. Please clone this `isc-demos` repository and then skip to Step 2.
 
 ```bash
 cd ~
-python3 -m virtualenv ~/.mask
-source ~/.mask/bin/activate
+git clone https://github.com/StrongResearch/isc-demos.git
+```
+
+## Step 1b: other image container
+First create and source a virtual environment for this project.
+```bash
+cd ~
+python3 -m virtualenv /opt/venv
+source /opt/venv/bin/activate
 ```
 
 Install the necessary requirements for this project.
