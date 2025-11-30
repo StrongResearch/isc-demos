@@ -1,4 +1,4 @@
-isc_project_id = "<project-id>"
+isc_project_id = "prj-invited-notch-parrot-251130"
 experiment_name = "deepspeed"
 gpus = 16
 compute_mode = "cycle"
