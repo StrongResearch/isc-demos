@@ -5,6 +5,8 @@ import deepspeed
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_linear_schedule_with_warmup
 from peft import LoraConfig, get_peft_model
 
+print("Hello from script land")
+
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--model_path", type=str, required=True)
@@ -57,9 +59,13 @@ def load_custom_metadata(load_dir):
 
 
 def main():
+    print("Hello from main function")
+
     args = parse_args()
 
     model, tokenizer = load_model_and_tokenizer(args.model_path)
+
+    print("Model and tokenizer done")
 
     # Dummy dataset
     text = ["Hello world!"] * 2048
@@ -67,13 +73,19 @@ def main():
     dataset = torch.utils.data.TensorDataset(enc["input_ids"], enc["attention_mask"])
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1)
 
+    print("Dataset and dataloader done")
+
     # Optimizer
     optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
+
+    print("Optimizer done")
 
     # Scheduler
     scheduler = get_linear_schedule_with_warmup(
         optimizer, num_warmup_steps=100, num_training_steps=5000
     )
+
+    print("Scheduler done")
 
     # DeepSpeed initialization
     model_engine, optimizer, _, scheduler = deepspeed.initialize(
@@ -83,6 +95,8 @@ def main():
         config=args.deepspeed,
         model_parameters=model.parameters(),
     )
+
+    print("DeepSpeed model_engine init")
 
     global_step = 0
 
@@ -96,6 +110,8 @@ def main():
 
     for epoch in range(2):
         for batch in dataloader:
+            print("BATCH")
+
             batch = [t.to(model_engine.local_rank) for t in batch]
             input_ids, attention_mask = batch
 

@@ -2,7 +2,7 @@
 set -e
 
 # Load environment variables for multi-node config
-source host_settings.env
+# source host_settings.env
 
 # The scheduler must set:
 #   NODE_RANK (0-based)
@@ -19,13 +19,13 @@ echo "Master: $MASTER_ADDR:$MASTER_PORT"
 
 deepspeed \
   --no_local_rank \
-  --num_gpus $LOCAL_WORLD_SIZE \
+  --num_gpus $N_PROC \
   --num_nodes $NNODES \
   --node_rank $NODE_RANK \
   --master_addr $MASTER_ADDR \
   --master_port $MASTER_PORT \
   train.py \
   --deepspeed ds_config.json \
-  --model_path /data/model-weights \
-  --output_dir ./checkpoints \
+  --model_path /data/uds-warp-pattern-lifter-250527 \
+  --output_dir $CHECKPOINT_ARTIFACT_PATH \
   "$@"
