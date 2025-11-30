@@ -2,7 +2,7 @@
 set -e
 
 # Load environment variables for multi-node config
-source host_settings.env
+# source host_settings.env
 
 # The scheduler must set:
 #   NODE_RANK (0-based)
