@@ -1,8 +1,30 @@
 {
-  "train_batch_size": 4,
+  "train_batch_size": 64,
   "gradient_accumulation_steps": 4,
   "bf16": {
     "enabled": true
+  },
+
+  "optimizer": {
+    "type": "Adam",
+    "params": {
+      "lr": 0.001,
+      "betas": [
+        0.8,
+        0.999
+      ],
+      "eps": 1e-8,
+      "weight_decay": 3e-7
+    }
+  },
+
+ "scheduler": {
+      "type": "WarmupLR",
+      "params": {
+          "warmup_min_lr": 0,
+          "warmup_max_lr": 0.001,
+          "warmup_num_steps": 1000
+      }
   },
 
   "zero_optimization": {
@@ -23,7 +45,7 @@
   },
 
   "checkpoint": {
-    "tag_validation": true
+    "tag_validation_mode": "eager"
   },
 
   "steps_per_print": 50,
