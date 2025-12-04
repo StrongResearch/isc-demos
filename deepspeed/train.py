@@ -79,6 +79,10 @@ def main():
     test_data_path = os.path.join(args.data_path, "test-00000-of-00001.parquet")
     dataset = load_dataset("parquet", data_files={"train": train_data_path, "test": test_data_path}, cache_dir="/tmp/wiki_qa")
 
+    print(f"dataset['train'] examples:")
+    for example in dataset["train"][0:5]:
+        print(example)
+
     def preprocess_function(examples):
         # Combine question and answer into a single text
         texts = [f"Question: {q}\nAnswer: {a}" for q, a in zip(examples['question'], examples['answer'])]
@@ -107,6 +111,10 @@ def main():
     #     preprocess_function, batched=True,
     #     remove_columns=dataset["test"].column_names, desc="Tokenizing and preprocessing test dataset"
     # )
+
+    print(f"train_dataset examples:")
+    for example in train_dataset[0:5]:
+        print(example)
 
     # Create dataloader
     def collate_fn(batch):
