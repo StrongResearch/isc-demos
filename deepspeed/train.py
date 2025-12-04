@@ -68,12 +68,6 @@ def main():
     args = parse_args()
     model, tokenizer = load_model_and_tokenizer(args.model_path)
 
-    # Dummy dataset
-    # text = ["Hello world!"] * 2048
-    # enc = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-    # dataset = torch.utils.data.TensorDataset(enc["input_ids"], enc["attention_mask"])
-    # dataloader = torch.utils.data.DataLoader(dataset, batch_size=1)
-
     # prepare dataset
     train_data_path = os.path.join(args.data_path, "train-00000-of-00001.parquet")
     test_data_path = os.path.join(args.data_path, "test-00000-of-00001.parquet")
@@ -123,12 +117,6 @@ def main():
             'attention_mask': torch.stack([torch.tensor(x['attention_mask']) for x in batch]),
             'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
         }
-    
-    # train_sampler = InterruptableDistributedSampler(tokenized_train_dataset)
-    # test_sampler = InterruptableDistributedSampler(tokenized_test_dataset)
-
-    # train_dataloader = DataLoader(tokenized_train_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=train_sampler)
-    # test_dataloader = DataLoader(tokenized_test_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=test_sampler)
 
     print("Dataset and dataloader done")
 
@@ -147,19 +135,19 @@ def main():
     print("Scheduler done")
 
     # DeepSpeed initialization
-    model_engine, optimizer, _, scheduler = deepspeed.initialize(
+    model_engine, optimizer, train_dataloader, scheduler = deepspeed.initialize(
         model=model,
         training_data=train_dataset,
         collate_fn=collate_fn,
         # OPTIMIZER INITIALIZED BY DEEPSPEED
         # optimizer=optimizer,
-        # SCHEDULER INITIALIZED BY DEEPSPEED?
+        # SCHEDULER INITIALIZED BY DEEPSPEED
         # lr_scheduler=scheduler,
         config=args.deepspeed_config,
         model_parameters=model.parameters(),
     )
 
-    print("DeepSpeed model_engine init")
+    # print(f"DeepSpeed model_engine init: {model_engine}")
 
     global_step = 0
 
@@ -174,12 +162,14 @@ def main():
     for epoch in range(2):
         for batch in train_dataloader:
 
-            batch = [t.to(model_engine.local_rank) for t in batch]
-            input_ids, attention_mask = batch
+            # Move batch to device
+            input_ids = batch["input_ids"].to(model_engine.local_rank)
+            attention_mask = batch["attention_mask"].to(model_engine.local_rank)
+            labels = batch["labels"].to(model_engine.local_rank)
 
             outputs = model_engine(input_ids=input_ids,
                                    attention_mask=attention_mask,
-                                   labels=input_ids)
+                                   labels=labels)
 
             loss = outputs.loss
             print(f"Batch {global_step} loss {loss.item()}")
