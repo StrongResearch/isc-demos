@@ -5,6 +5,7 @@ import deepspeed
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_linear_schedule_with_warmup
 from peft import LoraConfig, get_peft_model
 from datasets import load_dataset, disable_progress_bars
+from cycling_utils import AtomicDirectory
 disable_progress_bars()
 
 print("Hello from script land")
@@ -46,22 +47,6 @@ def load_model_and_tokenizer(model_path):
     model.print_trainable_parameters()
 
     return model, tokenizer
-
-
-def save_custom_metadata(save_dir, global_step):
-    """Only rank 0 saves small extra metadata."""
-    if deepspeed.comm.get_rank() == 0:
-        torch.save(
-            {"global_step": global_step},
-            os.path.join(save_dir, "training_state.pt")
-        )
-
-
-def load_custom_metadata(load_dir):
-    path = os.path.join(load_dir, "training_state.pt")
-    if os.path.exists(path):
-        return torch.load(path)["global_step"]
-    return 0
 
 
 def main():
@@ -148,15 +133,17 @@ def main():
     )
 
     # print(f"DeepSpeed model_engine init: {model_engine}")
+    output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
+    is_master = deepspeed.comm.get_rank() == 0
+    saver = AtomicDirectory(output_directory=output_directory, is_master=is_master)
 
     global_step = 0
 
-    # Resume logic
-    if args.resume_tag:
-        ckpt_path = os.path.join(args.output_dir, args.resume_tag)
+    latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
+    if os.path.islink(latest_symlink_file_path):
+        latest_checkpoint_path = os.readlink(latest_symlink_file_path)
         print(f"Resuming from {ckpt_path}")
         model_engine.load_checkpoint(args.output_dir, args.resume_tag)
-        global_step = load_custom_metadata(ckpt_path)
         print(f"Resumed at step {global_step}")
 
     for epoch in range(2):
@@ -179,16 +166,14 @@ def main():
 
             global_step += 1
 
-            # Save checkpoints periodically on all ranks
-            if global_step % 500 == 0 and deepspeed.comm.get_rank() == 0:
-                tag = f"step_{global_step}"
-                ckpt_dir = os.path.join(args.output_dir, tag)
-                os.makedirs(ckpt_dir, exist_ok=True)
+            checkpoint_directory = saver.prepare_checkpoint_directory()
 
-                model_engine.save_checkpoint(args.output_dir, tag)
-                save_custom_metadata(ckpt_dir, global_step)
-                print(f"Checkpoint saved at {ckpt_dir}")
+            tag = f"step_{global_step}"
+            model_engine.save_checkpoint(checkpoint_directory, tag)
+            
+            saver.symlink_latest(checkpoint_directory)
 
+            print(f"Checkpoint saved at {ckpt_dir}")
 
 
 if __name__ == "__main__":

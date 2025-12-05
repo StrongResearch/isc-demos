@@ -26,7 +26,7 @@ done
 deepspeed --hostfile /tmp/deepspeed/hostfile --no_ssh --node_rank=$NODE_RANK \
     --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT \
     /root/isc-demos/deepspeed/train.py \
-    --model_path /data/uds-warp-pattern-lifter-250527 \
+    --model_path /data/uds-brazen-meowing-munchkin-250513 \
     --data_path /data/uds-visual-water-soup-250513 \
     --output_dir $CHECKPOINT_ARTIFACT_PATH \
     --deepspeed --deepspeed_config /root/isc-demos/deepspeed/ds_config.json
