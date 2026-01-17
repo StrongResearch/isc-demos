@@ -142,9 +142,10 @@ def main():
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
     if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
-        print(f"Resuming from {ckpt_path}")
-        model_engine.load_checkpoint(args.output_dir, args.resume_tag)
-        print(f"Resumed at step {global_step}")
+        print(f"Resuming from AtomicDirector {latest_checkpoint_path}")
+        load_path, client_state = model_engine.load_checkpoint(args.output_dir, args.resume_tag)
+        global_step = client_state["global_step"]
+        print(f"Resumed from DeepSpeed checkpoint {load_path} at step {global_step}")
 
     for epoch in range(2):
         for batch in train_dataloader:
@@ -169,7 +170,7 @@ def main():
             checkpoint_directory = saver.prepare_checkpoint_directory()
 
             tag = f"step_{global_step}"
-            model_engine.save_checkpoint(checkpoint_directory, tag)
+            model_engine.save_checkpoint(checkpoint_directory, tag, client_state={"global_step": global_step}, save_latest=True)
             
             saver.symlink_latest(checkpoint_directory)
 
