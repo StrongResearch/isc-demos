@@ -1,8 +1,7 @@
-isc_project_id = "<project-id>"
+isc_project_id = "prj-cultivate-ripple-pedestrian-251209"
 experiment_name = "deepspeed_a100_crusoe_8"
 gpus = 8
-compute_mode = "burst"
-burst_shape_priority_list = ["ue1a-a100-x8-p4","ue1a-a100-x4-p4"]
-dataset_id_list = ["uds-brazen-meowing-munchkin-250513", "uds-visual-water-soup-250513"]
+compute_mode = "cycle"
+dataset_id_list = ["uds-standing-denim-promise-250527", "uds-visual-water-soup-250513"]
 command = "source /opt/venv/bin/activate && bash /root/isc-demos/deepspeed/launch.sh"
 
