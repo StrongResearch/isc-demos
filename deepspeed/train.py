@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 import torch
 import deepspeed
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_linear_schedule_with_warmup
@@ -142,6 +143,12 @@ def main():
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
     if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
+        # see the comment below
+        print(f"Restoring DeepSpeed latest file to parent dir")
+        shutil.move(
+            os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], latest_checkpoint_path, "latest"),
+            os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], "latest")
+        )
         print(f"Resuming from AtomicDirector {latest_checkpoint_path}")
         load_path, client_state = model_engine.load_checkpoint(args.output_dir, args.resume_tag)
         global_step = client_state["global_step"]
@@ -171,6 +178,13 @@ def main():
 
             tag = f"step_{global_step}"
             model_engine.save_checkpoint(checkpoint_directory, tag, client_state={"global_step": global_step}, save_latest=True)
+
+            # deepspeed saves the "latest" file in the parent directory for the checkpoint, so we're going to move
+            # it into the checkpoint dir manually, then reverse this on resume.
+            shutil.move(
+                os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], "latest"), 
+                os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], checkpoint_directory, "latest")
+            )
             
             saver.symlink_latest(checkpoint_directory)
 
