@@ -173,7 +173,7 @@ def main():
             
             saver.symlink_latest(checkpoint_directory)
 
-            print(f"Checkpoint saved at {ckpt_dir}")
+            print(f"Checkpoint saved at {checkpoint_directory}")
 
 
 if __name__ == "__main__":
