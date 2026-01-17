@@ -179,8 +179,8 @@ def main():
             tag = f"step_{global_step}"
             model_engine.save_checkpoint(checkpoint_directory, tag, client_state={"global_step": global_step}, save_latest=True)
 
-            # deepspeed saves the "latest" file in the parent directory for the checkpoint, so we're going to move
-            # it into the checkpoint dir manually, then reverse this on resume.
+            # deepspeed saves the "latest" file (their version of our "latest" symlink) in the parent directory for the 
+            # checkpoint, so we're going to move it into the checkpoint dir manually, then reverse this on resume.
             shutil.move(
                 os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], "latest"), 
                 os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], checkpoint_directory, "latest")
