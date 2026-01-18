@@ -1,0 +1,13 @@
+isc_project_id = "<project-id>"
+experiment_name = "deepseek-r1-<model>"
+gpus = 16
+compute_mode = "burst"
+dataset_id_list = ["uds-visual-water-soup-250513", "<model-weight-dataset-id>"]
+input_artifact_id_list = ["<checkpoint-artifact-if-validation.py>"]
+command = '''
+source /opt/venv/bin/activate && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$NODE_RANK 
+/root/isc-demos/deepseek/<train.py-or-validation.py> 
+--dataset-id uds-visual-water-soup-250513 
+--model-dataset-id <model-weight-dataset-id>'''

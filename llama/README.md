@@ -1,5 +1,5 @@
-# PEFT (LoRA) Fine-tune DeepSeek-R1
-Here we demonstrate a minimum-viable fine-tuning of the DeepSeek-R1 models (adaptable for any similar LLM) using FSDP and LoRA.
+# PEFT (LoRA) Fine-tune Llama3.2
+Here we demonstrate a minimum-viable fine-tuning of the Llama3.2 models (adaptable for any similar LLM) using FSDP and LoRA.
 
 ## Step 1a: `isc-demos` image container
 If you have created your container based on the `isc-demos` Image in [Control Plane](https://cp.strongcompute.ai/), 
@@ -11,7 +11,7 @@ cd ~
 git clone https://github.com/StrongResearch/isc-demos.git
 ```
 
-### Step 1b: other image container
+## Step 1b: other image container
 If you've just generated a new container in [Control Plane](https://cp.strongcompute.ai/), start by installing python, git, and nano.
 ```bash
 apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
@@ -26,23 +26,24 @@ Clone this repo and install dependencies.
 ```bash
 cd /root
 git clone https://github.com/StrongResearch/isc-demos.git
-cd /root/isc-demos/deepseek
+cd /root/isc-demos/llama
 pip install -r requirements.txt
 ```
+
 ### Step 2: Update experiment launch file
-Pick your DeekSeek-R1 model. We have imported these as Datasets in [Control Plane](https://cp.strongcompute.ai/).
-Edit the experiment launch file (`deepseek-r1-<model>.isc`) corresponding to the model of your choice, replacing the `project_id` with your Project ID.
+Pick your Llama3.2 model. We have imported these as Datasets in [Control Plane](https://cp.strongcompute.ai/).
+Edit the experiment launch file (`llama_3.2_<model>.isc`) corresponding to the model of your choice, replacing the `project_id` with your Project ID.
 ```toml
 isc_project_id = "<project-id>"
-experiment_name = "deepseek-r1-<model>"
+experiment_name = "Llama3.2 <model>"
 gpus = 16
-compute_mode = "burst"
-dataset_id_list = ["<model-weights-dataset-id>", "<training-data-dataset-id>"]
+compute_mode = "cycle"
+dataset_id_list = ["dataset-id-0", "dataset-id-1"]
 command = '''...'''
 ```
 ### Step 3: Launch your experiment to train
 ```bash
-isc train deepseek-r1-<model>.isc
+isc train llama_3.2_<model>.isc
 isc experiments
 ```
 
@@ -50,11 +51,11 @@ isc experiments
 
 If you're training bigger models (such as the 70b), you may find that training with compute_mode = "cycle" does not make enough progress to checkpoint your model.
 
-In this case, you should still train with compute_mode = "cycle" to confirm your training code is valid on a smaller model (e.g. 1.5B) and then launch in burst to see checkpoints
+In this case, you should still train with compute_mode = "cycle" to confirm your training code is valid on a smaller model (e.g. 1B) and then launch in burst to see checkpoints
 changes.
 
 ## Full fine-tuning
-To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (LoRA) fine-tune, comment out lines 83 to 93 of `fsdp.py`.
+To adapt the `fsdp.py` training scrip to do a full fine-tune rather than PEFT (LoRA) fine-tune, comment out lines 84 to 94 of `fsdp.py`.
 ```
 #    # inject PEFT modules
 #    lora_config = LoraConfig(

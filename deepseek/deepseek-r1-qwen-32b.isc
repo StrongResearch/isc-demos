@@ -1,11 +1,12 @@
 isc_project_id = "<project-id>"
 experiment_name = "deepseek-r1-qwen-32b"
 gpus = 16
-compute_mode = "cycle"
-dataset_id_list = ["84c2b2cb-95b4-4ce6-a2d4-6f210afad36b"]
+compute_mode = "burst"
+dataset_id_list = ["uds-visual-water-soup-250513", "uds-golden-unequaled-prepared-250513"]
 command = '''
-source /root/.deepseek/bin/activate && 
+source /opt/venv/bin/activate && 
 torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
---master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
-/root/isc-demos/deepseek/fsdp.py 
---dataset-id 84c2b2cb-95b4-4ce6-a2d4-6f210afad36b'''
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$NODE_RANK 
+/root/isc-demos/deepseek/train.py 
+--dataset-id uds-visual-water-soup-250513	
+--model-dataset-id uds-golden-unequaled-prepared-250513'''

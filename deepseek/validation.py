@@ -1,7 +1,7 @@
+### INFO: This is a helper script to allow participants to confirm their model is working!
+import os
 import functools
 import logging
-import os
-import time
 import warnings
 
 import torch
@@ -28,7 +28,14 @@ from torch.distributed.fsdp import ShardingStrategy
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.distributed.fsdp.wrap import size_based_auto_wrap_policy
 from torch.utils.data import DataLoader
-from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from peft import LoraModel, LoraConfig
+
+from cycling_utils import AtomicDirectory, atomic_torch_save, TimestampedTimer, InterruptableDistributedSampler
+from fsdp_utils import bfSixteen_ready, bfSixteen_policy, count_trainable_parameters, AppState, get_args_parser
+
+from datasets import load_dataset, disable_progress_bars
 
 timer = TimestampedTimer("Start")
 
@@ -37,27 +44,18 @@ logger = logging.getLogger("torch.distributed.fsdp._state_dict_utils")
 logger.setLevel(logging.ERROR)
 # suppress warnings about "UserWarning: `_get_pg_default_device` will be deprecated" while saving and loading
 warnings.filterwarnings("ignore", category=UserWarning)
+# suppress huggingface datasets progress bars
+disable_progress_bars()
 
 ADAPTER_NAME = "ExampleLora"
 SHARD_STRATEGY = ShardingStrategy.FULL_SHARD
 
-"""
-For Hybrid shard we need to:
-1. Initialize the device_mesh as an (NNODES, NPROC) array.
-2. Set SHARD_STRATEGY = ShardingStrategy.HYBRID_SHARD
-3. Enumerate processes within one model shard group to participate in saving - HOW??
-4. Gate saving on being member of that group
-5. Pass the saving process group to the dcp.save function
-"""
-
-print("Finished imports")
-
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
-    rank = int(os.environ["RANK"])  # Global rank
-    local_device = int(os.environ["LOCAL_RANK"])  # Rank on local node
-    world_size = int(os.environ["WORLD_SIZE"])  # Total number of global ranks
-    model_path = os.path.join("/data", args.dataset_id)
+    rank = int(os.environ["RANK"]) # Global rank
+    local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
+    world_size = int(os.environ["WORLD_SIZE"]) # Total number of global ranks
+    model_path = os.path.join("/data", args.model_dataset_id)
     torch.cuda.set_device(local_device)
 
     timer.report(f"Init process group for world size: {world_size}")
@@ -80,7 +78,7 @@ if __name__ == "__main__":
 
     timer.report(f"Loaded model: {count_trainable_parameters(model)}")
 
-    # inject PEFT modules
+        # inject PEFT modules
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
@@ -111,10 +109,12 @@ if __name__ == "__main__":
 
     timer.report("FSDP wrapped model and broadcast to GPUs")
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
+    trainable_params = [p for p in model.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(trainable_params, lr=1e-5)
 
-    # prepare dataset and utilities
-    dataset = load_dataset("wiki_qa", split="train")
+    # prepare validation dataset and utilities
+    validation_data_path = f"/data/{args.dataset_id}/validation-00000-of-00001.parquet"
+    dataset = load_dataset("parquet", data_files={"valid": validation_data_path}, split="valid", cache_dir="/tmp/wiki_qa")
 
     def preprocess_function(examples):
         # Combine question and answer into a single text
@@ -130,10 +130,8 @@ if __name__ == "__main__":
 
     # Process dataset
     tokenized_dataset = dataset.map(
-        preprocess_function,
-        batched=True,
-        remove_columns=dataset.column_names,
-        desc="Tokenizing and preprocessing dataset",
+        preprocess_function, batched=True,
+        remove_columns=dataset.column_names, desc="Tokenizing and preprocessing train dataset"
     )
 
     # Create dataloader
@@ -144,13 +142,8 @@ if __name__ == "__main__":
             "labels": torch.stack([torch.tensor(x["labels"]) for x in batch]),
         }
 
-    train_sampler = InterruptableDistributedSampler(tokenized_dataset)
-
-    batch_size = 4  # Adjust based on your GPU memory
-    dataloader = DataLoader(tokenized_dataset, batch_size=batch_size, collate_fn=collate_fn, sampler=train_sampler)
-    steps_per_epoch = len(dataloader)
-
-    best_loss = float("inf")
+    validation_sampler = InterruptableDistributedSampler(tokenized_dataset)
+    dataloader = DataLoader(tokenized_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=validation_sampler)
 
     # load checkpoint if found
     try:
@@ -160,34 +153,29 @@ if __name__ == "__main__":
         exit(1)
     saver = AtomicDirectory(output_directory=output_directory, is_master=rank == 0)
 
+    # performance metric to evaluate
+    validation_loss = 0.0
+
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
     if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
-
-        state_dict = {"app": AppState(model, optimizer)}
+        state_dict = { "app": AppState(model, optimizer)}
         dcp.load(state_dict=state_dict, checkpoint_id=latest_checkpoint_path)
-
-        train_state = torch.load(os.path.join(latest_checkpoint_path, "train_state.pt"))
-        dataloader.sampler.load_state_dict(train_state["sampler"])
-        best_loss = train_state["best_loss"]
-
+        validation_state = torch.load(os.path.join(latest_checkpoint_path, "validation_state.pt"))
+        dataloader.sampler.load_state_dict(validation_state["sampler"])
+        validation_loss = validation_state["validation_loss"]
         timer.report("Loaded checkpoint")
 
     state_dict = {"app": AppState(model, optimizer)}
 
-    # training
-    num_epochs = 10
-    save_every_steps = 30
-    model.train()
+    save_every_steps = 20
 
-    for epoch in range(dataloader.sampler.epoch, num_epochs):
-
-        dataloader.sampler.set_epoch(epoch)
-
+    model.eval()
+    with torch.no_grad():
         for batch in dataloader:
 
             step = dataloader.sampler.progress // dataloader.batch_size
-            is_last_step = (step + 1) == steps_per_epoch
+            is_last_step = (step + 1) == len(dataloader)
             is_save_step = ((step + 1) % save_every_steps == 0) or is_last_step
 
             # Move batch to device
@@ -198,45 +186,31 @@ if __name__ == "__main__":
             # forward, backward, update
             outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
             loss = outputs.loss
-            loss.backward()
-            optimizer.step()
             dataloader.sampler.advance(len(input_ids))
-            optimizer.zero_grad()
 
-            # synchronize loss to determine whether to force_save
+            # synchronize loss for reporting
             sync_loss = loss
             dist.all_reduce(sync_loss)
+            validation_loss += sync_loss.item()
 
-            timer.report(f"Step {step} Loss: {sync_loss.item():.3f}")
+            timer.report(f"Validation step [{step} / {len(dataloader)}]")
 
             if is_save_step:
-                force_save = False
-
-                checkpoint_directory = saver.prepare_checkpoint_directory(force_save=force_save)
+                checkpoint_directory = saver.prepare_checkpoint_directory()
                 checkpoint_writer = dcp.FileSystemWriter(checkpoint_directory)
-
-                metadata = dcp.save(state_dict=state_dict, storage_writer=checkpoint_writer)
-
-                dist.barrier()
 
                 if rank == 0:
                     atomic_torch_save(
-                        {"sampler": dataloader.sampler.state_dict(), "best_loss": best_loss},
-                        os.path.join(checkpoint_directory, "train_state.pt"),
+                        {
+                            "sampler": dataloader.sampler.state_dict(),
+                            "validation_loss" : validation_loss
+                        }, 
+                        os.path.join(checkpoint_directory, "validation_state.pt")
                     )
-
-                while len(os.listdir(checkpoint_directory)) < world_size + 2:
-                    print("Checkpoint not yet saved...")
-                    time.sleep(1)
-                    dist.barrier()
 
                 saver.symlink_latest(checkpoint_directory)
 
                 timer.report("Saved checkpoint")
 
-        dataloader.sampler.reset_progress()
-
-    timer.report("Done.")
-
-    dist.barrier()
-    dist.destroy_process_group()
+            if is_last_step:
+                timer.report(f"Validation average loss: [{validation_loss / len(dataloader):,.3f}]")

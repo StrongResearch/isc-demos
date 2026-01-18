@@ -10,6 +10,12 @@ import json
 import math
 import os
 import re
+<<<<<<< HEAD
+=======
+import math
+import time
+import datetime
+>>>>>>> main
 import socket
 import subprocess
 import time
@@ -118,9 +124,6 @@ def train_loop(
         is_last_batch = (batch + 1) == train_batches_per_epoch
         is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
         is_lrstep_batch = True if args.lr_stepevery == "batch" else is_last_batch
-
-        # if (is_save_batch or is_last_batch) and args.is_master:
-        #     checkpoint_directory = saver.prepare_checkpoint_directory()
 
         torch.cuda.synchronize()
         metrics["sys"].update({"2_batch_stats": time.perf_counter() - start})
@@ -360,9 +363,6 @@ def test_loop(
             is_last_batch = (batch + 1) == test_batches_per_epoch
             is_save_batch = ((batch + 1) % args.save_freq == 0) or is_last_batch
 
-            # if (is_save_batch or is_last_batch) and args.is_master:
-            #     checkpoint_directory = saver.prepare_checkpoint_directory()
-
             # Move input and targets to device
             inputs, targets = inputs.to(args.device_id), targets.to(args.device_id)
             # Create one-hot encoded targets for test loss calculation
@@ -402,7 +402,9 @@ def test_loop(
                     "test_accu": pct_test_correct,
                     "datetime": time.strftime("%Y-%m-%d %H:%M:%S"),
                 }
-                with open(os.path.join(args.save_dir, "test_metrics.jsonl"), "a") as f:
+                
+                lossy_output_dir = os.environ["LOSSY_ARTIFACT_PATH"]
+                with open(os.path.join(lossy_output_dir, "test_metrics.jsonl"), "a") as f:
                     f.write(json.dumps(json_payload) + "\n")
 
             if is_log_batch and not is_last_batch:
@@ -410,10 +412,15 @@ def test_loop(
 
             # Save checkpoint
             if is_save_batch:
+
+                # sync pct_test_correct to determine force_save
+                sync_pct_test_correct = torch.tensor(pct_test_correct).to('cuda')
+                dist.broadcast(sync_pct_test_correct, src=0)
+                
                 # force save checkpoint if test performance improves, only after 20 epochs
-                if (epoch > 20) and is_last_batch and (pct_test_correct > metrics["best_accuracy"]):
+                if (epoch > 20) and is_last_batch and (sync_pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
-                    metrics["best_accuracy"] = pct_test_correct
+                    metrics["best_accuracy"] = sync_pct_test_correct
                 else:
                     force_save = False
 
@@ -440,7 +447,8 @@ def test_loop(
 
 
 def main(args, timer):
-    dist.init_process_group("nccl")  # Expects RANK set in environment variable
+    timeout = datetime.timedelta(minutes=60)
+    dist.init_process_group("nccl", timeout=timeout)  # Expects RANK set in environment variable
     args.host = socket.gethostname()
     args.rank = int(os.environ["RANK"])
     args.device_id = int(os.environ["LOCAL_RANK"])

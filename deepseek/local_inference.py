@@ -9,12 +9,12 @@ adapter_name = "ExampleLora"
 
 # INFO: This is a helper to map model names to StrongCompute Dataset ID's which store their weights!
 model_weight_ids = {
-    "DeepSeek-R1-Distill-Llama-70B": "e4b2dc79-79af-4a80-be71-c509469449b4",
-    "DeepSeek-R1-Distill-Llama-8B": "38b32289-7d34-4c72-9546-9d480f676840",
-    "DeepSeek-R1-Distill-Qwen-1.5B": "6c796efa-7063-4a74-99b8-aab1c728ad98",
-    "DeepSeek-R1-Distill-Qwen-14B": "39387beb-9824-4629-b19b-8f7b8f127150",
-    "DeepSeek-R1-Distill-Qwen-32B": "84c2b2cb-95b4-4ce6-a2d4-6f210afad36b",
-    "DeepSeek-R1-Distill-Qwen-7B": "a792646c-39f5-4971-a169-425324fec87b",
+    "DeepSeek-R1-Distill-Llama-70B": "uds-quilled-branch-catboat-250513",
+    "DeepSeek-R1-Distill-Llama-8B": "uds-unruly-jungle-offer-250513",
+    "DeepSeek-R1-Distill-Qwen-1.5B": "uds-plural-branch-bag-250513",
+    "DeepSeek-R1-Distill-Qwen-14B": "uds-brazen-meowing-munchkin-250513",
+    "DeepSeek-R1-Distill-Qwen-32B": "uds-golden-unequaled-prepared-250513",
+    "DeepSeek-R1-Distill-Qwen-7B": "uds-leaf-various-bosworth-250513",
 }
 
 # TODO: set this to the model you chose from the dropdown at container startup!
