@@ -52,9 +52,9 @@ SHARD_STRATEGY = ShardingStrategy.FULL_SHARD
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
-    rank = int(os.environ["RANK"]) # Global rank
-    local_device = int(os.environ["LOCAL_RANK"]) # Rank on local node
-    world_size = int(os.environ["WORLD_SIZE"]) # Total number of global ranks
+    rank = int(os.environ["RANK"])  # Global rank
+    local_device = int(os.environ["LOCAL_RANK"])  # Rank on local node
+    world_size = int(os.environ["WORLD_SIZE"])  # Total number of global ranks
     model_path = os.path.join("/data", args.model_dataset_id)
     torch.cuda.set_device(local_device)
 
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     timer.report(f"Loaded model: {count_trainable_parameters(model)}")
 
-        # inject PEFT modules
+    # inject PEFT modules
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
@@ -114,7 +114,9 @@ if __name__ == "__main__":
 
     # prepare validation dataset and utilities
     validation_data_path = f"/data/{args.dataset_id}/validation-00000-of-00001.parquet"
-    dataset = load_dataset("parquet", data_files={"valid": validation_data_path}, split="valid", cache_dir="/tmp/wiki_qa")
+    dataset = load_dataset(
+        "parquet", data_files={"valid": validation_data_path}, split="valid", cache_dir="/tmp/wiki_qa"
+    )
 
     def preprocess_function(examples):
         # Combine question and answer into a single text
@@ -130,8 +132,10 @@ if __name__ == "__main__":
 
     # Process dataset
     tokenized_dataset = dataset.map(
-        preprocess_function, batched=True,
-        remove_columns=dataset.column_names, desc="Tokenizing and preprocessing train dataset"
+        preprocess_function,
+        batched=True,
+        remove_columns=dataset.column_names,
+        desc="Tokenizing and preprocessing train dataset",
     )
 
     # Create dataloader
@@ -143,7 +147,9 @@ if __name__ == "__main__":
         }
 
     validation_sampler = InterruptableDistributedSampler(tokenized_dataset)
-    dataloader = DataLoader(tokenized_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=validation_sampler)
+    dataloader = DataLoader(
+        tokenized_dataset, batch_size=args.batch_size, collate_fn=collate_fn, sampler=validation_sampler
+    )
 
     # load checkpoint if found
     try:
@@ -159,7 +165,7 @@ if __name__ == "__main__":
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
     if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
-        state_dict = { "app": AppState(model, optimizer)}
+        state_dict = {"app": AppState(model, optimizer)}
         dcp.load(state_dict=state_dict, checkpoint_id=latest_checkpoint_path)
         validation_state = torch.load(os.path.join(latest_checkpoint_path, "validation_state.pt"))
         dataloader.sampler.load_state_dict(validation_state["sampler"])
@@ -201,11 +207,8 @@ if __name__ == "__main__":
 
                 if rank == 0:
                     atomic_torch_save(
-                        {
-                            "sampler": dataloader.sampler.state_dict(),
-                            "validation_loss" : validation_loss
-                        }, 
-                        os.path.join(checkpoint_directory, "validation_state.pt")
+                        {"sampler": dataloader.sampler.state_dict(), "validation_loss": validation_loss},
+                        os.path.join(checkpoint_directory, "validation_state.pt"),
                     )
 
                 saver.symlink_latest(checkpoint_directory)

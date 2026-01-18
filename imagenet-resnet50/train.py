@@ -399,7 +399,7 @@ def test_loop(
                     "test_accu": pct_test_correct,
                     "datetime": time.strftime("%Y-%m-%d %H:%M:%S"),
                 }
-                
+
                 lossy_output_dir = os.environ["LOSSY_ARTIFACT_PATH"]
                 with open(os.path.join(lossy_output_dir, "test_metrics.jsonl"), "a") as f:
                     f.write(json.dumps(json_payload) + "\n")
@@ -411,9 +411,9 @@ def test_loop(
             if is_save_batch:
 
                 # sync pct_test_correct to determine force_save
-                sync_pct_test_correct = torch.tensor(pct_test_correct).to('cuda')
+                sync_pct_test_correct = torch.tensor(pct_test_correct).to("cuda")
                 dist.broadcast(sync_pct_test_correct, src=0)
-                
+
                 # force save checkpoint if test performance improves, only after 20 epochs
                 if (epoch > 20) and is_last_batch and (sync_pct_test_correct > metrics["best_accuracy"]):
                     force_save = True

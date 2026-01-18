@@ -8,6 +8,7 @@ from torch.distributed.checkpoint.state_dict import get_state_dict, set_state_di
 from pathlib import Path
 from looseversion import LooseVersion
 
+
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser()
     parser.add_argument("--chk-path", type=str, default=os.environ.get("CHECKPOINT_ARTIFACT_PATH"))
@@ -16,10 +17,12 @@ def get_args_parser(add_help=True):
     parser.add_argument("--batch-size", help="Local batch size", type=int, default=4)
     return parser
 
+
 def count_trainable_parameters(model):
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     return f"Total: {total_params:,}, Trainable: {trainable_params:,} ({100*trainable_params/total_params:,.3f}%)"
+
 
 class AppState(Stateful):
     def __init__(self, model, optimizer=None):
@@ -30,15 +33,10 @@ class AppState(Stateful):
     def state_dict(self):
         # this line automatically manages FSDP FQN's, as well as sets the default state dict type to FSDP.SHARDED_STATE_DICT
         model_state_dict, optimizer_state_dict = get_state_dict(
-            self.model, 
-            self.optimizer, 
-            options=self.state_dict_options
+            self.model, self.optimizer, options=self.state_dict_options
         )
 
-        return {
-            "model": model_state_dict,
-            "optim": optimizer_state_dict
-        }
+        return {"model": model_state_dict, "optim": optimizer_state_dict}
 
     def load_state_dict(self, state_dict):
         # sets our state dicts on the model and optimizer, now that we've loaded
@@ -47,8 +45,9 @@ class AppState(Stateful):
             self.optimizer,
             model_state_dict=state_dict["model"],
             optim_state_dict=state_dict["optim"],
-            options=self.state_dict_options
+            options=self.state_dict_options,
         )
+
 
 def bfSixteen_ready():
     bf16_ready = (
@@ -59,6 +58,7 @@ def bfSixteen_ready():
         and torch.cuda.nccl.version() >= (2, 10)
     )
     return bf16_ready
+
 
 bfSixteen_policy = MixedPrecision(
     param_dtype=torch.bfloat16,

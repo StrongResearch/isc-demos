@@ -11,11 +11,11 @@ from cycling_utils import TimestampedTimer, AtomicDirectory
 timer = TimestampedTimer("Hello from train.py")
 disable_progress_bars()
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     # deepspeed requires these
-    parser.add_argument('--local_rank', type=int, default=-1,
-                        help='local rank passed from distributed launcher')
+    parser.add_argument("--local_rank", type=int, default=-1, help="local rank passed from distributed launcher")
     parser = deepspeed.add_config_arguments(parser)
 
     # args specifically for this project
@@ -28,20 +28,10 @@ def load_model_and_tokenizer(model_path):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.pad_token = tokenizer.eos_token
 
-    base_model = AutoModelForCausalLM.from_pretrained(
-        model_path,
-        dtype=torch.bfloat16,
-        device_map=None
-    )
+    base_model = AutoModelForCausalLM.from_pretrained(model_path, dtype=torch.bfloat16, device_map=None)
 
     # LoRA config
-    lora_config = LoraConfig(
-        r=64,
-        lora_alpha=32,
-        lora_dropout=0.05,
-        bias="none",
-        task_type="CAUSAL_LM"
-    )
+    lora_config = LoraConfig(r=64, lora_alpha=32, lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
     model = get_peft_model(base_model, lora_config)
     model.print_trainable_parameters()
 
@@ -55,40 +45,38 @@ def main():
     # prepare dataset
     train_data_path = os.path.join(args.data_path, "train-00000-of-00001.parquet")
     test_data_path = os.path.join(args.data_path, "test-00000-of-00001.parquet")
-    dataset = load_dataset("parquet", data_files={"train": train_data_path, "test": test_data_path}, cache_dir="/tmp/wiki_qa")
+    dataset = load_dataset(
+        "parquet", data_files={"train": train_data_path, "test": test_data_path}, cache_dir="/tmp/wiki_qa"
+    )
 
     def preprocess_function(examples):
         # Combine question and answer into a single text
-        texts = [f"Question: {q}\nAnswer: {a}" for q, a in zip(examples['question'], examples['answer'])]
-        
+        texts = [f"Question: {q}\nAnswer: {a}" for q, a in zip(examples["question"], examples["answer"])]
+
         # Tokenize with padding and truncation
-        encodings = tokenizer(
-            texts,
-            truncation=True,
-            max_length=512,
-            padding="max_length",
-            return_tensors=None
-        )
-        
+        encodings = tokenizer(texts, truncation=True, max_length=512, padding="max_length", return_tensors=None)
+
         # Create labels for causal language modeling (shift input_ids right)
         encodings["labels"] = encodings["input_ids"].copy()
-        
+
         return encodings
 
     # Process dataset
     train_dataset = dataset["train"].map(
-        preprocess_function, batched=True,
-        remove_columns=dataset["train"].column_names, desc="Tokenizing and preprocessing train dataset"
+        preprocess_function,
+        batched=True,
+        remove_columns=dataset["train"].column_names,
+        desc="Tokenizing and preprocessing train dataset",
     )
 
-    print(f"Rank {os.environ["RANK"]} training example:\n{train_dataset[0]}")
+    print(f"Rank {os.environ['RANK']} training example:\n{train_dataset[0]}")
 
     # Create dataloader
     def collate_fn(batch):
         return {
-            'input_ids': torch.stack([torch.tensor(x['input_ids']) for x in batch]),
-            'attention_mask': torch.stack([torch.tensor(x['attention_mask']) for x in batch]),
-            'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
+            "input_ids": torch.stack([torch.tensor(x["input_ids"]) for x in batch]),
+            "attention_mask": torch.stack([torch.tensor(x["attention_mask"]) for x in batch]),
+            "labels": torch.stack([torch.tensor(x["labels"]) for x in batch]),
         }
 
     # Note: optimizer and learning rate scheduler are initialized by deepspeed, see
@@ -107,7 +95,7 @@ def main():
     is_master = deepspeed.comm.get_rank() == 0
     saver = AtomicDirectory(output_directory=output_directory, is_master=is_master)
 
-    # tracking a global_step parameter to demonstrate use of the 
+    # tracking a global_step parameter to demonstrate use of the
     # deepspeed checkpointing "client_state" utility.
     global_step = 0
 
@@ -131,9 +119,7 @@ def main():
             labels = batch["labels"].to(model_engine.local_rank)
 
             # forward pass
-            outputs = model_engine(input_ids=input_ids,
-                                   attention_mask=attention_mask,
-                                   labels=labels)
+            outputs = model_engine(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
 
             # loss
             loss = outputs.loss
@@ -159,14 +145,12 @@ def main():
             # checkpoint to resume from. A new "latest" file will be saved with each checkpoint
             # artifact.
             model_engine.save_checkpoint(
-                checkpoint_directory, tag, 
-                client_state={"global_step": global_step}, 
-                save_latest=True
+                checkpoint_directory, tag, client_state={"global_step": global_step}, save_latest=True
             )
-            
+
             # Strong Compute finalizes checkpoint
             saver.symlink_latest(checkpoint_directory)
-    
+
             timer.report(f"Checkpoint saved at {checkpoint_directory}")
 
 
