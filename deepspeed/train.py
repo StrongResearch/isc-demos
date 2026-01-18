@@ -21,8 +21,6 @@ def parse_args():
     # args specifically for this project
     parser.add_argument("--model_path", type=str, required=True)
     parser.add_argument("--data_path", type=str, required=True)
-    parser.add_argument("--output_dir", type=str, required=True)
-    parser.add_argument("--resume_tag", type=str, default=None)
     return parser.parse_args()
 
 
@@ -59,10 +57,6 @@ def main():
     test_data_path = os.path.join(args.data_path, "test-00000-of-00001.parquet")
     dataset = load_dataset("parquet", data_files={"train": train_data_path, "test": test_data_path}, cache_dir="/tmp/wiki_qa")
 
-    # timer.report("dataset['train'] examples:")
-    # for example in dataset["train"][0:5]:
-    #     print(example)
-
     def preprocess_function(examples):
         # Combine question and answer into a single text
         texts = [f"Question: {q}\nAnswer: {a}" for q, a in zip(examples['question'], examples['answer'])]
@@ -87,14 +81,12 @@ def main():
         remove_columns=dataset["train"].column_names, desc="Tokenizing and preprocessing train dataset"
     )
 
+    print(f"Rank {os.environ["RANK"]} training example:\n{train_dataset[0]}")
+
     # test_dataset = dataset["test"].map(
     #     preprocess_function, batched=True,
     #     remove_columns=dataset["test"].column_names, desc="Tokenizing and preprocessing test dataset"
     # )
-
-    # print(f"train_dataset examples:")
-    # for example in train_dataset[0:5]:
-    #     print(example)
 
     # Create dataloader
     def collate_fn(batch):
@@ -104,31 +96,14 @@ def main():
             'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
         }
 
-    # print("Dataset and dataloader done")
-
-    # OPTIMIZER INITIALIZED BY DEEPSPEED
-    # # Optimizer
-    # optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
-
-    # print("Optimizer done")
-
-    # SCHEDULER INITIALIZED BY DEEPSPEED?
-    # # Scheduler
-    # scheduler = get_linear_schedule_with_warmup(
-    #     optimizer, num_warmup_steps=100, num_training_steps=5000
-    # )
-
-    # print("Scheduler done")
+    # Note: optimizer and learning rate scheduler are initialized by deepspeed, see
+    # ds_config.json for configuration details.
 
     # DeepSpeed initialization
     model_engine, optimizer, train_dataloader, scheduler = deepspeed.initialize(
         model=model,
         training_data=train_dataset,
         collate_fn=collate_fn,
-        # OPTIMIZER INITIALIZED BY DEEPSPEED
-        # optimizer=optimizer,
-        # SCHEDULER INITIALIZED BY DEEPSPEED
-        # lr_scheduler=scheduler,
         config=args.deepspeed_config,
         model_parameters=model.parameters(),
     )
@@ -138,23 +113,22 @@ def main():
     is_master = deepspeed.comm.get_rank() == 0
     saver = AtomicDirectory(output_directory=output_directory, is_master=is_master)
 
+    # tracking a global_step parameter to demonstrate use of the 
+    # deepspeed checkpointing "client_state" utility.
     global_step = 0
 
+    # detect if there is a checkpoint to resume from
     latest_symlink_file_path = os.path.join(output_directory, saver.symlink_name)
     if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
-        # see the comment below
-        timer.report(f"Restoring DeepSpeed latest file to parent dir")
-        shutil.move(
-            os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], latest_checkpoint_path, "latest"),
-            os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], "latest")
-        )
+
         timer.report(f"Resuming from AtomicDirector {latest_checkpoint_path}")
-        load_path, client_state = model_engine.load_checkpoint(args.output_dir, args.resume_tag)
+        load_path, client_state = model_engine.load_checkpoint(latest_checkpoint_path)
         global_step = client_state["global_step"]
+
         timer.report(f"Resumed from DeepSpeed checkpoint {load_path} at step {global_step}")
 
-    for epoch in range(2):
+    for epoch in range(5):
         for batch in train_dataloader:
 
             # Move batch to device
@@ -162,32 +136,43 @@ def main():
             attention_mask = batch["attention_mask"].to(model_engine.local_rank)
             labels = batch["labels"].to(model_engine.local_rank)
 
+            # forward pass
             outputs = model_engine(input_ids=input_ids,
                                    attention_mask=attention_mask,
                                    labels=labels)
 
+            # loss
             loss = outputs.loss
             timer.report(f"Batch {global_step} loss {loss.item()}")
 
+            # backward pass
             model_engine.backward(loss)
+
+            # optimizer step
             model_engine.step()
 
+            # increment global_step
             global_step += 1
 
+            # Strong Compute prepares checkpoint directory
             checkpoint_directory = saver.prepare_checkpoint_directory()
 
+            # manual tagging not strictly necessary
             tag = f"step_{global_step}"
-            model_engine.save_checkpoint(checkpoint_directory, tag, client_state={"global_step": global_step}, save_latest=True)
 
-            # deepspeed saves the "latest" file (their version of our "latest" symlink) in the parent directory for the 
-            # checkpoint, so we're going to move it into the checkpoint dir manually, then reverse this on resume.
-            shutil.move(
-                os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], "latest"), 
-                os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], checkpoint_directory, "latest")
+            # By specifying save_latest=True deepspeed will save a "latest" file to the
+            # checkpoint_directory which deepspeed will then use to "detect" the latest
+            # checkpoint to resume from. A new "latest" file will be saved with each checkpoint
+            # artifact.
+            model_engine.save_checkpoint(
+                checkpoint_directory, tag, 
+                client_state={"global_step": global_step}, 
+                save_latest=True
             )
             
+            # Strong Compute finalizes checkpoint
             saver.symlink_latest(checkpoint_directory)
-
+    
             timer.report(f"Checkpoint saved at {checkpoint_directory}")
 
 

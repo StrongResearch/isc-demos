@@ -6,10 +6,17 @@ echo "Master: $MASTER_ADDR:$MASTER_PORT"
 
 ## Dynamically generate a hostfile for deepspeed
 # the hostname is not important because we're 
-# launching without passwordless SSH torchrun style
-# but the file need to have as many hosts listed
+# launching without passwordless SSH, torchrun style
+# but the file needs to have as many hosts listed
 # as there are nodes in the cluster and each
-# host must have a number of GPUs specified
+# host must have a number of GPUs specified.
+
+# In the example below it is assumed that the user
+# has requested an number of GPUs which is an integer
+# multiple of the number of GPUs per node. Under this
+# assumption each node will have the same $N_PROC
+# environment variable set to the number of GPUs per
+# node.
 
 # Ensure directory exists
 mkdir -p /tmp/deepspeed
@@ -28,5 +35,4 @@ deepspeed --hostfile /tmp/deepspeed/hostfile --no_ssh --node_rank=$NODE_RANK \
     /root/isc-demos/deepspeed/train.py \
     --model_path /data/uds-standing-denim-promise-250527 \
     --data_path /data/uds-visual-water-soup-250513 \
-    --output_dir $CHECKPOINT_ARTIFACT_PATH \
     --deepspeed --deepspeed_config /root/isc-demos/deepspeed/ds_config.json
