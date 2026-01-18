@@ -8,6 +8,7 @@ from cycling_utils import TimestampedTimer
 
 timer = TimestampedTimer("Imported TimestampedTimer")
 
+
 import argparse
 import os
 from operator import itemgetter
