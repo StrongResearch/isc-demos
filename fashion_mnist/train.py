@@ -4,8 +4,6 @@
 # Important milestones in progress through this script are logged using a timing utility which also includes details of
 # when milestones were reached and the elapsedtime between milestones. This can assist with debugging and optimisation.
 
-from cycling_utils import TimestampedTimer
-
 import argparse
 import os
 from operator import itemgetter
@@ -16,6 +14,7 @@ from cycling_utils import (
     AtomicDirectory,
     InterruptableDistributedSampler,
     MetricsTracker,
+    TimestampedTimer,
     atomic_torch_save,
 )
 from model import ConvNet

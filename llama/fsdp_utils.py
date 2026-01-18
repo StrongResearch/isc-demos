@@ -1,12 +1,17 @@
-import os
 import argparse
+import os
+from pathlib import Path
+
 import torch
 import torch.distributed as dist
+from looseversion import LooseVersion
+from torch.distributed.checkpoint.state_dict import (
+    StateDictOptions,
+    get_state_dict,
+    set_state_dict,
+)
 from torch.distributed.checkpoint.stateful import Stateful
 from torch.distributed.fsdp import MixedPrecision
-from torch.distributed.checkpoint.state_dict import get_state_dict, set_state_dict, StateDictOptions
-from pathlib import Path
-from looseversion import LooseVersion
 
 
 def get_args_parser(add_help=True):

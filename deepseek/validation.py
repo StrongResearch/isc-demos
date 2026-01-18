@@ -1,7 +1,7 @@
 ### INFO: This is a helper script to allow participants to confirm their model is working!
-import os
 import functools
 import logging
+import os
 import warnings
 
 import torch
@@ -13,6 +13,7 @@ from cycling_utils import (
     TimestampedTimer,
     atomic_torch_save,
 )
+from datasets import disable_progress_bars, load_dataset
 from fsdp_utils import (
     AppState,
     bfSixteen_policy,
@@ -27,10 +28,7 @@ from torch.distributed.fsdp import ShardingStrategy
 from torch.distributed.fsdp.fully_sharded_data_parallel import CPUOffload
 from torch.distributed.fsdp.wrap import size_based_auto_wrap_policy
 from torch.utils.data import DataLoader
-
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
-from datasets import load_dataset, disable_progress_bars
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 timer = TimestampedTimer("Start")
 

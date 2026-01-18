@@ -1,17 +1,15 @@
 #####################################
 # Progress Timing and Logging
 # ----------------------------
-from cycling_utils import MetricsTracker, TimestampedTimer
-
 import argparse
+import datetime
 import json
 import math
 import os
 import re
-import time
-import datetime
 import socket
 import subprocess
+import time
 from itertools import accumulate
 from pathlib import Path
 
@@ -21,6 +19,8 @@ from antialiased_resnet import resnet50
 from cycling_utils import (
     AtomicDirectory,
     InterruptableDistributedSampler,
+    MetricsTracker,
+    TimestampedTimer,
     atomic_torch_save,
 )
 from lamb import Lamb
