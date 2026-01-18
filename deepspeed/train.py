@@ -6,10 +6,11 @@ import deepspeed
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_linear_schedule_with_warmup
 from peft import LoraConfig, get_peft_model
 from datasets import load_dataset, disable_progress_bars
-from cycling_utils import AtomicDirectory
-disable_progress_bars()
+from cycling_utils import TimestampedTimer, AtomicDirectory
+from cycling_utils import 
 
-print("Hello from script land")
+timer = TimestampedTimer("Hello from train.py")
+disable_progress_bars()
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -59,9 +60,9 @@ def main():
     test_data_path = os.path.join(args.data_path, "test-00000-of-00001.parquet")
     dataset = load_dataset("parquet", data_files={"train": train_data_path, "test": test_data_path}, cache_dir="/tmp/wiki_qa")
 
-    print(f"dataset['train'] examples:")
-    for example in dataset["train"][0:5]:
-        print(example)
+    # timer.report("dataset['train'] examples:")
+    # for example in dataset["train"][0:5]:
+    #     print(example)
 
     def preprocess_function(examples):
         # Combine question and answer into a single text
@@ -92,9 +93,9 @@ def main():
     #     remove_columns=dataset["test"].column_names, desc="Tokenizing and preprocessing test dataset"
     # )
 
-    print(f"train_dataset examples:")
-    for example in train_dataset[0:5]:
-        print(example)
+    # print(f"train_dataset examples:")
+    # for example in train_dataset[0:5]:
+    #     print(example)
 
     # Create dataloader
     def collate_fn(batch):
@@ -104,13 +105,13 @@ def main():
             'labels': torch.stack([torch.tensor(x['labels']) for x in batch])
         }
 
-    print("Dataset and dataloader done")
+    # print("Dataset and dataloader done")
 
     # OPTIMIZER INITIALIZED BY DEEPSPEED
     # # Optimizer
     # optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
 
-    print("Optimizer done")
+    # print("Optimizer done")
 
     # SCHEDULER INITIALIZED BY DEEPSPEED?
     # # Scheduler
@@ -118,7 +119,7 @@ def main():
     #     optimizer, num_warmup_steps=100, num_training_steps=5000
     # )
 
-    print("Scheduler done")
+    # print("Scheduler done")
 
     # DeepSpeed initialization
     model_engine, optimizer, train_dataloader, scheduler = deepspeed.initialize(
@@ -144,15 +145,15 @@ def main():
     if os.path.islink(latest_symlink_file_path):
         latest_checkpoint_path = os.readlink(latest_symlink_file_path)
         # see the comment below
-        print(f"Restoring DeepSpeed latest file to parent dir")
+        timer.report(f"Restoring DeepSpeed latest file to parent dir")
         shutil.move(
             os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], latest_checkpoint_path, "latest"),
             os.path.join(os.environ["CHECKPOINT_ARTIFACT_PATH"], "latest")
         )
-        print(f"Resuming from AtomicDirector {latest_checkpoint_path}")
+        timer.report(f"Resuming from AtomicDirector {latest_checkpoint_path}")
         load_path, client_state = model_engine.load_checkpoint(args.output_dir, args.resume_tag)
         global_step = client_state["global_step"]
-        print(f"Resumed from DeepSpeed checkpoint {load_path} at step {global_step}")
+        timer.report(f"Resumed from DeepSpeed checkpoint {load_path} at step {global_step}")
 
     for epoch in range(2):
         for batch in train_dataloader:
@@ -167,7 +168,7 @@ def main():
                                    labels=labels)
 
             loss = outputs.loss
-            print(f"Batch {global_step} loss {loss.item()}")
+            timer.report(f"Batch {global_step} loss {loss.item()}")
 
             model_engine.backward(loss)
             model_engine.step()
@@ -188,7 +189,7 @@ def main():
             
             saver.symlink_latest(checkpoint_directory)
 
-            print(f"Checkpoint saved at {checkpoint_directory}")
+            timer.report(f"Checkpoint saved at {checkpoint_directory}")
 
 
 if __name__ == "__main__":

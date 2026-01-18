@@ -1,7 +1,7 @@
 isc_project_id = "prj-cultivate-ripple-pedestrian-251209"
 experiment_name = "deepspeed_cycle"
 gpus = 8
-compute_mode = "cycle"
+compute_mode = "interruptible"
 dataset_id_list = ["uds-standing-denim-promise-250527", "uds-visual-water-soup-250513"]
 command = "source /opt/venv/bin/activate && bash /root/isc-demos/deepspeed/launch.sh"
 
