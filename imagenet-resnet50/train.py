@@ -3,19 +3,15 @@
 # ----------------------------
 from cycling_utils import MetricsTracker, TimestampedTimer
 
-timer = TimestampedTimer("Imported TimestampedTimer & MetricsTracker")
-
 import argparse
 import json
 import math
 import os
 import re
-import math
 import time
 import datetime
 import socket
 import subprocess
-import time
 from itertools import accumulate
 from pathlib import Path
 
@@ -35,7 +31,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import v2
 
-timer.report("00_imports")
+timer = TimestampedTimer("00_imports")
 
 
 def get_args_parser(add_help=True):
@@ -549,22 +545,32 @@ def main(args, timer):
         raise Exception("Arg 'optim' must be either 'sgd' or 'adamw'.")
 
     # Function to convert from epochs to steps based on args.lr_stepevery
-    milestone_steps = lambda epochs: epochs * len(train_dataloader) if args.lr_stepevery == "batch" else epochs
+    def milestone_steps(epochs):
+        epochs * len(train_dataloader) if args.lr_stepevery == "batch" else epochs
 
     def get_linear_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        linear_lambda = lambda step: step * (finish - start) / steps + start
-        return torch.optim.lr_scheduler.LambdaLR(optimizer, linear_lambda)
+
+        def linear_scheduler(step):
+            step * (finish - start) / steps + start
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, linear_scheduler)
 
     def get_cosine_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        cos_lambda = lambda epoch: 0.5 * (1 - math.cos(epoch * math.pi / steps)) * (finish - start) + start
-        return torch.optim.lr_scheduler.LambdaLR(optimizer, cos_lambda)
+
+        def cosine_scheduler(epoch):
+            0.5 * (1 - math.cos(epoch * math.pi / steps)) * (finish - start) + start
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, cosine_scheduler)
 
     def get_exp_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        exp_lambda = lambda step: math.exp(step * math.log(finish / start) / steps + math.log(start))
-        return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_lambda)
+
+        def exp_scheduler(step):
+            math.exp(step * math.log(finish / start) / steps + math.log(start))
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_scheduler)
 
     annealing_epochs = args.epochs - args.warmup_epochs
     sched_epochs = [

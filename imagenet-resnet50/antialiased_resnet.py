@@ -42,7 +42,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 
 import torch.nn as nn
-from blurpool import *
+from blurpool import BlurPool
 
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):

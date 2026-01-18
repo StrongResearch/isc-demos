@@ -40,7 +40,7 @@ class AppState(Stateful):
 
     def load_state_dict(self, state_dict):
         # sets our state dicts on the model and optimizer, now that we've loaded
-        outcome = set_state_dict(
+        _outcome = set_state_dict(
             self.model,
             self.optimizer,
             model_state_dict=state_dict["model"],

@@ -1,9 +1,8 @@
 import argparse
 import os
-import shutil
 import torch
 import deepspeed
-from transformers import AutoModelForCausalLM, AutoTokenizer, get_linear_schedule_with_warmup
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model
 from datasets import load_dataset, disable_progress_bars
 from cycling_utils import TimestampedTimer, AtomicDirectory

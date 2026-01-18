@@ -139,7 +139,7 @@ if __name__ == "__main__":
     # load checkpoint if found
     try:
         output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
-    except KeyError as error:
+    except KeyError as _error:
         print("Must set env var CHECKPOINT_ARTIFACT_PATH so we know where to save checkpoints!")
         exit(1)
     saver = AtomicDirectory(output_directory=output_directory, is_master=rank == 0)

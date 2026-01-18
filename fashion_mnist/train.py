@@ -6,9 +6,6 @@
 
 from cycling_utils import TimestampedTimer
 
-timer = TimestampedTimer("Imported TimestampedTimer")
-
-
 import argparse
 import os
 from operator import itemgetter
@@ -29,7 +26,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import Compose, Lambda, PILToTensor, RandAugment
 
-timer.report("Completed imports")
+timer = TimestampedTimer("Completed imports")
 
 #######################################
 # Hyperparameters

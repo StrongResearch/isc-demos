@@ -160,7 +160,8 @@ if __name__ == "__main__":
     )
 
     # initialize saver pointing to the $CHECKPOINT_ARTIFACT_PATH
-    saver = AtomicDirectory(output_directory=os.environ["CHECKPOINT_ARTIFACT_PATH"], is_master=rank == 0)
+    output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
+    saver = AtomicDirectory(output_directory, is_master=rank == 0)
 
     # performance metrics to track
     train_loss = 0.0
