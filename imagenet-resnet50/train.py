@@ -1,23 +1,33 @@
 #####################################
 # Progress Timing and Logging
 # ----------------------------
-from cycling_utils import TimestampedTimer, MetricsTracker
+from cycling_utils import MetricsTracker, TimestampedTimer
 
 timer = TimestampedTimer("Imported TimestampedTimer & MetricsTracker")
 
 import argparse
+import json
+import math
 import os
 import re
 import math
 import time
 import datetime
 import socket
-import json
 import subprocess
-from pathlib import Path
+import time
 from itertools import accumulate
+from pathlib import Path
+
 import torch
 import torch.distributed as dist
+from antialiased_resnet import resnet50
+from cycling_utils import (
+    AtomicDirectory,
+    InterruptableDistributedSampler,
+    atomic_torch_save,
+)
+from lamb import Lamb
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import DataLoader, default_collate
@@ -25,11 +35,8 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import v2
 
-from antialiased_resnet import resnet50
-from lamb import Lamb
-from cycling_utils import InterruptableDistributedSampler, AtomicDirectory, atomic_torch_save
-
 timer.report("00_imports")
+
 
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser()
@@ -38,10 +45,10 @@ def get_args_parser(add_help=True):
     parser.add_argument("--accum", type=float, default=1)
     parser.add_argument("--label-smoothing", type=float, default=0.1)
     parser.add_argument("--random-erase", type=float, default=0.0)
-    parser.add_argument("--amp", action='store_true') # Defaults to False
+    parser.add_argument("--amp", action="store_true")  # Defaults to False
 
-    parser.add_argument("--lr-stepevery", type=str, choices=['epoch', 'batch'], default='batch')
-    parser.add_argument("--optim", type=str, choices=['sgd', 'adamw', 'lamb'], default='lamb')
+    parser.add_argument("--lr-stepevery", type=str, choices=["epoch", "batch"], default="batch")
+    parser.add_argument("--optim", type=str, choices=["sgd", "adamw", "lamb"], default="lamb")
     parser.add_argument("--lr", type=float, default=1.0)
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--weight-decay", type=float, default=0.01)
@@ -54,17 +61,21 @@ def get_args_parser(add_help=True):
     parser.add_argument("--log-freq", type=int, default=50)
     return parser
 
+
 def check_model_grads(model, args):
     result = 0
     if any([torch.isnan(param.grad).any().item() for param in model.parameters()]):
         result = 1
     return result
 
+
 def is_batchnorm_param(name):
-    return re.search(r'\.bn\d+\.', name) is not None
+    return re.search(r"\.bn\d+\.", name) is not None
+
 
 def label_smoothing(labels, smoothing):
-    return (labels * (1-smoothing) + (1 - labels) * (smoothing / (labels.shape[1] - 1)))
+    return labels * (1 - smoothing) + (1 - labels) * (smoothing / (labels.shape[1] - 1))
+
 
 def train_loop(
     model,
@@ -87,9 +98,7 @@ def train_loop(
     model.train()
 
     # Report and just reset timer
-    timer.report(
-        f"13_train_start - EPOCH [{epoch:,}] TRAIN BATCH [{batch:,} / {train_batches_per_epoch:,}]"
-    )
+    timer.report(f"13_train_start - EPOCH [{epoch:,}] TRAIN BATCH [{batch:,} / {train_batches_per_epoch:,}]")
 
     # Start the timer
     start = time.perf_counter()
@@ -119,14 +128,12 @@ def train_loop(
 
         # Accumulation batch
         if is_accum_batch or is_last_batch:
-            with torch.amp.autocast('cuda', enabled=args.amp): # AMP context for forward pass if AMP
+            with torch.amp.autocast("cuda", enabled=args.amp):  # AMP context for forward pass if AMP
                 # Forward pass
                 predictions = model(inputs)
                 torch.cuda.synchronize()
                 metrics["sys"].update({"3_forward": time.perf_counter() - start})
-                assert (
-                    not torch.isnan(predictions).any().item()
-                ), f"NAN IN PREDS ON {args.host} GPU {args.device_id}"
+                assert not torch.isnan(predictions).any().item(), f"NAN IN PREDS ON {args.host} GPU {args.device_id}"
                 start = time.perf_counter()
                 # Compute loss and log to metrics
                 loss = loss_fn(predictions, targets)
@@ -134,9 +141,7 @@ def train_loop(
                 loss = loss / args.accum
                 torch.cuda.synchronize()
                 metrics["sys"].update({"4_loss": time.perf_counter() - start})
-                assert not torch.isnan(
-                    loss
-                ).item(), f"NAN IN LOSS ON {args.host} GPU {args.device_id}"
+                assert not torch.isnan(loss).item(), f"NAN IN LOSS ON {args.host} GPU {args.device_id}"
                 start = time.perf_counter()
 
             # Accumulate examples seen and loss locally - scale loss back to normal for metrics reporting
@@ -168,8 +173,8 @@ def train_loop(
 
         # Non-accumulation batch
         else:
-            with model.no_sync(): # No GPU sync on grad accumulation batch
-                with torch.amp.autocast('cuda', enabled=args.amp): # Optional context for forward pass
+            with model.no_sync():  # No GPU sync on grad accumulation batch
+                with torch.amp.autocast("cuda", enabled=args.amp):  # Optional context for forward pass
                     # Forward pass
                     predictions = model(inputs)
                     torch.cuda.synchronize()
@@ -184,9 +189,7 @@ def train_loop(
                     loss = loss / args.accum
                     torch.cuda.synchronize()
                     metrics["sys"].update({"4_loss": time.perf_counter() - start})
-                    assert not torch.isnan(
-                        loss
-                    ).item(), f"NAN IN LOSS ON {args.host} GPU {args.device_id}"
+                    assert not torch.isnan(loss).item(), f"NAN IN LOSS ON {args.host} GPU {args.device_id}"
                     start = time.perf_counter()
 
                 # Accumulate examples seen and loss locally
@@ -214,9 +217,7 @@ def train_loop(
                 examples_seen = metrics["train"].agg["examples_seen"]
                 accum_avg_loss = metrics["train"].agg["loss"] / examples_seen
                 writer.add_scalar("Train/avg_loss", accum_avg_loss, total_progress)
-                writer.add_scalar(
-                    "Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress
-                )
+                writer.add_scalar("Train/learn_rate", lr_scheduler.get_last_lr()[0], total_progress)
                 writer.add_scalar("Train/global_batch", examples_seen, total_progress)
 
                 # Created here on master only, saved a few lines down
@@ -317,9 +318,9 @@ def train_loop(
                         "metrics_train": metrics["train"].state_dict(),
                         "metrics_test": metrics["test"].state_dict(),
                         "metrics_sys": metrics["sys"].state_dict(),
-                        "best_accuracy": metrics["best_accuracy"]
+                        "best_accuracy": metrics["best_accuracy"],
                     },
-                    os.path.join(checkpoint_directory, "checkpoint.pt")
+                    os.path.join(checkpoint_directory, "checkpoint.pt"),
                 )
 
             saver.symlink_latest(checkpoint_directory)
@@ -349,9 +350,7 @@ def test_loop(
     model.eval()
 
     # Report and just reset timer
-    timer.report(
-        f"14_test_start - EPOCH [{epoch:,}] TEST BATCH [{batch:,} / {test_batches_per_epoch:,}]"
-    )
+    timer.report(f"14_test_start - EPOCH [{epoch:,}] TEST BATCH [{batch:,} / {test_batches_per_epoch:,}]")
 
     with torch.no_grad():
         for batch, (inputs, targets) in enumerate(test_dataloader, start=batch):
@@ -406,9 +405,7 @@ def test_loop(
                     f.write(json.dumps(json_payload) + "\n")
 
             if is_log_batch and not is_last_batch:
-                timer.report(
-                    f"EPOCH [{epoch:,}] VA BA [{batch:,} / {test_batches_per_epoch:,}] COMPLETED"
-                )
+                timer.report(f"EPOCH [{epoch:,}] VA BA [{batch:,} / {test_batches_per_epoch:,}] COMPLETED")
 
             # Save checkpoint
             if is_save_batch:
@@ -438,9 +435,9 @@ def test_loop(
                             "metrics_train": metrics["train"].state_dict(),
                             "metrics_test": metrics["test"].state_dict(),
                             "metrics_sys": metrics["sys"].state_dict(),
-                            "best_accuracy": metrics["best_accuracy"]
+                            "best_accuracy": metrics["best_accuracy"],
                         },
-                        os.path.join(checkpoint_directory, "checkpoint.pt")
+                        os.path.join(checkpoint_directory, "checkpoint.pt"),
                     )
 
                 saver.symlink_latest(checkpoint_directory)
@@ -460,7 +457,7 @@ def main(args, timer):
         print(f"Machine: {args.host}")
 
     ## NOTE: GRAD SCALER CAUSES NANS BY DESIGN. LOG NANS WITHOUT RAISING.
-    # torch.autograd.set_detect_anomaly(True) 
+    # torch.autograd.set_detect_anomaly(True)
 
     ##############################################
     # Data Transformation and Augmentation
@@ -475,7 +472,7 @@ def main(args, timer):
             v2.ToDtype(torch.float32, scale=True),  # to float32 in [0, 1]
             v2.Normalize(mean=img_mean, std=img_std),
             # v2.RandomErasing(p=args.random_erase),
-            v2.RandAugment()
+            v2.RandAugment(),
         ]
     )
     test_transform = v2.Compose(
@@ -508,20 +505,22 @@ def main(args, timer):
     cutmix = v2.CutMix(num_classes=len(train_data.classes))
     mixup = v2.MixUp(num_classes=len(train_data.classes))
     cutmix_or_mixup = v2.RandomChoice([cutmix, mixup])
+
     def collate_fn(batch):
         return cutmix_or_mixup(*default_collate(batch))
+
     train_dataloader = DataLoader(
         train_data, batch_size=args.batch_size, sampler=train_sampler, num_workers=3, collate_fn=collate_fn
     )
-    test_dataloader = DataLoader(
-        test_data, batch_size=args.batch_size, sampler=test_sampler
+    test_dataloader = DataLoader(test_data, batch_size=args.batch_size, sampler=test_sampler)
+    timer.report(
+        f"07_init_dataloaders: TRAIN BATCHES: {len(train_dataloader):,} TEST BATCHES: {len(test_dataloader):,}"
     )
-    timer.report(f"07_init_dataloaders: TRAIN BATCHES: {len(train_dataloader):,} TEST BATCHES: {len(test_dataloader):,}")
 
     ##############################################
     # Model Preparation
     # ----------------------
-    model = resnet50() # APPLIES BLURPOOL
+    model = resnet50()  # APPLIES BLURPOOL
     timer.report("08_model_build")
     model = model.to(args.device_id, memory_format=torch.channels_last)
     timer.report("09_model_gpu")
@@ -531,41 +530,46 @@ def main(args, timer):
     ########################################
     # Loss function, Optimizer, Learning rate scheduler
     # ----------------------
-    loss_fn = nn.BCEWithLogitsLoss(reduction="mean") # Using cutmix, mixup, and label smoothing
-    scaler = torch.amp.GradScaler('cuda', enabled=args.amp) # Enabled or not based on arg 'amp'
-    
-    param_groups = [{'params': param, 'weight_decay': 0.00} if is_batchnorm_param(name) else {'params': param} for name,param in model.named_parameters()]
-    if args.optim  == 'sgd':
-        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    elif args.optim == 'adamw':
+    loss_fn = nn.BCEWithLogitsLoss(reduction="mean")  # Using cutmix, mixup, and label smoothing
+    scaler = torch.amp.GradScaler("cuda", enabled=args.amp)  # Enabled or not based on arg 'amp'
+
+    param_groups = [
+        {"params": param, "weight_decay": 0.00} if is_batchnorm_param(name) else {"params": param}
+        for name, param in model.named_parameters()
+    ]
+    if args.optim == "sgd":
+        optimizer = torch.optim.SGD(
+            model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay
+        )
+    elif args.optim == "adamw":
         optimizer = torch.optim.AdamW(param_groups, lr=args.lr, weight_decay=args.weight_decay)
-    elif args.optim == 'lamb':
-         optimizer = Lamb(param_groups, lr=args.lr, weight_decay=args.weight_decay)
+    elif args.optim == "lamb":
+        optimizer = Lamb(param_groups, lr=args.lr, weight_decay=args.weight_decay)
     else:
         raise Exception("Arg 'optim' must be either 'sgd' or 'adamw'.")
 
     # Function to convert from epochs to steps based on args.lr_stepevery
-    milestone_steps = lambda epochs: epochs * len(train_dataloader) if args.lr_stepevery == 'batch' else epochs
+    milestone_steps = lambda epochs: epochs * len(train_dataloader) if args.lr_stepevery == "batch" else epochs
 
     def get_linear_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
         linear_lambda = lambda step: step * (finish - start) / steps + start
         return torch.optim.lr_scheduler.LambdaLR(optimizer, linear_lambda)
-    
+
     def get_cosine_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
         cos_lambda = lambda epoch: 0.5 * (1 - math.cos(epoch * math.pi / steps)) * (finish - start) + start
         return torch.optim.lr_scheduler.LambdaLR(optimizer, cos_lambda)
-    
+
     def get_exp_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        exp_lambda = lambda step: math.exp(step * math.log(finish/start) / steps + math.log(start))
+        exp_lambda = lambda step: math.exp(step * math.log(finish / start) / steps + math.log(start))
         return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_lambda)
 
     annealing_epochs = args.epochs - args.warmup_epochs
     sched_epochs = [
-        (0.002, 0.01, args.warmup_epochs), # warm up
-        (0.01, 0.00, annealing_epochs), # annealing
+        (0.002, 0.01, args.warmup_epochs),  # warm up
+        (0.01, 0.00, annealing_epochs),  # annealing
     ]
     schedulers, milestone_epochs = zip(*[(get_cosine_scheduler(frm, to, freq), freq) for frm, to, freq in sched_epochs])
     sched_milestones = list(accumulate([milestone_steps(epochs) for epochs in milestone_epochs[:-1]]))
@@ -578,7 +582,7 @@ def main(args, timer):
         "train": MetricsTracker(),
         "test": MetricsTracker(),
         "sys": MetricsTracker(),
-        "best_accuracy": float("-inf")
+        "best_accuracy": float("-inf"),
     }
     writer = SummaryWriter(log_dir=os.environ["LOSSY_ARTIFACT_PATH"])
     timer.report("11_loss_opt_lrsch_met")
@@ -659,6 +663,7 @@ def main(args, timer):
         test_dataloader.sampler.reset_progress()
 
     print("Done!")
+
 
 timer.report("01_define_functions")
 
