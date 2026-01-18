@@ -17,9 +17,9 @@ jobs:
     - name: Install dependencies
       run: |
         pip install ruff black isort
-    # - name: Run black
-    #   run: |
-    #     black --check .
+    - name: Run black
+      run: |
+        black --check .
     - name: Run ruff 
       run: |
         ruff check . 
