@@ -10,12 +10,9 @@ import json
 import math
 import os
 import re
-<<<<<<< HEAD
-=======
 import math
 import time
 import datetime
->>>>>>> main
 import socket
 import subprocess
 import time
