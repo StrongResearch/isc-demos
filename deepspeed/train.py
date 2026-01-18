@@ -83,11 +83,6 @@ def main():
 
     print(f"Rank {os.environ["RANK"]} training example:\n{train_dataset[0]}")
 
-    # test_dataset = dataset["test"].map(
-    #     preprocess_function, batched=True,
-    #     remove_columns=dataset["test"].column_names, desc="Tokenizing and preprocessing test dataset"
-    # )
-
     # Create dataloader
     def collate_fn(batch):
         return {
@@ -108,7 +103,6 @@ def main():
         model_parameters=model.parameters(),
     )
 
-    # print(f"DeepSpeed model_engine init: {model_engine}")
     output_directory = os.environ["CHECKPOINT_ARTIFACT_PATH"]
     is_master = deepspeed.comm.get_rank() == 0
     saver = AtomicDirectory(output_directory=output_directory, is_master=is_master)
