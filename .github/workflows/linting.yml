@@ -1,0 +1,28 @@
+name: Linting 
+
+on: 
+  push:
+    paths-ignore: 
+    - '*.md'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.13'
+    - name: Install dependencies
+      run: |
+        pip install ruff black isort
+    - name: Run black
+      run: |
+        black --check .
+    - name: Run ruff 
+      run: |
+        ruff check . 
+    - name: Run isort 
+      run: | 
+        isort **/*.py -c -v
