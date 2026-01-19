@@ -20,6 +20,7 @@ Each example published below is annotated with its degree of completion. Example
 | Fashion MNIST | Image classification | CNN | [3] | [isc-demos/fashion_mnist](fashion_mnist) |
 | ImageNet | Image classification | ResNet50 | [2] | [isc-demos/imagenet-resnet50](imagenet-resnet50) |
 | DeepSeek | Language Modelling | DeepSeek-R1 | [2] | [isc-demos/deepseek](deepseek) |
+| DeepSpeed | Language Modelling | Llama3.2 | [2] | [isc-demos/deepspeed](deepspeed) |
 | Llama | Language Modelling | Llama3.2 | [2] | [isc-demos/llama](llama) |
 
 
