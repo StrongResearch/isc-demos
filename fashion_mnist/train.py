@@ -4,10 +4,6 @@
 # Important milestones in progress through this script are logged using a timing utility which also includes details of
 # when milestones were reached and the elapsedtime between milestones. This can assist with debugging and optimisation.
 
-from cycling_utils import TimestampedTimer
-
-timer = TimestampedTimer("Imported TimestampedTimer")
-
 import argparse
 import os
 from operator import itemgetter
@@ -18,6 +14,7 @@ from cycling_utils import (
     AtomicDirectory,
     InterruptableDistributedSampler,
     MetricsTracker,
+    TimestampedTimer,
     atomic_torch_save,
 )
 from model import ConvNet
@@ -28,7 +25,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import Compose, Lambda, PILToTensor, RandAugment
 
-timer.report("Completed imports")
+timer = TimestampedTimer("Completed imports")
 
 #######################################
 # Hyperparameters

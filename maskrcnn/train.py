@@ -1,7 +1,3 @@
-from cycling_utils import TimestampedTimer
-
-timer = TimestampedTimer()
-
 import argparse
 import os
 from pathlib import Path
@@ -15,7 +11,7 @@ import torchvision.models.detection.mask_rcnn
 import utils
 from coco_eval import CocoEvaluator
 from coco_utils import get_coco, get_coco_api_from_dataset
-from cycling_utils import InterruptableDistributedSampler
+from cycling_utils import InterruptableDistributedSampler, TimestampedTimer
 from engine import evaluate, train_one_epoch
 from group_by_aspect_ratio import (
     InterruptableDistributedGroupedBatchSampler,
@@ -26,7 +22,7 @@ from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 from torchvision.transforms import InterpolationMode
 from transforms import SimpleCopyPaste
 
-timer.report("importing everything else")
+timer = TimestampedTimer("Imports")
 
 
 def print_rank0(message):

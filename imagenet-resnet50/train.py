@@ -1,18 +1,12 @@
 #####################################
 # Progress Timing and Logging
 # ----------------------------
-from cycling_utils import MetricsTracker, TimestampedTimer
-
-timer = TimestampedTimer("Imported TimestampedTimer & MetricsTracker")
-
 import argparse
+import datetime
 import json
 import math
 import os
 import re
-import math
-import time
-import datetime
 import socket
 import subprocess
 import time
@@ -25,6 +19,8 @@ from antialiased_resnet import resnet50
 from cycling_utils import (
     AtomicDirectory,
     InterruptableDistributedSampler,
+    MetricsTracker,
+    TimestampedTimer,
     atomic_torch_save,
 )
 from lamb import Lamb
@@ -35,7 +31,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision import datasets
 from torchvision.transforms import v2
 
-timer.report("00_imports")
+timer = TimestampedTimer("00_imports")
 
 
 def get_args_parser(add_help=True):
@@ -399,7 +395,7 @@ def test_loop(
                     "test_accu": pct_test_correct,
                     "datetime": time.strftime("%Y-%m-%d %H:%M:%S"),
                 }
-                
+
                 lossy_output_dir = os.environ["LOSSY_ARTIFACT_PATH"]
                 with open(os.path.join(lossy_output_dir, "test_metrics.jsonl"), "a") as f:
                     f.write(json.dumps(json_payload) + "\n")
@@ -411,9 +407,9 @@ def test_loop(
             if is_save_batch:
 
                 # sync pct_test_correct to determine force_save
-                sync_pct_test_correct = torch.tensor(pct_test_correct).to('cuda')
+                sync_pct_test_correct = torch.tensor(pct_test_correct).to("cuda")
                 dist.broadcast(sync_pct_test_correct, src=0)
-                
+
                 # force save checkpoint if test performance improves, only after 20 epochs
                 if (epoch > 20) and is_last_batch and (sync_pct_test_correct > metrics["best_accuracy"]):
                     force_save = True
@@ -549,22 +545,32 @@ def main(args, timer):
         raise Exception("Arg 'optim' must be either 'sgd' or 'adamw'.")
 
     # Function to convert from epochs to steps based on args.lr_stepevery
-    milestone_steps = lambda epochs: epochs * len(train_dataloader) if args.lr_stepevery == "batch" else epochs
+    def milestone_steps(epochs):
+        epochs * len(train_dataloader) if args.lr_stepevery == "batch" else epochs
 
     def get_linear_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        linear_lambda = lambda step: step * (finish - start) / steps + start
-        return torch.optim.lr_scheduler.LambdaLR(optimizer, linear_lambda)
+
+        def linear_scheduler(step):
+            step * (finish - start) / steps + start
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, linear_scheduler)
 
     def get_cosine_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        cos_lambda = lambda epoch: 0.5 * (1 - math.cos(epoch * math.pi / steps)) * (finish - start) + start
-        return torch.optim.lr_scheduler.LambdaLR(optimizer, cos_lambda)
+
+        def cosine_scheduler(epoch):
+            0.5 * (1 - math.cos(epoch * math.pi / steps)) * (finish - start) + start
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, cosine_scheduler)
 
     def get_exp_scheduler(start, finish, epochs):
         steps = milestone_steps(epochs)
-        exp_lambda = lambda step: math.exp(step * math.log(finish / start) / steps + math.log(start))
-        return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_lambda)
+
+        def exp_scheduler(step):
+            math.exp(step * math.log(finish / start) / steps + math.log(start))
+
+        return torch.optim.lr_scheduler.LambdaLR(optimizer, exp_scheduler)
 
     annealing_epochs = args.epochs - args.warmup_epochs
     sched_epochs = [
