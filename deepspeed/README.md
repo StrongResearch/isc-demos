@@ -19,7 +19,7 @@ nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
 apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano
 ```
 
-3. Clone the isc-demos repo and install the `deepspeed` project dependencies to a virtul environment
+3. Clone the isc-demos repo and install the `deepspeed` project dependencies to a virtual environment
 ```
 cd ~
 python3 -m virtualenv /opt/venv
