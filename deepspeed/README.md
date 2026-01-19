@@ -1,10 +1,12 @@
 # project inventory
+```
 isc-demos/deepspeed/
 ├── requirements.txt        # Python project dependencies
 ├── experiment.isc          # Strong Compute experiment launch file
 ├── launch.sh               # Per-node launch wrapper
 ├── train.py                # Main training script
 └── ds_config.json          # ZeRO-3 DeepSpeed config
+```
 
 # quickstart on Strong Compute
 1. Create and start a new container based on the following image.
