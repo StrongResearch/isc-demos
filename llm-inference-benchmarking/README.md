@@ -52,12 +52,14 @@ https://github.com/huggingface/inference-benchmarker
 - do surgery
 /root/inference-benchmarker/src/lib.rs - line 82 -> "Tokenizer::from_file(run_config.tokenizer_name.clone())"
 
-/root/inference-benchmarker/src/requests.rs - line 415 -> "Tokenizer::from_file(tokenizer)"
+/root/inference-benchmarker/src/requests.rs - line 414 -> "Tokenizer::from_file(tokenizer)"
 
 todo: inference-benchmarker is sending the curl request to the server, and trying to use
 the tokenizer "name" (which it adopts as the "model name") to generate the curl request.
 need to enable passing of an actual "model-name" as well as the "tokenizer-name" and get 
 the inference-benchmarker to use this as the "model" in the curl request.
+
+... or maybe there's a sneaky model-name arg?
 
 then build with "cargo build"
 

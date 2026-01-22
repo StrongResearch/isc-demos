@@ -81,7 +81,8 @@ echo "Sending test completion request..."
 #   }" | jq .
 
 /root/inference-benchmarker/target/debug/inference-benchmarker \
-    --tokenizer-name "/data/uds-full-titanium-hacksaw-250527/tokenizer.json" \
+    --tokenizer-name ${MODEL}/tokenizer.json \
+    --model-name ${MODEL}
     --url http://${HOST}:${PORT} \
     --profile chat
 
