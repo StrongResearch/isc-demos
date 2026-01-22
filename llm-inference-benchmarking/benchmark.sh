@@ -6,8 +6,8 @@ set -euo pipefail
 # -----------------------------
 PORT=8000
 HOST=127.0.0.1
-LOG_FILE="vllm.log"
-DATASET_ID=""
+LOG_FILE="/root/isc-demos/llm-inference-benchmarking/vllm.log"
+DATASET_ID="uds-full-titanium-hacksaw-250527"
 MODEL="/data/${DATASET_ID}"
 TP_SIZE=4
 GPUS="0,1,2,3"
@@ -32,8 +32,9 @@ trap cleanup EXIT INT TERM
 # -----------------------------
 echo "Starting vLLM server..."
 
+source /opt/venv/bin/activate
 CUDA_VISIBLE_DEVICES=${GPUS} \
-nohup python -m vllm.entrypoints.openai.api_server \
+nohup python3 -m vllm.entrypoints.openai.api_server \
   --model "${MODEL}" \
   --tensor-parallel-size "${TP_SIZE}" \
   --host 0.0.0.0 \
@@ -48,11 +49,12 @@ echo "vLLM server PID: ${SERVER_PID}"
 # -----------------------------
 echo "Waiting for server to become ready..."
 
-for i in {1..60}; do
+for i in {1..100}; do
   if curl -sf "http://${HOST}:${PORT}/v1/models" > /dev/null; then
     echo "Server is up!"
     break
   fi
+  echo "Waiting for server... tick ${i}"
   sleep 1
 done
 
@@ -68,15 +70,20 @@ fi
 # -----------------------------
 echo "Sending test completion request..."
 
-curl -s "http://${HOST}:${PORT}/v1/chat/completions" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer test" \
-  -d "{
-    \"model\": \"${MODEL}\",
-    \"messages\": [
-      {\"role\": \"user\", \"content\": \"Hello from the same machine\"}
-    ]
-  }" | jq .
+# curl -s "http://${HOST}:${PORT}/v1/chat/completions" \
+#   -H "Content-Type: application/json" \
+#   -H "Authorization: Bearer test" \
+#   -d "{
+#     \"model\": \"${MODEL}\",
+#     \"messages\": [
+#       {\"role\": \"user\", \"content\": \"Hello from the same machine\"}
+#     ]
+#   }" | jq .
+
+/root/inference-benchmarker/target/debug/inference-benchmarker \
+    --tokenizer-name "/data/uds-full-titanium-hacksaw-250527/tokenizer.json" \
+    --url http://${HOST}:${PORT} \
+    --profile chat
 
 echo "Done."
 echo "Logs: ${LOG_FILE}"

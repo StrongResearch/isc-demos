@@ -36,5 +36,31 @@ curl http://localhost:8000/v1/chat/completions \
   }'
 ```
 8. Run the `inference-benchmark` binary
+
+- install openssl 
+wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb -O ~/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+dpkg -i ~/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+
+apt update && apt install libssl-dev pkg-config
+
+- install cargo
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+- clone the inference-benchmark repo
+https://github.com/huggingface/inference-benchmarker
+
+- do surgery
+/root/inference-benchmarker/src/lib.rs - line 82 -> "Tokenizer::from_file(run_config.tokenizer_name.clone())"
+
+/root/inference-benchmarker/src/requests.rs - line 415 -> "Tokenizer::from_file(tokenizer)"
+
+todo: inference-benchmarker is sending the curl request to the server, and trying to use
+the tokenizer "name" (which it adopts as the "model name") to generate the curl request.
+need to enable passing of an actual "model-name" as well as the "tokenizer-name" and get 
+the inference-benchmarker to use this as the "model" in the curl request.
+
+then build with "cargo build"
+
+
 9. Profit
 
