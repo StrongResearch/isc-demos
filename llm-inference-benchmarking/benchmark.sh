@@ -19,6 +19,10 @@ POST_RESULT_DELAY=5
 SERVER_PID=""
 BENCH_PID=""
 
+# make sure results directory exists and is empty
+mkdir -p "${RESULTS_DIR}"
+rm -rf "${RESULTS_DIR}/*"
+
 # -----------------------------
 # Cleanup handler
 # -----------------------------
@@ -136,3 +140,15 @@ done
 # -----------------------------
 echo "Done."
 echo "Logs: ${LOG_FILE}"
+
+
+# -----------------------------
+# Move results to an experiment artifact
+# -----------------------------
+
+if [[ -n "$CHECKPOINT_ARTIFACT_PATH" ]]; then
+  SAVER_NAME="InferBench_checkpoint_1_force"
+  CHECKPOINT_PATH="${CHECKPOINT_ARTIFACT_PATH}/${SAVER_NAME}"
+  mkdir -p ${CHECKPOINT_ARTIFACT_PATH}/${SAVER_NAME}
+  cp ${RESULTS_DIR}/* ${CHECKPOINT_PATH}/
+fi
