@@ -115,6 +115,10 @@ echo "Starting inference-benchmarker"
 # Snapshot existing result files
 existing_results=$(ls "${RESULTS_DIR}"/*.${RESULT_EXT} 2>/dev/null || true)
 
+# the inference-benchmarker really wants to capture the
+# terminal to dispay the TUI, but we don't want that
+# so we're going to run it in the background with script
+# sending the standard out of the script to dev null
 set +e
 script -q -c \
   "/root/inference-benchmarker/target/debug/inference-benchmarker \
