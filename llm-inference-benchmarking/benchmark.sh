@@ -25,6 +25,11 @@ BENCH_PID=""
 mkdir -p "${RESULTS_DIR}"
 rm -rf "${RESULTS_DIR}/*"
 
+# confirm RESULTS_DIR exists and is empty
+if [ -d "${RESULTS_DIR}" ] && [ -z "$(ls -A ${RESULTS_DIR})" ]; then
+  echo "RESULTS_DIR exists and is empty"
+fi
+
 # -----------------------------
 # Cleanup handler
 # -----------------------------
@@ -35,16 +40,16 @@ cleanup() {
 
   if [[ -n "${BENCH_PID:-}" ]] && kill -0 "$BENCH_PID" 2>/dev/null; then
     echo "Cleaning up benchmarker (PID $BENCH_PID)..." >&2
-    kill -TERM "$BENCH_PID" 2>/dev/null || true
+    kill -TERM -"$BENCH_PID" 2>/dev/null || true
     sleep 2
-    kill -KILL "$BENCH_PID" 2>/dev/null || true
+    kill -KILL -"$BENCH_PID" 2>/dev/null || true
   fi
 
   if [[ -n "${SERVER_PID:-}" ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
     echo "Cleaning up vLLM server (PID $SERVER_PID)..." >&2
-    kill -TERM "$SERVER_PID" 2>/dev/null || true
+    kill -TERM -"$SERVER_PID" 2>/dev/null || true
     sleep 2
-    kill -KILL "$SERVER_PID" 2>/dev/null || true
+    kill -KILL -"$SERVER_PID" 2>/dev/null || true
   fi
 }
 
@@ -72,7 +77,7 @@ echo "vLLM server PID: ${SERVER_PID}"
 # -----------------------------
 echo "Waiting for server to become ready"
 
-for i in {1..120}; do
+for i in {1..180}; do
   if curl -sf "http://${HOST}:${PORT}/v1/models" > /dev/null; then
     echo "Server is up!"
     break
@@ -111,11 +116,13 @@ echo "Starting inference-benchmarker"
 existing_results=$(ls "${RESULTS_DIR}"/*.${RESULT_EXT} 2>/dev/null || true)
 
 set +e
-/root/inference-benchmarker/target/debug/inference-benchmarker \
-  --tokenizer-name "${MODEL}/tokenizer.json" \
-  --model-name "${MODEL}" \
-  --url "http://${HOST}:${PORT}" \
-  --profile chat &
+script -q -c \
+  "/root/inference-benchmarker/target/debug/inference-benchmarker \
+    --tokenizer-name ${MODEL}/tokenizer.json \
+    --model-name ${MODEL} \
+    --url http://${HOST}:${PORT} \
+    --profile chat" \
+  /dev/null &
 set -e
 
 BENCH_PID=$!
@@ -129,14 +136,24 @@ echo "Waiting for benchmark results to be written"
 while true; do
   sleep 1
   for f in "${RESULTS_DIR}"/*.${RESULT_EXT}; do
+    # If the glob didn't match anything, skip
+    [ -e "$f" ] || continue
+
+    # Optional: ensure it's a regular file
+    [ -f "$f" ] || continue
+
     if ! grep -qxF "$f" <<< "${existing_results}"; then
       echo "Detected new result file: $f"
       echo "Waiting ${POST_RESULT_DELAY}s to ensure file is complete..."
       sleep "${POST_RESULT_DELAY}"
 
-      echo "Stopping benchmarker (PID ${BENCH_PID})..."
-      kill -INT "${BENCH_PID}"
-      wait "${BENCH_PID}" 2>/dev/null || true
+      # echo "Stopping benchmarker (PID ${BENCH_PID})..."
+      # kill -INT "${BENCH_PID}"
+      # wait "${BENCH_PID}" 2>/dev/null || true
+      # break 2
+
+      # just move on in script, completion will teardown
+      # of both benchmarker and server
       break 2
     fi
   done
@@ -163,3 +180,4 @@ fi
 
 echo "Sleeping for like 2 minutes to allow time for checkpoint sync"
 sleep 120
+exit 0
