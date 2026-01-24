@@ -4,10 +4,12 @@ set -euo pipefail
 # -----------------------------
 # Configuration
 # -----------------------------
+echo "Configuring environment"
+
 PORT=8000
 HOST=localhost
 LOG_FILE="/root/isc-demos/llm-inference-benchmarking/vllm.log"
-DATASET_ID="uds-full-titanium-hacksaw-250527"
+# DATASET_ID="uds-full-titanium-hacksaw-250527" # set as env var
 MODEL="/data/${DATASET_ID}"
 TP_SIZE=4
 GPUS="0,1,2,3"
@@ -26,6 +28,8 @@ rm -rf "${RESULTS_DIR}/*"
 # -----------------------------
 # Cleanup handler
 # -----------------------------
+echo "Starting cleanup handler"
+
 cleanup() {
   if [[ -n "${BENCH_PID}" ]] && kill -0 "${BENCH_PID}" 2>/dev/null; then
     echo "Cleaning up benchmarker (PID ${BENCH_PID})..."
@@ -45,7 +49,7 @@ trap cleanup EXIT INT TERM
 # -----------------------------
 # Start server in background
 # -----------------------------
-echo "Starting vLLM server..."
+echo "Starting vLLM server"
 
 source /opt/venv/bin/activate
 CUDA_VISIBLE_DEVICES=${GPUS} \
@@ -62,14 +66,13 @@ echo "vLLM server PID: ${SERVER_PID}"
 # -----------------------------
 # Wait for server readiness
 # -----------------------------
-echo "Waiting for server to become ready..."
+echo "Waiting for server to become ready"
 
 for i in {1..100}; do
   if curl -sf "http://${HOST}:${PORT}/v1/models" > /dev/null; then
     echo "Server is up!"
     break
   fi
-  echo "Waiting for server... tick ${i}"
   sleep 1
 done
 
@@ -98,7 +101,7 @@ fi
 # -----------------------------
 # Run inference-benchmarker (background)
 # -----------------------------
-echo "Starting inference-benchmarker..."
+echo "Starting inference-benchmarker"
 
 # Snapshot existing result files
 existing_results=$(ls "${RESULTS_DIR}"/*.${RESULT_EXT} 2>/dev/null || true)
@@ -117,7 +120,7 @@ echo "Benchmarker PID: ${BENCH_PID}"
 # -----------------------------
 # Wait for new result file
 # -----------------------------
-echo "Waiting for benchmark results to be written..."
+echo "Waiting for benchmark results to be written"
 
 while true; do
   sleep 1
@@ -145,6 +148,7 @@ echo "Logs: ${LOG_FILE}"
 # -----------------------------
 # Move results to an experiment artifact
 # -----------------------------
+echo "Moving results to an artifact"
 
 if [[ -n "$CHECKPOINT_ARTIFACT_PATH" ]]; then
   SAVER_NAME="InferBench_checkpoint_1_force"
@@ -152,3 +156,6 @@ if [[ -n "$CHECKPOINT_ARTIFACT_PATH" ]]; then
   mkdir -p ${CHECKPOINT_ARTIFACT_PATH}/${SAVER_NAME}
   cp ${RESULTS_DIR}/* ${CHECKPOINT_PATH}/
 fi
+
+echo "Sleeping for like 2 minutes to allow time for checkpoint sync"
+sleep 120

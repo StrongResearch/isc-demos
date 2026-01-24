@@ -1,0 +1,8 @@
+isc_project_id = "prj-transparent-alike-bug-260119"
+experiment_name = "llm-benchmark"
+gpus = 4
+compute_mode = "interruptible"
+dataset_id_list = ["uds-full-titanium-hacksaw-250527"]
+command = '''
+export DATASET_ID="uds-full-titanium-hacksaw-250527" && 
+bash /root/isc-demos/llm-inference-benchmarking/benchmark.sh'''
