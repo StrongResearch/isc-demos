@@ -31,16 +31,20 @@ rm -rf "${RESULTS_DIR}/*"
 echo "Starting cleanup handler"
 
 cleanup() {
-  if [[ -n "${BENCH_PID}" ]] && kill -0 "${BENCH_PID}" 2>/dev/null; then
-    echo "Cleaning up benchmarker (PID ${BENCH_PID})..."
-    kill -INT "${BENCH_PID}"
-    wait "${BENCH_PID}" 2>/dev/null || true
+  trap - EXIT INT TERM
+
+  if [[ -n "${BENCH_PID:-}" ]] && kill -0 "$BENCH_PID" 2>/dev/null; then
+    echo "Cleaning up benchmarker (PID $BENCH_PID)..." >&2
+    kill -TERM "$BENCH_PID" 2>/dev/null || true
+    sleep 2
+    kill -KILL "$BENCH_PID" 2>/dev/null || true
   fi
 
-  if [[ -n "${SERVER_PID}" ]] && kill -0 "${SERVER_PID}" 2>/dev/null; then
-    echo "Cleaning up vLLM server (PID ${SERVER_PID})..."
-    kill "${SERVER_PID}"
-    wait "${SERVER_PID}" 2>/dev/null || true
+  if [[ -n "${SERVER_PID:-}" ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
+    echo "Cleaning up vLLM server (PID $SERVER_PID)..." >&2
+    kill -TERM "$SERVER_PID" 2>/dev/null || true
+    sleep 2
+    kill -KILL "$SERVER_PID" 2>/dev/null || true
   fi
 }
 
