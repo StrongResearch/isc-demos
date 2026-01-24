@@ -122,7 +122,8 @@ script -q -c \
     --model-name ${MODEL} \
     --url http://${HOST}:${PORT} \
     --profile chat" \
-  /dev/null &
+  /dev/null \
+  >/dev/null 2>&1 &
 set -e
 
 BENCH_PID=$!
