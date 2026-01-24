@@ -72,7 +72,7 @@ echo "vLLM server PID: ${SERVER_PID}"
 # -----------------------------
 echo "Waiting for server to become ready"
 
-for i in {1..100}; do
+for i in {1..120}; do
   if curl -sf "http://${HOST}:${PORT}/v1/models" > /dev/null; then
     echo "Server is up!"
     break
