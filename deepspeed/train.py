@@ -5,7 +5,7 @@ import torch
 from cycling_utils import AtomicDirectory, TimestampedTimer
 from datasets import disable_progress_bars, load_dataset
 from peft import LoraConfig, get_peft_model
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 import deepspeed
 
@@ -25,14 +25,30 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_model_and_tokenizer(model_path):
+def load_model_and_tokenizer(model_path, ds_config):
+
+    # Tokenizer (normal load)
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.pad_token = tokenizer.eos_token
 
-    base_model = AutoModelForCausalLM.from_pretrained(model_path, dtype=torch.bfloat16, device_map=None)
+    config = AutoConfig.from_pretrained(model_path)
 
-    # LoRA config
-    lora_config = LoraConfig(r=64, lora_alpha=32, lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
+    # Base model under ZeRO-3 context
+    with deepspeed.zero.Init(config_dict_or_path=ds_config):
+        base_model = AutoModelForCausalLM.from_config(
+            config,
+            dtype=torch.bfloat16
+        )
+
+    # Apply LoRA after base model is created
+    lora_config = LoraConfig(
+        r=64,
+        lora_alpha=32,
+        lora_dropout=0.05,
+        bias="none",
+        task_type="CAUSAL_LM",
+    )
+
     model = get_peft_model(base_model, lora_config)
     model.print_trainable_parameters()
 
@@ -41,7 +57,7 @@ def load_model_and_tokenizer(model_path):
 
 def main():
     args = parse_args()
-    model, tokenizer = load_model_and_tokenizer(args.model_path)
+    model, tokenizer = load_model_and_tokenizer(args.model_path, args.deepspeed_config)
 
     # prepare dataset
     train_data_path = os.path.join(args.data_path, "train-00000-of-00001.parquet")
